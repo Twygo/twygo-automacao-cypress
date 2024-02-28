@@ -1,0 +1,12 @@
+{
+  "name": "twygo-automacao-cypress",
+  "version": "1.0.0",
+  "description": "Projeto de testes funcionais da Twygo",
+  "main": "index.js",
+  "repository": "https://github.com/Twygo/twygo-automacao-cypress.git",
+  "author": "Karla Daiany G C de Oliveira",
+  "license": "MIT",
+  "devDependencies": {
+    "cypress": "13.6.6"
+  }
+}
