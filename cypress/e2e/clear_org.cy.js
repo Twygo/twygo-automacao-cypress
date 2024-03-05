@@ -1,4 +1,5 @@
 ///<reference types="cypress" />
+import 'cypress-real-events/support'
 
 describe('limpar dados da organização', ()=> {
 	it('deve limpar os dados da organização', () => {
@@ -34,6 +35,9 @@ describe('limpar dados da organização', ()=> {
 			.should('be.visible')
 			.click()
 
+		cy.contains('#btn-profile', 'Administrador')
+			.should('be.visible')
+
 		// Acessar menu da Sophia
 		cy.get('img[src*="sophia"]')
 			.eq(0)
@@ -48,10 +52,17 @@ describe('limpar dados da organização', ()=> {
 			.eq(3)
 			.click()
 
-		cy.contains('button', 'Excluir')
-			.click({force: true})
+		// Alternativa para navegar até o botão de excluir
+		cy.realPress('Tab')
 
+		cy.realType('{enter}')
+
+		// Confirmar a ação de exclusão
+		cy.contains('.flash.success', 'A exclusão está sendo realizada, aguarde alguns instantes.', { timeout: 40000 })
+		.should('be.visible')	
+
+		// Aguardar mensagem de confirmação de exclusão	
 		cy.contains('.flash.success', 'Todos os dados solicitados foram excluídos, atualize a página.', { timeout: 40000 })
-			.should('be.visible')		
+		.should('be.visible')		
 	})
 })
