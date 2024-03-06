@@ -2,10 +2,10 @@
 
 describe('login', () => {
     it('deve logar com sucesso', () => {
-        cy.visit('https://automacao-karla.stage.twygoead.com')
+        cy.visit('https://automacao-karla.twygoead.com')
 
         cy.get('#user_email')
-            .type('karladaiany@automacao.com')
+            .type('karla.oliveira@twygo.com')
     
         cy.get('#user_password')
             .type('aut123')

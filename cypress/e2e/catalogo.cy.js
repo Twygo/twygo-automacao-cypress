@@ -16,7 +16,7 @@ describe('catalogo', () => {
 		Cypress.removeAllListeners('uncaught:exception')
 	})
 	
-	it('criar catalogo com dados default', () => {
+	it('CRUD catalogo com dados default', () => {
 		// Massa de dados para criação do catálogo
 		const conteudo = {
 			nome: faker.commerce.productName(),
@@ -25,10 +25,10 @@ describe('catalogo', () => {
 
 		// !!! PRÉ-CONDIÇÃO !!!
 		// Realizar o login
-		cy.visit('https://automacao-karla.stage.twygoead.com')
+		cy.visit('https://automacao-karla.twygoead.com')
 
 		cy.get('#user_email')
-			.type('karladaiany@automacao.com')
+			.type('karla.oliveira@twygo.com')
 		
 		cy.get('#user_password')
 			.type('aut123')
@@ -57,12 +57,13 @@ describe('catalogo', () => {
 			.click()
 
 		// Acessar a página de catálogo de conteúdos
-		cy.visit('https://automacao-karla.stage.twygoead.com/o/37434/events/?tab=itens-portfolio')
+		cy.visit('https://automacao-karla.twygoead.com/o/21654/events/?tab=itens-portfolio')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
 			.should('be.visible')
 
 		// !!! INÍCIO DO TESTE !!!
+		// CREATE
 		// Clicar no botão de adicionar novo catálogo
 		cy.contains('button', 'Adicionar')
 			.should('be.visible')
@@ -95,21 +96,189 @@ describe('catalogo', () => {
 		cy.get(`tr.event-row[name='${conteudo.nome}']`)
 			.should('be.visible')
 			.should('have.length', 1)
+
+		// READ
+		// Aguardar 4s para garantir que o catálogo foi criado
+		cy.wait(4000)
+
+		// Clicar no botão de editar do catálogo para validar dados salvos
+		cy.get(`tr.event-row[name='${conteudo.nome}']`)
+			.find('a[title="Editar"]')
+			.click()
+		
+		cy.wait(2000)
+
+		cy.contains('.detail_title', 'Edição de Catálogo de Cursos')
+			.should('be.visible')
+
+		// Verificar se os dados foram salvos corretamente
+		cy.get('#event_name')
+			.should('have.value', conteudo.nome)
+
+		cy.get('#date_start')
+			.should('have.value', '')
+
+		cy.get('#time_start')
+			.should('have.value', '')
+
+		cy.get('#date_end')
+			.should('have.value', '')
+
+		cy.get('#time_end')
+			.should('have.value', '')
+
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+			const doc = $iframe.contents()
+		  
+			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
+				cy.wrap($body).should('have.text', `${conteudo.descricao} do catálogo nome: ${conteudo.nome}`)
+			})
+		})
+
+		cy.get('#event_event_type_id')
+			.find('option:selected')
+			.contains('Treinamento')
+
+		cy.get('#event_mode')
+			.find('option:selected')
+			.contains('Online')
+
+		cy.get('#event_synchronism')
+			.find('option:selected')
+			.contains('Gravado')
+
+		cy.get('#event_outlet')
+			.find('option:selected')
+			.should('have.value', '')
+
+		cy.get('#event_workload')
+			.should('have.value', '0')
+
+		cy.get('#event_class_number')
+			.should('have.value', '')
+
+		cy.get('#event_days_to_expire')
+			.should('have.value', '0')
+
+		cy.get('#update_inscriptions')
+			.should('not.be.checked')
+
+		cy.get('#event_place')
+			.should('have.value', '')
+
+		cy.get('#event_zip_code')
+			.should('have.value', '')
+
+		cy.get('#event_address')
+			.should('have.value', '')
+
+		cy.get('#event_address2')
+			.should('have.value', '')
+
+		cy.get('#event_city')
+			.should('have.value', '')
+
+		cy.get('#event_state')
+			.should('have.value', '')
+		
+		cy.get('#event_country')
+			.should('have.value', '')
+
+		cy.get('#event_email')
+			.should('have.value', 'karla.oliveira@twygo.com')
+		
+		cy.get('#event_website')
+			.should('have.value', '')
+
+		cy.get('#event_sent_mail_owner')
+			.should('not.be.checked')
+
+		cy.get('#event_contact_label')
+			.should('have.value', '')
+
+		cy.get('#event_hashtag')
+			.should('have.value', '')
+
+		cy.get("input.form-control.as-input[name='event[category_extra]']")
+			.should('have.value', '')
+		
+		cy.get('#remove_banner')
+			.should('not.be.checked')
+
+		cy.get('div.col-md-6.col-lg-4')
+			.contains('Permitir envio de anexos na inscrição?')
+			.parents('.col-md-6.col-lg-4')
+			.find('label:contains("Desabilitado")')
+			.invoke('attr', 'for')
+			.then((id) => {
+			  	cy.get(`input#${id}`).should('be.checked')
+			})
+
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+			const doc = $iframe.contents()
+		
+			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contentEditable => {
+				expect(contentEditable).to.eq('false')
+			})
+		})
+
+		cy.get('#event_inscription_access')
+			.find('option:selected')
+			.contains('Inscritos')
+
+		cy.get('#event_situation')
+			.find('option:selected')
+			.contains('Em desenvolvimento')
+
+		cy.get('#event_end_class')
+			.find('option:selected')
+			.contains('Não')
+
+		cy.get('#event_notify_users')
+			.find('option:selected')
+			.contains('Não')
+
+		cy.get('#event_trial_days')
+			.should('have.value', '0')
+
+		cy.get('#event_enable_trial_days')
+			.should('not.be.checked')
+
+		cy.get('div.col-md-6.col-lg-4')
+			.contains('Exigir confirmação de inscrição pelo Organizador?')
+			.parents('.col-md-6.col-lg-4')
+			.find('label:contains("Habilitado")')
+			.invoke('attr', 'for')
+			.then((id) => {
+			  	cy.get(`input#${id}`).should('be.checked')
+			})
+
+		cy.get('#event_subscription_value')
+			.should('have.value', '0,00')
+
+		cy.get('#event_payment_enabled')
+			.should('not.be.checked')
+
+		cy.get('#event_installments_number')
+			.should('have.value', '1')
+
+		cy.get('#event_addition')
+			.should('have.value', '0.0')
 	})
 
-	it('deve criar um catalogo liberado, com anexo, com pagamento, sem acrescimo, com confirmação, com visualização para inscritos', () => {
+	it.only('CRUD catalogo liberado, com anexo, com pagamento, sem acrescimo, com confirmação, com visualização para inscritos', () => {
 		// Massa de dados para criação do catálogo
 		const conteudo = {
 			nome: faker.commerce.productName(),
-			data_inicio: '29032024',
+			data_inicio: '29/03/2024',
 			hora_inicio: '01:00',
-			data_fim: '29042024',
+			data_fim: '29/04/2024',
 			hora_fim: '23:00',
 			descricao: faker.commerce.productDescription(),
-			tipo: 'Congresso', //Lista de opções: Congresso, Feira, Outros, Palestra, Treinamento, Webinar
-			modalidade: 'Presencial', //Lista de opções: Online, Presencial
-			sincronismo: 'Ao vivo', //Lista de opções: Ao vivo, Gravado
-			canal: 'Outros', //Lista de opções: Em companhia, Aberto, Outros
+			tipo: 'Congresso',
+			modalidade: 'Presencial',
+			sincronismo: 'Ao vivo',
+			canal: 'Outros',
 			carga_horaria: faker.number.int({ min: 1, max: 9 }),
 			numero_turma: faker.number.int({ min: 1, max: 9 }),
 			vigencia: faker.number.int({ min: 1, max: 9 }),
@@ -141,10 +310,10 @@ describe('catalogo', () => {
 
 		// !!! PRÉ-CONDIÇÃO !!!
 		// Realizar o login
-		cy.visit('https://automacao-karla.stage.twygoead.com')
+		cy.visit('https://automacao-karla.twygoead.com')
 
 		cy.get('#user_email')
-			.type('karladaiany@automacao.com')
+			.type('karla.oliveira@twygo.com')
 		
 		cy.get('#user_password')
 			.type('aut123')
@@ -173,7 +342,7 @@ describe('catalogo', () => {
 			.click()
 
 		// Acessar a página de catálogo de conteúdos
-		cy.visit('https://automacao-karla.stage.twygoead.com/o/37434/events/?tab=itens-portfolio')
+		cy.visit('https://automacao-karla.twygoead.com/o/21654/events/?tab=itens-portfolio')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
 			.should('be.visible')
@@ -192,8 +361,7 @@ describe('catalogo', () => {
 			.type(conteudo.nome)
 
 		cy.get('#date_start')
-			.type(conteudo.data_inicio)
-			
+			.type(conteudo.data_inicio)			
 
 		cy.get('#time_start')
 			.type(conteudo.hora_inicio)
@@ -347,6 +515,174 @@ describe('catalogo', () => {
 		cy.get(`tr.event-row[name='${conteudo.nome}']`)
 			.should('be.visible')
 			.should('have.length', 1)
+
+		// READ
+		// Aguardar 4s para garantir que o catálogo foi criado
+		cy.wait(4000)
+
+		// Clicar no botão de editar do catálogo para validar dados salvos
+		cy.get(`tr.event-row[name='${conteudo.nome}']`)
+			.find('a[title="Editar"]')
+			.click()
+		
+		cy.wait(2000)
+
+		cy.contains('.detail_title', 'Edição de Catálogo de Cursos')
+			.should('be.visible')
+
+		// Verificar se os dados foram salvos corretamente
+		cy.get('#event_name')
+			.should('have.value', conteudo.nome)
+
+		cy.get('#date_start')
+			.should('have.value', conteudo.data_inicio)
+
+		cy.get('#time_start')
+			.should('have.value', conteudo.hora_inicio)
+
+		cy.get('#date_end')
+			.should('have.value', conteudo.data_fim)
+
+		cy.get('#time_end')
+			.should('have.value', conteudo.hora_fim)
+
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+			const doc = $iframe.contents()
+		  
+			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
+				cy.wrap($body).should('have.text', `${conteudo.descricao} do catálogo nome: ${conteudo.nome}`)
+			})
+		})
+
+		cy.get('#event_event_type_id')
+			.find('option:selected')
+			.contains('Congresso')
+
+		cy.get('#event_mode')
+			.find('option:selected')
+			.contains('Presencial')
+
+		cy.get('#event_synchronism')
+			.find('option:selected')
+			.contains('Ao vivo')
+
+		cy.get('#event_outlet')
+			.find('option:selected')
+			.should('have.value', 'Outros')
+
+		cy.get('#event_workload')
+			.should('have.value', conteudo.carga_horaria)
+
+		cy.get('#event_class_number')
+			.should('have.value', conteudo.numero_turma)
+
+		cy.get('#event_days_to_expire')
+			.should('have.value', conteudo.vigencia)
+
+		cy.get('#update_inscriptions')
+			.should('not.be.checked')
+
+		cy.get('#event_place')
+			.should('have.value', conteudo.local)
+
+		cy.get('#event_zip_code')
+			.should('have.value', conteudo.cep)
+
+		cy.get('#event_address')
+			.should('have.value', conteudo.endereco)
+
+		cy.get('#event_address2')
+			.should('have.value', conteudo.complemento)
+
+		cy.get('#event_city')
+			.should('have.value', conteudo.cidade)
+
+		cy.get('#event_state')
+			.should('have.value', conteudo.estado)
+		
+		cy.get('#event_country')
+			.should('have.value', conteudo.pais)
+
+		cy.get('#event_email')
+			.should('have.value', conteudo.email_responsavel)
+		
+		cy.get('#event_website')
+			.should('have.value', conteudo.site)
+
+		cy.get('#event_sent_mail_owner')
+			.should('be.checked')
+
+		cy.get('#event_contact_label')
+			.should('have.value', conteudo.rotulo_contato)
+
+		cy.get('#event_hashtag')
+			.should('have.value', conteudo.hashtag)
+
+		cy.get("input.form-control.as-input[name='event[category_extra]']")
+			.should('have.value', `${conteudo.categoria.cat1},${conteudo.categoria.cat2}`)
+		
+		cy.get('#remove_banner')
+			.should('not.be.checked')
+
+		cy.get('div.col-md-6.col-lg-4')
+			.contains('Permitir envio de anexos na inscrição?')
+			.parents('.col-md-6.col-lg-4')
+			.find(`label:contains("${conteudo.permite_anexo}")`)
+			.invoke('attr', 'for')
+			.then((id) => {
+			  	cy.get(`input#${id}`).should('be.checked')
+			})
+
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+			const doc = $iframe.contents()
+		
+			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
+				cy.wrap($body).should('have.text', `${conteudo.mensagem_anexo} ${conteudo.nome}`)
+			})
+		})
+
+		cy.get('#event_inscription_access')
+			.find('option:selected')
+			.contains(conteudo.visualizacao)
+
+		cy.get('#event_situation')
+			.find('option:selected')
+			.contains(conteudo.situacao)
+
+		cy.get('#event_end_class')
+			.find('option:selected')
+			.contains(conteudo.notif_concluir_primeira_aula)
+
+		cy.get('#event_notify_users')
+			.find('option:selected')
+			.contains('Não')
+
+		cy.get('#event_trial_days')
+			.should('have.value', conteudo.dias_teste)
+
+		cy.get('#event_enable_trial_days')
+			.should('be.checked')
+
+		cy.get('div.col-md-6.col-lg-4')
+			.contains('Exigir confirmação de inscrição pelo Organizador?')
+			.parents('.col-md-6.col-lg-4')
+			.find(`label:contains("${conteudo.exige_confirmacao}")`)
+			.invoke('attr', 'for')
+			.then((id) => {
+			  	cy.get(`input#${id}`).should('be.checked')
+			})
+
+		cy.get('#event_subscription_value')
+			.should('have.value', conteudo.valor_inscricao)
+
+		cy.get('#event_payment_enabled')
+			.should('be.checked')
+
+		cy.get('#event_installments_number')
+			.should('have.value', conteudo.numero_parcelas)
+
+		cy.get('#event_addition')
+			.should('have.value', '0.0')
 	})
 
 	it('deve criar um catalogo liberado, com anexo, com pagamento, c/acrescimo, sem confirmação, com visualização para público', () => {
@@ -389,10 +725,10 @@ describe('catalogo', () => {
 
 		// !!! PRÉ-CONDIÇÃO !!!
 		// Realizar o login
-		cy.visit('https://automacao-karla.stage.twygoead.com')
+		cy.visit('https://automacao-karla.twygoead.com')
 
 		cy.get('#user_email')
-			.type('karladaiany@automacao.com')
+			.type('karla.oliveira@twygo.com')
 		
 		cy.get('#user_password')
 			.type('aut123')
@@ -421,7 +757,7 @@ describe('catalogo', () => {
 			.click()
 
 		// Acessar a página de catálogo de conteúdos
-		cy.visit('https://automacao-karla.stage.twygoead.com/o/37434/events/?tab=itens-portfolio')
+		cy.visit('https://automacao-karla.twygoead.com/o/21654/events/?tab=itens-portfolio')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
 			.should('be.visible')
@@ -628,10 +964,10 @@ describe('catalogo', () => {
 
 		// !!! PRÉ-CONDIÇÃO !!!
 		// Realizar o login
-		cy.visit('https://automacao-karla.stage.twygoead.com')
+		cy.visit('https://automacao-karla.twygoead.com')
 
 		cy.get('#user_email')
-			.type('karladaiany@automacao.com')
+			.type('karla.oliveira@twygo.com')
 		
 		cy.get('#user_password')
 			.type('aut123')
@@ -660,7 +996,7 @@ describe('catalogo', () => {
 			.click()
 
 		// Acessar a página de catálogo de conteúdos
-		cy.visit('https://automacao-karla.stage.twygoead.com/o/37434/events/?tab=itens-portfolio')
+		cy.visit('https://automacao-karla.twygoead.com/o/21654/events/?tab=itens-portfolio')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
 			.should('be.visible')
@@ -811,10 +1147,10 @@ describe('catalogo', () => {
 
 		// !!! PRÉ-CONDIÇÃO !!!
 		// Realizar o login
-		cy.visit('https://automacao-karla.stage.twygoead.com')
+		cy.visit('https://automacao-karla.twygoead.com')
 
 		cy.get('#user_email')
-			.type('karladaiany@automacao.com')
+			.type('karla.oliveira@twygo.com')
 		
 		cy.get('#user_password')
 			.type('aut123')
@@ -843,7 +1179,7 @@ describe('catalogo', () => {
 			.click()
 
 		// Acessar a página de catálogo de conteúdos
-		cy.visit('https://automacao-karla.stage.twygoead.com/o/37434/events/?tab=itens-portfolio')
+		cy.visit('https://automacao-karla.twygoead.com/o/21654/events/?tab=itens-portfolio')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
 			.should('be.visible')
@@ -967,10 +1303,10 @@ describe('catalogo', () => {
 
 		// !!! PRÉ-CONDIÇÃO !!!
 		// Realizar o login
-		cy.visit('https://automacao-karla.stage.twygoead.com')
+		cy.visit('https://automacao-karla.twygoead.com')
 
 		cy.get('#user_email')
-			.type('karladaiany@automacao.com')
+			.type('karla.oliveira@twygo.com')
 		
 		cy.get('#user_password')
 			.type('aut123')
@@ -999,7 +1335,7 @@ describe('catalogo', () => {
 			.click()
 
 		// Acessar a página de catálogo de conteúdos
-		cy.visit('https://automacao-karla.stage.twygoead.com/o/37434/events/?tab=itens-portfolio')
+		cy.visit('https://automacao-karla.twygoead.com/o/21654/events/?tab=itens-portfolio')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
 			.should('be.visible')
@@ -1123,10 +1459,10 @@ describe('catalogo', () => {
 
 		// !!! PRÉ-CONDIÇÃO !!!
 		// Realizar o login
-		cy.visit('https://automacao-karla.stage.twygoead.com')
+		cy.visit('https://automacao-karla.twygoead.com')
 
 		cy.get('#user_email')
-			.type('karladaiany@automacao.com')
+			.type('karla.oliveira@twygo.com')
 		
 		cy.get('#user_password')
 			.type('aut123')
@@ -1155,7 +1491,7 @@ describe('catalogo', () => {
 			.click()
 
 		// Acessar a página de catálogo de conteúdos
-		cy.visit('https://automacao-karla.stage.twygoead.com/o/37434/events/?tab=itens-portfolio')
+		cy.visit('https://automacao-karla.twygoead.com/o/21654/events/?tab=itens-portfolio')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
 			.should('be.visible')
