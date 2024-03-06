@@ -16,7 +16,7 @@ describe('catalogo', () => {
 		Cypress.removeAllListeners('uncaught:exception')
 	})
 	
-	it('CRUD catalogo com dados default', () => {
+	it('1-CRUD catalogo com dados default', () => {
 		// Massa de dados para criação do catálogo
 		const conteudo = {
 			nome: faker.commerce.productName(),
@@ -266,7 +266,7 @@ describe('catalogo', () => {
 			.should('have.value', '0.0')
 	})
 
-	it.only('CRUD catalogo liberado, com anexo, com pagamento, sem acrescimo, com confirmação, com visualização para inscritos', () => {
+	it('2-CRUD catalogo liberado, com anexo, com pagamento, sem acrescimo, com confirmação, com visualização para inscritos', () => {
 		// Massa de dados para criação do catálogo
 		const conteudo = {
 			nome: faker.commerce.productName(),
@@ -348,6 +348,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 
 		// !!! INÍCIO DO TESTE !!!
+		// CREATE
 		// Clicar no botão de adicionar novo catálogo
 		cy.contains('button', 'Adicionar')
 			.should('be.visible')
@@ -393,12 +394,14 @@ describe('catalogo', () => {
 			.select(conteudo.canal)  
 
 		cy.get('#event_workload')
+			.clear()
 			.type(conteudo.carga_horaria)
 
 		cy.get('#event_class_number')
 			.type(conteudo.numero_turma)
 
 		cy.get('#event_days_to_expire')
+			.clear()
 			.type(conteudo.vigencia)
 
 		cy.get('#event_place')
@@ -492,6 +495,7 @@ describe('catalogo', () => {
 			  cy.get(`input#${id}`).click()
 			})
 
+		conteudo.valor_inscricao = conteudo.valor_inscricao.replace('.', ',')
 		cy.get('#event_subscription_value')
 			.clear()
 			.type(conteudo.valor_inscricao)
@@ -556,19 +560,19 @@ describe('catalogo', () => {
 
 		cy.get('#event_event_type_id')
 			.find('option:selected')
-			.contains('Congresso')
+			.contains(conteudo.tipo)
 
 		cy.get('#event_mode')
 			.find('option:selected')
-			.contains('Presencial')
+			.contains(conteudo.modalidade)
 
 		cy.get('#event_synchronism')
 			.find('option:selected')
-			.contains('Ao vivo')
+			.contains(conteudo.sincronismo)
 
 		cy.get('#event_outlet')
 			.find('option:selected')
-			.should('have.value', 'Outros')
+			.should('have.text', conteudo.canal)
 
 		cy.get('#event_workload')
 			.should('have.value', conteudo.carga_horaria)
@@ -618,8 +622,17 @@ describe('catalogo', () => {
 		cy.get('#event_hashtag')
 			.should('have.value', conteudo.hashtag)
 
-		cy.get("input.form-control.as-input[name='event[category_extra]']")
-			.should('have.value', `${conteudo.categoria.cat1},${conteudo.categoria.cat2}`)
+		let categoriasEncontradas = []
+		cy.get('li.as-selection-item.blur').each(($el) => {
+			const text = $el.text().trim().replace('×', '').trim()
+			categoriasEncontradas.push(text)
+			})
+		
+		cy.get('li.as-selection-item.blur').then(() => {
+			const categoriasEsperadas = [conteudo.categoria.cat1, conteudo.categoria.cat2].sort()
+			categoriasEncontradas.sort()
+			expect(categoriasEncontradas).to.deep.eq(categoriasEsperadas)
+		})
 		
 		cy.get('#remove_banner')
 			.should('not.be.checked')
@@ -685,13 +698,13 @@ describe('catalogo', () => {
 			.should('have.value', '0.0')
 	})
 
-	it('deve criar um catalogo liberado, com anexo, com pagamento, c/acrescimo, sem confirmação, com visualização para público', () => {
+	it('3-CRUD catalogo liberado, com anexo, com pagamento, c/acrescimo, sem confirmação, com visualização para público', () => {
 		// Massa de dados para criação do catálogo
 		const conteudo = {
 			nome: faker.commerce.productName(),
-			data_inicio: '29012023',
+			data_inicio: '29/01/2023',
 			hora_inicio: '01:00',
-			data_fim: '29012024',
+			data_fim: '29/01/2024',
 			hora_fim: '23:00',
 			descricao: faker.commerce.productDescription(),
 			tipo: 'Feira', //Lista de opções: Congresso, Feira, Outros, Palestra, Treinamento, Webinar
@@ -720,7 +733,7 @@ describe('catalogo', () => {
 			exige_confirmacao: 'Desabilitado',
 			valor_inscricao: faker.commerce.price({ min: 10, max: 99 }),
 			numero_parcelas: faker.number.int({ min: 10, max: 12 }),
-			acrescimo: faker.commerce.price({ min: 1, max: 9 })
+			acrescimo: faker.commerce.price({ min: 1, max: 9, dec: 1 })
 		}
 
 		// !!! PRÉ-CONDIÇÃO !!!
@@ -763,6 +776,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 
 		// !!! INÍCIO DO TESTE !!!
+		// CREATE
 		// Clicar no botão de adicionar novo catálogo
 		cy.contains('button', 'Adicionar')
 			.should('be.visible')
@@ -809,12 +823,14 @@ describe('catalogo', () => {
 			.select(conteudo.canal)  
 
 		cy.get('#event_workload')
+			.clear()
 			.type(conteudo.carga_horaria)
 
 		cy.get('#event_class_number')
 			.type(conteudo.numero_turma)
 
 		cy.get('#event_days_to_expire')
+			.clear()
 			.type(conteudo.vigencia)
 
 		cy.get('#event_place')
@@ -886,7 +902,8 @@ describe('catalogo', () => {
 			.then((id) => {
 				cy.get(`input#${id}`).click()
 			})
-
+		
+		conteudo.valor_inscricao = conteudo.valor_inscricao.replace('.', ',')
 		cy.get('#event_subscription_value')
 			.clear()
 			.type(conteudo.valor_inscricao)
@@ -914,9 +931,186 @@ describe('catalogo', () => {
 		cy.get(`tr.event-row[name='${conteudo.nome}']`)
 			.should('be.visible')
 			.should('have.length', 1)
+
+		// READ
+		// Aguardar 4s para garantir que o catálogo foi criado
+		cy.wait(4000)
+
+		// Clicar no botão de editar do catálogo para validar dados salvos
+		cy.get(`tr.event-row[name='${conteudo.nome}']`)
+			.find('a[title="Editar"]')
+			.click()
+		
+		cy.wait(2000)
+
+		cy.contains('.detail_title', 'Edição de Catálogo de Cursos')
+			.should('be.visible')
+
+		// Verificar se os dados foram salvos corretamente
+		cy.get('#event_name')
+			.should('have.value', conteudo.nome)
+
+		cy.get('#date_start')
+			.should('have.value', conteudo.data_inicio)
+
+		cy.get('#time_start')
+			.should('have.value', conteudo.hora_inicio)
+
+		cy.get('#date_end')
+			.should('have.value', conteudo.data_fim)
+
+		cy.get('#time_end')
+			.should('have.value', conteudo.hora_fim)
+
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+			const doc = $iframe.contents()
+		  
+			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
+				cy.wrap($body).should('have.text', `${conteudo.descricao} do catálogo nome: ${conteudo.nome}`)
+			})
+		})
+
+		cy.get('#event_event_type_id')
+			.find('option:selected')
+			.contains(conteudo.tipo)
+
+		cy.get('#event_mode')
+			.find('option:selected')
+			.contains(conteudo.modalidade)
+
+		cy.get('#event_synchronism')
+			.find('option:selected')
+			.contains(conteudo.sincronismo)
+
+		cy.get('#event_outlet')
+			.find('option:selected')
+			.should('have.text', conteudo.canal)
+
+		cy.get('#event_workload')
+			.should('have.value', conteudo.carga_horaria)
+
+		cy.get('#event_class_number')
+			.should('have.value', conteudo.numero_turma)
+
+		cy.get('#event_days_to_expire')
+			.should('have.value', conteudo.vigencia)
+
+		cy.get('#update_inscriptions')
+			.should('not.be.checked')
+
+		cy.get('#event_place')
+			.should('have.value', conteudo.local)
+
+		cy.get('#event_zip_code')
+			.should('have.value', '')
+
+		cy.get('#event_address')
+			.should('have.value', '')
+
+		cy.get('#event_address2')
+			.should('have.value', '')
+
+		cy.get('#event_city')
+			.should('have.value', '')
+
+		cy.get('#event_state')
+			.should('have.value', '')
+		
+		cy.get('#event_country')
+			.should('have.value', '')
+
+		cy.get('#event_email')
+			.should('have.value', conteudo.email_responsavel)
+		
+		cy.get('#event_website')
+			.should('have.value', conteudo.site)
+
+		cy.get('#event_sent_mail_owner')
+			.should('not.be.checked')
+
+		cy.get('#event_contact_label')
+			.should('have.value', conteudo.rotulo_contato)
+
+		cy.get('#event_hashtag')
+			.should('have.value', conteudo.hashtag)
+
+		let categoriasEncontradas = []
+		cy.get('li.as-selection-item.blur').each(($el) => {
+			const text = $el.text().trim().replace('×', '').trim()
+			categoriasEncontradas.push(text)
+			})
+		
+		cy.get('li.as-selection-item.blur').then(() => {
+			const categoriasEsperadas = [conteudo.categoria.cat1, conteudo.categoria.cat2, conteudo.categoria.cat3].sort()
+			categoriasEncontradas.sort()
+			expect(categoriasEncontradas).to.deep.eq(categoriasEsperadas)
+		})
+		
+		cy.get('#remove_banner')
+			.should('not.be.checked')
+
+		cy.get('div.col-md-6.col-lg-4')
+			.contains('Permitir envio de anexos na inscrição?')
+			.parents('.col-md-6.col-lg-4')
+			.find(`label:contains("${conteudo.permite_anexo}")`)
+			.invoke('attr', 'for')
+			.then((id) => {
+			  	cy.get(`input#${id}`).should('be.checked')
+			})
+
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+			const doc = $iframe.contents()
+		
+			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
+				cy.wrap($body).should('have.text', '')
+			})
+		})
+
+		cy.get('#event_inscription_access')
+			.find('option:selected')
+			.contains(conteudo.visualizacao)
+
+		cy.get('#event_situation')
+			.find('option:selected')
+			.contains(conteudo.situacao)
+
+		cy.get('#event_end_class')
+			.find('option:selected')
+			.contains(conteudo.notif_concluir_primeira_aula)
+
+		cy.get('#event_notify_users')
+			.find('option:selected')
+			.contains(conteudo.notificar_usuarios)
+
+		cy.get('#event_trial_days')
+			.should('have.value', conteudo.dias_teste)
+
+		cy.get('#event_enable_trial_days')
+			.should('be.checked')
+
+		cy.get('div.col-md-6.col-lg-4')
+			.contains('Exigir confirmação de inscrição pelo Organizador?')
+			.parents('.col-md-6.col-lg-4')
+			.find(`label:contains("${conteudo.exige_confirmacao}")`)
+			.invoke('attr', 'for')
+			.then((id) => {
+			  	cy.get(`input#${id}`).should('be.checked')
+			})
+
+		cy.get('#event_subscription_value')
+			.should('have.value', conteudo.valor_inscricao)
+
+		cy.get('#event_payment_enabled')
+			.should('be.checked')
+
+		cy.get('#event_installments_number')
+			.should('have.value', conteudo.numero_parcelas)
+
+		cy.get('#event_addition')
+			.should('have.value', conteudo.acrescimo)
 	})
 
-	it('deve criar um catalogo suspenso, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
+	it('4-CRUD catalogo suspenso, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
 		// Cria um novo objeto Date para a data atual
 		let dataAtual = new Date()
 
@@ -930,7 +1124,7 @@ describe('catalogo', () => {
 		mes = mes < 10 ? '0' + mes : mes.toString()
 
 		// Concatena as strings de ano, mês e dia
-		let dataFormatada = dia + mes + ano
+		let dataFormatada = `${dia}/${mes}/${ano}`
 
 		// Massa de dados para criação do catálogo
 		const conteudo = {
@@ -1002,6 +1196,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 
 		// !!! INÍCIO DO TESTE !!!
+		// CREATE
 		// Clicar no botão de adicionar novo catálogo
 		cy.contains('button', 'Adicionar')
 			.should('be.visible')
@@ -1048,12 +1243,14 @@ describe('catalogo', () => {
 			.select(conteudo.canal)  
 
 		cy.get('#event_workload')
+			.clear()
 			.type(conteudo.carga_horaria)
 
 		cy.get('#event_class_number')
 			.type(conteudo.numero_turma)
 
 		cy.get('#event_days_to_expire')
+			.clear()
 			.type(conteudo.vigencia)
 
 		cy.get('#event_place')
@@ -1117,9 +1314,186 @@ describe('catalogo', () => {
 		cy.get(`tr.event-row[name='${conteudo.nome}']`)
 			.should('be.visible')
 			.should('have.length', 1)
+
+		// READ
+		// Aguardar 4s para garantir que o catálogo foi criado
+		cy.wait(4000)
+
+		// Clicar no botão de editar do catálogo para validar dados salvos
+		cy.get(`tr.event-row[name='${conteudo.nome}']`)
+			.find('a[title="Editar"]')
+			.click()
+		
+		cy.wait(2000)
+
+		cy.contains('.detail_title', 'Edição de Catálogo de Cursos')
+			.should('be.visible')
+
+		// Verificar se os dados foram salvos corretamente
+		cy.get('#event_name')
+			.should('have.value', conteudo.nome)
+
+		cy.get('#date_start')
+			.should('have.value', conteudo.data_inicio)
+
+		cy.get('#time_start')
+			.should('have.value', conteudo.hora_inicio)
+
+		cy.get('#date_end')
+			.should('have.value', conteudo.data_fim)
+
+		cy.get('#time_end')
+			.should('have.value', conteudo.hora_fim)
+
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+			const doc = $iframe.contents()
+		  
+			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
+				cy.wrap($body).should('have.text', `${conteudo.descricao} do catálogo nome: ${conteudo.nome}`)
+			})
+		})
+
+		cy.get('#event_event_type_id')
+			.find('option:selected')
+			.contains(conteudo.tipo)
+
+		cy.get('#event_mode')
+			.find('option:selected')
+			.contains(conteudo.modalidade)
+
+		cy.get('#event_synchronism')
+			.find('option:selected')
+			.contains(conteudo.sincronismo)
+
+		cy.get('#event_outlet')
+			.find('option:selected')
+			.should('have.text', conteudo.canal)
+
+		cy.get('#event_workload')
+			.should('have.value', conteudo.carga_horaria)
+
+		cy.get('#event_class_number')
+			.should('have.value', conteudo.numero_turma)
+
+		cy.get('#event_days_to_expire')
+			.should('have.value', conteudo.vigencia)
+
+		cy.get('#update_inscriptions')
+			.should('not.be.checked')
+
+		cy.get('#event_place')
+			.should('have.value', conteudo.local)
+
+		cy.get('#event_zip_code')
+			.should('have.value', '')
+
+		cy.get('#event_address')
+			.should('have.value', '')
+
+		cy.get('#event_address2')
+			.should('have.value', '')
+
+		cy.get('#event_city')
+			.should('have.value', '')
+
+		cy.get('#event_state')
+			.should('have.value', '')
+		
+		cy.get('#event_country')
+			.should('have.value', '')
+
+		cy.get('#event_email')
+			.should('have.value', conteudo.email_responsavel)
+		
+		cy.get('#event_website')
+			.should('have.value', conteudo.site)
+
+		cy.get('#event_sent_mail_owner')
+			.should('not.be.checked')
+
+		cy.get('#event_contact_label')
+			.should('have.value', '')
+
+		cy.get('#event_hashtag')
+			.should('have.value', conteudo.hashtag)
+
+		let categoriasEncontradas = []
+		cy.get('li.as-selection-item.blur').each(($el) => {
+			const text = $el.text().trim().replace('×', '').trim()
+			categoriasEncontradas.push(text)
+			})
+		
+		cy.get('li.as-selection-item.blur').then(() => {
+			const categoriasEsperadas = [conteudo.categoria.cat1].sort()
+			categoriasEncontradas.sort()
+			expect(categoriasEncontradas).to.deep.eq(categoriasEsperadas)
+		})
+		
+		cy.get('#remove_banner')
+			.should('not.be.checked')
+
+		cy.get('div.col-md-6.col-lg-4')
+			.contains('Permitir envio de anexos na inscrição?')
+			.parents('.col-md-6.col-lg-4')
+			.find(`label:contains("${conteudo.permite_anexo}")`)
+			.invoke('attr', 'for')
+			.then((id) => {
+			  	cy.get(`input#${id}`).should('be.checked')
+			})
+
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		 	const doc = $iframe.contents()
+		
+		 	cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
+		 		expect(contenteditable).to.eq('false')
+		 	})
+		})
+
+		cy.get('#event_inscription_access')
+			.find('option:selected')
+			.contains(conteudo.visualizacao)
+
+		cy.get('#event_situation')
+			.find('option:selected')
+			.contains(conteudo.situacao)
+
+		cy.get('#event_end_class')
+			.find('option:selected')
+			.contains(conteudo.notif_concluir_primeira_aula)
+
+		cy.get('#event_notify_users')
+			.find('option:selected')
+			.contains('Não')
+
+		cy.get('#event_trial_days')
+			.should('have.value', conteudo.dias_teste)
+
+		cy.get('#event_enable_trial_days')
+			.should('not.be.checked')
+
+		cy.get('div.col-md-6.col-lg-4')
+			.contains('Exigir confirmação de inscrição pelo Organizador?')
+			.parents('.col-md-6.col-lg-4')
+			.find(`label:contains("${conteudo.exige_confirmacao}")`)
+			.invoke('attr', 'for')
+			.then((id) => {
+			  	cy.get(`input#${id}`).should('be.checked')
+			})
+
+		cy.get('#event_subscription_value')
+			.should('have.value', '0,00')
+
+		cy.get('#event_payment_enabled')
+			.should('not.be.checked')
+
+		cy.get('#event_installments_number')
+			.should('have.value', '1')
+
+		cy.get('#event_addition')
+			.should('have.value', '0.0')
 	})
 
-	it('deve criar um catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
+	it('5-CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
 		// Massa de dados para criação do catálogo
 		const conteudo = {
 			nome: faker.commerce.productName(),
@@ -1185,6 +1559,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 
 		// !!! INÍCIO DO TESTE !!!
+		// CREATE
 		// Clicar no botão de adicionar novo catálogo
 		cy.contains('button', 'Adicionar')
 			.should('be.visible')
@@ -1218,12 +1593,14 @@ describe('catalogo', () => {
 			.select(conteudo.canal)  
 
 		cy.get('#event_workload')
+			.clear()
 			.type(conteudo.carga_horaria)
 
 		cy.get('#event_class_number')
 			.type(conteudo.numero_turma)
 
 		cy.get('#event_days_to_expire')
+			.clear()
 			.type(conteudo.vigencia)
 
 		cy.get('#event_place')
@@ -1253,6 +1630,10 @@ describe('catalogo', () => {
 		cy.get('#event_end_class')
 			.select(conteudo.notif_concluir_primeira_aula)
 
+		cy.get('#event_trial_days')
+			.clear()
+			.type(conteudo.dias_teste)
+
 		cy.get('div.col-md-6.col-lg-4')
 			.contains('Exigir confirmação de inscrição pelo Organizador?')
 			.parents('.col-md-6.col-lg-4')
@@ -1274,9 +1655,186 @@ describe('catalogo', () => {
 		cy.get(`tr.event-row[name='${conteudo.nome}']`)
 			.should('be.visible')
 			.should('have.length', 1)
+
+		// READ
+		// Aguardar 4s para garantir que o catálogo foi criado
+		cy.wait(4000)
+
+		// Clicar no botão de editar do catálogo para validar dados salvos
+		cy.get(`tr.event-row[name='${conteudo.nome}']`)
+			.find('a[title="Editar"]')
+			.click()
+		
+		cy.wait(2000)
+
+		cy.contains('.detail_title', 'Edição de Catálogo de Cursos')
+			.should('be.visible')
+
+		// Verificar se os dados foram salvos corretamente
+		cy.get('#event_name')
+			.should('have.value', conteudo.nome)
+
+		cy.get('#date_start')
+			.should('have.value', '')
+
+		cy.get('#time_start')
+			.should('have.value', '')
+
+		cy.get('#date_end')
+			.should('have.value', '')
+
+		cy.get('#time_end')
+			.should('have.value', '')
+
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+			const doc = $iframe.contents()
+		  
+			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
+				cy.wrap($body).should('have.text', `${conteudo.descricao} do catálogo nome: ${conteudo.nome}`)
+			})
+		})
+
+		cy.get('#event_event_type_id')
+			.find('option:selected')
+			.contains(conteudo.tipo)
+
+		cy.get('#event_mode')
+			.find('option:selected')
+			.contains(conteudo.modalidade)
+
+		cy.get('#event_synchronism')
+			.find('option:selected')
+			.contains(conteudo.sincronismo)
+
+		cy.get('#event_outlet')
+			.find('option:selected')
+			.should('have.text', conteudo.canal)
+
+		cy.get('#event_workload')
+			.should('have.value', conteudo.carga_horaria)
+
+		cy.get('#event_class_number')
+			.should('have.value', conteudo.numero_turma)
+
+		cy.get('#event_days_to_expire')
+			.should('have.value', conteudo.vigencia)
+
+		cy.get('#update_inscriptions')
+			.should('not.be.checked')
+
+		cy.get('#event_place')
+			.should('have.value', conteudo.local)
+
+		cy.get('#event_zip_code')
+			.should('have.value', '')
+
+		cy.get('#event_address')
+			.should('have.value', '')
+
+		cy.get('#event_address2')
+			.should('have.value', '')
+
+		cy.get('#event_city')
+			.should('have.value', '')
+
+		cy.get('#event_state')
+			.should('have.value', '')
+		
+		cy.get('#event_country')
+			.should('have.value', '')
+
+		cy.get('#event_email')
+			.should('have.value', conteudo.email_responsavel)
+		
+		cy.get('#event_website')
+			.should('have.value', conteudo.site)
+
+		cy.get('#event_sent_mail_owner')
+			.should('not.be.checked')
+
+		cy.get('#event_contact_label')
+			.should('have.value', '')
+
+		cy.get('#event_hashtag')
+			.should('have.value', conteudo.hashtag)
+
+		let categoriasEncontradas = []
+		cy.get('li.as-selection-item.blur').each(($el) => {
+			const text = $el.text().trim().replace('×', '').trim()
+			categoriasEncontradas.push(text)
+			})
+		
+		cy.get('li.as-selection-item.blur').then(() => {
+			const categoriasEsperadas = [conteudo.categoria.cat1].sort()
+			categoriasEncontradas.sort()
+			expect(categoriasEncontradas).to.deep.eq(categoriasEsperadas)
+		})
+		
+		cy.get('#remove_banner')
+			.should('not.be.checked')
+
+		cy.get('div.col-md-6.col-lg-4')
+			.contains('Permitir envio de anexos na inscrição?')
+			.parents('.col-md-6.col-lg-4')
+			.find('label:contains("Desabilitado")')
+			.invoke('attr', 'for')
+			.then((id) => {
+			  	cy.get(`input#${id}`).should('be.checked')
+			})
+
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		 	const doc = $iframe.contents()
+		
+		 	cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
+		 		expect(contenteditable).to.eq('false')
+		 	})
+		})
+
+		cy.get('#event_inscription_access')
+			.find('option:selected')
+			.contains(conteudo.visualizacao)
+
+		cy.get('#event_situation')
+			.find('option:selected')
+			.contains(conteudo.situacao)
+
+		cy.get('#event_end_class')
+			.find('option:selected')
+			.contains(conteudo.notif_concluir_primeira_aula)
+
+		cy.get('#event_notify_users')
+			.find('option:selected')
+			.contains('Não')
+
+		cy.get('#event_trial_days')
+			.should('have.value', conteudo.dias_teste)
+
+		cy.get('#event_enable_trial_days')
+			.should('not.be.checked')
+
+		cy.get('div.col-md-6.col-lg-4')
+			.contains('Exigir confirmação de inscrição pelo Organizador?')
+			.parents('.col-md-6.col-lg-4')
+			.find(`label:contains("${conteudo.exige_confirmacao}")`)
+			.invoke('attr', 'for')
+			.then((id) => {
+			  	cy.get(`input#${id}`).should('be.checked')
+			})
+
+		cy.get('#event_subscription_value')
+			.should('have.value', '0,00')
+
+		cy.get('#event_payment_enabled')
+			.should('not.be.checked')
+
+		cy.get('#event_installments_number')
+			.should('have.value', '1')
+
+		cy.get('#event_addition')
+			.should('have.value', '0.0')
 	})
 
-	it('deve criar um catalogo liberado, sem anexo, sem pagamento, sem confirmação, com visualização para público', () => {
+	it('6-CRUD catalogo liberado, sem anexo, sem pagamento, sem confirmação, com visualização para público', () => {
 		// Massa de dados para criação do catálogo
 		const conteudo = {
 			nome: faker.commerce.productName(),
@@ -1341,6 +1899,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 
 		// !!! INÍCIO DO TESTE !!!
+		// CREATE
 		// Clicar no botão de adicionar novo catálogo
 		cy.contains('button', 'Adicionar')
 			.should('be.visible')
@@ -1374,12 +1933,14 @@ describe('catalogo', () => {
 			.select(conteudo.canal)  
 
 		cy.get('#event_workload')
+			.clear()
 			.type(conteudo.carga_horaria)
 
 		cy.get('#event_class_number')
 			.type(conteudo.numero_turma)
 
 		cy.get('#event_days_to_expire')
+			.clear()
 			.type(conteudo.vigencia)
 
 		cy.get('#event_place')
@@ -1430,9 +1991,186 @@ describe('catalogo', () => {
 		cy.get(`tr.event-row[name='${conteudo.nome}']`)
 			.should('be.visible')
 			.should('have.length', 1)
+
+		// READ
+		// Aguardar 4s para garantir que o catálogo foi criado
+		cy.wait(4000)
+
+		// Clicar no botão de editar do catálogo para validar dados salvos
+		cy.get(`tr.event-row[name='${conteudo.nome}']`)
+			.find('a[title="Editar"]')
+			.click()
+		
+		cy.wait(2000)
+
+		cy.contains('.detail_title', 'Edição de Catálogo de Cursos')
+			.should('be.visible')
+
+		// Verificar se os dados foram salvos corretamente
+		cy.get('#event_name')
+			.should('have.value', conteudo.nome)
+
+		cy.get('#date_start')
+			.should('have.value', '')
+
+		cy.get('#time_start')
+			.should('have.value', '')
+
+		cy.get('#date_end')
+			.should('have.value', '')
+
+		cy.get('#time_end')
+			.should('have.value', '')
+
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+			const doc = $iframe.contents()
+		  
+			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
+				cy.wrap($body).should('have.text', `${conteudo.descricao} do catálogo nome: ${conteudo.nome}`)
+			})
+		})
+
+		cy.get('#event_event_type_id')
+			.find('option:selected')
+			.contains(conteudo.tipo)
+
+		cy.get('#event_mode')
+			.find('option:selected')
+			.contains(conteudo.modalidade)
+
+		cy.get('#event_synchronism')
+			.find('option:selected')
+			.contains(conteudo.sincronismo)
+
+		cy.get('#event_outlet')
+			.find('option:selected')
+			.should('have.text', conteudo.canal)
+
+		cy.get('#event_workload')
+			.should('have.value', conteudo.carga_horaria)
+
+		cy.get('#event_class_number')
+			.should('have.value', conteudo.numero_turma)
+
+		cy.get('#event_days_to_expire')
+			.should('have.value', conteudo.vigencia)
+
+		cy.get('#update_inscriptions')
+			.should('not.be.checked')
+
+		cy.get('#event_place')
+			.should('have.value', conteudo.local)
+
+		cy.get('#event_zip_code')
+			.should('have.value', '')
+
+		cy.get('#event_address')
+			.should('have.value', '')
+
+		cy.get('#event_address2')
+			.should('have.value', '')
+
+		cy.get('#event_city')
+			.should('have.value', '')
+
+		cy.get('#event_state')
+			.should('have.value', '')
+		
+		cy.get('#event_country')
+			.should('have.value', '')
+
+		cy.get('#event_email')
+			.should('have.value', conteudo.email_responsavel)
+		
+		cy.get('#event_website')
+			.should('have.value', conteudo.site)
+
+		cy.get('#event_sent_mail_owner')
+			.should('not.be.checked')
+
+		cy.get('#event_contact_label')
+			.should('have.value', '')
+
+		cy.get('#event_hashtag')
+			.should('have.value', '')
+
+		let categoriasEncontradas = []
+		cy.get('li.as-selection-item.blur').each(($el) => {
+			const text = $el.text().trim().replace('×', '').trim()
+			categoriasEncontradas.push(text)
+			})
+		
+		cy.get('li.as-selection-item.blur').then(() => {
+			const categoriasEsperadas = [conteudo.categoria.cat1].sort()
+			categoriasEncontradas.sort()
+			expect(categoriasEncontradas).to.deep.eq(categoriasEsperadas)
+		})
+		
+		cy.get('#remove_banner')
+			.should('not.be.checked')
+
+		cy.get('div.col-md-6.col-lg-4')
+			.contains('Permitir envio de anexos na inscrição?')
+			.parents('.col-md-6.col-lg-4')
+			.find('label:contains("Desabilitado")')
+			.invoke('attr', 'for')
+			.then((id) => {
+			  	cy.get(`input#${id}`).should('be.checked')
+			})
+
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		 	const doc = $iframe.contents()
+		
+		 	cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
+		 		expect(contenteditable).to.eq('false')
+		 	})
+		})
+
+		cy.get('#event_inscription_access')
+			.find('option:selected')
+			.contains(conteudo.visualizacao)
+
+		cy.get('#event_situation')
+			.find('option:selected')
+			.contains(conteudo.situacao)
+
+		cy.get('#event_end_class')
+			.find('option:selected')
+			.contains(conteudo.notif_concluir_primeira_aula)
+
+		cy.get('#event_notify_users')
+			.find('option:selected')
+			.contains(conteudo.notificar_usuarios)
+
+		cy.get('#event_trial_days')
+			.should('have.value', '0')
+
+		cy.get('#event_enable_trial_days')
+			.should('not.be.checked')
+
+		cy.get('div.col-md-6.col-lg-4')
+			.contains('Exigir confirmação de inscrição pelo Organizador?')
+			.parents('.col-md-6.col-lg-4')
+			.find(`label:contains("${conteudo.exige_confirmacao}")`)
+			.invoke('attr', 'for')
+			.then((id) => {
+			  	cy.get(`input#${id}`).should('be.checked')
+			})
+
+		cy.get('#event_subscription_value')
+			.should('have.value', '0,00')
+
+		cy.get('#event_payment_enabled')
+			.should('not.be.checked')
+
+		cy.get('#event_installments_number')
+			.should('have.value', '1')
+
+		cy.get('#event_addition')
+			.should('have.value', '0.0')
 	})
 
-	it('deve criar um catalogo liberado, sem anexo, sem pagamento, com confirmação, com visualização para público', () => {
+	it('7-CRUD catalogo liberado, sem anexo, sem pagamento, com confirmação, com visualização para público', () => {
 		// Massa de dados para criação do catálogo
 		const conteudo = {
 			nome: faker.commerce.productName(),
@@ -1443,13 +2181,10 @@ describe('catalogo', () => {
 			canal: 'Aberto',
 			carga_horaria: faker.number.int({ min: 10000, max: 99999 }),
 			numero_turma: faker.number.int({ min: 10000, max: 99999 }),
-			vigencia: faker.number.int({ min: 10000, max: 99999 }),
-			local: 'Clube',
+			vigencia: '10000',
+			local: 'Twitch',
 			email_responsavel: faker.internet.email(),
 			site: faker.internet.url(),
-			categoria: { 
-				cat1: faker.hacker.noun()
-			},
 			visualizacao: 'Público',
 			situacao: 'Liberado',
 			notif_concluir_primeira_aula: 'Não',
@@ -1497,6 +2232,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 
 		// !!! INÍCIO DO TESTE !!!
+		// CREATE
 		// Clicar no botão de adicionar novo catálogo
 		cy.contains('button', 'Adicionar')
 			.should('be.visible')
@@ -1530,12 +2266,14 @@ describe('catalogo', () => {
 			.select(conteudo.canal)  
 
 		cy.get('#event_workload')
+			.clear()
 			.type(conteudo.carga_horaria)
 
 		cy.get('#event_class_number')
 			.type(conteudo.numero_turma)
 
 		cy.get('#event_days_to_expire')
+			.clear()
 			.type(conteudo.vigencia)
 
 		cy.get('#event_place')
@@ -1547,11 +2285,6 @@ describe('catalogo', () => {
 
 		cy.get('#event_website')
 			.type(conteudo.site)
-
-		cy.get("input.form-control.as-input[name='event[category_extra]']")
-			.type(conteudo.categoria.cat1)
-		
-		cy.realPress('Tab')
 
 		cy.get('#event_inscription_access')
 			.select(conteudo.visualizacao)
@@ -1586,5 +2319,173 @@ describe('catalogo', () => {
 		cy.get(`tr.event-row[name='${conteudo.nome}']`)
 			.should('be.visible')
 			.should('have.length', 1)
+
+		// READ
+		// Aguardar 4s para garantir que o catálogo foi criado
+		cy.wait(4000)
+
+		// Clicar no botão de editar do catálogo para validar dados salvos
+		cy.get(`tr.event-row[name='${conteudo.nome}']`)
+			.find('a[title="Editar"]')
+			.click()
+		
+		cy.wait(2000)
+
+		cy.contains('.detail_title', 'Edição de Catálogo de Cursos')
+			.should('be.visible')
+
+		// Verificar se os dados foram salvos corretamente
+		cy.get('#event_name')
+			.should('have.value', conteudo.nome)
+
+		cy.get('#date_start')
+			.should('have.value', '')
+
+		cy.get('#time_start')
+			.should('have.value', '')
+
+		cy.get('#date_end')
+			.should('have.value', '')
+
+		cy.get('#time_end')
+			.should('have.value', '')
+
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+			const doc = $iframe.contents()
+		  
+			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
+				cy.wrap($body).should('have.text', `${conteudo.descricao} do catálogo nome: ${conteudo.nome}`)
+			})
+		})
+
+		cy.get('#event_event_type_id')
+			.find('option:selected')
+			.contains(conteudo.tipo)
+
+		cy.get('#event_mode')
+			.find('option:selected')
+			.contains(conteudo.modalidade)
+
+		cy.get('#event_synchronism')
+			.find('option:selected')
+			.contains(conteudo.sincronismo)
+
+		cy.get('#event_outlet')
+			.find('option:selected')
+			.should('have.text', conteudo.canal)
+
+		cy.get('#event_workload')
+			.should('have.value', conteudo.carga_horaria)
+
+		cy.get('#event_class_number')
+			.should('have.value', conteudo.numero_turma)
+
+		cy.get('#event_days_to_expire')
+			.should('have.value', conteudo.vigencia)
+
+		cy.get('#update_inscriptions')
+			.should('not.be.checked')
+
+		cy.get('#event_place')
+			.should('have.value', conteudo.local)
+
+		cy.get('#event_zip_code')
+			.should('have.value', '')
+
+		cy.get('#event_address')
+			.should('have.value', '')
+
+		cy.get('#event_address2')
+			.should('have.value', '')
+
+		cy.get('#event_city')
+			.should('have.value', '')
+
+		cy.get('#event_state')
+			.should('have.value', '')
+		
+		cy.get('#event_country')
+			.should('have.value', '')
+
+		cy.get('#event_email')
+			.should('have.value', conteudo.email_responsavel)
+		
+		cy.get('#event_website')
+			.should('have.value', conteudo.site)
+
+		cy.get('#event_sent_mail_owner')
+			.should('not.be.checked')
+
+		cy.get('#event_contact_label')
+			.should('have.value', '')
+
+		cy.get('#event_hashtag')
+			.should('have.value', '')
+
+		// Verifica se o container de categorias está vazio
+		cy.get('ul.as-selections').find('li.as-selection-item.blur').should('have.length', 0)
+		
+		cy.get('#remove_banner')
+			.should('not.be.checked')
+
+		cy.get('div.col-md-6.col-lg-4')
+			.contains('Permitir envio de anexos na inscrição?')
+			.parents('.col-md-6.col-lg-4')
+			.find('label:contains("Desabilitado")')
+			.invoke('attr', 'for')
+			.then((id) => {
+			  	cy.get(`input#${id}`).should('be.checked')
+			})
+
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		 	const doc = $iframe.contents()
+		
+		 	cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
+		 		expect(contenteditable).to.eq('false')
+		 	})
+		})
+
+		cy.get('#event_inscription_access')
+			.find('option:selected')
+			.contains(conteudo.visualizacao)
+
+		cy.get('#event_situation')
+			.find('option:selected')
+			.contains(conteudo.situacao)
+
+		cy.get('#event_end_class')
+			.find('option:selected')
+			.contains(conteudo.notif_concluir_primeira_aula)
+
+		cy.get('#event_notify_users')
+			.find('option:selected')
+			.contains(conteudo.notificar_usuarios)
+
+		cy.get('#event_trial_days')
+			.should('have.value', '0')
+
+		cy.get('#event_enable_trial_days')
+			.should('not.be.checked')
+
+		cy.get('div.col-md-6.col-lg-4')
+			.contains('Exigir confirmação de inscrição pelo Organizador?')
+			.parents('.col-md-6.col-lg-4')
+			.find(`label:contains("${conteudo.exige_confirmacao}")`)
+			.invoke('attr', 'for')
+			.then((id) => {
+			  	cy.get(`input#${id}`).should('be.checked')
+			})
+
+		cy.get('#event_subscription_value')
+			.should('have.value', '0,00')
+
+		cy.get('#event_payment_enabled')
+			.should('not.be.checked')
+
+		cy.get('#event_installments_number')
+			.should('have.value', '1')
+
+		cy.get('#event_addition')
+			.should('have.value', '0.0')
 	})
 })
