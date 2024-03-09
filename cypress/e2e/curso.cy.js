@@ -2201,6 +2201,9 @@ describe('curso', () => {
 
 		cy.get('#event_enable_twygo_chat')
 			.click()
+		
+		cy.contains('button', 'Sair')
+			.click()
 
 		// Salvar a edição do curso, validar mensagem e redirecionamento
 		cy.contains('button', 'Salvar')
@@ -4768,6 +4771,9 @@ describe('curso', () => {
 			.click()
 
 		cy.get('#event_enable_twygo_chat')
+			.click()
+
+		cy.contains('button', 'Sair')
 			.click()
 
 		// Salvar a edição do curso, validar mensagem e redirecionamento

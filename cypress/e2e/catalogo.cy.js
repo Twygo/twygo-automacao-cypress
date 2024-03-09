@@ -2389,7 +2389,7 @@ describe('catalogo', () => {
 		.should('not.exist')
 	})
 
-	it.only('4-CRUD catalogo suspenso, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
+	it('4-CRUD catalogo suspenso, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
 		// Cria um novo objeto Date para a data atual
 		let dataAtual = new Date()
 
@@ -3118,7 +3118,7 @@ describe('catalogo', () => {
 		.should('not.exist')		
 	})
 
-	it.only('5-CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
+	it('5-CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
 		// Massa de dados para criação do catálogo
 		const conteudo = {
 			nome: faker.commerce.productName(),
@@ -3713,7 +3713,7 @@ describe('catalogo', () => {
 		.should('not.exist')
 	})
 
-	it.only('6-CRUD catalogo liberado, sem anexo, sem pagamento, sem confirmação, com visualização para público', () => {
+	it('6-CRUD catalogo liberado, sem anexo, sem pagamento, sem confirmação, com visualização para público', () => {
 		// Massa de dados para criação do catálogo
 		const conteudo = {
 			nome: faker.commerce.productName(),
@@ -4309,7 +4309,7 @@ describe('catalogo', () => {
 		.should('not.exist')
 	})
 
-	it.only('7-CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários', () => {
+	it('7-CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários', () => {
 		// Massa de dados para criação do catálogo
 		const conteudo = {
 			nome: faker.commerce.productName(),
