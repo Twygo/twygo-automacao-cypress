@@ -23,3 +23,24 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+// Em cypress/support/commands.js
+Cypress.Commands.add("criarCatalogoViaApi", (body, attempt = 1) => {
+    cy.request({
+      url: `/api/v1/o/${Cypress.env('orgId')}/portfolio`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${Cypress.env('token')}`
+      },
+      body: body,
+      failOnStatusCode: false
+    }).then((response) => {
+      if (response.status !== 201 && attempt < 3) {
+        cy.log(`Tentativa ${attempt}: Falha na requisição. Tentando novamente`);
+        cy.makeRequestWithRetry(url, body, attempt + 1);
+      } else {
+        expect(response.status).to.eq(201);
+      }
+    });
+});
