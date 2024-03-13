@@ -25,6 +25,55 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 // Em cypress/support/commands.js
+Cypress.Commands.add('loginTwygoAutomacao', function() {
+  cy.visit('/users/login')
+
+  cy.get('#user_email')
+    .type(Cypress.env('login'))
+  
+  cy.get('#user_password')
+    .type(Cypress.env('password'))
+
+  cy.contains('button', 'Entrar')
+    .should('be.visible')  
+    .click()
+
+  // Verificar se o login foi realizado com sucesso
+  cy.contains('#page-breadcrumb', 'Dashboard')
+    .should('be.visible')
+
+  cy.contains('.name', 'Twygo Automação')
+    .should('be.visible')
+
+  cy.contains('#btn-profile', 'Aluno')
+    .should('be.visible')
+})
+
+Cypress.Commands.add('alterarPerfilParaAdministrador', function() {
+  cy.get('#btn-profile')
+    .should('be.visible')
+    .click()
+
+  cy.get('#admin-profile')
+    .should('be.visible')
+    .click()
+
+  // Verificar se o perfil foi alterado com sucesso
+  cy.contains('#btn-profile', 'Administrador')
+    .should('be.visible')
+
+  cy.contains('#page-breadcrumb', 'Lista de cursos')
+    .should('be.visible')
+})
+
+Cypress.Commands.add('acessarPgCatalogo', function() {
+  cy.visit(`/o/${Cypress.env('orgId')}/events/?tab=itens-portfolio`)
+
+  // Verificar se a página de catálogo foi acessada com sucesso
+  cy.contains('#page-breadcrumb', 'Catálogo de cursos')
+    .should('be.visible')
+})
+
 Cypress.Commands.add("criarCatalogoViaApi", (body, attempt = 1) => {
     cy.request({
       method: 'POST',

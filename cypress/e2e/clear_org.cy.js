@@ -4,13 +4,13 @@ import 'cypress-real-events/support'
 describe('limpar dados da organização', ()=> {
 	it('deve limpar os dados da organização', () => {
 		// Realizar o login
-		cy.visit('https://automacao-karla.twygoead.com')
+		cy.visit('/users/login')
 
 		cy.get('#user_email')
-			.type('karla.oliveira@twygo.com')
+			.type(Cypress.env('login'))
 		
 		cy.get('#user_password')
-			.type('aut123')
+			.type(Cypress.env('password'))
 
 		cy.contains('button', 'Entrar')
 			.should('be.visible')  

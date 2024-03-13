@@ -6,13 +6,13 @@ describe('temp', () => {
     it('excluir catálogo', () => {
 		// !!! PRÉ-CONDIÇÃO !!!
 		// Realizar o login
-		cy.visit('https://automacao-karla.twygoead.com')
+		cy.visit('/users/login')
 
 		cy.get('#user_email')
-			.type('karla.oliveira@twygo.com')
+			.type(Cypress.env('login'))
 		
 		cy.get('#user_password')
-			.type('aut123')
+			.type(Cypress.env('password'))
 
 		cy.contains('button', 'Entrar')
 			.should('be.visible')  
@@ -38,7 +38,7 @@ describe('temp', () => {
 			.click()
 
 		// Acessar a página de catálogo de conteúdos
-		cy.visit('https://automacao-karla.twygoead.com/o/21654/events/?tab=itens-portfolio')
+		cy.visit(`/o/${Cypress.env('orgId')}/events/?tab=itens-portfolio`)
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
 			.should('be.visible')
