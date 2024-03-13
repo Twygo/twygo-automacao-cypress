@@ -27,8 +27,8 @@
 // Em cypress/support/commands.js
 Cypress.Commands.add("criarCatalogoViaApi", (body, attempt = 1) => {
     cy.request({
-      url: `/api/v1/o/${Cypress.env('orgId')}/portfolio`,
       method: 'POST',
+      url: `/api/v1/o/${Cypress.env('orgId')}/portfolio`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${Cypress.env('token')}`
@@ -37,10 +37,62 @@ Cypress.Commands.add("criarCatalogoViaApi", (body, attempt = 1) => {
       failOnStatusCode: false
     }).then((response) => {
       if (response.status !== 201 && attempt < 3) {
-        cy.log(`Tentativa ${attempt}: Falha na requisição. Tentando novamente`);
-        cy.makeRequestWithRetry(url, body, attempt + 1);
+        cy.log(`Tentativa ${attempt}: Falha na requisição. Tentando novamente`)
+        cy.makeRequestWithRetry(url, body, attempt + 1)
       } else {
-        expect(response.status).to.eq(201);
+        expect(response.status).to.eq(201)
       }
-    });
-});
+    })
+})
+
+Cypress.Commands.add('excluirCatalogoViaApi', function() {
+  cy.request({
+    method: 'GET',
+    url: `/api/v1/o/${Cypress.env('orgId')}/portfolio`,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': `Bearer ${Cypress.env('token')}`
+    },
+  }).then((response) => {
+    expect(response.status).to.eq(200)
+    const portfolios = response.body.portfolios
+    portfolios.forEach((portfolio) => {
+      cy.request({
+        method: 'DELETE',
+        url: `/api/v1/o/${Cypress.env('orgId')}/portfolio/${portfolio.id}`,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${Cypress.env('token')}`
+        },
+      }).then((deleteResponse) => {
+        expect(deleteResponse.status).to.eq(200)
+      })
+    })
+  })
+})
+
+Cypress.Commands.add('excluirCursoViaApi', function() {
+  cy.request({
+    method: 'GET',
+    url: `/api/v1/o/${Cypress.env('orgId')}/courses?page=1&per_page=99999`,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': `Bearer ${Cypress.env('token')}`
+    },
+  }).then((response) => {
+    expect(response.status).to.eq(200)
+    const courses = response.body.courses.contents
+    courses.forEach((course) => {
+      cy.request({
+        method: 'DELETE',
+        url: `/api/v1/o/${Cypress.env('orgId')}/courses/${course.id}`,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${Cypress.env('token')}`
+        },
+      }).then((deleteResponse) => {
+        expect(deleteResponse.status).to.eq(200)
+      })
+    })
+  })
+})

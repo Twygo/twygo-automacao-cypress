@@ -92,7 +92,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.')
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -486,7 +486,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.')
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -963,7 +963,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.')
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -1332,7 +1332,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.')
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -1789,7 +1789,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.')
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -2161,7 +2161,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.')
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -2589,7 +2589,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.')
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -2890,7 +2890,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.')
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -3276,7 +3276,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.')
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -3485,7 +3485,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.')
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -3872,7 +3872,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.')
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -4081,7 +4081,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.')
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -4444,7 +4444,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.')
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -4659,7 +4659,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.')
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')

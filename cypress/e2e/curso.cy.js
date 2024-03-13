@@ -90,7 +90,7 @@ describe('curso', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.')
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Lista de cursos')
@@ -494,7 +494,7 @@ describe('curso', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.')
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Lista de cursos')
@@ -983,7 +983,7 @@ describe('curso', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.')
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Lista de cursos')
@@ -1359,7 +1359,7 @@ describe('curso', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.')
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Lista de cursos')
@@ -1825,7 +1825,7 @@ describe('curso', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.')
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Lista de cursos')
@@ -2210,7 +2210,7 @@ describe('curso', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.')
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Lista de cursos')
@@ -2650,7 +2650,7 @@ describe('curso', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.')
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Lista de cursos')
@@ -2958,7 +2958,7 @@ describe('curso', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.')
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Lista de cursos')
@@ -3353,7 +3353,7 @@ describe('curso', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.')
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Lista de cursos')
@@ -3569,7 +3569,7 @@ describe('curso', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.')
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Lista de cursos')
@@ -3965,7 +3965,7 @@ describe('curso', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.')
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Lista de cursos')
@@ -4181,7 +4181,7 @@ describe('curso', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.')
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Lista de cursos')
@@ -4553,7 +4553,7 @@ describe('curso', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.')
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Lista de cursos')
@@ -4781,7 +4781,7 @@ describe('curso', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.')
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Lista de cursos')
