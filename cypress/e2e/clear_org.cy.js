@@ -3,41 +3,10 @@ import 'cypress-real-events/support'
 
 describe('limpar dados da organização', ()=> {
 	it('deve limpar os dados da organização', () => {
-		// Realizar o login
-		cy.visit('/users/login')
-
-		cy.get('#user_email')
-			.type(Cypress.env('login'))
+		// !!! PRÉ-CONDIÇÃO !!!
+		cy.loginTwygoAutomacao()
+		cy.alterarPerfilParaAdministrador()
 		
-		cy.get('#user_password')
-			.type(Cypress.env('password'))
-
-		cy.contains('button', 'Entrar')
-			.should('be.visible')  
-			.click()
-
-		// Verificar se o login foi realizado com sucesso
-		cy.contains('#page-breadcrumb', 'Dashboard')
-      		.should('be.visible')
-
-    	cy.contains('.name', 'Twygo Automação')
-      		.should('be.visible')
-
-    	cy.contains('#btn-profile', 'Aluno')
-      		.should('be.visible')
-
-		// Alterar o perfil para administrador
-		cy.get('#btn-profile')
-			.should('be.visible')
-			.click()
-
-		cy.get('#admin-profile')
-			.should('be.visible')
-			.click()
-
-		cy.contains('#btn-profile', 'Administrador')
-			.should('be.visible')
-
 		// Acessar menu da Sophia
 		cy.get('img[src*="sophia"]')
 			.eq(0)

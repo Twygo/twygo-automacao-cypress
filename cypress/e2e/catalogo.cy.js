@@ -2,6 +2,7 @@
 import 'cypress-iframe'
 import 'cypress-real-events/support'
 import { faker } from '@faker-js/faker'
+import { getAuthToken } from '../support/auth_helper'
 
 describe('catalogo', () => {
 	beforeEach(() => {
@@ -9,6 +10,12 @@ describe('catalogo', () => {
 		Cypress.on('uncaught:exception', (err, runnable) => {
 		  	return false
 		})
+
+		// Obtem o token de autenticação
+		getAuthToken()
+
+		// Exclui todos os catálogos antes de iniciar o teste
+		cy.excluirCatalogoViaApi()
 	})
 	
 	afterEach(() => {
@@ -24,43 +31,9 @@ describe('catalogo', () => {
 		}
 
 		// !!! PRÉ-CONDIÇÃO !!!
-		// Realizar o login
-		cy.visit('/users/login')
-
-		cy.get('#user_email')
-			.type(Cypress.env('login'))
-		
-		cy.get('#user_password')
-			.type(Cypress.env('password'))
-
-		cy.contains('button', 'Entrar')
-			.should('be.visible')  
-			.click()
-
-		// Verificar se o login foi realizado com sucesso
-		cy.contains('#page-breadcrumb', 'Dashboard')
-      		.should('be.visible')
-
-    	cy.contains('.name', 'Twygo Automação')
-      		.should('be.visible')
-
-    	cy.contains('#btn-profile', 'Aluno')
-      		.should('be.visible')
-
-		// Alterar o perfil para administrador
-		cy.get('#btn-profile')
-			.should('be.visible')
-			.click()
-
-		cy.get('#admin-profile')
-			.should('be.visible')
-			.click()
-
-		// Acessar a página de catálogo de conteúdos
-		cy.visit(`/o/${Cypress.env('orgId')}/events/?tab=itens-portfolio`)
-
-		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
-			.should('be.visible')
+		cy.loginTwygoAutomacao()
+		cy.alterarPerfilParaAdministrador()
+		cy.acessarPgCatalogo()
 
 		// !!! INÍCIO DO TESTE !!!
 		// CREATE
@@ -465,10 +438,9 @@ describe('catalogo', () => {
 			  cy.get(`input#${id}`).click()
 			})
 
-		conteudo_edit.valor_inscricao = conteudo_edit.valor_inscricao.replace('.', ',')
 		cy.get('#event_subscription_value')
 			.clear()
-			.type(conteudo_edit.valor_inscricao)
+			.type(conteudo_edit.valor_inscricao.replace('.', ','))
 
 		cy.get('#event_payment_enabled')
 			.click()
@@ -666,7 +638,7 @@ describe('catalogo', () => {
 			})
 
 		cy.get('#event_subscription_value')
-			.should('have.value', conteudo_edit.valor_inscricao)
+			.should('have.value', conteudo_edit.valor_inscricao.replace('.', ','))
 
 		cy.get('#event_payment_enabled')
 			.should('be.checked')
@@ -757,43 +729,9 @@ describe('catalogo', () => {
 		}
 
 		// !!! PRÉ-CONDIÇÃO !!!
-		// Realizar o login
-		cy.visit('/users/login')
-
-		cy.get('#user_email')
-			.type(Cypress.env('login'))
-		
-		cy.get('#user_password')
-			.type(Cypress.env('password'))
-
-		cy.contains('button', 'Entrar')
-			.should('be.visible')  
-			.click()
-
-		// Verificar se o login foi realizado com sucesso
-		cy.contains('#page-breadcrumb', 'Dashboard')
-      		.should('be.visible')
-
-    	cy.contains('.name', 'Twygo Automação')
-      		.should('be.visible')
-
-    	cy.contains('#btn-profile', 'Aluno')
-      		.should('be.visible')
-
-		// Alterar o perfil para administrador
-		cy.get('#btn-profile')
-			.should('be.visible')
-			.click()
-
-		cy.get('#admin-profile')
-			.should('be.visible')
-			.click()
-
-		// Acessar a página de catálogo de conteúdos
-		cy.visit(`/o/${Cypress.env('orgId')}/events/?tab=itens-portfolio`)
-
-		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
-			.should('be.visible')
+		cy.loginTwygoAutomacao()
+		cy.alterarPerfilParaAdministrador()
+		cy.acessarPgCatalogo()
 
 		// !!! INÍCIO DO TESTE !!!
 		// CREATE
@@ -946,10 +884,9 @@ describe('catalogo', () => {
 			  cy.get(`input#${id}`).click()
 			})
 
-		conteudo.valor_inscricao = conteudo.valor_inscricao.replace('.', ',')
 		cy.get('#event_subscription_value')
 			.clear()
-			.type(conteudo.valor_inscricao)
+			.type(conteudo.valor_inscricao.replace('.', ','))
 
 		cy.get('#event_payment_enabled')
 			.click()
@@ -1143,7 +1080,7 @@ describe('catalogo', () => {
 			})
 
 		cy.get('#event_subscription_value')
-			.should('have.value', conteudo.valor_inscricao)
+			.should('have.value', conteudo.valor_inscricao.replace('.', ','))
 
 		cy.get('#event_payment_enabled')
 			.should('be.checked')
@@ -1319,10 +1256,9 @@ describe('catalogo', () => {
 			  cy.get(`input#${id}`).click()
 			})
 
-		conteudo_edit.valor_inscricao = conteudo_edit.valor_inscricao.replace('.', ',')
 		cy.get('#event_subscription_value')
 			.clear()
-			.type(conteudo_edit.valor_inscricao)
+			.type(conteudo_edit.valor_inscricao.replace('.', ','))
 
 		cy.get('#event_payment_enabled')
 			.click()
@@ -1512,7 +1448,7 @@ describe('catalogo', () => {
 			})
 
 		cy.get('#event_subscription_value')
-			.should('have.value', conteudo_edit.valor_inscricao)
+			.should('have.value', conteudo_edit.valor_inscricao.replace('.', ','))
 
 		cy.get('#event_payment_enabled')
 			.should('not.be.checked')
@@ -1599,43 +1535,9 @@ describe('catalogo', () => {
 		}
 
 		// !!! PRÉ-CONDIÇÃO !!!
-		// Realizar o login
-		cy.visit('/users/login')
-
-		cy.get('#user_email')
-			.type(Cypress.env('login'))
-		
-		cy.get('#user_password')
-			.type(Cypress.env('password'))
-
-		cy.contains('button', 'Entrar')
-			.should('be.visible')  
-			.click()
-
-		// Verificar se o login foi realizado com sucesso
-		cy.contains('#page-breadcrumb', 'Dashboard')
-			.should('be.visible')
-
-		cy.contains('.name', 'Twygo Automação')
-			.should('be.visible')
-
-		cy.contains('#btn-profile', 'Aluno')
-			.should('be.visible')
-
-		// Alterar o perfil para administrador
-		cy.get('#btn-profile')
-			.should('be.visible')
-			.click()
-
-		cy.get('#admin-profile')
-			.should('be.visible')
-			.click()
-
-		// Acessar a página de catálogo de conteúdos
-		cy.visit(`/o/${Cypress.env('orgId')}/events/?tab=itens-portfolio`)
-
-		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
-			.should('be.visible')
+		cy.loginTwygoAutomacao()
+		cy.alterarPerfilParaAdministrador()
+		cy.acessarPgCatalogo()
 
 		// !!! INÍCIO DO TESTE !!!
 		// CREATE
@@ -1768,10 +1670,9 @@ describe('catalogo', () => {
 				cy.get(`input#${id}`).click()
 			})
 		
-		conteudo.valor_inscricao = conteudo.valor_inscricao.replace('.', ',')
 		cy.get('#event_subscription_value')
 			.clear()
-			.type(conteudo.valor_inscricao)
+			.type(conteudo.valor_inscricao.replace('.', ','))
 
 		cy.get('#event_payment_enabled')
 			.click()
@@ -1969,7 +1870,7 @@ describe('catalogo', () => {
 			})
 
 		cy.get('#event_subscription_value')
-			.should('have.value', conteudo.valor_inscricao)
+			.should('have.value', conteudo.valor_inscricao.replace('.', ','))
 
 		cy.get('#event_payment_enabled')
 			.should('be.checked')
@@ -2148,10 +2049,9 @@ describe('catalogo', () => {
 			  cy.get(`input#${id}`).click()
 			})
 
-		conteudo_edit.valor_inscricao = conteudo_edit.valor_inscricao.replace('.', ',')
 		cy.get('#event_subscription_value')
 			.clear()
-			.type(conteudo_edit.valor_inscricao)
+			.type(conteudo_edit.valor_inscricao.replace('.', ','))
 
 		cy.get('#event_payment_enabled')
 			.click()
@@ -2341,7 +2241,7 @@ describe('catalogo', () => {
 			})
 
 		cy.get('#event_subscription_value')
-			.should('have.value', conteudo_edit.valor_inscricao)
+			.should('have.value', conteudo_edit.valor_inscricao.replace('.', ','))
 
 		cy.get('#event_payment_enabled')
 			.should('not.be.checked')
@@ -2436,43 +2336,9 @@ describe('catalogo', () => {
 		}
 
 		// !!! PRÉ-CONDIÇÃO !!!
-		// Realizar o login
-		cy.visit('/users/login')
-
-		cy.get('#user_email')
-			.type(Cypress.env('login'))
-		
-		cy.get('#user_password')
-			.type(Cypress.env('password'))
-
-		cy.contains('button', 'Entrar')
-			.should('be.visible')  
-			.click()
-
-		// Verificar se o login foi realizado com sucesso
-		cy.contains('#page-breadcrumb', 'Dashboard')
-			.should('be.visible')
-
-		cy.contains('.name', 'Twygo Automação')
-			.should('be.visible')
-
-		cy.contains('#btn-profile', 'Aluno')
-			.should('be.visible')
-
-		// Alterar o perfil para administrador
-		cy.get('#btn-profile')
-			.should('be.visible')
-			.click()
-
-		cy.get('#admin-profile')
-			.should('be.visible')
-			.click()
-
-		// Acessar a página de catálogo de conteúdos
-		cy.visit(`/o/${Cypress.env('orgId')}/events/?tab=itens-portfolio`)
-
-		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
-			.should('be.visible')
+		cy.loginTwygoAutomacao()
+		cy.alterarPerfilParaAdministrador()
+		cy.acessarPgCatalogo()
 
 		// !!! INÍCIO DO TESTE !!!
 		// CREATE
@@ -3145,43 +3011,9 @@ describe('catalogo', () => {
 		}
 
 		// !!! PRÉ-CONDIÇÃO !!!
-		// Realizar o login
-		cy.visit('/users/login')
-
-		cy.get('#user_email')
-			.type(Cypress.env('login'))
-		
-		cy.get('#user_password')
-			.type(Cypress.env('password'))
-
-		cy.contains('button', 'Entrar')
-			.should('be.visible')  
-			.click()
-
-		// Verificar se o login foi realizado com sucesso
-		cy.contains('#page-breadcrumb', 'Dashboard')
-			.should('be.visible')
-
-		cy.contains('.name', 'Twygo Automação')
-			.should('be.visible')
-
-		cy.contains('#btn-profile', 'Aluno')
-			.should('be.visible')
-
-		// Alterar o perfil para administrador
-		cy.get('#btn-profile')
-			.should('be.visible')
-			.click()
-
-		cy.get('#admin-profile')
-			.should('be.visible')
-			.click()
-
-		// Acessar a página de catálogo de conteúdos
-		cy.visit(`/o/${Cypress.env('orgId')}/events/?tab=itens-portfolio`)
-
-		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
-			.should('be.visible')
+		cy.loginTwygoAutomacao()
+		cy.alterarPerfilParaAdministrador()
+		cy.acessarPgCatalogo()
 
 		// !!! INÍCIO DO TESTE !!!
 		// CREATE
@@ -3740,43 +3572,9 @@ describe('catalogo', () => {
 		}
 
 		// !!! PRÉ-CONDIÇÃO !!!
-		// Realizar o login
-		cy.visit('/users/login')
-
-		cy.get('#user_email')
-			.type(Cypress.env('login'))
-		
-		cy.get('#user_password')
-			.type(Cypress.env('password'))
-
-		cy.contains('button', 'Entrar')
-			.should('be.visible')  
-			.click()
-
-		// Verificar se o login foi realizado com sucesso
-		cy.contains('#page-breadcrumb', 'Dashboard')
-			.should('be.visible')
-
-		cy.contains('.name', 'Twygo Automação')
-			.should('be.visible')
-
-		cy.contains('#btn-profile', 'Aluno')
-			.should('be.visible')
-
-		// Alterar o perfil para administrador
-		cy.get('#btn-profile')
-			.should('be.visible')
-			.click()
-
-		cy.get('#admin-profile')
-			.should('be.visible')
-			.click()
-
-		// Acessar a página de catálogo de conteúdos
-		cy.visit(`/o/${Cypress.env('orgId')}/events/?tab=itens-portfolio`)
-
-		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
-			.should('be.visible')
+		cy.loginTwygoAutomacao()
+		cy.alterarPerfilParaAdministrador()
+		cy.acessarPgCatalogo()
 
 		// !!! INÍCIO DO TESTE !!!
 		// CREATE
@@ -4332,43 +4130,9 @@ describe('catalogo', () => {
 		}
 
 		// !!! PRÉ-CONDIÇÃO !!!
-		// Realizar o login
-		cy.visit('/users/login')
-
-		cy.get('#user_email')
-			.type(Cypress.env('login'))
-		
-		cy.get('#user_password')
-			.type(Cypress.env('password'))
-
-		cy.contains('button', 'Entrar')
-			.should('be.visible')  
-			.click()
-
-		// Verificar se o login foi realizado com sucesso
-		cy.contains('#page-breadcrumb', 'Dashboard')
-			.should('be.visible')
-
-		cy.contains('.name', 'Twygo Automação')
-			.should('be.visible')
-
-		cy.contains('#btn-profile', 'Aluno')
-			.should('be.visible')
-
-		// Alterar o perfil para administrador
-		cy.get('#btn-profile')
-			.should('be.visible')
-			.click()
-
-		cy.get('#admin-profile')
-			.should('be.visible')
-			.click()
-
-		// Acessar a página de catálogo de conteúdos
-		cy.visit(`/o/${Cypress.env('orgId')}/events/?tab=itens-portfolio`)
-
-		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
-			.should('be.visible')
+		cy.loginTwygoAutomacao()
+		cy.alterarPerfilParaAdministrador()
+		cy.acessarPgCatalogo()
 
 		// !!! INÍCIO DO TESTE !!!
 		// CREATE

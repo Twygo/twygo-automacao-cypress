@@ -5026,7 +5026,7 @@ describe('criar curso via catálogo', () => {
 			.should('not.exist')
 	})
 
-	it.only('7-CRUD deve criar um curso via catálogo com todos os campos preenchidos', () => {
+	it('7-CRUD deve criar um curso via catálogo com todos os campos preenchidos', () => {
 		// Massa de dados para criação do catálogo
 		const eventName = faker.commerce.productName()
 		const conteudo = {
@@ -5425,7 +5425,7 @@ describe('criar curso via catálogo', () => {
 			})
 
 		cy.get('#event_subscription_value')
-			.should('have.value', conteudo.valor_inscricao.replace('.', ',').replace('.', ','))
+			.should('have.value', conteudo.valor_inscricao.replace('.', ','))
 
 		cy.get('#event_payment_enabled')
 			.should('be.checked')
@@ -5570,16 +5570,16 @@ describe('criar curso via catálogo', () => {
 		cy.get('#event_hashtag')
 			.should('have.value', conteudo.hashtag)
 
-		categoriasEncontradas = []
+		let categoriasEncontradasRead = []
 		cy.get('li.as-selection-item.blur').each(($el) => {
 			const text = $el.text().trim().replace('×', '').trim()
-			categoriasEncontradas.push(text)
+			categoriasEncontradasRead.push(text)
 			})
 		
 		cy.get('li.as-selection-item.blur').then(() => {
 			const categoriasEsperadas = [conteudo.categoria.cat1, conteudo.categoria.cat2].sort()
-			categoriasEncontradas.sort()
-			expect(categoriasEncontradas).to.deep.eq(categoriasEsperadas)
+			categoriasEncontradasRead.sort()
+			expect(categoriasEncontradasRead).to.deep.eq(categoriasEsperadas)
 		})	
 		
 		cy.get('#remove_banner')
@@ -5636,7 +5636,7 @@ describe('criar curso via catálogo', () => {
 			})
 
 		cy.get('#event_subscription_value')
-			.should('have.value', conteudo.valor_inscricao.replace('.', ',').replace('.', ','))
+			.should('have.value', conteudo.valor_inscricao.replace('.', ','))
 
 		cy.get('#event_payment_enabled')
 			.should('be.checked')
@@ -5740,6 +5740,7 @@ describe('criar curso via catálogo', () => {
 			.type(conteudo_edit.carga_horaria)
 
 		cy.get('#event_class_number')
+			.clear()
 			.type(conteudo_edit.numero_turma)
 
 		cy.get('#event_days_to_expire')
@@ -5750,24 +5751,31 @@ describe('criar curso via catálogo', () => {
 			.click()
 
 		cy.get('#event_place')
+			.clear()
 			.type(conteudo_edit.local)
 
 		cy.get('#event_zip_code')
+			.clear()
 			.type(conteudo_edit.cep)
 
 		cy.get('#event_address')
+			.clear()
 			.type(conteudo_edit.endereco)
 
 		cy.get('#event_address2')
+			.clear()
 			.type(conteudo_edit.complemento)
 
 		cy.get('#event_city')
+			.clear()
 			.type(conteudo_edit.cidade)
 
 		cy.get('#event_state')
+			.clear()
 			.type(conteudo_edit.estado)
 
 		cy.get('#event_country')
+			.clear()
 			.type(conteudo_edit.pais)
 
 		cy.get('#event_email')
@@ -5775,15 +5783,18 @@ describe('criar curso via catálogo', () => {
 			.type(conteudo_edit.email_responsavel)
 
 		cy.get('#event_website')
+			.clear()
 			.type(conteudo_edit.site)
 
 		cy.get('#event_sent_mail_owner')
 			.click()
 
 		cy.get('#event_contact_label')
+			.clear()
 			.type(conteudo_edit.rotulo_contato)
 
 		cy.get('#event_hashtag')
+			.clear()
 			.type(conteudo_edit.hashtag)
 
 		cy.get("input.form-control.as-input[name='event[category_extra]']")
@@ -5812,7 +5823,7 @@ describe('criar curso via catálogo', () => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
-				cy.wrap($body).click({ force: true }).type(`${conteudo_edit.mensagem_anexo}`, { force: true })
+				cy.wrap($body).click({ force: true }).clear().type(`${conteudo_edit.mensagem_anexo}`, { force: true })
 			})
 		})
 
@@ -5848,10 +5859,7 @@ describe('criar curso via catálogo', () => {
 
 		cy.get('#event_subscription_value')
 			.clear()
-			.type(conteudo_edit.valor_inscricao.replace('.', ',').replace('.', ','))
-
-		cy.get('#event_payment_enabled')
-			.click()
+			.type(conteudo_edit.valor_inscricao.replace('.', ','))
 
 		cy.get('#event_installments_number')
 			.clear()	
@@ -5990,7 +5998,7 @@ describe('criar curso via catálogo', () => {
 			.should('have.value', conteudo_edit.site)
 
 		cy.get('#event_sent_mail_owner')
-			.should('be.checked')
+			.should('not.be.checked')
 
 		cy.get('#event_contact_label')
 			.should('have.value', conteudo_edit.rotulo_contato)
@@ -5998,16 +6006,16 @@ describe('criar curso via catálogo', () => {
 		cy.get('#event_hashtag')
 			.should('have.value', conteudo_edit.hashtag)
 
-		categoriasEncontradas = []
+		let categoriasEncontradasEdit = []
 		cy.get('li.as-selection-item.blur').each(($el) => {
 			const text = $el.text().trim().replace('×', '').trim()
-			categoriasEncontradas.push(text)
+			categoriasEncontradasEdit.push(text)
 			})
 		
 		cy.get('li.as-selection-item.blur').then(() => {
 			const categoriasEsperadas = [conteudo_edit.categoria.cat1, conteudo_edit.categoria.cat2, conteudo.categoria.cat1, conteudo.categoria.cat2].sort()
-			categoriasEncontradas.sort()
-			expect(categoriasEncontradas).to.deep.eq(categoriasEsperadas)
+			categoriasEncontradasEdit.sort()
+			expect(categoriasEncontradasEdit).to.deep.eq(categoriasEsperadas)
 		})
 		
 		cy.get('#remove_banner')
