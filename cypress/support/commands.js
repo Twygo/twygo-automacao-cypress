@@ -145,3 +145,228 @@ Cypress.Commands.add('excluirCursoViaApi', function() {
     })
   })
 })
+
+//TODO>
+Cypress.Commands.add('formularioConteudosAbaDados', (conteudo, opcoes = { limpar: false }) => {
+  const preencherCampo = (seletor, valor, tipo, valorDefault) => {
+    if (opcoes.limpar && tipo !== 'checkbox' && tipo !== 'radio') {
+      cy.get(seletor)
+        .clear()
+    }
+
+    const valorFinal = valor || valorDefault
+
+    switch (tipo) {
+      case 'input':
+      case 'select':
+        cy.get(seletor)
+          .type(valorFinal)
+        break
+      case 'checkbox':
+      case 'radio':
+        if (valorFinal) cy.get(seletor).check()
+        else cy.get(seletor).uncheck()
+        break
+      case 'iframe':
+        cy.get(seletor, { timeout: 10000 }).then($iframe => {
+          const doc = $iframe.contents()
+          cy.wrap(doc).find('body.cke_editable').click({ force: true }).clear().type(valorFinal, { force: true })
+        })
+        break
+    }
+  }
+
+  const mapeamentoCampos = {
+    nome: { 
+      seletor: '#event_name', 
+      tipo: 'input'
+    },
+    data_inicio: { 
+      seletor: '#date_start', 
+      tipo: 'input' 
+    },
+    hora_inicio: { 
+      seletor: '#time_start', 
+      tipo: 'input' 
+    },
+    data_fim: { 
+      seletor: '#date_end', 
+      tipo: 'input' 
+    },
+    hora_fim: { 
+      seletor: '#time_end', 
+      tipo: 'input' 
+    },
+    tipo: { 
+      seletor: '#event_event_type_id', 
+      tipo: 'select', 
+      default: 'Treinamento' 
+    },
+    modalidade: { 
+      seletor: '#event_mode', 
+      tipo: 'select', 
+      default: 'Online' 
+    },
+    sincronismo: { 
+      seletor: '#event_synchronism', 
+      tipo: 'select', 
+      default: 'Gravado' 
+    },
+    canal: { 
+      seletor: '#event_outlet', 
+      tipo: 'select', 
+      default: '' 
+    },
+    carga_horaria: { 
+      seletor: '#event_workload', 
+      tipo: 'input', 
+      default: '0' 
+    },
+    numero_turma: { 
+      seletor: '#event_class_number', 
+      tipo: 'input' 
+    },
+    vigencia: { 
+      seletor: '#event_days_to_expire', 
+      tipo: 'input', 
+      default: '0' 
+    },
+    atualizar_inscritos: {
+      seletor: '#update_inscriptions',
+      tipo: 'checkbox',
+      default: false
+    },
+    local: { 
+      seletor: '#event_place', 
+      tipo: 'input' 
+    },
+    cep: { 
+      seletor: '#event_zip_code', 
+      tipo: 'input' 
+    },
+    endereco: { 
+      seletor: '#event_address', 
+      tipo: 'input' 
+    },
+    complemento: { 
+      seletor: '#event_address2', 
+      tipo: 'input' 
+    },
+    cidade: { 
+      seletor: '#event_city', 
+      tipo: 'input' 
+    },
+    estado: { 
+      seletor: '#event_state', 
+      tipo: 'input' 
+    },
+    pais: { 
+      seletor: '#event_country', 
+      tipo: 'input' 
+    },
+    email_responsavel: { 
+      seletor: '#event_email', 
+      tipo: 'input' 
+    },
+    site: { 
+      seletor: '#event_website', 
+      tipo: 'input' 
+    },
+    notificar_responsavel: { 
+      seletor: '#event_sent_mail_owner', 
+      tipo: 'checkbox', 
+      default: false 
+    },
+    rotulo_contato: { 
+      seletor: '#event_contact_label', 
+      tipo: 'input' 
+    },
+    hashtag: { 
+      seletor: '#event_hashtag', 
+      tipo: 'input' 
+    },
+    categorias: {
+      seletor: "input.form-control.as-input[name='event[category_extra]']",
+      tipo: 'texto'
+    },
+    remover_banner: { 
+      seletor: '#remove_banner', 
+      tipo: 'checkbox', 
+      default: false 
+    },
+    permite_anexo: {
+      seletor: 'div.col-md-6.col-lg-4:contains("Permitir envio de anexos na inscrição?")',
+      tipo: 'radio',
+      default: 'Desabilitado'
+    },
+    visualizacao: {
+      seletor: '#event_inscription_access',
+      tipo: 'select',
+      default: 'Inscritos'
+    },
+    situacao: {
+      seletor: '#event_situation',
+      tipo: 'select',
+      default: 'Em desenvolvimento'
+    },
+    notificar_concluir_primeira_aula: {
+      seletor: '#event_end_class',
+      tipo: 'select',
+      default: 'Não'
+    },
+    notificar_usuarios: {
+      seletor: '#event_notify_users',
+      tipo: 'select',
+      default: 'Não'
+    },
+    dias_teste: {
+      seletor: '#event_trial_days',
+      tipo: 'input',
+      default: '0'
+    },
+    habilitar_dias_teste: {
+      seletor: '#event_enable_trial_days',
+      tipo: 'checkbox',
+      default: false
+    },
+    exige_confirmacao: {
+      seletor: 'div.col-md-6.col-lg-4:contains("Exigir confirmação de inscrição pelo Organizador?")',
+      tipo: 'radio',
+      default: 'Habilitado'
+    },
+    valor_inscricao: {
+      seletor: '#event_subscription_value',
+      tipo: 'input',
+      default: '0,00'
+    },
+    habilitar_pagamento: {
+      seletor: '#event_payment_enabled',
+      tipo: 'checkbox',
+      default: false
+    },
+    nr_parcelas: {
+      seletor: '#event_installments_number',
+      tipo: 'input',
+      default: '1'
+    },
+    valor_acrescimo: {
+      seletor: '#event_addition',
+      tipo: 'input',
+      default: '0,0'
+    },
+    habilitar_chat: {
+      seletor: '#event_enable_twygo_chat',
+      tipo: 'checkbox',
+      default: false
+    }
+  };
+})  
+
+
+  // Preenchendo os campos com base no objeto conteudo
+  // Object.entries(conteudo).forEach(([chave, valor]) => {
+  //   const configCampo = mapeamentoCampos[chave];
+  //   if (configCampo) {
+  //     preencherCampo(configCampo.seletor, valor, configCampo.tipo, configCampo.default);
+  //   }
+  // });
