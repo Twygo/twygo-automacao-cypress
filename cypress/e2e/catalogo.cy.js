@@ -52,7 +52,7 @@ describe('catalogo', () => {
 		cy.get('#event_name')
 			.type(conteudo.nome)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -65,7 +65,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -109,7 +109,7 @@ describe('catalogo', () => {
 		cy.get('#time_end')
 			.should('have.value', '')
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -196,7 +196,7 @@ describe('catalogo', () => {
 			  	cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contentEditable => {
@@ -307,7 +307,7 @@ describe('catalogo', () => {
 		cy.get('#time_end')
 			.type(conteudo_edit.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -400,7 +400,7 @@ describe('catalogo', () => {
 				cy.get(`input#${id}`).click()
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
@@ -458,7 +458,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -502,7 +502,7 @@ describe('catalogo', () => {
 		cy.get('#time_end')
 			.should('have.value', conteudo_edit.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -598,7 +598,7 @@ describe('catalogo', () => {
 			  	cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
@@ -675,7 +675,7 @@ describe('catalogo', () => {
 		cy.get('#modal-remove-events-index-confirmed')
 			.click({ force: true })
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos excluído com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos excluído com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		// Aguardar 4s devido a atualização da página
@@ -762,7 +762,7 @@ describe('catalogo', () => {
 		cy.get('#time_end')
 			.type(conteudo.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -849,7 +849,7 @@ describe('catalogo', () => {
 				cy.get(`input#${id}`).click()
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
@@ -900,7 +900,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -944,7 +944,7 @@ describe('catalogo', () => {
 		cy.get('#time_end')
 			.should('have.value', conteudo.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -1040,7 +1040,7 @@ describe('catalogo', () => {
 			  	cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
@@ -1146,7 +1146,7 @@ describe('catalogo', () => {
 			.clear()
 			.type(conteudo_edit.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -1268,7 +1268,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -1312,7 +1312,7 @@ describe('catalogo', () => {
 		cy.get('#time_end')
 			.should('have.value', conteudo_edit.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -1408,7 +1408,7 @@ describe('catalogo', () => {
 			  	cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
@@ -1485,7 +1485,7 @@ describe('catalogo', () => {
 		cy.get('#modal-remove-events-index-confirmed')
 		.click({ force: true })
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos excluído com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos excluído com sucesso.', { timeout: 5000 })
 		.should('be.visible')
 
 		// Aguardar 4s devido a atualização da página
@@ -1569,7 +1569,7 @@ describe('catalogo', () => {
 		cy.get('#time_end')
 			.type(conteudo.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -1690,7 +1690,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -1734,7 +1734,7 @@ describe('catalogo', () => {
 		cy.get('#time_end')
 			.should('have.value', conteudo.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -1830,7 +1830,7 @@ describe('catalogo', () => {
 			  	cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
@@ -1935,7 +1935,7 @@ describe('catalogo', () => {
 			.clear()
 			.type(conteudo_edit.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -2014,7 +2014,7 @@ describe('catalogo', () => {
 				cy.get(`input#${id}`).click()
 			})
 		
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			  
 			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
@@ -2061,7 +2061,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -2105,7 +2105,7 @@ describe('catalogo', () => {
 		cy.get('#time_end')
 			.should('have.value', conteudo_edit.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -2201,7 +2201,7 @@ describe('catalogo', () => {
 			  	cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
@@ -2278,7 +2278,7 @@ describe('catalogo', () => {
 		cy.get('#modal-remove-events-index-confirmed')
 		.click({ force: true })
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos excluído com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos excluído com sucesso.', { timeout: 5000 })
 		.should('be.visible')
 
 		// Aguardar 4s devido a atualização da página
@@ -2370,7 +2370,7 @@ describe('catalogo', () => {
 		cy.get('#time_end')
 			.type(conteudo.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -2455,7 +2455,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -2499,7 +2499,7 @@ describe('catalogo', () => {
 		cy.get('#time_end')
 			.should('have.value', conteudo.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -2595,7 +2595,7 @@ describe('catalogo', () => {
 			  	cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 		 	const doc = $iframe.contents()
 		
 		 	cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
@@ -2682,7 +2682,7 @@ describe('catalogo', () => {
 			.clear()
 			.type(conteudo.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -2756,7 +2756,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -2800,7 +2800,7 @@ describe('catalogo', () => {
 		cy.get('#time_end')
 			.should('have.value', conteudo.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -2896,7 +2896,7 @@ describe('catalogo', () => {
 					cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
@@ -2973,7 +2973,7 @@ describe('catalogo', () => {
 		cy.get('#modal-remove-events-index-confirmed')
 		.click({ force: true })
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos excluído com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos excluído com sucesso.', { timeout: 5000 })
 		.should('be.visible')
 
 		// Aguardar 4s devido a atualização da página
@@ -3032,7 +3032,7 @@ describe('catalogo', () => {
 		cy.get('#event_name')
 			.type(conteudo.nome)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -3108,7 +3108,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -3152,7 +3152,7 @@ describe('catalogo', () => {
 		cy.get('#time_end')
 			.should('have.value', '')
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -3248,7 +3248,7 @@ describe('catalogo', () => {
 			  	cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 		 	const doc = $iframe.contents()
 		
 		 	cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
@@ -3317,7 +3317,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -3361,7 +3361,7 @@ describe('catalogo', () => {
 		cy.get('#time_end')
 			.should('have.value', '')
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -3457,7 +3457,7 @@ describe('catalogo', () => {
 			  	cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
@@ -3534,7 +3534,7 @@ describe('catalogo', () => {
 		cy.get('#modal-remove-events-index-confirmed')
 		.click({ force: true })
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos excluído com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos excluído com sucesso.', { timeout: 5000 })
 		.should('be.visible')
 
 		// Aguardar 4s devido a atualização da página
@@ -3593,7 +3593,7 @@ describe('catalogo', () => {
 		cy.get('#event_name')
 			.type(conteudo.nome)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -3670,7 +3670,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -3714,7 +3714,7 @@ describe('catalogo', () => {
 		cy.get('#time_end')
 			.should('have.value', '')
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -3810,7 +3810,7 @@ describe('catalogo', () => {
 			  	cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 		 	const doc = $iframe.contents()
 		
 		 	cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
@@ -3879,7 +3879,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -3923,7 +3923,7 @@ describe('catalogo', () => {
 		cy.get('#time_end')
 			.should('have.value', '')
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -4019,7 +4019,7 @@ describe('catalogo', () => {
 			  	cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
@@ -4096,7 +4096,7 @@ describe('catalogo', () => {
 		cy.get('#modal-remove-events-index-confirmed')
 		.click({ force: true })
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos excluído com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos excluído com sucesso.', { timeout: 5000 })
 		.should('be.visible')
 
 		// Aguardar 4s devido a atualização da página
@@ -4151,7 +4151,7 @@ describe('catalogo', () => {
 		cy.get('#event_name')
 			.type(conteudo.nome)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -4208,7 +4208,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -4252,7 +4252,7 @@ describe('catalogo', () => {
 		cy.get('#time_end')
 			.should('have.value', '')
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -4348,7 +4348,7 @@ describe('catalogo', () => {
 			  	cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 		 	const doc = $iframe.contents()
 		
 		 	cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
@@ -4423,7 +4423,7 @@ describe('catalogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -4467,7 +4467,7 @@ describe('catalogo', () => {
 		cy.get('#time_end')
 			.should('have.value', '')
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -4555,7 +4555,7 @@ describe('catalogo', () => {
 			  	cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
@@ -4632,7 +4632,7 @@ describe('catalogo', () => {
 		cy.get('#modal-remove-events-index-confirmed')
 		.click({ force: true })
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos excluído com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos excluído com sucesso.', { timeout: 5000 })
 		.should('be.visible')
 
 		// Aguardar 4s devido a atualização da página

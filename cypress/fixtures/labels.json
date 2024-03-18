@@ -1,0 +1,20 @@
+{
+    "conteudo": {
+        "curso": {
+            "breadcrumb": "Lista de cursos",
+            "msgSucesso": "Evento salvo com sucesso.",
+            "breadcrumbAdicionar": "Lista de cursos > Adicionar novo",
+            "tituloPgAdicionar": "Novo Curso",
+            "breadcrumbEdicao": "Detalhes do evento",
+            "tituloPgEdicao": "Editar Cursos",
+            "tituloModalExclusao": "Excluir curso",
+            "texto1ModalExclusao": "Você tem certeza que deseja excluir este curso?",
+            "texto2ModalExclusao": "Esta ação não poderá ser desfeita.",
+            "msgSucessoExclusao": "Evento excluído com sucesso"
+        },
+        "catalogo": {
+            "breadcrumb": "Catálogo de cursos",
+            "msgSucesso": "Item do Catálogo de Cursos salvo com sucesso."
+        }
+    }
+}

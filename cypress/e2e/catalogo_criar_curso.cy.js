@@ -105,7 +105,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.should('have.value', hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -191,7 +191,7 @@ describe('criar curso via catálogo', () => {
 
         cy.wait(4000)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contentEditable => {
@@ -250,7 +250,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		// Breadcrumb correto: Lista de cursos
@@ -260,7 +260,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 
 		// Verificar se o curso foi criado e é exibido na listagem
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.should('be.visible')
 			.should('have.length', 1)
 		
@@ -269,11 +269,11 @@ describe('criar curso via catálogo', () => {
 		cy.wait(4000)
 
 		// Clicar no botão de editar do curso para validar dados salvos e página correta
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.contains('button', 'Editar')
 			.click()
 		
@@ -307,7 +307,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.should('have.value', hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -393,7 +393,7 @@ describe('criar curso via catálogo', () => {
 
         cy.wait(4000)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contentEditable => {
@@ -512,7 +512,7 @@ describe('criar curso via catálogo', () => {
 			.clear()
 			.type(conteudo_edit.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -605,7 +605,7 @@ describe('criar curso via catálogo', () => {
 				cy.get(`input#${id}`).click()
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
@@ -666,7 +666,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		// Breadcrumb correto: Lista de cursos
@@ -676,7 +676,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 
 		// Verificar se o curso editado foi salvo corretamente e é exibido na listagem
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.should('be.visible')
 			.should('have.length', 1)
 		
@@ -685,11 +685,11 @@ describe('criar curso via catálogo', () => {
 		cy.wait(4000)
 
 		// Clicar no botão de editar do curso para validar dados salvos e página correta
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.contains('button', 'Editar')
 			.click()		
 
@@ -723,7 +723,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.should('have.value', conteudo_edit.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -819,7 +819,7 @@ describe('criar curso via catálogo', () => {
 					cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
@@ -886,11 +886,11 @@ describe('criar curso via catálogo', () => {
 
 		// DELETE
 		// Clicar no botão de excluir do curso, mensagem de confirmação e confirmar exclusão
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.wait(2000)	
 			.contains('button', 'Excluir')
 			.click({ force: true })
@@ -907,14 +907,14 @@ describe('criar curso via catálogo', () => {
 		cy.contains('button.chakra-button', 'Excluir')
 			.click({ force: true})
 
-		cy.contains('.chakra-alert__desc', 'Evento excluído com sucesso', { timeout: 10000 })
+		cy.contains('.chakra-alert__desc', 'Evento excluído com sucesso', { timeout: 5000 })
 			.should('be.visible')
 
 		// Aguardar 4s devido a atualização da página
 		cy.wait(4000)
 
 		// Verificar se o curso foi excluído e não é exibido na listagem
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.should('not.exist')		
 	})
 
@@ -981,7 +981,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.should('have.value', hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -1067,7 +1067,7 @@ describe('criar curso via catálogo', () => {
 
         cy.wait(4000)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contentEditable => {
@@ -1126,7 +1126,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		// Breadcrumb correto: Lista de cursos
@@ -1136,7 +1136,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 
 		// Verificar se o curso foi criado e é exibido na listagem
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.should('be.visible')
 			.should('have.length', 1)
 		
@@ -1145,11 +1145,11 @@ describe('criar curso via catálogo', () => {
 		cy.wait(4000)
 
 		// Clicar no botão de editar do curso para validar dados salvos e página correta
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.contains('button', 'Editar')
 			.click()
 		
@@ -1183,7 +1183,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.should('have.value', hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -1269,7 +1269,7 @@ describe('criar curso via catálogo', () => {
 
         cy.wait(4000)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contentEditable => {
@@ -1378,7 +1378,7 @@ describe('criar curso via catálogo', () => {
 			.clear()
 			.type(conteudo_edit.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -1451,7 +1451,7 @@ describe('criar curso via catálogo', () => {
 				cy.get(`input#${id}`).click()
 			})
 		
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			  
 			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
@@ -1501,7 +1501,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		// Breadcrumb correto: Lista de cursos
@@ -1511,7 +1511,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 
 		// Verificar se o curso editado foi salvo corretamente e é exibido na listagem
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.should('be.visible')
 			.should('have.length', 1)
 		
@@ -1520,11 +1520,11 @@ describe('criar curso via catálogo', () => {
 		cy.wait(4000)
 
 		// Clicar no botão de editar do curso para validar dados salvos e página correta
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.contains('button', 'Editar')
 			.click()
 		
@@ -1555,7 +1555,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.should('have.value', conteudo_edit.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -1651,7 +1651,7 @@ describe('criar curso via catálogo', () => {
 			  	cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
@@ -1718,11 +1718,11 @@ describe('criar curso via catálogo', () => {
 
 		// DELETE
 		// Clicar no botão de excluir do curso, mensagem de confirmação e confirmar exclusão
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.wait(2000)	
 			.contains('button', 'Excluir')
 			.click({ force: true })
@@ -1739,14 +1739,14 @@ describe('criar curso via catálogo', () => {
 		cy.contains('button.chakra-button', 'Excluir')
 			.click({ force: true})
 
-		cy.contains('.chakra-alert__desc', 'Evento excluído com sucesso', { timeout: 10000 })
+		cy.contains('.chakra-alert__desc', 'Evento excluído com sucesso', { timeout: 5000 })
 			.should('be.visible')
 
 		// Aguardar 4s devido a atualização da página
 		cy.wait(4000)
 
 		// Verificar se o curso foi excluído e não é exibido na listagem
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.should('not.exist')	
 	})
 
@@ -1812,7 +1812,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.should('have.value', hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -1898,7 +1898,7 @@ describe('criar curso via catálogo', () => {
 
         cy.wait(4000)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contentEditable => {
@@ -1957,7 +1957,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		// Breadcrumb correto: Lista de cursos
@@ -1967,7 +1967,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 
 		// Verificar se o curso foi criado e é exibido na listagem
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.should('be.visible')
 			.should('have.length', 1)
 		
@@ -1976,11 +1976,11 @@ describe('criar curso via catálogo', () => {
 		cy.wait(4000)
 
 		// Clicar no botão de editar do curso para validar dados salvos e página correta
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.contains('button', 'Editar')
 			.click()
 		
@@ -2014,7 +2014,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.should('have.value', hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -2100,7 +2100,7 @@ describe('criar curso via catálogo', () => {
 
         cy.wait(4000)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contentEditable => {
@@ -2214,7 +2214,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		// Breadcrumb correto: Lista de cursos
@@ -2224,7 +2224,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 
 		// Verificar se o curso editado foi salvo corretamente e é exibido na listagem
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.should('be.visible')
 			.should('have.length', 1)
 		
@@ -2233,11 +2233,11 @@ describe('criar curso via catálogo', () => {
 		cy.wait(4000)
 
 		// Clicar no botão de editar do curso para validar dados salvos e página correta
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.contains('button', 'Editar')
 			.click()
 		
@@ -2271,7 +2271,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.should('have.value', hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -2367,7 +2367,7 @@ describe('criar curso via catálogo', () => {
 					cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
@@ -2431,11 +2431,11 @@ describe('criar curso via catálogo', () => {
 
 		// DELETE
 		// Clicar no botão de excluir do curso, mensagem de confirmação e confirmar exclusão
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.wait(2000)	
 			.contains('button', 'Excluir')
 			.click({ force: true })
@@ -2452,14 +2452,14 @@ describe('criar curso via catálogo', () => {
 		cy.contains('button.chakra-button', 'Excluir')
 			.click({ force: true})
 
-		cy.contains('.chakra-alert__desc', 'Evento excluído com sucesso', { timeout: 10000 })
+		cy.contains('.chakra-alert__desc', 'Evento excluído com sucesso', { timeout: 5000 })
 			.should('be.visible')
 
 		// Aguardar 4s devido a atualização da página
 		cy.wait(4000)
 
 		// Verificar se o curso foi excluído e não é exibido na listagem
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.should('not.exist')		
 	})
 
@@ -2514,7 +2514,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.should('have.value', '')
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -2600,7 +2600,7 @@ describe('criar curso via catálogo', () => {
 
         cy.wait(4000)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contentEditable => {
@@ -2659,7 +2659,7 @@ describe('criar curso via catálogo', () => {
 		.should('be.visible')
 		.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		// Breadcrumb correto: Lista de cursos
@@ -2669,7 +2669,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 
 		// Verificar se o curso foi criado e é exibido na listagem
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.should('be.visible')
 			.should('have.length', 1)
 		
@@ -2678,11 +2678,11 @@ describe('criar curso via catálogo', () => {
 		cy.wait(4000)
 
 		// Clicar no botão de editar do curso para validar dados salvos e página correta
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.contains('button', 'Editar')
 			.click()
 		
@@ -2716,7 +2716,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.should('have.value', '')
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -2802,7 +2802,7 @@ describe('criar curso via catálogo', () => {
 
 		cy.wait(4000)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contentEditable => {
@@ -2874,7 +2874,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		// Breadcrumb correto: Lista de cursos
@@ -2884,7 +2884,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 
 		// Verificar se o curso editado foi salvo corretamente e é exibido na listagem
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.should('be.visible')
 			.should('have.length', 1)
 		
@@ -2893,11 +2893,11 @@ describe('criar curso via catálogo', () => {
 		cy.wait(4000)
 
 		// Clicar no botão de editar do curso para validar dados salvos e página correta
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.contains('button', 'Editar')
 			.click()
 		
@@ -2928,7 +2928,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.should('have.value', '')
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -3015,7 +3015,7 @@ describe('criar curso via catálogo', () => {
 			  	cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
@@ -3082,11 +3082,11 @@ describe('criar curso via catálogo', () => {
 
 		// DELETE
 		// Clicar no botão de excluir do curso, mensagem de confirmação e confirmar exclusão
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.wait(2000)	
 			.contains('button', 'Excluir')
 			.click({ force: true })
@@ -3103,14 +3103,14 @@ describe('criar curso via catálogo', () => {
 		cy.contains('button.chakra-button', 'Excluir')
 			.click({ force: true})
 
-		cy.contains('.chakra-alert__desc', 'Evento excluído com sucesso', { timeout: 10000 })
+		cy.contains('.chakra-alert__desc', 'Evento excluído com sucesso', { timeout: 5000 })
 			.should('be.visible')
 
 		// Aguardar 4s devido a atualização da página
 		cy.wait(4000)
 
 		// Verificar se o curso foi excluído e não é exibido na listagem
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
 			.should('not.exist')
 	})
 
@@ -3160,14 +3160,14 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
 			.should('be.visible')
 
 		// Verificar se o catálogo editado foi salvo corretamente e é exibido na listagem
-		cy.get(`tr.event-row[name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr.event-row[name='${body.name}']`, { timeout: 5000})
 			.should('be.visible')
 			.should('have.length', 1)	
 
@@ -3244,7 +3244,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.type(conteudo.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -3331,7 +3331,7 @@ describe('criar curso via catálogo', () => {
 				cy.get(`input#${id}`).click()
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
@@ -3385,7 +3385,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		// Breadcrumb correto: Lista de cursos
@@ -3395,7 +3395,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 
 		// Verificar se o curso foi criado e é exibido na listagem
-		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 5000})
 			.should('be.visible')
 			.should('have.length', 1)
 
@@ -3404,11 +3404,11 @@ describe('criar curso via catálogo', () => {
 		cy.wait(4000)
 
 		// Clicar no botão de editar do curso para validar dados salvos e página correta
-		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 5000})
 			.contains('button', 'Editar')
 			.click()
 
@@ -3436,7 +3436,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.should('have.value', conteudo.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -3532,7 +3532,7 @@ describe('criar curso via catálogo', () => {
 			  	cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
@@ -3621,7 +3621,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#modal-remove-events-index-confirmed')
 		.click({ force: true })
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos excluído com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos excluído com sucesso.', { timeout: 5000 })
 		.should('be.visible')
 
 		// Aguardar 4s devido a atualização da página
@@ -3637,11 +3637,11 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 
 		// Clicar no botão de editar do curso para validar dados salvos e página correta
-		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 5000})
 			.contains('button', 'Editar')
 			.click()
 
@@ -3711,7 +3711,7 @@ describe('criar curso via catálogo', () => {
 			.clear()
 			.type(conteudo_edit.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -3833,14 +3833,14 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Lista de cursos')
 			.should('be.visible')
 
 		// Verificar se o curso editado foi salvo corretamente e é exibido na listagem
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.should('be.visible')
 			.should('have.length', 1)
 		
@@ -3849,11 +3849,11 @@ describe('criar curso via catálogo', () => {
 		cy.wait(4000)
 
 		// Clicar no botão de editar do curso para validar dados salvos e página correta
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.contains('button', 'Editar')
 			.click()
 		
@@ -3881,7 +3881,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.should('have.value', conteudo_edit.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -3977,7 +3977,7 @@ describe('criar curso via catálogo', () => {
 			  	cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
@@ -4038,11 +4038,11 @@ describe('criar curso via catálogo', () => {
 
 		// DELETE
 		// Clicar no botão de excluir do curso, mensagem de confirmação e confirmar exclusão
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.wait(2000)	
 			.contains('button', 'Excluir')
 			.click({ force: true })
@@ -4059,14 +4059,14 @@ describe('criar curso via catálogo', () => {
 		cy.contains('button.chakra-button', 'Excluir')
 			.click({ force: true})
 
-		cy.contains('.chakra-alert__desc', 'Evento excluído com sucesso', { timeout: 10000 })
+		cy.contains('.chakra-alert__desc', 'Evento excluído com sucesso', { timeout: 5000 })
 			.should('be.visible')
 
 		// Aguardar 4s devido a atualização da página
 		cy.wait(4000)
 
 		// Verificar se o curso foi excluído e não é exibido na listagem
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.should('not.exist')
 	})
 
@@ -4116,14 +4116,14 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
 			.should('be.visible')
 
 		// Verificar se o catálogo editado foi salvo corretamente e é exibido na listagem
-		cy.get(`tr.event-row[name='${body.name}']`, { timeout: 10000})
+		cy.get(`tr.event-row[name='${body.name}']`, { timeout: 5000})
 			.should('be.visible')
 			.should('have.length', 1)	
 
@@ -4200,7 +4200,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.type(conteudo.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -4287,7 +4287,7 @@ describe('criar curso via catálogo', () => {
 				cy.get(`input#${id}`).click()
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
@@ -4341,7 +4341,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		// Breadcrumb correto: Lista de cursos
@@ -4351,7 +4351,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 
 		// Verificar se o curso foi criado e é exibido na listagem
-		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 5000})
 			.should('be.visible')
 			.should('have.length', 1)
 
@@ -4360,11 +4360,11 @@ describe('criar curso via catálogo', () => {
 		cy.wait(4000)
 
 		// Clicar no botão de editar do curso para validar dados salvos e página correta
-		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 5000})
 			.contains('button', 'Editar')
 			.click()
 
@@ -4392,7 +4392,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.should('have.value', conteudo.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -4488,7 +4488,7 @@ describe('criar curso via catálogo', () => {
 			  	cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
@@ -4577,7 +4577,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#modal-remove-events-index-confirmed')
 		.click({ force: true })
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos excluído com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos excluído com sucesso.', { timeout: 5000 })
 		.should('be.visible')
 
 		// Aguardar 4s devido a atualização da página
@@ -4593,11 +4593,11 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 
 		// Clicar no botão de editar do curso para validar dados salvos e página correta
-		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 5000})
 			.contains('button', 'Editar')
 			.click()
 
@@ -4667,7 +4667,7 @@ describe('criar curso via catálogo', () => {
 			.clear()
 			.type(conteudo_edit.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -4789,14 +4789,14 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Lista de cursos')
 			.should('be.visible')
 
 		// Verificar se o curso editado foi salvo corretamente e é exibido na listagem
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.should('be.visible')
 			.should('have.length', 1)
 		
@@ -4805,11 +4805,11 @@ describe('criar curso via catálogo', () => {
 		cy.wait(4000)
 
 		// Clicar no botão de editar do curso para validar dados salvos e página correta
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.contains('button', 'Editar')
 			.click()
 		
@@ -4837,7 +4837,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.should('have.value', conteudo_edit.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -4933,7 +4933,7 @@ describe('criar curso via catálogo', () => {
 			  	cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
@@ -4994,11 +4994,11 @@ describe('criar curso via catálogo', () => {
 
 		// DELETE
 		// Clicar no botão de excluir do curso, mensagem de confirmação e confirmar exclusão
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.wait(2000)	
 			.contains('button', 'Excluir')
 			.click({ force: true })
@@ -5015,14 +5015,14 @@ describe('criar curso via catálogo', () => {
 		cy.contains('button.chakra-button', 'Excluir')
 			.click({ force: true})
 
-		cy.contains('.chakra-alert__desc', 'Evento excluído com sucesso', { timeout: 10000 })
+		cy.contains('.chakra-alert__desc', 'Evento excluído com sucesso', { timeout: 5000 })
 			.should('be.visible')
 
 		// Aguardar 4s devido a atualização da página
 		cy.wait(4000)
 
 		// Verificar se o curso foi excluído e não é exibido na listagem
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.should('not.exist')
 	})
 
@@ -5102,7 +5102,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.type(conteudo.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -5189,7 +5189,7 @@ describe('criar curso via catálogo', () => {
 				cy.get(`input#${id}`).click()
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		  
 			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
@@ -5244,7 +5244,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
@@ -5290,7 +5290,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.should('have.value', conteudo.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -5385,7 +5385,7 @@ describe('criar curso via catálogo', () => {
 
         cy.wait(4000)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
@@ -5444,7 +5444,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		// Breadcrumb correto: Lista de cursos
@@ -5454,7 +5454,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 
 		// Verificar se o curso foi criado e é exibido na listagem
-		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 5000})
 			.should('be.visible')
 			.should('have.length', 1)
 		
@@ -5463,11 +5463,11 @@ describe('criar curso via catálogo', () => {
 		cy.wait(4000)
 
 		// Clicar no botão de editar do curso para validar dados salvos e página correta
-		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo.nome}']`, { timeout: 5000})
 			.contains('button', 'Editar')
 			.click()
 		
@@ -5501,7 +5501,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.should('have.value', conteudo.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -5596,7 +5596,7 @@ describe('criar curso via catálogo', () => {
 
         cy.wait(4000)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
@@ -5715,7 +5715,7 @@ describe('criar curso via catálogo', () => {
 			.clear()
 			.type(conteudo_edit.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -5819,7 +5819,7 @@ describe('criar curso via catálogo', () => {
 				cy.get(`input#${id}`).click()
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
@@ -5877,7 +5877,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 10000 })
+		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
 		// Breadcrumb correto: Lista de cursos
@@ -5887,7 +5887,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 
 		// Verificar se o curso editado foi salvo corretamente e é exibido na listagem
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.should('be.visible')
 			.should('have.length', 1)
 		
@@ -5896,11 +5896,11 @@ describe('criar curso via catálogo', () => {
 		cy.wait(4000)
 
 		// Clicar no botão de editar do curso para validar dados salvos e página correta
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.contains('button', 'Editar')
 			.click()		
 
@@ -5934,7 +5934,7 @@ describe('criar curso via catálogo', () => {
 		cy.get('#time_end')
 			.should('have.value', conteudo_edit.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 			
 			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
@@ -6030,7 +6030,7 @@ describe('criar curso via catálogo', () => {
 					cy.get(`input#${id}`).should('be.checked')
 			})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 10000 }).then($iframe => {
+		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
 			const doc = $iframe.contents()
 		
 			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
@@ -6097,11 +6097,11 @@ describe('criar curso via catálogo', () => {
 
 		// DELETE
 		// Clicar no botão de excluir do curso, mensagem de confirmação e confirmar exclusão
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.find('svg[aria-label="Options"]')
 			.click()
 
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.wait(2000)	
 			.contains('button', 'Excluir')
 			.click({ force: true })
@@ -6118,14 +6118,14 @@ describe('criar curso via catálogo', () => {
 		cy.contains('button.chakra-button', 'Excluir')
 			.click({ force: true})
 
-		cy.contains('.chakra-alert__desc', 'Evento excluído com sucesso', { timeout: 10000 })
+		cy.contains('.chakra-alert__desc', 'Evento excluído com sucesso', { timeout: 5000 })
 			.should('be.visible')
 
 		// Aguardar 4s devido a atualização da página
 		cy.wait(4000)
 
 		// Verificar se o curso foi excluído e não é exibido na listagem
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 10000})
+		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
 			.should('not.exist')		
 	})
 })
