@@ -89,7 +89,7 @@ describe('curso', () => {
 			status_iframe_anexo: true,
 			visualizacao: 'Público',
 			situacao: 'Liberado',
-			notif_concluir_primeira_aula: 'Sim',
+			notificar_concluir_primeira_aula: 'Sim',
 			notificar_usuarios: 'Sim',
 			dias_teste: faker.number.int({ min: 1, max: 9 }),
 			habilitar_dias_teste: true,
@@ -97,7 +97,7 @@ describe('curso', () => {
 			valor_inscricao: faker.commerce.price({ min: 1, max: 9 }),
 			habilitar_pagamento: true,
 			nr_parcelas: faker.number.int({ min: 1, max: 9 }),
-			acréscimo: faker.commerce.price({ min: 1, max: 9, dec: 1 }),
+			valor_acrescimo: faker.commerce.price({ min: 1, max: 9, dec: 1 }),
 			habilitar_chat: true
 		}
 
@@ -109,9 +109,9 @@ describe('curso', () => {
 		cy.excluirConteudo(conteudo_edit.nome, tipoConteudo)
 	})
 
-	it.only('2-CRUD curso liberado, com anexo, com pagamento, sem acréscimo, com confirmação, com visualização para inscritos', () => {
+	it('2-CRUD curso liberado, com anexo, com pagamento, sem acréscimo, com confirmação, com visualização para inscritos', () => {
 		// Massa de dados para criação do curso
-		let categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
+		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
 			data_inicio: '29/03/2024',
@@ -144,7 +144,7 @@ describe('curso', () => {
 			status_iframe_anexo: true,
 			visualizacao: 'Inscritos',
 			situacao: 'Liberado',
-			notif_concluir_primeira_aula: 'Sim',
+			notificar_concluir_primeira_aula: 'Sim',
 			dias_teste: faker.number.int({ min: 1, max: 9 }),
 			habilitar_dias_teste: true,
 			exige_confirmacao: 'Habilitado',
@@ -161,11 +161,10 @@ describe('curso', () => {
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
         cy.editarConteudo(conteudo.nome, tipoConteudo)
-        cy.validarDadosConteudo(conteudo, conteudo.categoria)
+        cy.validarDadosConteudo(conteudo, categorias)
 
 		const novoNome = faker.commerce.productName()
-		const novasCategorias = [`Cat3-${faker.hacker.noun()}`, `Cat4-${faker.hacker.noun()}`]
-		conteudo.categoria = [...conteudo.categoria, ...novasCategorias]
+		novasCategorias = [`Cat3-${faker.hacker.noun()}`, `Cat4-${faker.hacker.noun()}`]
 
 		const conteudo_edit = {
 			nome: novoNome,
@@ -194,7 +193,7 @@ describe('curso', () => {
 			status_iframe_anexo: false,
 			visualizacao: 'Público',
 			situacao: 'Suspenso',
-			notif_concluir_primeira_aula: 'Não',
+			notificar_concluir_primeira_aula: 'Não',
 			notificar_usuarios: 'Sim',
 			dias_teste: faker.number.int({ min: 1, max: 9 }),
 			habilitar_dias_teste: false,
@@ -207,7 +206,9 @@ describe('curso', () => {
 		cy.preencherDadosConteudo(conteudo_edit, { limpar: true })
 		cy.salvarConteudo(conteudo_edit.nome, tipoConteudo)
 		cy.editarConteudo(conteudo_edit.nome, tipoConteudo)
-		cy.validarDadosConteudo(conteudo_edit, conteudo.categoria)
+
+		const todasCategorias = [...categorias, ...novasCategorias]
+		cy.validarDadosConteudo(conteudo_edit, todasCategorias)
 		cy.cancelarFormularioConteudo(tipoConteudo)
 		cy.excluirConteudo(conteudo_edit.nome, tipoConteudo)
 	})
@@ -241,13 +242,13 @@ describe('curso', () => {
 			permite_anexo: 'Habilitado',
 			visualizacao: 'Público',
 			situacao: 'Liberado',
-			notif_concluir_primeira_aula: 'Sim',
+			notificar_concluir_primeira_aula: 'Sim',
 			notificar_usuarios: 'Sim',
 			dias_teste: faker.number.int({ min: 10, max: 99 }),
 			exige_confirmacao: 'Desabilitado',
 			valor_inscricao: faker.commerce.price({ min: 10, max: 99 }),
 			numero_parcelas: faker.number.int({ min: 10, max: 12 }),
-			acréscimo: faker.commerce.price({ min: 1, max: 9, dec: 1 })
+			valor_acrescimo: faker.commerce.price({ min: 1, max: 9, dec: 1 })
 		}
 
 		// !!! PRÉ-CONDIÇÃO !!!
@@ -633,7 +634,7 @@ describe('curso', () => {
 			mensagem_anexo: faker.lorem.sentence(),
 			visualizacao: 'Colaborador',
 			situacao: 'Em desenvolvimento',
-			notif_concluir_primeira_aula: 'Não',
+			notificar_concluir_primeira_aula: 'Não',
 			dias_teste: faker.number.int({ min: 1, max: 9 }),
 			exige_confirmacao: 'Desabilitado',
 			valor_inscricao: faker.commerce.price({ min: 1, max: 9 })
@@ -1073,7 +1074,7 @@ describe('curso', () => {
 			permite_anexo: 'Desabilitado',
 			visualizacao: 'Colaborador',
 			situacao: 'Suspenso',
-			notif_concluir_primeira_aula: 'Não',
+			notificar_concluir_primeira_aula: 'Não',
 			dias_teste: faker.number.int({ min: 100, max: 999 }),
 			exige_confirmacao: 'Habilitado'
 		}
@@ -1766,7 +1767,7 @@ describe('curso', () => {
 			},
 			visualizacao: 'Usuários',
 			situacao: 'Suspenso',
-			notif_concluir_primeira_aula: 'Não',
+			notificar_concluir_primeira_aula: 'Não',
 			dias_teste: faker.number.int({ min: 1000, max: 9999 }),
 			exige_confirmacao: 'Habilitado'
 		}
@@ -2345,7 +2346,7 @@ describe('curso', () => {
 			},
 			visualizacao: 'Público',
 			situacao: 'Liberado',
-			notif_concluir_primeira_aula: 'Sim',
+			notificar_concluir_primeira_aula: 'Sim',
 			notificar_usuarios: 'Sim',
 			exige_confirmacao: 'Desabilitado'
 		}
@@ -2923,7 +2924,7 @@ describe('curso', () => {
 			},
 			visualizacao: 'Usuários',
 			situacao: 'Em desenvolvimento',
-			notif_concluir_primeira_aula: 'Não'
+			notificar_concluir_primeira_aula: 'Não'
 		}
 
 		// !!! PRÉ-CONDIÇÃO !!!
