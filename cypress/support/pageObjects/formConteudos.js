@@ -311,7 +311,7 @@ class formConteudos {
 		} else {
 			throw new Error(`Campo ${nomeCampo} não pode ser preenchido com valor ${valorFinal}`)
 	}
-}
+	}
 
 	validarCampo(nomeCampo, valor, categoria) {
 		
@@ -404,5 +404,4 @@ class formConteudos {
 			}
 	}
 }
-
 export default formConteudos;

@@ -2,13 +2,10 @@
 import 'cypress-real-events/support'
 import { faker } from '@faker-js/faker'
 import { getAuthToken } from '../support/auth_helper'
+import { gerarDataAtual } from '../support/utils_helper'
 
 describe('curso', () => {
-	let nome
-	let tipoConteudo
-	let categorias
-	let novasCategorias
-	let delCategorias
+	let nome, tipoConteudo, categorias, novasCategorias, delCategorias
 	let formularioConteudo = {
 		nome: '',
 		data_inicio: '',
@@ -92,15 +89,21 @@ describe('curso', () => {
             descricao: `${faker.commerce.productDescription()} do evento ${nome}`,
 		}
 
-		// TESTE
+		// CREATE
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfilParaAdministrador()
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
-        cy.editarConteudo(conteudo.nome, tipoConteudo)
-        cy.validarDadosConteudo(conteudo)
 
+		// READ
+        cy.editarConteudo(conteudo.nome, tipoConteudo)
+        
+		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
+		cy.validarDadosConteudo(dadosParaValidar)
+
+		// UPDATE
+		// Massa de dados para edição do curso
 		const novoNome = faker.commerce.productName()
 		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
 		const conteudo_edit = {
@@ -130,7 +133,7 @@ describe('curso', () => {
 			notificar_responsavel: true,
 			rotulo_contato: 'Contato',
 			hashtag: faker.hacker.adjective(),
-			categoria: categorias,
+			add_categoria: categorias,
 			remover_banner: true,
 			permite_anexo: 'Habilitado',
 			mensagem_anexo: `Insira o anexo do Curso: ${novoNome}`,
@@ -150,9 +153,18 @@ describe('curso', () => {
 		}
 
 		cy.preencherDadosConteudo(conteudo_edit, { limpar: true })
-		cy.salvarConteudo(conteudo_edit.nome, tipoConteudo)		
+		cy.salvarConteudo(conteudo_edit.nome, tipoConteudo)
+
+		// READ-UPDATE
 		cy.editarConteudo(conteudo_edit.nome, tipoConteudo)
-		cy.validarDadosConteudo(conteudo_edit, categorias)
+
+		const todasCategorias = [...categorias, ...novasCategorias]
+
+		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudo_edit }
+
+		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
+
+		// DELETE
 		cy.cancelarFormularioConteudo(tipoConteudo)
 		cy.excluirConteudo(conteudo_edit.nome, tipoConteudo)
 	})
@@ -186,7 +198,7 @@ describe('curso', () => {
 			notificar_responsavel: true,
 			rotulo_contato: 'Fale conosco',
 			hashtag: faker.hacker.adjective(),
-			categoria: categorias,
+			add_categoria: categorias,
 			permite_anexo: 'Habilitado',
 			mensagem_anexo: `Insira o anexo do Curso: ${nome}`,
 			status_iframe_anexo: true,
@@ -202,18 +214,23 @@ describe('curso', () => {
 			habilitar_chat: true
 		}
 
-		// TESTE
+		// CREATE
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfilParaAdministrador()
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
-        cy.editarConteudo(conteudo.nome, tipoConteudo)
-        cy.validarDadosConteudo(conteudo, categorias)
 
+		// READ
+        cy.editarConteudo(conteudo.nome, tipoConteudo)
+
+		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
+        cy.validarDadosConteudo(dadosParaValidar, categorias)
+
+		// UPDATE
+		// Massa de dados para edição do curso
 		const novoNome = faker.commerce.productName()
 		novasCategorias = [`Cat3-${faker.hacker.noun()}`, `Cat4-${faker.hacker.noun()}`]
-
 		const conteudo_edit = {
 			nome: novoNome,
 			data_inicio: '01/01/2023',
@@ -235,7 +252,7 @@ describe('curso', () => {
 			notificar_responsavel: false,
 			rotulo_contato: 'Contato',
 			hashtag: faker.hacker.adjective(),
-			categoria: novasCategorias,
+			add_categoria: novasCategorias,
 			remover_banner: true,
 			permite_anexo: 'Desabilitado',
 			status_iframe_anexo: false,
@@ -253,10 +270,26 @@ describe('curso', () => {
 
 		cy.preencherDadosConteudo(conteudo_edit, { limpar: true })
 		cy.salvarConteudo(conteudo_edit.nome, tipoConteudo)
+
+		// READ-UPDATE
+		// Massa de dados complementar para validação
+		const conteudo_extra = {
+			endereco: '',
+			complemento: '',
+			cidade: '',
+			estado: '',
+			pais: ''
+		}
+
 		cy.editarConteudo(conteudo_edit.nome, tipoConteudo)
 
 		const todasCategorias = [...categorias, ...novasCategorias]
-		cy.validarDadosConteudo(conteudo_edit, todasCategorias)
+
+		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudo_edit, ...conteudo_extra }
+		
+		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
+
+		// DELETE
 		cy.cancelarFormularioConteudo(tipoConteudo)
 		cy.excluirConteudo(conteudo_edit.nome, tipoConteudo)
 	})
@@ -284,7 +317,7 @@ describe('curso', () => {
 			notificar_responsavel: false,
 			rotulo_contato: 'Entre em contato conosco para mais informações.',
 			hashtag: faker.hacker.adjective(),
-			categoria: categorias,
+			add_categoria: categorias,
 			permite_anexo: 'Habilitado',
 			status_iframe_anexo: true,
 			visualizacao: 'Público',
@@ -301,25 +334,30 @@ describe('curso', () => {
 			habilitar_chat: true
 		}
 
-		// TESTE
+		// CREATE
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfilParaAdministrador()
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
-        cy.editarConteudo(conteudo.nome, tipoConteudo)
-        cy.validarDadosConteudo(conteudo, categorias)
 
+		// READ
+        cy.editarConteudo(conteudo.nome, tipoConteudo)
+
+		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
+        cy.validarDadosConteudo(dadosParaValidar, categorias)
+
+		// UPDATE
+		// Massa de dados para edição do curso
 		const novoNome = faker.commerce.productName()
-		novasCategorias = [`Cat4-${faker.hacker.noun()}`, `Cat5-${faker.hacker.noun()}`]
-		
+		novasCategorias = [`Cat4-${faker.hacker.noun()}`, `Cat5-${faker.hacker.noun()}`]		
 		const conteudo_edit = {
 			nome: novoNome,
 			data_inicio: '10/03/2000',
 			hora_inicio: '00:00',
 			data_fim: '31/12/2050',
 			hora_fim: '03:40',
-			descricao: `${faker.commerce.productDescription()} do evento ${nome}`,
+			descricao: `${faker.commerce.productDescription()} do evento ${novoNome}`,
 			tipo: 'Webinar',
 			modalidade: 'Presencial',
 			sincronismo: 'Ao vivo',
@@ -333,10 +371,10 @@ describe('curso', () => {
 			notificar_responsavel: true,
 			rotulo_contato: 'Mande-nos um e-mail',
 			hashtag: faker.hacker.adjective(),
-			categoria: novasCategorias,
+			add_categoria: novasCategorias,
 			permite_anexo: 'Habilitado',
 			status_iframe_anexo: true,
-			mensagem_anexo: `Insira o anexo do Curso: ${nome}`,
+			mensagem_anexo: `Insira o anexo do Curso: ${novoNome}`,
 			visualizacao: 'Colaborador',
 			situacao: 'Em desenvolvimento',
 			notificar_concluir_primeira_aula: 'Não',
@@ -350,38 +388,30 @@ describe('curso', () => {
 
 		cy.preencherDadosConteudo(conteudo_edit, { limpar: true })
 		cy.salvarConteudo(conteudo_edit.nome, tipoConteudo)
+
+		// READ-UPDATE
 		cy.editarConteudo(conteudo_edit.nome, tipoConteudo)
 
 		const todasCategorias = [...categorias, ...novasCategorias]
-		cy.validarDadosConteudo(conteudo_edit, todasCategorias)
+
+		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudo_edit }
+
+		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
+
+		// DELETE
 		cy.cancelarFormularioConteudo(tipoConteudo)
 		cy.excluirConteudo(conteudo_edit.nome, tipoConteudo)
 	})
 
 	it('4-CRUD curso suspenso, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
-		categorias = [`Cat1-${faker.hacker.noun()}`]
-		
-		// Cria um novo objeto Date para a data atual
-		let dataAtual = new Date()
-
-		// Extrai o dia, mês e ano do objeto Date
-		let dia = dataAtual.getDate()
-		let mes = dataAtual.getMonth() + 1
-		let ano = dataAtual.getFullYear()
-
-		// Converte dia e mês para string e garante que ambos tenham dois dígitos
-		dia = dia < 10 ? '0' + dia : dia.toString()
-		mes = mes < 10 ? '0' + mes : mes.toString()
-
-		// Concatena as strings de ano, mês e dia
-		let dataFormatada = `${dia}/${mes}/${ano}`
-
 		// Massa de dados para criação do curso
+		categorias = [`Cat1-${faker.hacker.noun()}`]
+
 		const conteudo = {
 			nome: nome,
-			data_inicio: dataFormatada,
+			data_inicio: gerarDataAtual(),
 			hora_inicio: '01:00',
-			data_fim: dataFormatada,
+			data_fim: gerarDataAtual(),
 			hora_fim: '23:00',
 			descricao: `${faker.commerce.productDescription()} do evento ${nome}`,
 			tipo: 'Outros',
@@ -396,7 +426,7 @@ describe('curso', () => {
 			site: faker.internet.url(),
 			notificar_responsavel: false,
 			hashtag: faker.hacker.adjective(),
-			categoria: categorias,
+			add_categoria: categorias,
 			permite_anexo: 'Desabilitado',
 			status_iframe_anexo: false,
 			status_iframe_anexo: false,
@@ -410,23 +440,28 @@ describe('curso', () => {
 			habilitar_chat: true
 		}
 
-		// TESTE
+		// CREATE
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfilParaAdministrador()
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
+
+		// READ
         cy.editarConteudo(conteudo.nome, tipoConteudo)
-        cy.validarDadosConteudo(conteudo, categorias)
 
+		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
+        cy.validarDadosConteudo(dadosParaValidar, categorias)
+
+		// UPDATE
+		// Massa de dados para edição do curso
 		novasCategorias = [`Cat2-${faker.hacker.noun()}`, `Cat3-${faker.hacker.noun()}`]
-
 		const conteudo_edit = {
 			data_inicio: '01/01/2000',
 			data_fim: '28/02/2030',
 			tipo: 'Treinamento',
 			canal: 'Em companhia',
-			categoria: novasCategorias,
+			add_categoria: novasCategorias,
 			visualizacao: 'Usuários',
 			situacao: 'Em desenvolvimento',
 			exige_confirmacao: 'Desabilitado'
@@ -434,11 +469,17 @@ describe('curso', () => {
 
 		cy.preencherDadosConteudo(conteudo_edit, { limpar: true })
 		cy.salvarConteudo(conteudo.nome, tipoConteudo)
+
+		// READ-UPDATE
 		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
-		const todasCategorias = [...categorias, ...novasCategorias]
-		const dadosParaValidar = { ...conteudo, ...conteudo_edit }
+		let todasCategorias = [...categorias, ...novasCategorias]
+
+		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudo_edit }
+
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
+
+		// DELETE
 		cy.cancelarFormularioConteudo(tipoConteudo)
 		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
@@ -460,7 +501,7 @@ describe('curso', () => {
 			email_responsavel: faker.internet.email(),
 			site: faker.internet.url(),
 			hashtag: faker.hacker.adjective(),
-			categoria: categorias,
+			add_categoria: categorias,
 			status_iframe_anexo: false,
 			visualizacao: 'Usuários',
 			situacao: 'Suspenso',
@@ -470,28 +511,37 @@ describe('curso', () => {
 			habilitar_chat: true
 		}
 
-		// TESTE
+		// CREATE
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfilParaAdministrador()
 		cy.addConteudo(tipoConteudo)
 		cy.preencherDadosConteudo(conteudo, { limpar: true })
 		cy.salvarConteudo(conteudo.nome, tipoConteudo)
+
+		// READ
 		cy.editarConteudo(conteudo.nome, tipoConteudo)
-		cy.validarDadosConteudo(conteudo, categorias)
+
+		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 		
 		// UPDATE
+		// Massa de dados para edição do curso
 		const conteudo_edit = {
 			tipo: 'Outros',
 			visualizacao: 'Inscritos',
 			status_iframe_anexo: false
 		}
 
-		const dadosParaValidar = { ...conteudo, ...conteudo_edit }
-
 		cy.preencherDadosConteudo(conteudo_edit, { limpar: true })
 		cy.salvarConteudo(conteudo.nome, tipoConteudo)
+
+		// READ-UPDATE
 		cy.editarConteudo(conteudo.nome, tipoConteudo)
+
+		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudo_edit }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
+
+		// DELETE
 		cy.cancelarFormularioConteudo(tipoConteudo)
 		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
@@ -513,7 +563,7 @@ describe('curso', () => {
 			email_responsavel: faker.internet.email(),
 			site: faker.internet.url(),
 			notificar_responsavel: false,
-			categoria: categorias,
+			add_categoria: categorias,
 			status_iframe_anexo: false,
 			visualizacao: 'Público',
 			situacao: 'Liberado',
@@ -525,31 +575,40 @@ describe('curso', () => {
 			habilitar_chat: true
 		}
 
-		// TESTE
+		// CREATE
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfilParaAdministrador()
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
+
+		// READ
         cy.editarConteudo(conteudo.nome, tipoConteudo)
-        cy.validarDadosConteudo(conteudo, categorias)
+
+		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
+        cy.validarDadosConteudo(dadosParaValidar, categorias)
 		
 		// UPDATE
+		// Massa de dados para edição do curso
 		const conteudo_edit = {
 			tipo: 'Palestra'
 		}
 
 		cy.preencherDadosConteudo(conteudo_edit, { limpar: true })
 		cy.salvarConteudo(conteudo.nome, tipoConteudo)
+
+		// READ-UPDATE
 		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
-		const dadosParaValidar = { ...conteudo, ...conteudo_edit }
+		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudo_edit }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
+
+		// DELETE
 		cy.cancelarFormularioConteudo(tipoConteudo)
 		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
-	it.only('7-CRUD curso em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários', () => {
+	it('7-CRUD curso em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários', () => {
 		// Massa de dados para criação do curso
 		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
 		const conteudo = {
@@ -566,36 +625,45 @@ describe('curso', () => {
 			habilitar_chat: true
 		}
 
-		// TESTE
+		// CREATE
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfilParaAdministrador()
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
+
+		// READ
         cy.editarConteudo(conteudo.nome, tipoConteudo)
 
-		const dadosParaValidar = { ...formularioConteudo, ...conteudo }
-		cy.log(dadosParaValidar)
+		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
         cy.validarDadosConteudo(dadosParaValidar, categorias)		
 
-		// delCategorias = categorias[0]
-		// const conteudo_edit = {
-		// 	vigencia: '0',
-		// 	atualizar_inscritos: true,
-		// 	remover_categoria: delCategorias,
-		// 	habilitar_chat: false
-		// }
+		// UPDATE
+		// Massa de dados para edição do curso
+		delCategorias = categorias[0]
+		const conteudo_edit = {
+			vigencia: '0',
+			atualizar_inscritos: true,
+			remover_categoria: delCategorias,
+			remover_banner: true,
+			habilitar_chat: false
+		}
 
-		// cy.preencherDadosConteudo(conteudo_edit, { limpar: true })
-		// cy.salvarConteudo(conteudo.nome, tipoConteudo)
-		// cy.editarConteudo(conteudo.nome, tipoConteudo)
+		cy.preencherDadosConteudo(conteudo_edit, { limpar: true })
+		cy.salvarConteudo(conteudo.nome, tipoConteudo)
+
+		// READ-UPDATE
+		cy.editarConteudo(conteudo.nome, tipoConteudo)
 		
-		// const todasCategorias = categorias.filter(categoria => 
-		// 	!delCategorias.includes(categoria)
-		// )
-		// const dadosParaValidar = { ...conteudo, ...conteudo_edit }
-		// cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
-		// cy.cancelarFormularioConteudo(tipoConteudo)
-		// cy.excluirConteudo(conteudo.nome, tipoConteudo)
+		const todasCategorias = categorias.filter(categoria => 
+			!delCategorias.includes(categoria)
+		)
+		
+		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudo_edit }
+		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
+
+		// DELETE
+		cy.cancelarFormularioConteudo(tipoConteudo)
+		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 })
