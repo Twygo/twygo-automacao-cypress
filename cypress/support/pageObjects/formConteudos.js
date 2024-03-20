@@ -337,6 +337,7 @@ class formConteudos {
             break      
           case 'iframe_status':
             cy.get(seletor, { timeout: 5000 }).then($iframe => {
+              cy.wait(3000)
               const doc = $iframe.contents()
     
               cy.wrap(doc).find('body.cke_editable').invoke('attr', 'contenteditable').then(contentEditable => {
