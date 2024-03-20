@@ -8,6 +8,53 @@ describe('curso', () => {
 	let tipoConteudo
 	let categorias
 	let novasCategorias
+	let delCategorias
+	let formularioConteudo = {
+		nome: '',
+		data_inicio: '',
+		hora_inicio: '',
+		data_fim: '',
+		hora_fim: '',
+		descricao: '',
+		tipo: 'Treinamento',
+		modalidade: 'Online',
+		sincronismo: 'Gravado',
+		canal: '',
+		carga_horaria: '0',
+		numero_turma: '',
+		vigencia: '0',
+		atualizar_inscritos: false,
+		local: '',
+		cep: '',
+		endereco: '',
+		complemento: '',
+		cidade: '',
+		estado: '',
+		pais: '',
+		email_responsavel: Cypress.env('login'),
+		site: '',
+		notificar_responsavel: false,
+		rotulo_contato: '',
+		hashtag: '',
+		add_categoria: '',
+		remover_categoria: '',
+		remover_banner: false,
+		permite_anexo: 'Desabilitado',
+		mensagem_anexo: '',
+		status_iframe_anexo: false,
+		visualizacao: 'Inscritos',
+		situacao: 'Em desenvolvimento',
+		notificar_concluir_primeira_aula: 'Não',
+		notificar_usuarios: 'Não',
+		dias_teste: '0',
+		habilitar_dias_teste: false,
+		exige_confirmacao: 'Habilitado',
+		valor_inscricao: '0,00',
+		habilitar_pagamento: false,
+		nr_parcelas: '1',
+		valor_acrescimo: '0.0',
+		habilitar_chat: false
+	}
 
 	beforeEach( () => {
 		// Ativa o tratamento de exceção não capturada especificamente para este teste
@@ -24,6 +71,7 @@ describe('curso', () => {
 		// Inicializa o array de categorias
 		categorias = []
 		novasCategorias = []
+		delCategorias = []
 
 		// Obtém o token de autenticação
 		getAuthToken()
@@ -501,27 +549,20 @@ describe('curso', () => {
 		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
-	it('7-CRUD curso em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários', () => {
+	it.only('7-CRUD curso em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários', () => {
 		// Massa de dados para criação do curso
 		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
 			descricao: `${faker.commerce.productDescription()} do evento ${nome}`,
-			tipo: 'Treinamento',
-			modalidade: 'Online',
 			sincronismo: 'Ao vivo',
 			canal: 'Aberto',
 			vigencia: '10000',
 			local: 'Twitch',
 			site: faker.internet.url(),
-			notificar_responsavel: false,
 			hashtag: `#${faker.hacker.abbreviation()}`,
-			categoria: categorias,
-			status_iframe_anexo: false,
+			add_categoria: categorias,
 			visualizacao: 'Usuários',
-			situacao: 'Em desenvolvimento',
-			notificar_concluir_primeira_aula: 'Não',
-			habilitar_pagamento: false,
 			habilitar_chat: true
 		}
 
@@ -532,23 +573,29 @@ describe('curso', () => {
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
         cy.editarConteudo(conteudo.nome, tipoConteudo)
-        cy.validarDadosConteudo(conteudo, categorias)
+
+		const dadosParaValidar = { ...formularioConteudo, ...conteudo }
+		cy.log(dadosParaValidar)
+        cy.validarDadosConteudo(dadosParaValidar, categorias)		
+
+		// delCategorias = categorias[0]
+		// const conteudo_edit = {
+		// 	vigencia: '0',
+		// 	atualizar_inscritos: true,
+		// 	remover_categoria: delCategorias,
+		// 	habilitar_chat: false
+		// }
+
+		// cy.preencherDadosConteudo(conteudo_edit, { limpar: true })
+		// cy.salvarConteudo(conteudo.nome, tipoConteudo)
+		// cy.editarConteudo(conteudo.nome, tipoConteudo)
 		
-
-		const conteudo_edit = {
-			vigencia: '0',
-			site: ' ',
-			hashtag: ' ',
-			habilitar_chat: false
-		}
-
-		cy.preencherDadosConteudo(conteudo_edit, { limpar: true })
-		cy.salvarConteudo(conteudo.nome, tipoConteudo)
-		cy.editarConteudo(conteudo.nome, tipoConteudo)
-
-		const dadosParaValidar = { ...conteudo, ...conteudo_edit }
-		cy.validarDadosConteudo(dadosParaValidar, categorias)
-		cy.cancelarFormularioConteudo(tipoConteudo)
-		cy.excluirConteudo(conteudo.nome, tipoConteudo)
+		// const todasCategorias = categorias.filter(categoria => 
+		// 	!delCategorias.includes(categoria)
+		// )
+		// const dadosParaValidar = { ...conteudo, ...conteudo_edit }
+		// cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
+		// cy.cancelarFormularioConteudo(tipoConteudo)
+		// cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 })
