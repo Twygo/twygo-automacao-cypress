@@ -16,3 +16,15 @@ export function gerarDataAtual() {
     let dataFormatada = `${dia}/${mes}/${ano}`
     return dataFormatada
 }
+
+// Função para converter data e hora para ISO
+export function converterDataEHoraParaISO(data, hora) {
+    // Separa o dia, mês e ano da data
+    let dia = data.substring(0, 2)
+    let mes = data.substring(3, 5)
+    let ano = data.substring(6, 10)
+
+    // Concatena a data no formato ISO
+    let dataISO = `${ano}-${mes}-${dia}T${hora}:00.000Z`
+    return dataISO
+}

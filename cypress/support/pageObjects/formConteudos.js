@@ -403,5 +403,11 @@ class formConteudos {
 				break
 			}
 	}
+
+	criarCursoViaCatalogo(nomeConteudo) {
+		cy.get(`tr.event-row[name='${nomeConteudo}']`)
+			.find('a[title="Criar  Curso"]')
+			.click()
+	}
 }
 export default formConteudos;

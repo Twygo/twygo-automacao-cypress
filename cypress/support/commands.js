@@ -24,29 +24,77 @@ Cypress.Commands.add('loginTwygoAutomacao', function() {
     .should('be.visible')
 })
 
-Cypress.Commands.add('alterarPerfilParaAdministrador', function() {
+Cypress.Commands.add('alterarPerfil', function(perfil) {
   cy.get('#btn-profile')
     .should('be.visible')
     .click()
 
-  cy.get('#admin-profile')
-    .should('be.visible')
-    .click()
+  cy.fixture('labels').then((labels) => {
+    const { administrador, instrutor, gestor, aluno, pgInicial, pgInicialAluno } = labels.perfil
+    
+    switch (perfil) {
+      case 'administrador':
+        cy.get('#admin-profile')
+          .should('be.visible')
+          .click()
 
-  // Verificar se o perfil foi alterado com sucesso
-  cy.contains('#btn-profile', 'Administrador')
-    .should('be.visible')
+        // Verificar se o perfil foi alterado com sucesso
+        cy.contains('#btn-profile', administrador)
+          .should('be.visible')
 
-  cy.contains('#page-breadcrumb', 'Lista de cursos')
-    .should('be.visible')
+        cy.contains('#page-breadcrumb', pgInicial)
+          .should('be.visible')
+        break
+      case 'instrutor':
+        cy.get('#instructor-profile')
+          .should('be.visible')
+          .click()
+        
+        // Verificar se o perfil foi alterado com sucesso
+        cy.contains('#btn-profile', instrutor)
+          .should('be.visible')
+
+        cy.contains('#page-breadcrumb', pgInicial)
+          .should('be.visible')
+        break
+      case 'gestor':
+        cy.get('#manager-profile')
+          .should('be.visible')
+          .click()
+        
+        // Verificar se o perfil foi alterado com sucesso
+        cy.contains('#btn-profile', gestor)
+          .should('be.visible')
+
+        cy.contains('#page-breadcrumb', pgInicial)
+          .should('be.visible')
+        break
+      case 'aluno':
+        cy.get('#student-profile')
+          .should('be.visible')
+          .click()
+
+        // Verificar se o perfil foi alterado com sucesso
+        cy.contains('#btn-profile', aluno)
+          .should('be.visible')
+
+        cy.contains('#page-breadcrumb', pgInicialAluno)
+          .should('be.visible')
+        break
+    }
+  })
 })
 
 Cypress.Commands.add('acessarPgCatalogo', function() {
   cy.visit(`/o/${Cypress.env('orgId')}/events/?tab=itens-portfolio`)
 
-  // Verificar se a página de catálogo foi acessada com sucesso
-  cy.contains('#page-breadcrumb', 'Catálogo de cursos')
-    .should('be.visible')
+  cy.fixture('labels').then((labels) => {
+    const { breadcrumb } = labels.conteudo.catalogo
+  
+    // Verificar se a página de catálogo foi acessada com sucesso
+    cy.contains('#page-breadcrumb', breadcrumb)
+      .should('be.visible')
+  })
 })
 
 Cypress.Commands.add("criarCatalogoViaApi", (body, attempt = 1) => {
@@ -143,10 +191,26 @@ Cypress.Commands.add('addConteudo', function(tipoConteudo) {
   cy.fixture('labels').then((labels) => {
     const { breadcrumbAdicionar, tituloPgAdicionar } = labels.conteudo[tipoConteudo]
     
-    // Adicionar
-    cy.contains('button', 'Adicionar')
-      .should('be.visible')
-      .click()
+    switch (tipoConteudo) {
+      case 'curso':
+        cy.get('button', '#menu-button-4')
+          .should('be.visible')
+          .click()
+
+        cy.get('button', '#menu-list-4-menuitem-2')
+          .should('be.visible')
+          .click()
+        break
+      case 'trilha':
+        cy.get('button', '#menu-button-4')
+          .should('be.visible')
+          .click()
+
+        cy.get('button', '#menu-list-4-menuitem-1')
+          .should('be.visible')
+          .click()
+        break
+    }
 
     // Validar se a página foi carregada corretamente
     cy.contains('#page-breadcrumb', breadcrumbAdicionar)

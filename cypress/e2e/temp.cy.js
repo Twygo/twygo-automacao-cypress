@@ -365,7 +365,7 @@ describe('Temp', () => {
 		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
-		cy.contains('#page-breadcrumb', 'Lista de cursos')
+		cy.contains('#page-breadcrumb', 'Lista de conteúdos')
 			.should('be.visible')
 
 		// Verificar se o curso foi criado e é exibido na listagem
@@ -740,7 +740,7 @@ describe('Temp', () => {
 		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
-		cy.contains('#page-breadcrumb', 'Lista de cursos')
+		cy.contains('#page-breadcrumb', 'Lista de conteúdos')
 			.should('be.visible')
 
 		// Verificar se o curso editado foi salvo corretamente e é exibido na listagem
@@ -937,7 +937,7 @@ describe('Temp', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('#page-breadcrumb', 'Lista de cursos')
+		cy.contains('#page-breadcrumb', 'Lista de conteúdos')
 			.should('be.visible')
 
 		// DELETE

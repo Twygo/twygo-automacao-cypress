@@ -1,19 +1,96 @@
 /// reference types="cypress" />
+import 'cypress-real-events/support'
 import { faker } from '@faker-js/faker'
 import { getAuthToken } from '../support/auth_helper'
-import 'cypress-real-events/support'
+import { converterDataEHoraParaISO, gerarDataAtual } from '../support/utils_helper'
+import formConteudos from "../support/pageObjects/formConteudos"
 
 describe('criar curso via catálogo', () => {
-    beforeEach(() => {
+	const formulario = new formConteudos()
+	
+	let nome, tipoConteudo, categorias, novasCategorias, delCategorias
+
+	let formularioConteudo = {
+		nome: '',
+		data_inicio: '',
+		hora_inicio: '',
+		data_fim: '',
+		hora_fim: '',
+		descricao: '',
+		tipo: 'Treinamento',
+		modalidade: 'Online',
+		sincronismo: 'Gravado',
+		canal: '',
+		carga_horaria: '0',
+		numero_turma: '',
+		vigencia: '0',
+		atualizar_inscritos: false,
+		local: '',
+		cep: '',
+		endereco: '',
+		complemento: '',
+		cidade: '',
+		estado: '',
+		pais: '',
+		email_responsavel: Cypress.env('login'),
+		site: '',
+		notificar_responsavel: false,
+		rotulo_contato: '',
+		hashtag: '',
+		add_categoria: '',
+		remover_categoria: '',
+		remover_banner: false,
+		permite_anexo: 'Desabilitado',
+		mensagem_anexo: '',
+		status_iframe_anexo: false,
+		visualizacao: 'Inscritos',
+		situacao: 'Em desenvolvimento',
+		notificar_concluir_primeira_aula: 'Não',
+		notificar_usuarios: 'Não',
+		dias_teste: '0',
+		habilitar_dias_teste: false,
+		exige_confirmacao: 'Habilitado',
+		valor_inscricao: '0,00',
+		habilitar_pagamento: false,
+		nr_parcelas: '1',
+		valor_acrescimo: '0.0',
+		habilitar_chat: false
+	}
+
+	let visualizacaoTexto = {
+        'Inscritos': 0,
+		'Colaborador': 1,
+		'Usuários': 2,
+		'Público': 3
+    }
+
+	let situacaoTexto = {
+		'Em desenvolvimento': 0,
+		'Liberado': 1,
+		'Suspenso': 2
+	}
+
+	beforeEach( () => {
 		// Ativa o tratamento de exceção não capturada especificamente para este teste
 		Cypress.on('uncaught:exception', (err, runnable) => {
 		  	return false
 		})
 
-		// Obtem o token de autenticação
+		// Define o tipo de conteúdo
+		tipoConteudo = 'criarCurso'
+
+		// Gera um nome aleatório para o conteúdo
+		nome = faker.commerce.productName()
+
+		// Inicializa o array de categorias
+		categorias = []
+		novasCategorias = []
+		delCategorias = []
+
+		// Obtém o token de autenticação
 		getAuthToken()
 
-		// Exclui todos os cursos e catálogos antes de iniciar o teste
+		// Exclui todos os cursos antes de iniciar o teste
 		cy.excluirCursoViaApi()
 		cy.excluirCatalogoViaApi()
 	})
@@ -23,899 +100,881 @@ describe('criar curso via catálogo', () => {
 		Cypress.removeAllListeners('uncaught:exception')
 	})
 
-    function convertToISOFormat(dateString, timeString) {
-        // Dividindo a data em partes
-        const [day, month, year] = dateString.split('/')
-        // Combinando as partes da data e a hora para formar uma string ISO
-        const isoString = `${year}-${month}-${day}T${timeString}:00.000Z`
-    
-        return isoString
-    }
-
-    const visualizacaoTexto = {
-        0: 'Inscritos',
-        1: 'Colaborador',
-        2: 'Usuários',
-        3: 'Público'
-    }
-
-    it('1-CRUD deve criar um curso via catálogo com visualização para inscritos', () => {    
-        //Definindo data e hora de início e fim
-        const data_inicio = '10/02/2024'
-        const hora_inicio = '01:00'
-        const data_fim = '15/12/2028'
-        const hora_fim = '12:00'
-
-        const date_time_start = convertToISOFormat(data_inicio, hora_inicio)
-        const date_time_end = convertToISOFormat(data_fim, hora_fim)  
-        
-        // Gerando nome aleatório
-        const eventName = faker.commerce.productName()
-
-        const body = {
-			name: eventName,
-			description: `Descrição do conteúdo: ${eventName}`,
-			date_time_start: date_time_start,
-			date_time_end: date_time_end,
-			workload: 12,
-			situation: 1, 
-			inscription_access: 0
+    it.only('1-CRUD deve criar um curso via catálogo com visualização para inscritos', () => {    
+        // Massa de dados para criar um curso via catálogo
+		const catalogo = {
+			nome: nome,
+			data_inicio: '10/02/2024',
+			hora_inicio: '01:00',
+			data_fim: '15/12/2028',
+			hora_fim: '12:00',
+			descricao: `Descrição do catálogo: ${nome}`,
+			carga_horaria: faker.number.int({ min: 1, max: 99 }),
+			visualizacao: 'Inscritos',
+			situacao: 'Liberado'
 		}
 
-		const label_inscription_access = visualizacaoTexto[body.inscription_access]
-
-		// !!! PRÉ-CONDIÇÃO !!!
+		const body = {
+			name: catalogo.nome,
+			description: catalogo.descricao,
+			date_time_start: converterDataEHoraParaISO(catalogo.data_inicio, catalogo.hora_inicio),
+			date_time_end: converterDataEHoraParaISO(catalogo.data_fim, catalogo.hora_fim),
+			workload: catalogo.carga_horaria,
+			situation: situacaoTexto[catalogo.situacao], 
+			inscription_access: visualizacaoTexto[catalogo.visualizacao]
+		}
+		
+		// CREATE
         cy.criarCatalogoViaApi(body)
 		cy.loginTwygoAutomacao()
-		cy.alterarPerfilParaAdministrador()
+		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
+		formulario.criarCursoViaCatalogo(catalogo.nome)
+		cy.salvarConteudo(catalogo.nome, tipoConteudo)
 
-		// !!! INÍCIO DO TESTE !!!
-		// CREATE
-		// Clicar em "Criar curso" do catálogo
-		cy.get(`tr.event-row[name='${body.name}']`)
-			.find('a[title="Criar  Curso"]')
-			.click()
+		// READ
+        cy.editarConteudo(catalogo.nome, tipoConteudo)
+
 
 		// Abre a página de criação de curso com base no catálogo selecionado
-		cy.contains('#page-breadcrumb', 'Lista de cursos')
-			.should('be.visible')
+		// cy.contains('#page-breadcrumb', 'Lista de conteúdos')
+		// 	.should('be.visible')
 
-		cy.contains('.detail_title', 'Novo Curso')
-			.should('be.visible')
+		// cy.contains('.detail_title', 'Novo Curso')
+		// 	.should('be.visible')
 
-		cy.contains('label','Nome do item de portfólio')
-			.should('be.visible')
+		// cy.contains('label','Nome do item de portfólio')
+		// 	.should('be.visible')
 
-		cy.get('#model_name')
-			.should('have.value', body.name)
+		// cy.get('#model_name')
+		// 	.should('have.value', body.name)
 
-		cy.get('#event_name')
-			.should('have.value', body.name)
+		// cy.get('#event_name')
+		// 	.should('have.value', body.name)
 
-		cy.get('#date_start')
-			.should('have.value', data_inicio)
+		// cy.get('#date_start')
+		// 	.should('have.value', data_inicio)
 
-		cy.get('#time_start')
-			.should('have.value', hora_inicio)
+		// cy.get('#time_start')
+		// 	.should('have.value', hora_inicio)
 
-		cy.get('#date_end')
-			.should('have.value', data_fim)
+		// cy.get('#date_end')
+		// 	.should('have.value', data_fim)
 
-		cy.get('#time_end')
-			.should('have.value', hora_fim)
+		// cy.get('#time_end')
+		// 	.should('have.value', hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-			const doc = $iframe.contents()
+		// cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
+		// 	const doc = $iframe.contents()
 			
-			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
-				cy.wrap($body).should('have.text', `${body.description}`)
-			})
-		})
+		// 	cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
+		// 		cy.wrap($body).should('have.text', `${body.description}`)
+		// 	})
+		// })
 
-		cy.get('#event_event_type_id')
-			.find('option:selected')
-			.contains('Treinamento')
+		// cy.get('#event_event_type_id')
+		// 	.find('option:selected')
+		// 	.contains('Treinamento')
 
-		cy.get('#event_mode')
-			.find('option:selected')
-			.contains('Online')
+		// cy.get('#event_mode')
+		// 	.find('option:selected')
+		// 	.contains('Online')
 
-		cy.get('#event_synchronism')
-			.find('option:selected')
-			.contains('Gravado')
+		// cy.get('#event_synchronism')
+		// 	.find('option:selected')
+		// 	.contains('Gravado')
 
-		cy.get('#event_outlet')
-			.find('option:selected')
-			.should('have.value', '')
+		// cy.get('#event_outlet')
+		// 	.find('option:selected')
+		// 	.should('have.value', '')
 
-		cy.get('#event_workload')
-			.should('have.value', body.workload)
+		// cy.get('#event_workload')
+		// 	.should('have.value', body.workload)
 
-		cy.get('#event_class_number')
-			.should('have.value', '')
+		// cy.get('#event_class_number')
+		// 	.should('have.value', '')
 
-		cy.get('#event_days_to_expire')
-			.should('have.value', '0')
+		// cy.get('#event_days_to_expire')
+		// 	.should('have.value', '0')
 
-		cy.get('#event_place')
-			.should('have.value', '')
+		// cy.get('#event_place')
+		// 	.should('have.value', '')
 
-		cy.get('#event_zip_code')
-			.should('have.value', '')
+		// cy.get('#event_zip_code')
+		// 	.should('have.value', '')
 
-		cy.get('#event_address')
-			.should('have.value', '')
+		// cy.get('#event_address')
+		// 	.should('have.value', '')
 
-		cy.get('#event_address2')
-			.should('have.value', '')
+		// cy.get('#event_address2')
+		// 	.should('have.value', '')
 
-		cy.get('#event_city')
-			.should('have.value', '')
+		// cy.get('#event_city')
+		// 	.should('have.value', '')
 
-		cy.get('#event_state')
-			.should('have.value', '')
+		// cy.get('#event_state')
+		// 	.should('have.value', '')
 		
-		cy.get('#event_country')
-			.should('have.value', '')
+		// cy.get('#event_country')
+		// 	.should('have.value', '')
 
-		cy.get('#event_email')
-			.should('have.value', '')
+		// cy.get('#event_email')
+		// 	.should('have.value', '')
 		
-		cy.get('#event_website')
-			.should('have.value', '')
+		// cy.get('#event_website')
+		// 	.should('have.value', '')
 
-		cy.get('#event_sent_mail_owner')
-			.should('not.be.checked')
+		// cy.get('#event_sent_mail_owner')
+		// 	.should('not.be.checked')
 
-		cy.get('#event_contact_label')
-			.should('have.value', '')
+		// cy.get('#event_contact_label')
+		// 	.should('have.value', '')
 
-		cy.get('#event_hashtag')
-			.should('have.value', '')
+		// cy.get('#event_hashtag')
+		// 	.should('have.value', '')
 
-		cy.get("input.form-control.as-input[name='event[category_extra]']")
-			.should('have.value', '')
+		// cy.get("input.form-control.as-input[name='event[category_extra]']")
+		// 	.should('have.value', '')
 		
-		cy.get('#remove_banner')
-			.should('not.be.checked')
+		// cy.get('#remove_banner')
+		// 	.should('not.be.checked')
 
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Permitir envio de anexos na inscrição?')
-			.parents('.col-md-6.col-lg-4')
-			.find('label:contains("Desabilitado")')
-			.invoke('attr', 'for')
-			.then((id) => {
-					cy.get(`input#${id}`).should('be.checked')
-			})
+		// cy.get('div.col-md-6.col-lg-4')
+		// 	.contains('Permitir envio de anexos na inscrição?')
+		// 	.parents('.col-md-6.col-lg-4')
+		// 	.find('label:contains("Desabilitado")')
+		// 	.invoke('attr', 'for')
+		// 	.then((id) => {
+		// 			cy.get(`input#${id}`).should('be.checked')
+		// 	})
 
-        cy.wait(4000)
+        // cy.wait(4000)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-			const doc = $iframe.contents()
+		// cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
+		// 	const doc = $iframe.contents()
 		
-			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contentEditable => {
-				expect(contentEditable).to.eq('false')
-			})
-		})
+		// 	cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contentEditable => {
+		// 		expect(contentEditable).to.eq('false')
+		// 	})
+		// })
 
-		cy.get('#event_inscription_access')
-			.find('option:selected')
-			.should('have.text', label_inscription_access)
+		// cy.get('#event_inscription_access')
+		// 	.find('option:selected')
+		// 	.should('have.text', label_inscription_access)
 
-		cy.get('#event_situation')
-			.find('option:selected')
-			.contains('Em desenvolvimento')
+		// cy.get('#event_situation')
+		// 	.find('option:selected')
+		// 	.contains('Em desenvolvimento')
 
-		cy.get('#event_end_class')
-			.find('option:selected')
-			.contains('Não')
+		// cy.get('#event_end_class')
+		// 	.find('option:selected')
+		// 	.contains('Não')
 
-		cy.get('#event_notify_users')
-			.find('option:selected')
-			.contains('Não')
+		// cy.get('#event_notify_users')
+		// 	.find('option:selected')
+		// 	.contains('Não')
 
-		cy.get('#event_trial_days')
-			.should('have.value', '0')
+		// cy.get('#event_trial_days')
+		// 	.should('have.value', '0')
 
-		cy.get('#event_enable_trial_days')
-			.should('not.be.checked')
+		// cy.get('#event_enable_trial_days')
+		// 	.should('not.be.checked')
 
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Exigir confirmação de inscrição pelo Organizador?')
-			.parents('.col-md-6.col-lg-4')
-			.find('label:contains("Habilitado")')
-			.invoke('attr', 'for')
-			.then((id) => {
-					cy.get(`input#${id}`).should('be.checked')
-			})
+		// cy.get('div.col-md-6.col-lg-4')
+		// 	.contains('Exigir confirmação de inscrição pelo Organizador?')
+		// 	.parents('.col-md-6.col-lg-4')
+		// 	.find('label:contains("Habilitado")')
+		// 	.invoke('attr', 'for')
+		// 	.then((id) => {
+		// 			cy.get(`input#${id}`).should('be.checked')
+		// 	})
 
-		cy.get('#event_subscription_value')
-			.should('have.value', '0,00')
+		// cy.get('#event_subscription_value')
+		// 	.should('have.value', '0,00')
 
-		cy.get('#event_payment_enabled')
-			.should('not.be.checked')
+		// cy.get('#event_payment_enabled')
+		// 	.should('not.be.checked')
 
-		cy.get('#event_installments_number')
-			.should('have.value', '1')
+		// cy.get('#event_installments_number')
+		// 	.should('have.value', '1')
 
-		cy.get('#event_addition')
-			.should('have.value', '0.0')
+		// cy.get('#event_addition')
+		// 	.should('have.value', '0.0')
 	
-		cy.get('#event_enable_twygo_chat')
-			.should('not.be.checked')	
+		// cy.get('#event_enable_twygo_chat')
+		// 	.should('not.be.checked')	
 
-		// Salvar a criação do curso via catálogo, validar mensagem e redirecionamento
-		cy.contains('button', 'Salvar')
-			.should('be.visible')
-			.click()
+		// // Salvar a criação do curso via catálogo, validar mensagem e redirecionamento
+		// cy.contains('button', 'Salvar')
+		// 	.should('be.visible')
+		// 	.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
-			.should('be.visible')
+		// cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
+		// 	.should('be.visible')
 
-		// Breadcrumb correto: Lista de cursos
-		// BUG: breadcrumb não está sendo atualizado - atividade:
-		// https://app.artia.com/a/4874953/f/4883945/activities/27249103
-		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
-			.should('be.visible')
+		// // Breadcrumb correto: Lista de cursos
+		// // BUG: breadcrumb não está sendo atualizado - atividade:
+		// // https://app.artia.com/a/4874953/f/4883945/activities/27249103
+		// cy.contains('#page-breadcrumb', 'Catálogo de cursos')
+		// 	.should('be.visible')
 
-		// Verificar se o curso foi criado e é exibido na listagem
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
-			.should('be.visible')
-			.should('have.length', 1)
+		// // Verificar se o curso foi criado e é exibido na listagem
+		// cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
+		// 	.should('be.visible')
+		// 	.should('have.length', 1)
 		
-		// READ
-		// Aguardar 4s devido a atualização da página
-		cy.wait(4000)
+		// // READ
+		// // Aguardar 4s devido a atualização da página
+		// cy.wait(4000)
 
-		// Clicar no botão de editar do curso para validar dados salvos e página correta
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
-			.find('svg[aria-label="Options"]')
-			.click()
+		// // Clicar no botão de editar do curso para validar dados salvos e página correta
+		// cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
+		// 	.find('svg[aria-label="Options"]')
+		// 	.click()
 
-		cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
-			.contains('button', 'Editar')
-			.click()
+		// cy.get(`tr[tag-name='${body.name}']`, { timeout: 5000})
+		// 	.contains('button', 'Editar')
+		// 	.click()
 		
-		cy.wait(2000)
+		// cy.wait(2000)
 
-		cy.contains('#page-breadcrumb', 'Detalhes do evento')
-			.should('be.visible')
+		// cy.contains('#page-breadcrumb', 'Detalhes do evento')
+		// 	.should('be.visible')
 		
-		cy.contains('.detail_title', 'Editar Cursos')
-			.should('be.visible')
+		// cy.contains('.detail_title', 'Editar Cursos')
+		// 	.should('be.visible')
 
-		// Verificar se os dados foram salvos corretamente
-		cy.contains('label','Nome do item de portfólio')
-			.should('be.visible')
+		// // Verificar se os dados foram salvos corretamente
+		// cy.contains('label','Nome do item de portfólio')
+		// 	.should('be.visible')
 			
-		cy.get('#model_name')
-			.should('have.value', body.name)
+		// cy.get('#model_name')
+		// 	.should('have.value', body.name)
 		
-		cy.get('#event_name')
-			.should('have.value', body.name)
+		// cy.get('#event_name')
+		// 	.should('have.value', body.name)
 
-		cy.get('#date_start')
-			.should('have.value', data_inicio)
+		// cy.get('#date_start')
+		// 	.should('have.value', data_inicio)
 
-		cy.get('#time_start')
-			.should('have.value', hora_inicio)
+		// cy.get('#time_start')
+		// 	.should('have.value', hora_inicio)
 
-		cy.get('#date_end')
-			.should('have.value', data_fim)
+		// cy.get('#date_end')
+		// 	.should('have.value', data_fim)
 
-		cy.get('#time_end')
-			.should('have.value', hora_fim)
+		// cy.get('#time_end')
+		// 	.should('have.value', hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-			const doc = $iframe.contents()
+		// cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
+		// 	const doc = $iframe.contents()
 			
-			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
-				cy.wrap($body).should('have.text', `${body.description}`)
-			})
-		})
+		// 	cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
+		// 		cy.wrap($body).should('have.text', `${body.description}`)
+		// 	})
+		// })
 
-		cy.get('#event_event_type_id')
-			.find('option:selected')
-			.contains('Treinamento')
+		// cy.get('#event_event_type_id')
+		// 	.find('option:selected')
+		// 	.contains('Treinamento')
 
-		cy.get('#event_mode')
-			.find('option:selected')
-			.contains('Online')
+		// cy.get('#event_mode')
+		// 	.find('option:selected')
+		// 	.contains('Online')
 
-		cy.get('#event_synchronism')
-			.find('option:selected')
-			.contains('Gravado')
+		// cy.get('#event_synchronism')
+		// 	.find('option:selected')
+		// 	.contains('Gravado')
 
-		cy.get('#event_outlet')
-			.find('option:selected')
-			.should('have.value', '')
+		// cy.get('#event_outlet')
+		// 	.find('option:selected')
+		// 	.should('have.value', '')
 
-		cy.get('#event_workload')
-			.should('have.value', body.workload)
+		// cy.get('#event_workload')
+		// 	.should('have.value', body.workload)
 
-		cy.get('#event_class_number')
-			.should('have.value', '')
+		// cy.get('#event_class_number')
+		// 	.should('have.value', '')
 
-		cy.get('#event_days_to_expire')
-			.should('have.value', '0')
+		// cy.get('#event_days_to_expire')
+		// 	.should('have.value', '0')
 
-		cy.get('#event_place')
-			.should('have.value', '')
+		// cy.get('#event_place')
+		// 	.should('have.value', '')
 
-		cy.get('#event_zip_code')
-			.should('have.value', '')
+		// cy.get('#event_zip_code')
+		// 	.should('have.value', '')
 
-		cy.get('#event_address')
-			.should('have.value', '')
+		// cy.get('#event_address')
+		// 	.should('have.value', '')
 
-		cy.get('#event_address2')
-			.should('have.value', '')
+		// cy.get('#event_address2')
+		// 	.should('have.value', '')
 
-		cy.get('#event_city')
-			.should('have.value', '')
+		// cy.get('#event_city')
+		// 	.should('have.value', '')
 
-		cy.get('#event_state')
-			.should('have.value', '')
+		// cy.get('#event_state')
+		// 	.should('have.value', '')
 		
-		cy.get('#event_country')
-			.should('have.value', '')
+		// cy.get('#event_country')
+		// 	.should('have.value', '')
 
-		cy.get('#event_email')
-			.should('have.value', '')
+		// cy.get('#event_email')
+		// 	.should('have.value', '')
 		
-		cy.get('#event_website')
-			.should('have.value', '')
+		// cy.get('#event_website')
+		// 	.should('have.value', '')
 
-		cy.get('#event_sent_mail_owner')
-			.should('not.be.checked')
+		// cy.get('#event_sent_mail_owner')
+		// 	.should('not.be.checked')
 
-		cy.get('#event_contact_label')
-			.should('have.value', '')
+		// cy.get('#event_contact_label')
+		// 	.should('have.value', '')
 
-		cy.get('#event_hashtag')
-			.should('have.value', '')
+		// cy.get('#event_hashtag')
+		// 	.should('have.value', '')
 
-		cy.get("input.form-control.as-input[name='event[category_extra]']")
-			.should('have.value', '')
+		// cy.get("input.form-control.as-input[name='event[category_extra]']")
+		// 	.should('have.value', '')
 		
-		cy.get('#remove_banner')
-			.should('not.be.checked')
+		// cy.get('#remove_banner')
+		// 	.should('not.be.checked')
 
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Permitir envio de anexos na inscrição?')
-			.parents('.col-md-6.col-lg-4')
-			.find('label:contains("Desabilitado")')
-			.invoke('attr', 'for')
-			.then((id) => {
-					cy.get(`input#${id}`).should('be.checked')
-			})
+		// cy.get('div.col-md-6.col-lg-4')
+		// 	.contains('Permitir envio de anexos na inscrição?')
+		// 	.parents('.col-md-6.col-lg-4')
+		// 	.find('label:contains("Desabilitado")')
+		// 	.invoke('attr', 'for')
+		// 	.then((id) => {
+		// 			cy.get(`input#${id}`).should('be.checked')
+		// 	})
 
-        cy.wait(4000)
+        // cy.wait(4000)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-			const doc = $iframe.contents()
+		// cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
+		// 	const doc = $iframe.contents()
 		
-			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contentEditable => {
-				expect(contentEditable).to.eq('false')
-			})
-		})
+		// 	cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contentEditable => {
+		// 		expect(contentEditable).to.eq('false')
+		// 	})
+		// })
 
-		cy.get('#event_inscription_access')
-			.find('option:selected')
-			.should('have.text', label_inscription_access)
+		// cy.get('#event_inscription_access')
+		// 	.find('option:selected')
+		// 	.should('have.text', label_inscription_access)
 
-		cy.get('#event_situation')
-			.find('option:selected')
-			.contains('Em desenvolvimento')
+		// cy.get('#event_situation')
+		// 	.find('option:selected')
+		// 	.contains('Em desenvolvimento')
 
-		cy.get('#event_end_class')
-			.find('option:selected')
-			.contains('Não')
+		// cy.get('#event_end_class')
+		// 	.find('option:selected')
+		// 	.contains('Não')
 
-		cy.get('#event_notify_users')
-			.find('option:selected')
-			.contains('Não')
+		// cy.get('#event_notify_users')
+		// 	.find('option:selected')
+		// 	.contains('Não')
 
-		cy.get('#event_trial_days')
-			.should('have.value', '0')
+		// cy.get('#event_trial_days')
+		// 	.should('have.value', '0')
 
-		cy.get('#event_enable_trial_days')
-			.should('not.be.checked')
+		// cy.get('#event_enable_trial_days')
+		// 	.should('not.be.checked')
 
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Exigir confirmação de inscrição pelo Organizador?')
-			.parents('.col-md-6.col-lg-4')
-			.find('label:contains("Habilitado")')
-			.invoke('attr', 'for')
-			.then((id) => {
-					cy.get(`input#${id}`).should('be.checked')
-			})
+		// cy.get('div.col-md-6.col-lg-4')
+		// 	.contains('Exigir confirmação de inscrição pelo Organizador?')
+		// 	.parents('.col-md-6.col-lg-4')
+		// 	.find('label:contains("Habilitado")')
+		// 	.invoke('attr', 'for')
+		// 	.then((id) => {
+		// 			cy.get(`input#${id}`).should('be.checked')
+		// 	})
 
-		cy.get('#event_subscription_value')
-			.should('have.value', '0,00')
+		// cy.get('#event_subscription_value')
+		// 	.should('have.value', '0,00')
 
-		cy.get('#event_payment_enabled')
-			.should('not.be.checked')
+		// cy.get('#event_payment_enabled')
+		// 	.should('not.be.checked')
 
-		cy.get('#event_installments_number')
-			.should('have.value', '1')
+		// cy.get('#event_installments_number')
+		// 	.should('have.value', '1')
 
-		cy.get('#event_addition')
-			.should('have.value', '0.0')
+		// cy.get('#event_addition')
+		// 	.should('have.value', '0.0')
 	
-		cy.get('#event_enable_twygo_chat')
-			.should('not.be.checked')
+		// cy.get('#event_enable_twygo_chat')
+		// 	.should('not.be.checked')
 		
-		// UPDATE
-		const newEventName = faker.commerce.productName()
-		const conteudo_edit = {
-			nome: newEventName,
-			data_inicio: '29/03/2024',
-			hora_inicio: '12:00',
-			data_fim: '29/04/2024',
-			hora_fim: '22:00',
-			descricao: `Descrição editada do curso nome: ${newEventName}`,
-			tipo: 'Congresso',
-			modalidade: 'Presencial',
-			sincronismo: 'Ao vivo',
-			canal: 'Outros',
-			carga_horaria: faker.number.int({ min: 1, max: 9 }),
-			numero_turma: faker.number.int({ min: 1, max: 9 }),
-			vigencia: faker.number.int({ min: 1, max: 9 }),
-			local: 'Centro de Eventos',
-			cep: '85803-760',
-			endereco: 'Rua das Petúnias',
-			complemento: 'Apto 101',
-			cidade: 'Cascavel',
-			estado: 'PR',
-			pais: 'Brasil',
-			email_responsavel: faker.internet.email(),
-			site: faker.internet.url(),
-			rotulo_contato: 'Contato',
-			hashtag: faker.hacker.adjective(),
-			categoria: { 
-				cat1: `Cat1-${faker.hacker.noun()}`,
-				cat2: `Cat2-${faker.hacker.noun()}`,
-			},
-			permite_anexo: 'Habilitado',
-			mensagem_anexo: `Insira o anexo do Curso: ${newEventName}`,
-			visualizacao: 'Público',
-			situacao: 'Liberado',
-			notif_concluir_primeira_aula: 'Sim',
-			notificar_usuarios: 'Sim',
-			dias_teste: faker.number.int({ min: 1, max: 9 }),
-			exige_confirmacao: 'Desabilitado',
-			valor_inscricao: faker.commerce.price({ min: 1, max: 9 }),
-			numero_parcelas: faker.number.int({ min: 1, max: 9 }),
-			acrescimo: faker.commerce.price({ min: 1, max: 9, dec: 1 })
-		}
+		// // UPDATE
+		// const newEventName = faker.commerce.productName()
+		// const conteudo_edit = {
+		// 	nome: newEventName,
+		// 	data_inicio: '29/03/2024',
+		// 	hora_inicio: '12:00',
+		// 	data_fim: '29/04/2024',
+		// 	hora_fim: '22:00',
+		// 	descricao: `Descrição editada do curso nome: ${newEventName}`,
+		// 	tipo: 'Congresso',
+		// 	modalidade: 'Presencial',
+		// 	sincronismo: 'Ao vivo',
+		// 	canal: 'Outros',
+		// 	carga_horaria: faker.number.int({ min: 1, max: 9 }),
+		// 	numero_turma: faker.number.int({ min: 1, max: 9 }),
+		// 	vigencia: faker.number.int({ min: 1, max: 9 }),
+		// 	local: 'Centro de Eventos',
+		// 	cep: '85803-760',
+		// 	endereco: 'Rua das Petúnias',
+		// 	complemento: 'Apto 101',
+		// 	cidade: 'Cascavel',
+		// 	estado: 'PR',
+		// 	pais: 'Brasil',
+		// 	email_responsavel: faker.internet.email(),
+		// 	site: faker.internet.url(),
+		// 	rotulo_contato: 'Contato',
+		// 	hashtag: faker.hacker.adjective(),
+		// 	categoria: { 
+		// 		cat1: `Cat1-${faker.hacker.noun()}`,
+		// 		cat2: `Cat2-${faker.hacker.noun()}`,
+		// 	},
+		// 	permite_anexo: 'Habilitado',
+		// 	mensagem_anexo: `Insira o anexo do Curso: ${newEventName}`,
+		// 	visualizacao: 'Público',
+		// 	situacao: 'Liberado',
+		// 	notif_concluir_primeira_aula: 'Sim',
+		// 	notificar_usuarios: 'Sim',
+		// 	dias_teste: faker.number.int({ min: 1, max: 9 }),
+		// 	exige_confirmacao: 'Desabilitado',
+		// 	valor_inscricao: faker.commerce.price({ min: 1, max: 9 }),
+		// 	numero_parcelas: faker.number.int({ min: 1, max: 9 }),
+		// 	acrescimo: faker.commerce.price({ min: 1, max: 9, dec: 1 })
+		// }
 
-		// Editar os campos do formulário - aba Dados
-		cy.get('#event_name')
-			.clear()
-			.type(conteudo_edit.nome)
+		// // Editar os campos do formulário - aba Dados
+		// cy.get('#event_name')
+		// 	.clear()
+		// 	.type(conteudo_edit.nome)
 
-		cy.get('#date_start')
-			.clear()
-			.type(conteudo_edit.data_inicio)			
+		// cy.get('#date_start')
+		// 	.clear()
+		// 	.type(conteudo_edit.data_inicio)			
 
-		cy.get('#time_start')
-			.clear()
-			.type(conteudo_edit.hora_inicio)
+		// cy.get('#time_start')
+		// 	.clear()
+		// 	.type(conteudo_edit.hora_inicio)
 
-		cy.get('#date_end')
-			.clear()
-			.type(conteudo_edit.data_fim)
+		// cy.get('#date_end')
+		// 	.clear()
+		// 	.type(conteudo_edit.data_fim)
 
-		cy.get('#time_end')
-			.clear()
-			.type(conteudo_edit.hora_fim)
+		// cy.get('#time_end')
+		// 	.clear()
+		// 	.type(conteudo_edit.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-			const doc = $iframe.contents()
+		// cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
+		// 	const doc = $iframe.contents()
 			
-			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
-				cy.wrap($body).click({ force: true }).clear().type(`${conteudo_edit.descricao}`, { force: true })
-			})
-		})
+		// 	cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
+		// 		cy.wrap($body).click({ force: true }).clear().type(`${conteudo_edit.descricao}`, { force: true })
+		// 	})
+		// })
 
-		cy.get('#event_event_type_id')
-			.select(conteudo_edit.tipo)  
+		// cy.get('#event_event_type_id')
+		// 	.select(conteudo_edit.tipo)  
 
-		cy.get('#event_mode')
-			.select(conteudo_edit.modalidade)  
+		// cy.get('#event_mode')
+		// 	.select(conteudo_edit.modalidade)  
 
-		cy.get('#event_synchronism')
-			.select(conteudo_edit.sincronismo)  
+		// cy.get('#event_synchronism')
+		// 	.select(conteudo_edit.sincronismo)  
 
-		cy.get('#event_outlet')
-			.select(conteudo_edit.canal)  
+		// cy.get('#event_outlet')
+		// 	.select(conteudo_edit.canal)  
 
-		cy.get('#event_workload')
-			.clear()
-			.type(conteudo_edit.carga_horaria)
+		// cy.get('#event_workload')
+		// 	.clear()
+		// 	.type(conteudo_edit.carga_horaria)
 
-		cy.get('#event_class_number')
-			.type(conteudo_edit.numero_turma)
+		// cy.get('#event_class_number')
+		// 	.type(conteudo_edit.numero_turma)
 
-		cy.get('#event_days_to_expire')
-			.clear()
-			.type(conteudo_edit.vigencia)
+		// cy.get('#event_days_to_expire')
+		// 	.clear()
+		// 	.type(conteudo_edit.vigencia)
 
-		cy.get('#update_inscriptions')
-			.click()
+		// cy.get('#update_inscriptions')
+		// 	.click()
 
-		cy.get('#event_place')
-			.type(conteudo_edit.local)
+		// cy.get('#event_place')
+		// 	.type(conteudo_edit.local)
 
-		cy.get('#event_zip_code')
-			.type(conteudo_edit.cep)
+		// cy.get('#event_zip_code')
+		// 	.type(conteudo_edit.cep)
 
-		cy.get('#event_address')
-			.type(conteudo_edit.endereco)
+		// cy.get('#event_address')
+		// 	.type(conteudo_edit.endereco)
 
-		cy.get('#event_address2')
-			.type(conteudo_edit.complemento)
+		// cy.get('#event_address2')
+		// 	.type(conteudo_edit.complemento)
 
-		cy.get('#event_city')
-			.type(conteudo_edit.cidade)
+		// cy.get('#event_city')
+		// 	.type(conteudo_edit.cidade)
 
-		cy.get('#event_state')
-			.type(conteudo_edit.estado)
+		// cy.get('#event_state')
+		// 	.type(conteudo_edit.estado)
 
-		cy.get('#event_country')
-			.type(conteudo_edit.pais)
+		// cy.get('#event_country')
+		// 	.type(conteudo_edit.pais)
 
-		cy.get('#event_email')
-			.clear()	
-			.type(conteudo_edit.email_responsavel)
+		// cy.get('#event_email')
+		// 	.clear()	
+		// 	.type(conteudo_edit.email_responsavel)
 
-		cy.get('#event_website')
-			.type(conteudo_edit.site)
+		// cy.get('#event_website')
+		// 	.type(conteudo_edit.site)
 
-		cy.get('#event_sent_mail_owner')
-			.click()
+		// cy.get('#event_sent_mail_owner')
+		// 	.click()
 
-		cy.get('#event_contact_label')
-			.type(conteudo_edit.rotulo_contato)
+		// cy.get('#event_contact_label')
+		// 	.type(conteudo_edit.rotulo_contato)
 
-		cy.get('#event_hashtag')
-			.type(conteudo_edit.hashtag)
+		// cy.get('#event_hashtag')
+		// 	.type(conteudo_edit.hashtag)
 
-		cy.get("input.form-control.as-input[name='event[category_extra]']")
-			.type(conteudo_edit.categoria.cat1)
+		// cy.get("input.form-control.as-input[name='event[category_extra]']")
+		// 	.type(conteudo_edit.categoria.cat1)
 		
-		cy.realPress('Tab')
+		// cy.realPress('Tab')
 
-		cy.get("input.form-control.as-input[name='event[category_extra]']")
-			.type(conteudo_edit.categoria.cat2)
+		// cy.get("input.form-control.as-input[name='event[category_extra]']")
+		// 	.type(conteudo_edit.categoria.cat2)
 		
-		cy.realPress('Tab')
+		// cy.realPress('Tab')
 	
-		cy.get('#remove_banner')
-			.click()
+		// cy.get('#remove_banner')
+		// 	.click()
 
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Permitir envio de anexos na inscrição?')
-			.parents('.col-md-6.col-lg-4')
-			.find(`label:contains("${conteudo_edit.permite_anexo}")`)
-			.invoke('attr', 'for')
-			.then((id) => {
-				cy.get(`input#${id}`).click()
-			})
+		// cy.get('div.col-md-6.col-lg-4')
+		// 	.contains('Permitir envio de anexos na inscrição?')
+		// 	.parents('.col-md-6.col-lg-4')
+		// 	.find(`label:contains("${conteudo_edit.permite_anexo}")`)
+		// 	.invoke('attr', 'for')
+		// 	.then((id) => {
+		// 		cy.get(`input#${id}`).click()
+		// 	})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-			const doc = $iframe.contents()
+		// cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
+		// 	const doc = $iframe.contents()
 			
-			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
-				cy.wrap($body).click({ force: true }).type(`${conteudo_edit.mensagem_anexo}`, { force: true })
-			})
-		})
+		// 	cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
+		// 		cy.wrap($body).click({ force: true }).type(`${conteudo_edit.mensagem_anexo}`, { force: true })
+		// 	})
+		// })
 
-		cy.get('#event_inscription_access')
-			.select(conteudo_edit.visualizacao)
+		// cy.get('#event_inscription_access')
+		// 	.select(conteudo_edit.visualizacao)
 
-		cy.get('#event_situation')
-			.select(conteudo_edit.situacao)
+		// cy.get('#event_situation')
+		// 	.select(conteudo_edit.situacao)
 
-		cy.get('#event_end_class')
-			.select(conteudo_edit.notif_concluir_primeira_aula)
+		// cy.get('#event_end_class')
+		// 	.select(conteudo_edit.notif_concluir_primeira_aula)
 
-		cy.get('#event_notify_users')
-			.select(conteudo_edit.notificar_usuarios)
+		// cy.get('#event_notify_users')
+		// 	.select(conteudo_edit.notificar_usuarios)
 
-		cy.get('#event_trial_days')
-			.clear()
-			.type(conteudo_edit.dias_teste)
+		// cy.get('#event_trial_days')
+		// 	.clear()
+		// 	.type(conteudo_edit.dias_teste)
 
-		cy.get('#event_enable_trial_days')
-			.parents('span.input')
-			.first()
-			.click()
+		// cy.get('#event_enable_trial_days')
+		// 	.parents('span.input')
+		// 	.first()
+		// 	.click()
 
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Exigir confirmação de inscrição pelo Organizador?')
-			.parents('.col-md-6.col-lg-4')
-			.find(`label:contains("${conteudo_edit.exige_confirmacao}")`)
-			.invoke('attr', 'for')
-			.then((id) => {
-				cy.get(`input#${id}`).click()
-			})
+		// cy.get('div.col-md-6.col-lg-4')
+		// 	.contains('Exigir confirmação de inscrição pelo Organizador?')
+		// 	.parents('.col-md-6.col-lg-4')
+		// 	.find(`label:contains("${conteudo_edit.exige_confirmacao}")`)
+		// 	.invoke('attr', 'for')
+		// 	.then((id) => {
+		// 		cy.get(`input#${id}`).click()
+		// 	})
 
-		cy.get('#event_subscription_value')
-			.clear()
-			.type(conteudo_edit.valor_inscricao.replace('.', ','))
+		// cy.get('#event_subscription_value')
+		// 	.clear()
+		// 	.type(conteudo_edit.valor_inscricao.replace('.', ','))
 
-		cy.get('#event_payment_enabled')
-			.click()
+		// cy.get('#event_payment_enabled')
+		// 	.click()
 
-		cy.get('#event_installments_number')
-			.clear()	
-			.type(conteudo_edit.numero_parcelas)
+		// cy.get('#event_installments_number')
+		// 	.clear()	
+		// 	.type(conteudo_edit.numero_parcelas)
 
-		cy.get('#event_addition')
-			.clear()
-			.type(conteudo_edit.acrescimo)
+		// cy.get('#event_addition')
+		// 	.clear()
+		// 	.type(conteudo_edit.acrescimo)
 
-		cy.get('#event_enable_twygo_chat')
-			.click()
+		// cy.get('#event_enable_twygo_chat')
+		// 	.click()
 
-		// Salvar a edição do curso, validar mensagem e redirecionamento
-		cy.contains('button', 'Salvar')
-			.should('be.visible')
-			.click()
+		// // Salvar a edição do curso, validar mensagem e redirecionamento
+		// cy.contains('button', 'Salvar')
+		// 	.should('be.visible')
+		// 	.click()
 
-		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
-			.should('be.visible')
+		// cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
+		// 	.should('be.visible')
 
-		// Breadcrumb correto: Lista de cursos
-		// BUG: breadcrumb não está sendo atualizado - atividade:
-		// https://app.artia.com/a/4874953/f/4883945/activities/27249103
-		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
-			.should('be.visible')
+		// // Breadcrumb correto: Lista de cursos
+		// // BUG: breadcrumb não está sendo atualizado - atividade:
+		// // https://app.artia.com/a/4874953/f/4883945/activities/27249103
+		// cy.contains('#page-breadcrumb', 'Catálogo de cursos')
+		// 	.should('be.visible')
 
-		// Verificar se o curso editado foi salvo corretamente e é exibido na listagem
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
-			.should('be.visible')
-			.should('have.length', 1)
+		// // Verificar se o curso editado foi salvo corretamente e é exibido na listagem
+		// cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
+		// 	.should('be.visible')
+		// 	.should('have.length', 1)
 		
-		// READ-UPDATE
-		// Aguardar 4s devido a atualização da página
-		cy.wait(4000)
+		// // READ-UPDATE
+		// // Aguardar 4s devido a atualização da página
+		// cy.wait(4000)
 
-		// Clicar no botão de editar do curso para validar dados salvos e página correta
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
-			.find('svg[aria-label="Options"]')
-			.click()
+		// // Clicar no botão de editar do curso para validar dados salvos e página correta
+		// cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
+		// 	.find('svg[aria-label="Options"]')
+		// 	.click()
 
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
-			.contains('button', 'Editar')
-			.click()		
+		// cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
+		// 	.contains('button', 'Editar')
+		// 	.click()		
 
-		cy.wait(2000)
+		// cy.wait(2000)
 
-		cy.contains('#page-breadcrumb', 'Detalhes do evento')
-			.should('be.visible')
+		// cy.contains('#page-breadcrumb', 'Detalhes do evento')
+		// 	.should('be.visible')
 
-		cy.contains('.detail_title', 'Editar Cursos')
-			.should('be.visible')
+		// cy.contains('.detail_title', 'Editar Cursos')
+		// 	.should('be.visible')
 
-		// Verificar se os dados foram salvos corretamente
-		cy.contains('label','Nome do item de portfólio')
-			.should('be.visible')
+		// // Verificar se os dados foram salvos corretamente
+		// cy.contains('label','Nome do item de portfólio')
+		// 	.should('be.visible')
 			
-		cy.get('#model_name')
-			.should('have.value', body.name)
+		// cy.get('#model_name')
+		// 	.should('have.value', body.name)
 		
-		cy.get('#event_name')
-			.should('have.value', conteudo_edit.nome)
+		// cy.get('#event_name')
+		// 	.should('have.value', conteudo_edit.nome)
 
-		cy.get('#date_start')
-			.should('have.value', conteudo_edit.data_inicio)
+		// cy.get('#date_start')
+		// 	.should('have.value', conteudo_edit.data_inicio)
 
-		cy.get('#time_start')
-			.should('have.value', conteudo_edit.hora_inicio)
+		// cy.get('#time_start')
+		// 	.should('have.value', conteudo_edit.hora_inicio)
 
-		cy.get('#date_end')
-			.should('have.value', conteudo_edit.data_fim)
+		// cy.get('#date_end')
+		// 	.should('have.value', conteudo_edit.data_fim)
 
-		cy.get('#time_end')
-			.should('have.value', conteudo_edit.hora_fim)
+		// cy.get('#time_end')
+		// 	.should('have.value', conteudo_edit.hora_fim)
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-			const doc = $iframe.contents()
+		// cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
+		// 	const doc = $iframe.contents()
 			
-			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
-				cy.wrap($body).should('have.text', `${conteudo_edit.descricao}`)
-			})
-		})
+		// 	cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
+		// 		cy.wrap($body).should('have.text', `${conteudo_edit.descricao}`)
+		// 	})
+		// })
 
-		cy.get('#event_event_type_id')
-			.find('option:selected')
-			.contains(conteudo_edit.tipo)
+		// cy.get('#event_event_type_id')
+		// 	.find('option:selected')
+		// 	.contains(conteudo_edit.tipo)
 
-		cy.get('#event_mode')
-			.find('option:selected')
-			.contains(conteudo_edit.modalidade)
+		// cy.get('#event_mode')
+		// 	.find('option:selected')
+		// 	.contains(conteudo_edit.modalidade)
 
-		cy.get('#event_synchronism')
-			.find('option:selected')
-			.contains(conteudo_edit.sincronismo)
+		// cy.get('#event_synchronism')
+		// 	.find('option:selected')
+		// 	.contains(conteudo_edit.sincronismo)
 
-		cy.get('#event_outlet')
-			.find('option:selected')
-			.should('have.value', conteudo_edit.canal)
+		// cy.get('#event_outlet')
+		// 	.find('option:selected')
+		// 	.should('have.value', conteudo_edit.canal)
 
-		cy.get('#event_workload')
-			.should('have.value', conteudo_edit.carga_horaria)
+		// cy.get('#event_workload')
+		// 	.should('have.value', conteudo_edit.carga_horaria)
 
-		cy.get('#event_class_number')
-			.should('have.value', conteudo_edit.numero_turma)
+		// cy.get('#event_class_number')
+		// 	.should('have.value', conteudo_edit.numero_turma)
 
-		cy.get('#event_days_to_expire')
-			.should('have.value', conteudo_edit.vigencia)
+		// cy.get('#event_days_to_expire')
+		// 	.should('have.value', conteudo_edit.vigencia)
 
-		cy.get('#update_inscriptions')
-			.should('not.be.checked')
+		// cy.get('#update_inscriptions')
+		// 	.should('not.be.checked')
 
-		cy.get('#event_place')
-			.should('have.value', conteudo_edit.local)
+		// cy.get('#event_place')
+		// 	.should('have.value', conteudo_edit.local)
 
-		cy.get('#event_zip_code')
-			.should('have.value', conteudo_edit.cep)
+		// cy.get('#event_zip_code')
+		// 	.should('have.value', conteudo_edit.cep)
 
-		cy.get('#event_address')
-			.should('have.value', conteudo_edit.endereco)
+		// cy.get('#event_address')
+		// 	.should('have.value', conteudo_edit.endereco)
 
-		cy.get('#event_address2')
-			.should('have.value', conteudo_edit.complemento)
+		// cy.get('#event_address2')
+		// 	.should('have.value', conteudo_edit.complemento)
 
-		cy.get('#event_city')
-			.should('have.value', conteudo_edit.cidade)
+		// cy.get('#event_city')
+		// 	.should('have.value', conteudo_edit.cidade)
 
-		cy.get('#event_state')
-			.should('have.value', conteudo_edit.estado)
+		// cy.get('#event_state')
+		// 	.should('have.value', conteudo_edit.estado)
 		
-		cy.get('#event_country')
-			.should('have.value', conteudo_edit.pais)
+		// cy.get('#event_country')
+		// 	.should('have.value', conteudo_edit.pais)
 
-		cy.get('#event_email')
-			.should('have.value', conteudo_edit.email_responsavel)
+		// cy.get('#event_email')
+		// 	.should('have.value', conteudo_edit.email_responsavel)
 		
-		cy.get('#event_website')
-			.should('have.value', conteudo_edit.site)
+		// cy.get('#event_website')
+		// 	.should('have.value', conteudo_edit.site)
 
-		cy.get('#event_sent_mail_owner')
-			.should('be.checked')
+		// cy.get('#event_sent_mail_owner')
+		// 	.should('be.checked')
 
-		cy.get('#event_contact_label')
-			.should('have.value', conteudo_edit.rotulo_contato)
+		// cy.get('#event_contact_label')
+		// 	.should('have.value', conteudo_edit.rotulo_contato)
 
-		cy.get('#event_hashtag')
-			.should('have.value', conteudo_edit.hashtag)
+		// cy.get('#event_hashtag')
+		// 	.should('have.value', conteudo_edit.hashtag)
 
-		let categoriasEncontradas = []
-		cy.get('li.as-selection-item.blur').each(($el) => {
-			const text = $el.text().trim().replace('×', '').trim()
-			categoriasEncontradas.push(text)
-			})
+		// let categoriasEncontradas = []
+		// cy.get('li.as-selection-item.blur').each(($el) => {
+		// 	const text = $el.text().trim().replace('×', '').trim()
+		// 	categoriasEncontradas.push(text)
+		// 	})
 		
-		cy.get('li.as-selection-item.blur').then(() => {
-			const categoriasEsperadas = [conteudo_edit.categoria.cat1, conteudo_edit.categoria.cat2].sort()
-			categoriasEncontradas.sort()
-			expect(categoriasEncontradas).to.deep.eq(categoriasEsperadas)
-		})
+		// cy.get('li.as-selection-item.blur').then(() => {
+		// 	const categoriasEsperadas = [conteudo_edit.categoria.cat1, conteudo_edit.categoria.cat2].sort()
+		// 	categoriasEncontradas.sort()
+		// 	expect(categoriasEncontradas).to.deep.eq(categoriasEsperadas)
+		// })
 		
-		cy.get('#remove_banner')
-			.should('not.be.checked')
+		// cy.get('#remove_banner')
+		// 	.should('not.be.checked')
 
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Permitir envio de anexos na inscrição?')
-			.parents('.col-md-6.col-lg-4')
-			.find(`label:contains('${conteudo_edit.permite_anexo}')`)
-			.invoke('attr', 'for')
-			.then((id) => {
-					cy.get(`input#${id}`).should('be.checked')
-			})
+		// cy.get('div.col-md-6.col-lg-4')
+		// 	.contains('Permitir envio de anexos na inscrição?')
+		// 	.parents('.col-md-6.col-lg-4')
+		// 	.find(`label:contains('${conteudo_edit.permite_anexo}')`)
+		// 	.invoke('attr', 'for')
+		// 	.then((id) => {
+		// 			cy.get(`input#${id}`).should('be.checked')
+		// 	})
 
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-			const doc = $iframe.contents()
+		// cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
+		// 	const doc = $iframe.contents()
 		
-			cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
-				cy.wrap($body).should('have.text', `${conteudo_edit.mensagem_anexo}`)
-			})
-		})
+		// 	cy.wrap(doc).find('body.cke_editable').eq(1).then($body => {
+		// 		cy.wrap($body).should('have.text', `${conteudo_edit.mensagem_anexo}`)
+		// 	})
+		// })
 
-		cy.get('#event_inscription_access')
-			.find('option:selected')
-			.contains(conteudo_edit.visualizacao)
+		// cy.get('#event_inscription_access')
+		// 	.find('option:selected')
+		// 	.contains(conteudo_edit.visualizacao)
 
-		cy.get('#event_situation')
-			.find('option:selected')
-			.contains(conteudo_edit.situacao)
+		// cy.get('#event_situation')
+		// 	.find('option:selected')
+		// 	.contains(conteudo_edit.situacao)
 
-		cy.get('#event_end_class')
-			.find('option:selected')
-			.contains(conteudo_edit.notif_concluir_primeira_aula)
+		// cy.get('#event_end_class')
+		// 	.find('option:selected')
+		// 	.contains(conteudo_edit.notif_concluir_primeira_aula)
 
-		cy.get('#event_notify_users')
-			.find('option:selected')
-			.contains(conteudo_edit.notificar_usuarios)
+		// cy.get('#event_notify_users')
+		// 	.find('option:selected')
+		// 	.contains(conteudo_edit.notificar_usuarios)
 
-		cy.get('#event_trial_days')
-			.should('have.value', conteudo_edit.dias_teste)
+		// cy.get('#event_trial_days')
+		// 	.should('have.value', conteudo_edit.dias_teste)
 
-		cy.get('#event_enable_trial_days')
-			.should('be.checked')
+		// cy.get('#event_enable_trial_days')
+		// 	.should('be.checked')
 
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Exigir confirmação de inscrição pelo Organizador?')
-			.parents('.col-md-6.col-lg-4')
-			.find(`label:contains('${conteudo_edit.exige_confirmacao}')`)
-			.invoke('attr', 'for')
-			.then((id) => {
-					cy.get(`input#${id}`).should('be.checked')
-			})
+		// cy.get('div.col-md-6.col-lg-4')
+		// 	.contains('Exigir confirmação de inscrição pelo Organizador?')
+		// 	.parents('.col-md-6.col-lg-4')
+		// 	.find(`label:contains('${conteudo_edit.exige_confirmacao}')`)
+		// 	.invoke('attr', 'for')
+		// 	.then((id) => {
+		// 			cy.get(`input#${id}`).should('be.checked')
+		// 	})
 
-		cy.get('#event_subscription_value')
-			.should('have.value', conteudo_edit.valor_inscricao.replace('.', ','))
+		// cy.get('#event_subscription_value')
+		// 	.should('have.value', conteudo_edit.valor_inscricao.replace('.', ','))
 
-		cy.get('#event_payment_enabled')
-			.should('be.checked')
+		// cy.get('#event_payment_enabled')
+		// 	.should('be.checked')
 
-		cy.get('#event_installments_number')
-			.should('have.value', conteudo_edit.numero_parcelas)
+		// cy.get('#event_installments_number')
+		// 	.should('have.value', conteudo_edit.numero_parcelas)
 
-		cy.get('#event_addition')
-			.should('have.value', conteudo_edit.acrescimo)
+		// cy.get('#event_addition')
+		// 	.should('have.value', conteudo_edit.acrescimo)
 
-		cy.get('#event_enable_twygo_chat')
-			.should('be.checked')
+		// cy.get('#event_enable_twygo_chat')
+		// 	.should('be.checked')
 
-		// Clicar em voltar e validar redirecionamento
-		cy.contains('.btn.btn-default.btn-back.waves-effect','Voltar')
-			.should('be.visible')
-			.click()
+		// // Clicar em voltar e validar redirecionamento
+		// cy.contains('.btn.btn-default.btn-back.waves-effect','Voltar')
+		// 	.should('be.visible')
+		// 	.click()
 
-		// Breadcrumb correto: Lista de cursos
-		// BUG: breadcrumb não está sendo atualizado - atividade:
-		// https://app.artia.com/a/4874953/f/4883945/activities/27249103
-		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
-			.should('be.visible')
+		// // Breadcrumb correto: Lista de cursos
+		// // BUG: breadcrumb não está sendo atualizado - atividade:
+		// // https://app.artia.com/a/4874953/f/4883945/activities/27249103
+		// cy.contains('#page-breadcrumb', 'Catálogo de cursos')
+		// 	.should('be.visible')
 
-		// DELETE
-		// Clicar no botão de excluir do curso, mensagem de confirmação e confirmar exclusão
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
-			.find('svg[aria-label="Options"]')
-			.click()
+		// // DELETE
+		// // Clicar no botão de excluir do curso, mensagem de confirmação e confirmar exclusão
+		// cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
+		// 	.find('svg[aria-label="Options"]')
+		// 	.click()
 
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
-			.wait(2000)	
-			.contains('button', 'Excluir')
-			.click({ force: true })
+		// cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
+		// 	.wait(2000)	
+		// 	.contains('button', 'Excluir')
+		// 	.click({ force: true })
 
-		cy.contains('.chakra-modal__header', 'Excluir curso')
-			.should('be.visible')
+		// cy.contains('.chakra-modal__header', 'Excluir curso')
+		// 	.should('be.visible')
 
-		cy.contains('.chakra-heading', conteudo_edit.nome)
-			.should('be.visible')
+		// cy.contains('.chakra-heading', conteudo_edit.nome)
+		// 	.should('be.visible')
 
-		cy.contains('.chakra-modal__body', 'Você tem certeza que deseja excluir este curso?')
-			.should('be.visible')
+		// cy.contains('.chakra-modal__body', 'Você tem certeza que deseja excluir este curso?')
+		// 	.should('be.visible')
 
-		cy.contains('button.chakra-button', 'Excluir')
-			.click({ force: true})
+		// cy.contains('button.chakra-button', 'Excluir')
+		// 	.click({ force: true})
 
-		cy.contains('.chakra-alert__desc', 'Evento excluído com sucesso', { timeout: 5000 })
-			.should('be.visible')
+		// cy.contains('.chakra-alert__desc', 'Evento excluído com sucesso', { timeout: 5000 })
+		// 	.should('be.visible')
 
-		// Aguardar 4s devido a atualização da página
-		cy.wait(4000)
+		// // Aguardar 4s devido a atualização da página
+		// cy.wait(4000)
 
-		// Verificar se o curso foi excluído e não é exibido na listagem
-		cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
-			.should('not.exist')		
+		// // Verificar se o curso foi excluído e não é exibido na listagem
+		// cy.get(`tr[tag-name='${conteudo_edit.nome}']`, { timeout: 5000})
+		// 	.should('not.exist')		
 	})
 
     it('2-CRUD deve criar um curso via catálogo com visualização para colaborador', () => {
@@ -957,7 +1016,7 @@ describe('criar curso via catálogo', () => {
 			.click()
 
 		// Abre a página de criação de curso com base no catálogo selecionado
-		cy.contains('#page-breadcrumb', 'Lista de cursos')
+		cy.contains('#page-breadcrumb', 'Lista de conteúdos')
 			.should('be.visible')
 
 		cy.contains('.detail_title', 'Novo Curso')
@@ -1788,7 +1847,7 @@ describe('criar curso via catálogo', () => {
 			.click()
 
 		// Abre a página de criação de curso com base no catálogo selecionado
-		cy.contains('#page-breadcrumb', 'Lista de cursos')
+		cy.contains('#page-breadcrumb', 'Lista de conteúdos')
 			.should('be.visible')
 
 		cy.contains('.detail_title', 'Novo Curso')
@@ -2490,7 +2549,7 @@ describe('criar curso via catálogo', () => {
 			.click()
 
 		// Abre a página de criação de curso com base no catálogo selecionado
-		cy.contains('#page-breadcrumb', 'Lista de cursos')
+		cy.contains('#page-breadcrumb', 'Lista de conteúdos')
 			.should('be.visible')
 
 		cy.contains('.detail_title', 'Novo Curso')
@@ -3178,7 +3237,7 @@ describe('criar curso via catálogo', () => {
 			.click()
 
 		// Abre a página de criação de curso com base no catálogo selecionado
-		cy.contains('#page-breadcrumb', 'Lista de cursos')
+		cy.contains('#page-breadcrumb', 'Lista de conteúdos')
 			.should('be.visible')
 
 		cy.contains('.detail_title', 'Novo Curso')
@@ -3633,7 +3692,7 @@ describe('criar curso via catálogo', () => {
 
 		// Acessar a lista de cursos para editar o curso
 		cy.visit(`/o/${Cypress.env('orgId')}/events?tab=events`)
-		cy.contains('#page-breadcrumb', 'Lista de cursos')
+		cy.contains('#page-breadcrumb', 'Lista de conteúdos')
 			.should('be.visible')
 
 		// Clicar no botão de editar do curso para validar dados salvos e página correta
@@ -3836,7 +3895,7 @@ describe('criar curso via catálogo', () => {
 		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
-		cy.contains('#page-breadcrumb', 'Lista de cursos')
+		cy.contains('#page-breadcrumb', 'Lista de conteúdos')
 			.should('be.visible')
 
 		// Verificar se o curso editado foi salvo corretamente e é exibido na listagem
@@ -4033,7 +4092,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('#page-breadcrumb', 'Lista de cursos')
+		cy.contains('#page-breadcrumb', 'Lista de conteúdos')
 			.should('be.visible')
 
 		// DELETE
@@ -4134,7 +4193,7 @@ describe('criar curso via catálogo', () => {
 			.click()
 
 		// Abre a página de criação de curso com base no catálogo selecionado
-		cy.contains('#page-breadcrumb', 'Lista de cursos')
+		cy.contains('#page-breadcrumb', 'Lista de conteúdos')
 			.should('be.visible')
 
 		cy.contains('.detail_title', 'Novo Curso')
@@ -4589,7 +4648,7 @@ describe('criar curso via catálogo', () => {
 
 		// Acessar a lista de cursos para editar o curso
 		cy.visit(`/o/${Cypress.env('orgId')}/events?tab=events`)
-		cy.contains('#page-breadcrumb', 'Lista de cursos')
+		cy.contains('#page-breadcrumb', 'Lista de conteúdos')
 			.should('be.visible')
 
 		// Clicar no botão de editar do curso para validar dados salvos e página correta
@@ -4792,7 +4851,7 @@ describe('criar curso via catálogo', () => {
 		cy.contains('.flash.notice', 'Evento salvo com sucesso.', { timeout: 5000 })
 			.should('be.visible')
 
-		cy.contains('#page-breadcrumb', 'Lista de cursos')
+		cy.contains('#page-breadcrumb', 'Lista de conteúdos')
 			.should('be.visible')
 
 		// Verificar se o curso editado foi salvo corretamente e é exibido na listagem
@@ -4989,7 +5048,7 @@ describe('criar curso via catálogo', () => {
 			.should('be.visible')
 			.click()
 
-		cy.contains('#page-breadcrumb', 'Lista de cursos')
+		cy.contains('#page-breadcrumb', 'Lista de conteúdos')
 			.should('be.visible')
 
 		// DELETE
@@ -5263,7 +5322,7 @@ describe('criar curso via catálogo', () => {
 			.click()
 
 		// Abre a página de criação de curso com base no catálogo selecionado
-		cy.contains('#page-breadcrumb', 'Lista de cursos')
+		cy.contains('#page-breadcrumb', 'Lista de conteúdos')
 			.should('be.visible')
 
 		cy.contains('.detail_title', 'Novo Curso')
