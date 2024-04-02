@@ -385,6 +385,14 @@ Cypress.Commands.add('preencherDadosConteudo', (conteudo, opcoes = { limpar: fal
  * @since 1.0.0 
  */
 Cypress.Commands.add('validarDadosConteudo', (conteudo, categoria) => {
+  if (!conteudo) {
+    throw new Error('O parâmetro "conteudo" é obrigatório.')
+  }
+
+  if (!categoria) {
+    throw new Error('O parâmetro "categoria" é obrigatório.')
+  }
+
   const formulario = new formConteudos()
 
   Object.keys(conteudo).forEach(nomeCampo => {
@@ -578,6 +586,7 @@ Cypress.Commands.add('salvarConteudo', function(nomeConteudo, tipoConteudo) {
     .should('be.visible')
 
   switch (tipoConteudo) {
+    case 'criarCurso':
     case 'trilha':
     case 'curso':
       seletor = `tr[tag-name='${nomeConteudo}']`

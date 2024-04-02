@@ -2,7 +2,7 @@
 import 'cypress-real-events/support'
 import { faker } from '@faker-js/faker'
 import { getAuthToken } from '../support/auth_helper'
-import { converterDataEHoraParaISO, gerarDataAtual } from '../support/utils_helper'
+import { converterDataEHoraParaISO } from '../support/utils_helper'
 import formConteudos from "../support/pageObjects/formConteudos"
 
 describe('criar curso via catálogo', () => {
@@ -125,7 +125,7 @@ describe('criar curso via catálogo', () => {
 	 * 6. Salva o curso editado e valida seus dados.
 	 * 7. Exclui o curso criado.
 	 * 
-	 * @satisfies
+	 * @expected
 	 * Deve ser possível criar um curso com visualização para inscritos e editá-lo para visualização para público.
 	 * 
 	 * @priority
@@ -199,7 +199,7 @@ describe('criar curso via catálogo', () => {
 		}
 
 		let dadosParaValidar = { ...formularioConteudo, ...catalogo, ...dadosEspecificos }
-		cy.validarDadosConteudo(dadosParaValidar)
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// UPDATE
 		cy.log('## UPDATE ##')
@@ -263,7 +263,6 @@ describe('criar curso via catálogo', () => {
 		cy.editarConteudo(conteudoEdit.nome, tipoConteudo)
 
 		dadosParaValidar = { ...formularioConteudo, ...catalogo, ...dadosEspecificos, ...conteudoEdit }
-
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
@@ -291,7 +290,7 @@ describe('criar curso via catálogo', () => {
 	 * 6. Salva o curso editado e valida seus dados.
 	 * 7. Exclui o curso criado.
 	 * 
-	 * @satisfies
+	 * @expected
 	 * Deve ser possível criar um curso com visualização para colaborador e editá-lo para visualização para público.
 	 * 
 	 * @priority
@@ -365,7 +364,7 @@ describe('criar curso via catálogo', () => {
 		}
 
 		let dadosParaValidar = { ...formularioConteudo, ...catalogo, ...dadosEspecificos }
-		cy.validarDadosConteudo(dadosParaValidar)
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// UPDATE
 		cy.log('## UPDATE ##')
@@ -419,7 +418,6 @@ describe('criar curso via catálogo', () => {
 		cy.editarConteudo(conteudoEdit.nome, tipoConteudo)
 
 		dadosParaValidar = { ...formularioConteudo, ...catalogo, ...dadosEspecificos, ...conteudoEdit }
-
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
@@ -447,7 +445,7 @@ describe('criar curso via catálogo', () => {
 	 * 6. Salva o curso editado e valida seus dados.
 	 * 7. Exclui o curso criado.
 	 * 
-	 * @satisfies
+	 * @expected
 	 * Deve ser possível criar um curso com visualização para usuários e editá-lo para visualização para público.
 	 * 
 	 * @priority
@@ -520,7 +518,7 @@ describe('criar curso via catálogo', () => {
 		}
 
 		let dadosParaValidar = { ...formularioConteudo, ...catalogo, ...dadosEspecificos }
-		cy.validarDadosConteudo(dadosParaValidar)
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// UPDATE
 		cy.log('## UPDATE ##')
@@ -548,7 +546,6 @@ describe('criar curso via catálogo', () => {
 		cy.editarConteudo(catalogo.nome, tipoConteudo)
 
 		dadosParaValidar = { ...formularioConteudo, ...catalogo, ...dadosEspecificos, ...conteudoEdit }
-
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
@@ -576,7 +573,7 @@ describe('criar curso via catálogo', () => {
 	 * 6. Salva o curso editado e valida seus dados.
 	 * 7. Exclui o curso criado.
 	 * 
-	 * @satisfies
+	 * @expected
 	 * Deve ser possível criar um curso com visualização para público e editá-lo para visualização para usuários.
 	 * 
 	 * @priority
@@ -649,7 +646,7 @@ describe('criar curso via catálogo', () => {
 		}
 
 		let dadosParaValidar = { ...formularioConteudo, ...catalogo, ...dadosEspecificos }
-		cy.validarDadosConteudo(dadosParaValidar)
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// UPDATE
 		cy.log('## UPDATE ##')
@@ -670,8 +667,7 @@ describe('criar curso via catálogo', () => {
 		cy.editarConteudo(catalogo.nome, tipoConteudo)
 
 		dadosParaValidar = { ...formularioConteudo, ...catalogo, ...dadosEspecificos, ...conteudoEdit }
-
-		cy.validarDadosConteudo(dadosParaValidar)
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
 		cy.log('## DELETE ##')
@@ -699,7 +695,7 @@ describe('criar curso via catálogo', () => {
 	 * 7. Salva o curso editado e valida seus dados.
 	 * 8. Exclui o curso criado.
 	 * 
-	 * @satisfies
+	 * @expected
 	 * Deve ser possível criar um curso após editar um catálogo que estava em desenvolvimento para liberado.
 	 * 
 	 * @priority
@@ -847,7 +843,6 @@ describe('criar curso via catálogo', () => {
 		cy.editarConteudo(conteudoEdit3.nome, tipoConteudo)
 
 		dadosParaValidar = { ...formularioConteudo, ...catalogo, ...conteudoEdit1, ...conteudoEdit2, ...dadosEspecificos, ...conteudoEdit3 }
-
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
@@ -879,7 +874,7 @@ describe('criar curso via catálogo', () => {
 	 * 9. Edita novamente o curso, alterando alguns campos, salva e valida os dados.
 	 * 10. Exclui o curso criado.
 	 * 
-	 * @satisfies
+	 * @expected
 	 * Deve ser possível criar um curso após editar um catálogo que estava suspenso para liberado, assim como editar e excluir o 
 	 * curso criado após seu catálogo base ser excluído.
 	 * 
@@ -1030,7 +1025,6 @@ describe('criar curso via catálogo', () => {
 		cy.editarConteudo(conteudoEdit3.nome, tipoConteudo)
 
 		dadosParaValidar = { ...formularioConteudo, ...catalogo, ...conteudoEdit1, ...conteudoEdit2, ...dadosEspecificos, ...conteudoEdit3 }
-
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE CATALOGO
@@ -1055,7 +1049,7 @@ describe('criar curso via catálogo', () => {
 		
 		const nomeEdit = faker.commerce.productName()
 		novasCategorias = [`Cat3-${faker.hacker.noun()}`, `Cat4-${faker.hacker.noun()}`]
-		const conteudo_edit_4 = {
+		const conteudoEdit4 = {
 			nome: nomeEdit,
 			data_inicio: '01/01/2023',
 			hora_inicio: '00:01',
@@ -1092,16 +1086,16 @@ describe('criar curso via catálogo', () => {
 			habilitar_chat: false
 		}
 
-		cy.preencherDadosConteudo(conteudo_edit_4, { limpar: true })
-		cy.salvarConteudo(conteudo_edit_4.nome, tipoConteudo)
+		cy.preencherDadosConteudo(conteudoEdit4, { limpar: true })
+		cy.salvarConteudo(conteudoEdit4.nome, tipoConteudo)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
 
-		cy.editarConteudo(conteudo_edit_4.nome, tipoConteudo)
+		cy.editarConteudo(conteudoEdit4.nome, tipoConteudo)
 
 		// Massa de dados complementar para validação
-		const conteudo_extra = {
+		const dadosEspecificos2 = {
 			endereco: '',
 			complemento: '',
 			cidade: '',
@@ -1118,8 +1112,8 @@ describe('criar curso via catálogo', () => {
 			...conteudoEdit2, 
 			...dadosEspecificos, 
 			...conteudoEdit3, 
-			...conteudo_edit_4,
-			...conteudo_extra
+			...conteudoEdit4,
+			...dadosEspecificos2
 		}
 
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
@@ -1128,7 +1122,7 @@ describe('criar curso via catálogo', () => {
 		cy.log('## DELETE ##')
 
 		cy.cancelarFormularioConteudo(tipoConteudo)
-		cy.excluirConteudo(conteudo_edit_4.nome, tipoConteudo)
+		cy.excluirConteudo(conteudoEdit4.nome, tipoConteudo)
 	})
 
 	/** DOCUMENTAÇÃO:
@@ -1147,7 +1141,7 @@ describe('criar curso via catálogo', () => {
 	 * 5. Edita o curso, alterando alguns campos e validando se os dados foram alterados corretamente.
 	 * 6. Exclui o curso.
 	 * 
-	 * @satisfies
+	 * @expected
 	 * Deve ser possível criar um curso via catálogo com todos os campos preenchidos, validar os dados
 	 * e realizar a edição e exclusão do curso.
 	 * 
@@ -1247,7 +1241,6 @@ describe('criar curso via catálogo', () => {
 		}
 
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo, ...dadosEspecificos }
-
 		cy.validarDadosConteudo(dadosParaValidar, categorias)		
 		
 		// UPDATE
@@ -1310,7 +1303,6 @@ describe('criar curso via catálogo', () => {
 		)
 		
 		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...dadosEspecificos, ...conteudoEdit }
-
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE

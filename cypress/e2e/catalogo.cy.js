@@ -2,7 +2,7 @@
 import 'cypress-real-events/support'
 import { faker } from '@faker-js/faker'
 import { getAuthToken } from '../support/auth_helper'
-import { converterDataEHoraParaISO, gerarDataAtual } from '../support/utils_helper'
+import { gerarDataAtual } from '../support/utils_helper'
 import formConteudos from "../support/pageObjects/formConteudos"
 
 describe('catálogo', () => {
@@ -55,19 +55,6 @@ describe('catálogo', () => {
 		habilitar_pagamento: false,
 		nr_parcelas: '1',
 		valor_acrescimo: '0.0',
-	}
-
-	let visualizacaoTexto = {
-        'Inscritos': 0,
-		'Colaborador': 1,
-		'Usuários': 2,
-		'Público': 3
-    }
-
-	let situacaoTexto = {
-		'Em desenvolvimento': 0,
-		'Liberado': 1,
-		'Suspenso': 2
 	}
 
 	before(() => {
@@ -164,7 +151,7 @@ describe('catálogo', () => {
 		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
-		cy.validarDadosConteudo(dadosParaValidar)
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// UPDATE
 		cy.log('## UPDATE ##')
@@ -229,6 +216,7 @@ describe('catálogo', () => {
 
 		// DELETE
 		cy.log('## DELETE ##')
+
 		cy.cancelarFormularioConteudo(tipoConteudo)
 		cy.excluirConteudo(conteudoEdit.nome, tipoConteudo)
 	})
@@ -329,7 +317,7 @@ describe('catálogo', () => {
 		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
-		cy.validarDadosConteudo(dadosParaValidar)
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// UPDATE
 		cy.log('## UPDATE ##')
@@ -395,6 +383,7 @@ describe('catálogo', () => {
 
 		// DELETE
 		cy.log('## DELETE ##')
+
 		cy.cancelarFormularioConteudo(tipoConteudo)
 		cy.excluirConteudo(conteudoEdit.nome, tipoConteudo)
 	})
@@ -455,7 +444,6 @@ describe('catálogo', () => {
 			local: 'Youtube',
 			email_responsavel: faker.internet.email(),
 			site: faker.internet.url(),
-			notificar_responsavel: false,
 			rotulo_contato: 'Entre em contato conosco para mais informações.',
 			hashtag: faker.hacker.adjective(),
 			addCategoria: categorias,
@@ -490,7 +478,7 @@ describe('catálogo', () => {
 		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
-		cy.validarDadosConteudo(dadosParaValidar)
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// UPDATE
 		cy.log('## UPDATE ##')
@@ -547,6 +535,7 @@ describe('catálogo', () => {
 
 		// DELETE
 		cy.log('## DELETE ##')
+
 		cy.cancelarFormularioConteudo(tipoConteudo)
 		cy.excluirConteudo(conteudoEdit.nome, tipoConteudo)
 	})
@@ -587,7 +576,7 @@ describe('catálogo', () => {
 	 * @author Karla Daiany
 	 * @version 1.0.0 
 	 */
-	it.only('4-CRUD catalogo suspenso, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
+	it('4-CRUD catalogo suspenso, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
 		// Massa de dados para criação do catálogo
 		categorias = [`Cat1-${faker.hacker.noun()}`]
 		const conteudo = {
@@ -606,19 +595,13 @@ describe('catálogo', () => {
 			vigencia: faker.number.int({ min: 100, max: 999 }),
 			local: 'Youtube',
 			email_responsavel: faker.internet.email(),
-			notificar_responsavel: false,
 			site: faker.internet.url(),
 			hashtag: faker.hacker.adjective(),
 			addCategoria: categorias,
-			permite_anexo: 'Desabilitado',
-			status_iframe_anexo: false,
 			visualizacao: 'Colaborador',
 			situacao: 'Suspenso',
-			notificar_concluir_primeira_aula: 'Não',
 			dias_teste: faker.number.int({ min: 100, max: 999 }),
-			habilitar_dias_teste: false,
-			exige_confirmacao: 'Habilitado',
-			habilitar_pagamento: false
+			exige_confirmacao: 'Habilitado'
 		}
 
 		// CREATE
@@ -637,7 +620,7 @@ describe('catálogo', () => {
 		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
-		cy.validarDadosConteudo(dadosParaValidar)
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// UPDATE
 		cy.log('## UPDATE ##')
@@ -668,14 +651,52 @@ describe('catálogo', () => {
 
 		// DELETE
 		cy.log('## DELETE ##')
+
 		cy.cancelarFormularioConteudo(tipoConteudo)
 		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
+	/** DOCUMENTAÇÃO:
+	 * @name
+	 * 5-CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores
+	 * 
+	 * @description
+	 * Testa o fluxo de criação, leitura, atualização e exclusão de um catálogo em desenvolvimento, sem anexo, sem pagamento, com confirmação de inscrição
+	 * e com visualização para colaboradores.
+	 * 
+	 * @steps
+	 * 1. Cria um catálogo preenchendo alguns dos campos do formulário.
+	 * 2. Valida se o catálogo foi criado e é exibido na listagem.
+	 * 3. Edita o catálogo inserindo novos dados.
+	 * 4. Valida se os dados foram salvos corretamente.
+	 * 5. Exclui o catálogo e valida se foi removido da listagem.
+	 * 
+	 * @expected
+	 * O catálogo deve ser criado, editado e excluído com sucesso.
+	 * 
+	 * @priority
+	 * Alta
+	 * 
+	 * @type
+	 * E2E
+	 * 
+	 * @time
+	 * 1m
+	 * 
+	 * @tags
+	 * CRUD, Catalogo
+	 * 
+	 * @test_case
+	 * à confirmar
+	 * 
+	 * @author Karla Daiany
+	 * @version 1.0.0
+	 */	
 	it('5-CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
 		// Massa de dados para criação do catálogo
+		categorias = [`Cat1-${faker.hacker.noun()}`]
 		const conteudo = {
-			nome: faker.commerce.productName(),
+			nome: nome,
 			descricao: faker.commerce.productDescription(),
 			tipo: 'Palestra',
 			modalidade: 'Online',
@@ -688,9 +709,7 @@ describe('catálogo', () => {
 			email_responsavel: faker.internet.email(),
 			site: faker.internet.url(),
 			hashtag: faker.hacker.adjective(),
-			categoria: { 
-				cat1: faker.hacker.noun()
-			},
+			addCategoria: categorias,
 			visualizacao: 'Usuários',
 			situacao: 'Suspenso',
 			notificar_concluir_primeira_aula: 'Não',
@@ -698,545 +717,91 @@ describe('catálogo', () => {
 			exige_confirmacao: 'Habilitado'
 		}
 
-		// !!! PRÉ-CONDIÇÃO !!!
+		// CREATE
+		cy.log('## CREATE ##')
+
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfil('administrador')
-		cy.acessarPgCatalogo()
-
-		// !!! INÍCIO DO TESTE !!!
-		// CREATE
-		// Clicar no botão de adicionar novo catálogo e validar página correta
-		cy.contains('button', 'Adicionar')
-			.should('be.visible')
-			.click()
-
-		cy.contains('#page-breadcrumb', 'Catálogo de Cursos > Adicionar Novo')
-			.should('be.visible')
-
-		cy.contains('.detail_title', 'Novo Catálogo de Cursos')
-			.should('be.visible')
-
-		// Preencher os campos do formulário - aba Dados
-		cy.get('#event_name')
-			.type(conteudo.nome)
-
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-			const doc = $iframe.contents()
-			
-			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
-				cy.wrap($body).click({ force: true }).type(`${conteudo.descricao} do catálogo nome: ${conteudo.nome}`, { force: true })
-			})
-		})
-
-		cy.get('#event_event_type_id')
-			.select(conteudo.tipo)  
-
-		cy.get('#event_mode')
-			.select(conteudo.modalidade)  
-
-		cy.get('#event_synchronism')
-			.select(conteudo.sincronismo)  
-
-		cy.get('#event_outlet')
-			.select(conteudo.canal)  
-
-		cy.get('#event_workload')
-			.clear()
-			.type(conteudo.carga_horaria)
-
-		cy.get('#event_class_number')
-			.type(conteudo.numero_turma)
-
-		cy.get('#event_days_to_expire')
-			.clear()
-			.type(conteudo.vigencia)
-
-		cy.get('#event_place')
-			.type(conteudo.local)
-
-		cy.get('#event_email')
-			.clear()	
-			.type(conteudo.email_responsavel)
-
-		cy.get('#event_website')
-			.type(conteudo.site)
-
-		cy.get('#event_hashtag')
-			.type(conteudo.hashtag)
-
-		cy.get("input.form-control.as-input[name='event[category_extra]']")
-			.type(conteudo.categoria.cat1)
-		
-		cy.realPress('Tab')
-
-		cy.get('#event_inscription_access')
-			.select(conteudo.visualizacao)
-
-		cy.get('#event_situation')
-			.select(conteudo.situacao)
-
-		cy.get('#event_end_class')
-			.select(conteudo.notificar_concluir_primeira_aula)
-
-		cy.get('#event_trial_days')
-			.clear()
-			.type(conteudo.dias_teste)
-
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Exigir confirmação de inscrição pelo Organizador?')
-			.parents('.col-md-6.col-lg-4')
-			.find(`label:contains("${conteudo.exige_confirmacao}")`)
-			.invoke('attr', 'for')
-			.then((id) => {
-				cy.get(`input#${id}`).click()
-			})
-
-		// Salvar a criação do catálogo, validar mensagem e redirecionamento
-		cy.contains('button', 'Salvar')
-			.should('be.visible')
-			.click()
-
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
-			.should('be.visible')
-
-		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
-			.should('be.visible')
-
-		// Verificar se o catálogo foi criado e é exibido na listagem
-		cy.get(`tr.event-row[name='${conteudo.nome}']`)
-			.should('be.visible')
-			.should('have.length', 1)
+		cy.acessarPgCatalogo()	
+		cy.addConteudo(tipoConteudo)
+		cy.preencherDadosConteudo(conteudo, { limpar: true })
+		cy.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
-		// Aguardar 4s devido a atualização da página
-		cy.wait(4000)
+		cy.log('## READ ##')
 
-		// Clicar no botão de editar do catálogo para validar dados salvos e página correta
-		cy.get(`tr.event-row[name='${conteudo.nome}']`)
-			.find('a[title="Editar"]')
-			.click()
-		
-		cy.wait(2000)
+		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
-		cy.contains('#page-breadcrumb', 'Detalhes do Item de Portfólio')
-			.should('be.visible')
-
-		cy.contains('.detail_title', 'Edição de Catálogo de Cursos')
-			.should('be.visible')
-
-		// Verificar se os dados foram salvos corretamente
-		cy.get('#event_name')
-			.should('have.value', conteudo.nome)
-
-		cy.get('#date_start')
-			.should('have.value', '')
-
-		cy.get('#time_start')
-			.should('have.value', '')
-
-		cy.get('#date_end')
-			.should('have.value', '')
-
-		cy.get('#time_end')
-			.should('have.value', '')
-
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-			const doc = $iframe.contents()
-		  
-			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
-				cy.wrap($body).should('have.text', `${conteudo.descricao} do catálogo nome: ${conteudo.nome}`)
-			})
-		})
-
-		cy.get('#event_event_type_id')
-			.find('option:selected')
-			.contains(conteudo.tipo)
-
-		cy.get('#event_mode')
-			.find('option:selected')
-			.contains(conteudo.modalidade)
-
-		cy.get('#event_synchronism')
-			.find('option:selected')
-			.contains(conteudo.sincronismo)
-
-		cy.get('#event_outlet')
-			.find('option:selected')
-			.should('have.text', conteudo.canal)
-
-		cy.get('#event_workload')
-			.should('have.value', conteudo.carga_horaria)
-
-		cy.get('#event_class_number')
-			.should('have.value', conteudo.numero_turma)
-
-		cy.get('#event_days_to_expire')
-			.should('have.value', conteudo.vigencia)
-
-		cy.get('#update_inscriptions')
-			.should('not.be.checked')
-
-		cy.get('#event_place')
-			.should('have.value', conteudo.local)
-
-		cy.get('#event_zip_code')
-			.should('have.value', '')
-
-		cy.get('#event_address')
-			.should('have.value', '')
-
-		cy.get('#event_address2')
-			.should('have.value', '')
-
-		cy.get('#event_city')
-			.should('have.value', '')
-
-		cy.get('#event_state')
-			.should('have.value', '')
-		
-		cy.get('#event_country')
-			.should('have.value', '')
-
-		cy.get('#event_email')
-			.should('have.value', conteudo.email_responsavel)
-		
-		cy.get('#event_website')
-			.should('have.value', conteudo.site)
-
-		cy.get('#event_sent_mail_owner')
-			.should('not.be.checked')
-
-		cy.get('#event_contact_label')
-			.should('have.value', '')
-
-		cy.get('#event_hashtag')
-			.should('have.value', conteudo.hashtag)
-
-		let categoriasEncontradas = []
-		cy.get('li.as-selection-item.blur').each(($el) => {
-			const text = $el.text().trim().replace('×', '').trim()
-			categoriasEncontradas.push(text)
-			})
-		
-		cy.get('li.as-selection-item.blur').then(() => {
-			const categoriasEsperadas = [conteudo.categoria.cat1].sort()
-			categoriasEncontradas.sort()
-			expect(categoriasEncontradas).to.deep.eq(categoriasEsperadas)
-		})
-		
-		cy.get('#remove_banner')
-			.should('not.be.checked')
-
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Permitir envio de anexos na inscrição?')
-			.parents('.col-md-6.col-lg-4')
-			.find('label:contains("Desabilitado")')
-			.invoke('attr', 'for')
-			.then((id) => {
-			  	cy.get(`input#${id}`).should('be.checked')
-			})
-
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-		 	const doc = $iframe.contents()
-		
-		 	cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
-		 		expect(contenteditable).to.eq('false')
-		 	})
-		})
-
-		cy.get('#event_inscription_access')
-			.find('option:selected')
-			.contains(conteudo.visualizacao)
-
-		cy.get('#event_situation')
-			.find('option:selected')
-			.contains(conteudo.situacao)
-
-		cy.get('#event_end_class')
-			.find('option:selected')
-			.contains(conteudo.notificar_concluir_primeira_aula)
-
-		cy.get('#event_notify_users')
-			.find('option:selected')
-			.contains('Não')
-
-		cy.get('#event_trial_days')
-			.should('have.value', conteudo.dias_teste)
-
-		cy.get('#event_enable_trial_days')
-			.should('not.be.checked')
-
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Exigir confirmação de inscrição pelo Organizador?')
-			.parents('.col-md-6.col-lg-4')
-			.find(`label:contains("${conteudo.exige_confirmacao}")`)
-			.invoke('attr', 'for')
-			.then((id) => {
-			  	cy.get(`input#${id}`).should('be.checked')
-			})
-
-		cy.get('#event_subscription_value')
-			.should('have.value', '0,00')
-
-		cy.get('#event_payment_enabled')
-			.should('not.be.checked')
-
-		cy.get('#event_installments_number')
-			.should('have.value', '1')
-
-		cy.get('#event_addition')
-			.should('have.value', '0.0')
+		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// UPDATE
+		cy.log('## UPDATE ##')
+		
 		const conteudoEdit = {
 			tipo: 'Outros',
 			visualizacao: 'Inscritos'
 		}
 
-		// Editar os campos do formulário - aba Dados
-		cy.get('#event_event_type_id')
-			.select(conteudoEdit.tipo)  
+		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
+		cy.salvarConteudo(conteudo.nome, tipoConteudo)
 
-		cy.get('#event_inscription_access')
-			.select(conteudoEdit.visualizacao)
-
-		// Salvar a edição do catálogo, validar mensagem e redirecionamento
-		cy.contains('button', 'Salvar')
-			.should('be.visible')
-			.click()
-
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
-			.should('be.visible')
-
-		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
-			.should('be.visible')
-
-		// Verificar se o catálogo editado foi salvo corretamente e é exibido na listagem
-		cy.get(`tr.event-row[name='${conteudo.nome}']`)
-			.should('be.visible')
-			.should('have.length', 1)
-		
 		// READ-UPDATE
-		// Aguardar 4s devido a atualização da página
-		cy.wait(4000)
+		cy.log('## READ-UPDATE ##')
 
-		// Clicar no botão de editar do catálogo para validar dados salvos e página correta
-		cy.get(`tr.event-row[name='${conteudo.nome}']`)
-			.find('a[title="Editar"]')
-			.click()
-		
-		cy.wait(2000)
+		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
-		cy.contains('#page-breadcrumb', 'Detalhes do Item de Portfólio')
-			.should('be.visible')
-
-		cy.contains('.detail_title', 'Edição de Catálogo de Cursos')
-			.should('be.visible')
-
-		// Verificar se os dados foram salvos corretamente
-		cy.get('#event_name')
-			.should('have.value', conteudo.nome)
-
-		cy.get('#date_start')
-			.should('have.value', '')
-
-		cy.get('#time_start')
-			.should('have.value', '')
-
-		cy.get('#date_end')
-			.should('have.value', '')
-
-		cy.get('#time_end')
-			.should('have.value', '')
-
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-			const doc = $iframe.contents()
-		  
-			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
-				cy.wrap($body).should('have.text', `${conteudo.descricao} do catálogo nome: ${conteudo.nome}`)
-			})
-		})
-
-		cy.get('#event_event_type_id')
-			.find('option:selected')
-			.contains(conteudoEdit.tipo)
-
-		cy.get('#event_mode')
-			.find('option:selected')
-			.contains(conteudo.modalidade)
-
-		cy.get('#event_synchronism')
-			.find('option:selected')
-			.contains(conteudo.sincronismo)
-
-		cy.get('#event_outlet')
-			.find('option:selected')
-			.should('have.value', conteudo.canal)
-
-		cy.get('#event_workload')
-			.should('have.value', conteudo.carga_horaria)
-
-		cy.get('#event_class_number')
-			.should('have.value', conteudo.numero_turma)
-
-		cy.get('#event_days_to_expire')
-			.should('have.value', conteudo.vigencia)
-
-		cy.get('#update_inscriptions')
-			.should('not.be.checked')
-
-		cy.get('#event_place')
-			.should('have.value', conteudo.local)
-
-		cy.get('#event_zip_code')
-			.should('have.value', '')
-
-		cy.get('#event_address')
-			.should('have.value', '')
-
-		cy.get('#event_address2')
-			.should('have.value', '')
-
-		cy.get('#event_city')
-			.should('have.value', '')
-
-		cy.get('#event_state')
-			.should('have.value', '')
-		
-		cy.get('#event_country')
-			.should('have.value', '')
-
-		cy.get('#event_email')
-			.should('have.value', conteudo.email_responsavel)
-		
-		cy.get('#event_website')
-			.should('have.value', conteudo.site)
-
-		cy.get('#event_sent_mail_owner')
-			.should('not.be.checked')
-
-		cy.get('#event_contact_label')
-			.should('have.value', '')
-
-		cy.get('#event_hashtag')
-			.should('have.value', conteudo.hashtag)
-
-		let categoriasEncontradasEdit = []
-		cy.get('li.as-selection-item.blur').each(($el) => {
-			const text = $el.text().trim().replace('×', '').trim()
-			categoriasEncontradasEdit.push(text)
-			})
-		
-		cy.get('li.as-selection-item.blur').then(() => {
-			const categoriasEsperadasEdit = [conteudo.categoria.cat1].sort()
-			categoriasEncontradasEdit.sort()
-			expect(categoriasEncontradasEdit).to.deep.eq(categoriasEsperadasEdit)
-		})
-		
-		cy.get('#remove_banner')
-			.should('not.be.checked')
-
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Permitir envio de anexos na inscrição?')
-			.parents('.col-md-6.col-lg-4')
-			.find(`label:contains('Desabilitado')`)
-			.invoke('attr', 'for')
-			.then((id) => {
-			  	cy.get(`input#${id}`).should('be.checked')
-			})
-
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-			const doc = $iframe.contents()
-		
-			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
-				expect(contenteditable).to.eq('false')
-			})
-		})
-
-		cy.get('#event_inscription_access')
-			.find('option:selected')
-			.contains(conteudoEdit.visualizacao)
-
-		cy.get('#event_situation')
-			.find('option:selected')
-			.contains(conteudo.situacao)
-
-		cy.get('#event_end_class')
-			.find('option:selected')
-			.contains(conteudo.notificar_concluir_primeira_aula)
-
-		cy.get('#event_notify_users')
-			.find('option:selected')
-			.contains('Não')
-
-		cy.get('#event_trial_days')
-			.should('have.value', conteudo.dias_teste)
-
-		cy.get('#event_enable_trial_days')
-			.should('not.be.checked')
-
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Exigir confirmação de inscrição pelo Organizador?')
-			.parents('.col-md-6.col-lg-4')
-			.find(`label:contains('${conteudo.exige_confirmacao}')`)
-			.invoke('attr', 'for')
-			.then((id) => {
-			  	cy.get(`input#${id}`).should('be.checked')
-			})
-
-		cy.get('#event_subscription_value')
-			.should('have.value', '0,00')
-
-		cy.get('#event_payment_enabled')
-			.should('not.be.checked')
-
-		cy.get('#event_installments_number')
-			.should('have.value', '1')
-
-		cy.get('#event_addition')
-			.should('have.value', '0.0')
-
-		// Cancelar a edição do catálogo e validar redirecionamento
-		cy.contains('#event-cancel','Cancelar')
-			.should('be.visible')
-			.click()
-
-		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
-			.should('be.visible')
+		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
-		// Clicar no botão de excluir do catálogo, mensagem de confirmação e confirmar exclusão
-		cy.get(`tr.event-row[name='${conteudo.nome}']`)
-		.find('a[title="Excluir"]')
-		.click()
+		cy.log('## DELETE ##')
 
-		cy.contains('#modal-remove-events-index', 'Excluir Catálogo de Cursos')
-		.should('be.visible')
-
-		cy.contains('#modal-remove-events-index_sub_title', conteudo.nome)
-		.should('be.visible')
-
-		cy.contains('#modal-remove-events-index-msg_title', 'Você tem certeza que deseja excluir este item de portfólio?')
-		.should('be.visible')
-
-		cy.get('#modal-remove-events-index-confirmed')
-		.click({ force: true })
-
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos excluído com sucesso.', { timeout: 5000 })
-		.should('be.visible')
-
-		// Aguardar 4s devido a atualização da página
-		cy.wait(4000)
-
-		// Verificar se o catálogo foi excluído e não é exibido na listagem
-		cy.get(`tr.event-row[name='${conteudo.nome}']`)
-		.should('not.exist')
+		cy.cancelarFormularioConteudo(tipoConteudo)
+		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
+	/** DOCUMENTAÇÃO:
+	 * @name
+	 * 6-CRUD catalogo liberado, sem anexo, sem pagamento, sem confirmação, com visualização para público
+	 * 
+	 * @description
+	 * Testa o fluxo de criação, leitura, atualização e exclusão de um catálogo liberado, sem anexo, sem pagamento, sem confirmação de inscrição
+	 * e com visualização para público.
+	 * 
+	 * @steps
+	 * 1. Cria um catálogo preenchendo alguns dos campos do formulário.
+	 * 2. Valida se o catálogo foi criado e é exibido na listagem.
+	 * 3. Edita o catálogo inserindo novos dados.
+	 * 4. Valida se os dados foram salvos corretamente.
+	 * 5. Exclui o catálogo e valida se foi removido da listagem.
+	 * 
+	 * @expected
+	 * O catálogo deve ser criado, editado e excluído com sucesso.
+	 * 
+	 * @priority
+	 * Alta
+	 * 
+	 * @type
+	 * E2E
+	 * 
+	 * @time
+	 * 1m
+	 * 
+	 * @tags
+	 * CRUD, Catalogo
+	 * 
+	 * @test_case
+	 * à confirmar
+	 * 
+	 * @author Karla Daiany
+	 * @version 1.0.0
+	 */
 	it('6-CRUD catalogo liberado, sem anexo, sem pagamento, sem confirmação, com visualização para público', () => {
 		// Massa de dados para criação do catálogo
+		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
 		const conteudo = {
-			nome: faker.commerce.productName(),
+			nome: nome,
 			descricao: faker.commerce.productDescription(),
 			tipo: 'Webinar',
 			modalidade: 'Online',
@@ -1248,10 +813,7 @@ describe('catálogo', () => {
 			local: 'Zoom',
 			email_responsavel: faker.internet.email(),
 			site: faker.internet.url(),
-			categoria: { 
-				cat1: `Cat1-${faker.hacker.noun()}`,
-				cat2: `Cat2-${faker.hacker.noun()}`
-			},
+			addCategoria: categorias,
 			visualizacao: 'Público',
 			situacao: 'Liberado',
 			notificar_concluir_primeira_aula: 'Sim',
@@ -1259,546 +821,90 @@ describe('catálogo', () => {
 			exige_confirmacao: 'Desabilitado'
 		}
 
-		// !!! PRÉ-CONDIÇÃO !!!
+		// CREATE
+		cy.log('## CREATE ##')
+
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfil('administrador')
-		cy.acessarPgCatalogo()
-
-		// !!! INÍCIO DO TESTE !!!
-		// CREATE
-		// Clicar no botão de adicionar novo catálogo e validar página correta
-		cy.contains('button', 'Adicionar')
-			.should('be.visible')
-			.click()
-
-		cy.contains('#page-breadcrumb', 'Catálogo de Cursos > Adicionar Novo')
-			.should('be.visible')
-
-		cy.contains('.detail_title', 'Novo Catálogo de Cursos')
-			.should('be.visible')
-
-		// Preencher os campos do formulário - aba Dados
-		cy.get('#event_name')
-			.type(conteudo.nome)
-
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-			const doc = $iframe.contents()
-			
-			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
-				cy.wrap($body).click({ force: true }).type(`${conteudo.descricao} do catálogo nome: ${conteudo.nome}`, { force: true })
-			})
-		})
-
-		cy.get('#event_event_type_id')
-			.select(conteudo.tipo)  
-
-		cy.get('#event_mode')
-			.select(conteudo.modalidade)  
-
-		cy.get('#event_synchronism')
-			.select(conteudo.sincronismo)  
-
-		cy.get('#event_outlet')
-			.select(conteudo.canal)  
-
-		cy.get('#event_workload')
-			.clear()
-			.type(conteudo.carga_horaria)
-
-		cy.get('#event_class_number')
-			.type(conteudo.numero_turma)
-
-		cy.get('#event_days_to_expire')
-			.clear()
-			.type(conteudo.vigencia)
-
-		cy.get('#event_place')
-			.type(conteudo.local)
-
-		cy.get('#event_email')
-			.clear()	
-			.type(conteudo.email_responsavel)
-
-		cy.get('#event_website')
-			.type(conteudo.site)
-
-		cy.get("input.form-control.as-input[name='event[category_extra]']")
-			.type(conteudo.categoria.cat1)
-		
-		cy.realPress('Tab')
-
-		cy.get("input.form-control.as-input[name='event[category_extra]']")
-			.type(conteudo.categoria.cat2)
-		
-		cy.realPress('Tab')
-
-		cy.get('#event_inscription_access')
-			.select(conteudo.visualizacao)
-
-		cy.get('#event_situation')
-			.select(conteudo.situacao)
-
-		cy.get('#event_end_class')
-			.select(conteudo.notificar_concluir_primeira_aula)
-
-		cy.get('#event_notify_users')
-			.select(conteudo.notificar_usuarios)
-
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Exigir confirmação de inscrição pelo Organizador?')
-			.parents('.col-md-6.col-lg-4')
-			.find(`label:contains("${conteudo.exige_confirmacao}")`)
-			.invoke('attr', 'for')
-			.then((id) => {
-				cy.get(`input#${id}`).click()
-			})
-
-		// Salvar a criação do catálogo, validar mensagem e redirecionamento
-		cy.contains('button', 'Salvar')
-			.should('be.visible')
-			.click()
-
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
-			.should('be.visible')
-
-		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
-			.should('be.visible')
-
-		// Verificar se o catálogo foi criado e é exibido na listagem
-		cy.get(`tr.event-row[name='${conteudo.nome}']`)
-			.should('be.visible')
-			.should('have.length', 1)
+		cy.acessarPgCatalogo()	
+		cy.addConteudo(tipoConteudo)
+		cy.preencherDadosConteudo(conteudo, { limpar: true })
+		cy.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
-		// Aguardar 4s devido a atualização da página
-		cy.wait(4000)
+		cy.log('## READ ##')
 
-		// Clicar no botão de editar do catálogo para validar dados salvos e página correta
-		cy.get(`tr.event-row[name='${conteudo.nome}']`)
-			.find('a[title="Editar"]')
-			.click()
-		
-		cy.wait(2000)
+		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
-		cy.contains('#page-breadcrumb', 'Detalhes do Item de Portfólio')
-			.should('be.visible')
+		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
-		cy.contains('.detail_title', 'Edição de Catálogo de Cursos')
-			.should('be.visible')
-
-		// Verificar se os dados foram salvos corretamente
-		cy.get('#event_name')
-			.should('have.value', conteudo.nome)
-
-		cy.get('#date_start')
-			.should('have.value', '')
-
-		cy.get('#time_start')
-			.should('have.value', '')
-
-		cy.get('#date_end')
-			.should('have.value', '')
-
-		cy.get('#time_end')
-			.should('have.value', '')
-
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-			const doc = $iframe.contents()
-		  
-			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
-				cy.wrap($body).should('have.text', `${conteudo.descricao} do catálogo nome: ${conteudo.nome}`)
-			})
-		})
-
-		cy.get('#event_event_type_id')
-			.find('option:selected')
-			.contains(conteudo.tipo)
-
-		cy.get('#event_mode')
-			.find('option:selected')
-			.contains(conteudo.modalidade)
-
-		cy.get('#event_synchronism')
-			.find('option:selected')
-			.contains(conteudo.sincronismo)
-
-		cy.get('#event_outlet')
-			.find('option:selected')
-			.should('have.text', conteudo.canal)
-
-		cy.get('#event_workload')
-			.should('have.value', conteudo.carga_horaria)
-
-		cy.get('#event_class_number')
-			.should('have.value', conteudo.numero_turma)
-
-		cy.get('#event_days_to_expire')
-			.should('have.value', conteudo.vigencia)
-
-		cy.get('#update_inscriptions')
-			.should('not.be.checked')
-
-		cy.get('#event_place')
-			.should('have.value', conteudo.local)
-
-		cy.get('#event_zip_code')
-			.should('have.value', '')
-
-		cy.get('#event_address')
-			.should('have.value', '')
-
-		cy.get('#event_address2')
-			.should('have.value', '')
-
-		cy.get('#event_city')
-			.should('have.value', '')
-
-		cy.get('#event_state')
-			.should('have.value', '')
-		
-		cy.get('#event_country')
-			.should('have.value', '')
-
-		cy.get('#event_email')
-			.should('have.value', conteudo.email_responsavel)
-		
-		cy.get('#event_website')
-			.should('have.value', conteudo.site)
-
-		cy.get('#event_sent_mail_owner')
-			.should('not.be.checked')
-
-		cy.get('#event_contact_label')
-			.should('have.value', '')
-
-		cy.get('#event_hashtag')
-			.should('have.value', '')
-
-		let categoriasEncontradas = []
-		cy.get('li.as-selection-item.blur').each(($el) => {
-			const text = $el.text().trim().replace('×', '').trim()
-			categoriasEncontradas.push(text)
-			})
-		
-		cy.get('li.as-selection-item.blur').then(() => {
-			const categoriasEsperadas = [conteudo.categoria.cat1, conteudo.categoria.cat2].sort()
-			categoriasEncontradas.sort()
-			expect(categoriasEncontradas).to.deep.eq(categoriasEsperadas)
-		})
-		
-		cy.get('#remove_banner')
-			.should('not.be.checked')
-
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Permitir envio de anexos na inscrição?')
-			.parents('.col-md-6.col-lg-4')
-			.find('label:contains("Desabilitado")')
-			.invoke('attr', 'for')
-			.then((id) => {
-			  	cy.get(`input#${id}`).should('be.checked')
-			})
-
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-		 	const doc = $iframe.contents()
-		
-		 	cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
-		 		expect(contenteditable).to.eq('false')
-		 	})
-		})
-
-		cy.get('#event_inscription_access')
-			.find('option:selected')
-			.contains(conteudo.visualizacao)
-
-		cy.get('#event_situation')
-			.find('option:selected')
-			.contains(conteudo.situacao)
-
-		cy.get('#event_end_class')
-			.find('option:selected')
-			.contains(conteudo.notificar_concluir_primeira_aula)
-
-		cy.get('#event_notify_users')
-			.find('option:selected')
-			.contains(conteudo.notificar_usuarios)
-
-		cy.get('#event_trial_days')
-			.should('have.value', '0')
-
-		cy.get('#event_enable_trial_days')
-			.should('not.be.checked')
-
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Exigir confirmação de inscrição pelo Organizador?')
-			.parents('.col-md-6.col-lg-4')
-			.find(`label:contains("${conteudo.exige_confirmacao}")`)
-			.invoke('attr', 'for')
-			.then((id) => {
-			  	cy.get(`input#${id}`).should('be.checked')
-			})
-
-		cy.get('#event_subscription_value')
-			.should('have.value', '0,00')
-
-		cy.get('#event_payment_enabled')
-			.should('not.be.checked')
-
-		cy.get('#event_installments_number')
-			.should('have.value', '1')
-
-		cy.get('#event_addition')
-			.should('have.value', '0.0')
-		
 		// UPDATE
+		cy.log('## UPDATE ##')
+		
 		const conteudoEdit = {
 			tipo: 'Palestra'
 		}
 
-		// Editar os campos do formulário - aba Dados
-		cy.get('#event_event_type_id')
-			.select(conteudoEdit.tipo)
-			
-		cy.contains('li.as-selection-item', conteudo.categoria.cat1)
-			.find('a.as-close')
-			.click()
+		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
+		cy.salvarConteudo(conteudo.nome, tipoConteudo)
 
-		// Salvar a edição do catálogo, validar mensagem e redirecionamento
-		cy.contains('button', 'Salvar')
-			.should('be.visible')
-			.click()
-
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
-			.should('be.visible')
-
-		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
-			.should('be.visible')
-
-		// Verificar se o catálogo editado foi salvo corretamente e é exibido na listagem
-		cy.get(`tr.event-row[name='${conteudo.nome}']`)
-			.should('be.visible')
-			.should('have.length', 1)
-		
 		// READ-UPDATE
-		// Aguardar 4s devido a atualização da página
-		cy.wait(4000)
+		cy.log('## READ-UPDATE ##')
 
-		// Clicar no botão de editar do catálogo para validar dados salvos e página correta
-		cy.get(`tr.event-row[name='${conteudo.nome}']`)
-			.find('a[title="Editar"]')
-			.click()
-		
-		cy.wait(2000)
+		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
-		cy.contains('#page-breadcrumb', 'Detalhes do Item de Portfólio')
-			.should('be.visible')
-
-		cy.contains('.detail_title', 'Edição de Catálogo de Cursos')
-			.should('be.visible')
-
-		// Verificar se os dados foram salvos corretamente
-		cy.get('#event_name')
-			.should('have.value', conteudo.nome)
-
-		cy.get('#date_start')
-			.should('have.value', '')
-
-		cy.get('#time_start')
-			.should('have.value', '')
-
-		cy.get('#date_end')
-			.should('have.value', '')
-
-		cy.get('#time_end')
-			.should('have.value', '')
-
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-			const doc = $iframe.contents()
-		  
-			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
-				cy.wrap($body).should('have.text', `${conteudo.descricao} do catálogo nome: ${conteudo.nome}`)
-			})
-		})
-
-		cy.get('#event_event_type_id')
-			.find('option:selected')
-			.contains(conteudoEdit.tipo)
-
-		cy.get('#event_mode')
-			.find('option:selected')
-			.contains(conteudo.modalidade)
-
-		cy.get('#event_synchronism')
-			.find('option:selected')
-			.contains(conteudo.sincronismo)
-
-		cy.get('#event_outlet')
-			.find('option:selected')
-			.should('have.value', conteudo.canal)
-
-		cy.get('#event_workload')
-			.should('have.value', conteudo.carga_horaria)
-
-		cy.get('#event_class_number')
-			.should('have.value', conteudo.numero_turma)
-
-		cy.get('#event_days_to_expire')
-			.should('have.value', conteudo.vigencia)
-
-		cy.get('#update_inscriptions')
-			.should('not.be.checked')
-
-		cy.get('#event_place')
-			.should('have.value', conteudo.local)
-
-		cy.get('#event_zip_code')
-			.should('have.value', '')
-
-		cy.get('#event_address')
-			.should('have.value', '')
-
-		cy.get('#event_address2')
-			.should('have.value', '')
-
-		cy.get('#event_city')
-			.should('have.value', '')
-
-		cy.get('#event_state')
-			.should('have.value', '')
-		
-		cy.get('#event_country')
-			.should('have.value', '')
-
-		cy.get('#event_email')
-			.should('have.value', conteudo.email_responsavel)
-		
-		cy.get('#event_website')
-			.should('have.value', conteudo.site)
-
-		cy.get('#event_sent_mail_owner')
-			.should('not.be.checked')
-
-		cy.get('#event_contact_label')
-			.should('have.value', '')
-
-		cy.get('#event_hashtag')
-			.should('have.value', '')
-
-		let categoriasEncontradasEdit = []
-		cy.get('li.as-selection-item.blur').each(($el) => {
-			const text = $el.text().trim().replace('×', '').trim()
-			categoriasEncontradasEdit.push(text)
-			})
-		
-		cy.get('li.as-selection-item.blur').then(() => {
-			const categoriasEsperadasEdit = [conteudo.categoria.cat2].sort()
-			categoriasEncontradasEdit.sort()
-			expect(categoriasEncontradasEdit).to.deep.eq(categoriasEsperadasEdit)
-		})
-		
-		cy.get('#remove_banner')
-			.should('not.be.checked')
-
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Permitir envio de anexos na inscrição?')
-			.parents('.col-md-6.col-lg-4')
-			.find(`label:contains('Desabilitado')`)
-			.invoke('attr', 'for')
-			.then((id) => {
-			  	cy.get(`input#${id}`).should('be.checked')
-			})
-
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-			const doc = $iframe.contents()
-		
-			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
-				expect(contenteditable).to.eq('false')
-			})
-		})
-
-		cy.get('#event_inscription_access')
-			.find('option:selected')
-			.contains(conteudo.visualizacao)
-
-		cy.get('#event_situation')
-			.find('option:selected')
-			.contains(conteudo.situacao)
-
-		cy.get('#event_end_class')
-			.find('option:selected')
-			.contains(conteudo.notificar_concluir_primeira_aula)
-
-		cy.get('#event_notify_users')
-			.find('option:selected')
-			.contains(conteudo.notificar_usuarios)
-
-		cy.get('#event_trial_days')
-			.should('have.value', '0')
-
-		cy.get('#event_enable_trial_days')
-			.should('not.be.checked')
-
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Exigir confirmação de inscrição pelo Organizador?')
-			.parents('.col-md-6.col-lg-4')
-			.find(`label:contains('${conteudo.exige_confirmacao}')`)
-			.invoke('attr', 'for')
-			.then((id) => {
-			  	cy.get(`input#${id}`).should('be.checked')
-			})
-
-		cy.get('#event_subscription_value')
-			.should('have.value', '0,00')
-
-		cy.get('#event_payment_enabled')
-			.should('not.be.checked')
-
-		cy.get('#event_installments_number')
-			.should('have.value', '1')
-
-		cy.get('#event_addition')
-			.should('have.value', '0.0')
-
-		// Cancelar a edição do catálogo e validar redirecionamento
-		cy.contains('#event-cancel','Cancelar')
-			.should('be.visible')
-			.click()
-
-		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
-			.should('be.visible')
+		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
-		// Clicar no botão de excluir do catálogo, mensagem de confirmação e confirmar exclusão
-		cy.get(`tr.event-row[name='${conteudo.nome}']`)
-		.find('a[title="Excluir"]')
-		.click()
+		cy.log('## DELETE ##')
 
-		cy.contains('#modal-remove-events-index', 'Excluir Catálogo de Cursos')
-		.should('be.visible')
-
-		cy.contains('#modal-remove-events-index_sub_title', conteudo.nome)
-		.should('be.visible')
-
-		cy.contains('#modal-remove-events-index-msg_title', 'Você tem certeza que deseja excluir este item de portfólio?')
-		.should('be.visible')
-
-		cy.get('#modal-remove-events-index-confirmed')
-		.click({ force: true })
-
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos excluído com sucesso.', { timeout: 5000 })
-		.should('be.visible')
-
-		// Aguardar 4s devido a atualização da página
-		cy.wait(4000)
-
-		// Verificar se o catálogo foi excluído e não é exibido na listagem
-		cy.get(`tr.event-row[name='${conteudo.nome}']`)
-		.should('not.exist')
+		cy.cancelarFormularioConteudo(tipoConteudo)
+		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
+	/** DOCUMENTAÇÃO:
+	 * @name
+	 * 7-CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários
+	 * 
+	 * @description
+	 * Testa o fluxo de criação, leitura, atualização e exclusão de um catálogo em desenvolvimento, sem anexo, sem pagamento, com confirmação de inscrição
+	 * e com visualização para usuários.
+	 * 
+	 * @steps
+	 * 1. Cria um catálogo preenchendo alguns dos campos do formulário.
+	 * 2. Valida se o catálogo foi criado e é exibido na listagem.
+	 * 3. Edita o catálogo inserindo novos dados.
+	 * 4. Valida se os dados foram salvos corretamente.
+	 * 5. Exclui o catálogo e valida se foi removido da listagem.
+	 * 
+	 * @expected
+	 * O catálogo deve ser criado, editado e excluído com sucesso.
+	 * 
+	 * @priority
+	 * Alta
+	 * 
+	 * @type
+	 * E2E
+	 * 
+	 * @time
+	 * 1m
+	 * 
+	 * @tags
+	 * CRUD, Catalogo
+	 * 
+	 * @test_case
+	 * à confirmar
+	 * 
+	 * @author Karla Daiany
+	 * @version 1.0.0
+	 */
 	it('7-CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários', () => {
 		// Massa de dados para criação do catálogo
+		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
 		const conteudo = {
-			nome: faker.commerce.productName(),
+			nome: nome,
 			descricao: faker.commerce.productDescription(),
 			tipo: 'Treinamento',
 			modalidade: 'Online',
@@ -1808,526 +914,61 @@ describe('catálogo', () => {
 			local: 'Twitch',
 			site: faker.internet.url(),
 			hashtag: `#${faker.hacker.abbreviation()}`,
-			categoria: { 
-				cat1: `Cat1-${faker.hacker.noun()}`,
-				cat2: `Cat2-${faker.hacker.noun()}`
-			},
+			addCategoria: categorias,
 			visualizacao: 'Usuários',
 			situacao: 'Em desenvolvimento',
 			notificar_concluir_primeira_aula: 'Não'
 		}
 
-		// !!! PRÉ-CONDIÇÃO !!!
+		// CREATE
+		cy.log('## CREATE ##')
+
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfil('administrador')
-		cy.acessarPgCatalogo()
-
-		// !!! INÍCIO DO TESTE !!!
-		// CREATE
-		// Clicar no botão de adicionar novo catálogo e validar página correta
-		cy.contains('button', 'Adicionar')
-			.should('be.visible')
-			.click()
-
-		cy.contains('#page-breadcrumb', 'Catálogo de Cursos > Adicionar Novo')
-			.should('be.visible')
-
-		cy.contains('.detail_title', 'Novo Catálogo de Cursos')
-			.should('be.visible')
-
-		// Preencher os campos do formulário - aba Dados
-		cy.get('#event_name')
-			.type(conteudo.nome)
-
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-			const doc = $iframe.contents()
-			
-			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
-				cy.wrap($body).click({ force: true }).type(`${conteudo.descricao} do catálogo nome: ${conteudo.nome}`, { force: true })
-			})
-		})
-
-		cy.get('#event_event_type_id')
-			.select(conteudo.tipo)  
-
-		cy.get('#event_mode')
-			.select(conteudo.modalidade)  
-
-		cy.get('#event_synchronism')
-			.select(conteudo.sincronismo)  
-
-		cy.get('#event_outlet')
-			.select(conteudo.canal)  
-
-		cy.get('#event_days_to_expire')
-			.clear()
-			.type(conteudo.vigencia)
-
-		cy.get('#event_place')
-			.type(conteudo.local)
-
-		cy.get('#event_website')
-			.type(conteudo.site)
-
-		cy.get('#event_hashtag')
-			.type(conteudo.hashtag)
-
-		cy.get("input.form-control.as-input[name='event[category_extra]']")
-			.type(conteudo.categoria.cat1)
-		
-		cy.realPress('Tab')
-
-		cy.get("input.form-control.as-input[name='event[category_extra]']")
-			.type(conteudo.categoria.cat2)
-		
-		cy.realPress('Tab')
-
-		cy.get('#event_inscription_access')
-			.select(conteudo.visualizacao)
-
-		cy.get('#event_situation')
-			.select(conteudo.situacao)
-
-		cy.get('#event_end_class')
-			.select(conteudo.notificar_concluir_primeira_aula)
-
-		// Salvar a criação do catálogo, validar mensagem e redirecionamento
-		cy.contains('button', 'Salvar')
-			.should('be.visible')
-			.click()
-
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
-			.should('be.visible')
-
-		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
-			.should('be.visible')
-
-		// Verificar se o catálogo foi criado e é exibido na listagem
-		cy.get(`tr.event-row[name='${conteudo.nome}']`)
-			.should('be.visible')
-			.should('have.length', 1)
+		cy.acessarPgCatalogo()	
+		cy.addConteudo(tipoConteudo)
+		cy.preencherDadosConteudo(conteudo, { limpar: true })
+		cy.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
-		// Aguardar 4s devido a atualização da página
-		cy.wait(4000)
+		cy.log('## READ ##')
 
-		// Clicar no botão de editar do catálogo para validar dados salvos e página correta
-		cy.get(`tr.event-row[name='${conteudo.nome}']`)
-			.find('a[title="Editar"]')
-			.click()
-		
-		cy.wait(2000)
+		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
-		cy.contains('#page-breadcrumb', 'Detalhes do Item de Portfólio')
-			.should('be.visible')
-
-		cy.contains('.detail_title', 'Edição de Catálogo de Cursos')
-			.should('be.visible')
-
-		// Verificar se os dados foram salvos corretamente
-		cy.get('#event_name')
-			.should('have.value', conteudo.nome)
-
-		cy.get('#date_start')
-			.should('have.value', '')
-
-		cy.get('#time_start')
-			.should('have.value', '')
-
-		cy.get('#date_end')
-			.should('have.value', '')
-
-		cy.get('#time_end')
-			.should('have.value', '')
-
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-			const doc = $iframe.contents()
-		  
-			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
-				cy.wrap($body).should('have.text', `${conteudo.descricao} do catálogo nome: ${conteudo.nome}`)
-			})
-		})
-
-		cy.get('#event_event_type_id')
-			.find('option:selected')
-			.contains(conteudo.tipo)
-
-		cy.get('#event_mode')
-			.find('option:selected')
-			.contains(conteudo.modalidade)
-
-		cy.get('#event_synchronism')
-			.find('option:selected')
-			.contains(conteudo.sincronismo)
-
-		cy.get('#event_outlet')
-			.find('option:selected')
-			.should('have.text', conteudo.canal)
-
-		cy.get('#event_workload')
-			.should('have.value', '0')
-
-		cy.get('#event_class_number')
-			.should('have.value', '')
-
-		cy.get('#event_days_to_expire')
-			.should('have.value', conteudo.vigencia)
-
-		cy.get('#update_inscriptions')
-			.should('not.be.checked')
-
-		cy.get('#event_place')
-			.should('have.value', conteudo.local)
-
-		cy.get('#event_zip_code')
-			.should('have.value', '')
-
-		cy.get('#event_address')
-			.should('have.value', '')
-
-		cy.get('#event_address2')
-			.should('have.value', '')
-
-		cy.get('#event_city')
-			.should('have.value', '')
-
-		cy.get('#event_state')
-			.should('have.value', '')
-		
-		cy.get('#event_country')
-			.should('have.value', '')
-
-		cy.get('#event_email')
-			.should('have.value', 'karla.oliveira@twygo.com')
-		
-		cy.get('#event_website')
-			.should('have.value', conteudo.site)
-
-		cy.get('#event_sent_mail_owner')
-			.should('not.be.checked')
-
-		cy.get('#event_contact_label')
-			.should('have.value', '')
-
-		cy.get('#event_hashtag')
-			.should('have.value', conteudo.hashtag)
-
-		let categoriasEncontradas = []
-		cy.get('li.as-selection-item.blur').each(($el) => {
-			const text = $el.text().trim().replace('×', '').trim()
-			categoriasEncontradas.push(text)
-			})
-		
-		cy.get('li.as-selection-item.blur').then(() => {
-			const categoriasEsperadas = [conteudo.categoria.cat1, conteudo.categoria.cat2].sort()
-			categoriasEncontradas.sort()
-			expect(categoriasEncontradas).to.deep.eq(categoriasEsperadas)
-		})
-
-		cy.get('#remove_banner')
-			.should('not.be.checked')
-
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Permitir envio de anexos na inscrição?')
-			.parents('.col-md-6.col-lg-4')
-			.find('label:contains("Desabilitado")')
-			.invoke('attr', 'for')
-			.then((id) => {
-			  	cy.get(`input#${id}`).should('be.checked')
-			})
-
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-		 	const doc = $iframe.contents()
-		
-		 	cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
-		 		expect(contenteditable).to.eq('false')
-		 	})
-		})
-
-		cy.get('#event_inscription_access')
-			.find('option:selected')
-			.contains(conteudo.visualizacao)
-
-		cy.get('#event_situation')
-			.find('option:selected')
-			.contains(conteudo.situacao)
-
-		cy.get('#event_end_class')
-			.find('option:selected')
-			.contains(conteudo.notificar_concluir_primeira_aula)
-
-		cy.get('#event_notify_users')
-			.find('option:selected')
-			.contains('Não')
-
-		cy.get('#event_trial_days')
-			.should('have.value', '0')
-
-		cy.get('#event_enable_trial_days')
-			.should('not.be.checked')
-
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Exigir confirmação de inscrição pelo Organizador?')
-			.parents('.col-md-6.col-lg-4')
-			.find(`label:contains('Habilitado')`)
-			.invoke('attr', 'for')
-			.then((id) => {
-			  	cy.get(`input#${id}`).should('be.checked')
-			})
-
-		cy.get('#event_subscription_value')
-			.should('have.value', '0,00')
-
-		cy.get('#event_payment_enabled')
-			.should('not.be.checked')
-
-		cy.get('#event_installments_number')
-			.should('have.value', '1')
-
-		cy.get('#event_addition')
-			.should('have.value', '0.0')
+		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// UPDATE
-		// Editar os campos do formulário - aba Dados
-		cy.get('#event_days_to_expire')
-			.clear()
-
-		cy.get('#event_website')
-			.clear()
-
-		cy.get('#event_hashtag')
-			.clear()
+		cy.log('## UPDATE ##')
 		
-		cy.contains('li.as-selection-item', conteudo.categoria.cat1)
-			.find('a.as-close')
-			.click()
+		delCategorias = [categorias[0], categorias[1]]
+		const conteudoEdit = {
+			vigencia: '',
+			site: '',
+			hashtag: '',
+			removerCategoria: delCategorias[0],
+			removerCategoria: delCategorias[1]
+		}
 
-		cy.contains('li.as-selection-item', conteudo.categoria.cat2)
-			.find('a.as-close')
-			.click()
+		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
+		cy.salvarConteudo(conteudo.nome, tipoConteudo)
 
-		// Salvar a edição do catálogo, validar mensagem e redirecionamento
-		cy.contains('button', 'Salvar')
-			.should('be.visible')
-			.click()
-
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos salvo com sucesso.', { timeout: 5000 })
-			.should('be.visible')
-
-		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
-			.should('be.visible')
-
-		// Verificar se o catálogo editado foi salvo corretamente e é exibido na listagem
-		cy.get(`tr.event-row[name='${conteudo.nome}']`)
-			.should('be.visible')
-			.should('have.length', 1)
-		
 		// READ-UPDATE
-		// Aguardar 4s devido a atualização da página
-		cy.wait(4000)
+		cy.log('## READ-UPDATE ##')
 
-		// Clicar no botão de editar do catálogo para validar dados salvos e página correta
-		cy.get(`tr.event-row[name='${conteudo.nome}']`)
-			.find('a[title="Editar"]')
-			.click()
-		
-		cy.wait(2000)
+		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
-		cy.contains('#page-breadcrumb', 'Detalhes do Item de Portfólio')
-			.should('be.visible')
+		const todasCategorias = categorias.filter(categoria => 
+			!delCategorias.includes(categoria)
+		)
 
-		cy.contains('.detail_title', 'Edição de Catálogo de Cursos')
-			.should('be.visible')
-
-		// Verificar se os dados foram salvos corretamente
-		cy.get('#event_name')
-			.should('have.value', conteudo.nome)
-
-		cy.get('#date_start')
-			.should('have.value', '')
-
-		cy.get('#time_start')
-			.should('have.value', '')
-
-		cy.get('#date_end')
-			.should('have.value', '')
-
-		cy.get('#time_end')
-			.should('have.value', '')
-
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-			const doc = $iframe.contents()
-		  
-			cy.wrap(doc).find('body.cke_editable').eq(0).then($body => {
-				cy.wrap($body).should('have.text', `${conteudo.descricao} do catálogo nome: ${conteudo.nome}`)
-			})
-		})
-
-		cy.get('#event_event_type_id')
-			.find('option:selected')
-			.contains(conteudo.tipo)
-
-		cy.get('#event_mode')
-			.find('option:selected')
-			.contains(conteudo.modalidade)
-
-		cy.get('#event_synchronism')
-			.find('option:selected')
-			.contains(conteudo.sincronismo)
-
-		cy.get('#event_outlet')
-			.find('option:selected')
-			.should('have.value', conteudo.canal)
-
-		cy.get('#event_workload')
-			.should('have.value', '0')
-
-		cy.get('#event_class_number')
-			.should('have.value', '')
-
-		cy.get('#event_days_to_expire')
-			.should('have.value', '')
-
-		cy.get('#update_inscriptions')
-			.should('not.be.checked')
-
-		cy.get('#event_place')
-			.should('have.value', conteudo.local)
-
-		cy.get('#event_zip_code')
-			.should('have.value', '')
-
-		cy.get('#event_address')
-			.should('have.value', '')
-
-		cy.get('#event_address2')
-			.should('have.value', '')
-
-		cy.get('#event_city')
-			.should('have.value', '')
-
-		cy.get('#event_state')
-			.should('have.value', '')
-		
-		cy.get('#event_country')
-			.should('have.value', '')
-
-		cy.get('#event_email')
-			.should('have.value', 'karla.oliveira@twygo.com')
-		
-		cy.get('#event_website')
-			.should('have.value', '')
-
-		cy.get('#event_sent_mail_owner')
-			.should('not.be.checked')
-
-		cy.get('#event_contact_label')
-			.should('have.value', '')
-
-		cy.get('#event_hashtag')
-			.should('have.value', '')
-
-		cy.get('ul.as-selections')
-			.find('li.as-selection-item.blur')
-			.should('have.length', 0)
-		
-		cy.get('#remove_banner')
-			.should('not.be.checked')
-
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Permitir envio de anexos na inscrição?')
-			.parents('.col-md-6.col-lg-4')
-			.find(`label:contains('Desabilitado')`)
-			.invoke('attr', 'for')
-			.then((id) => {
-			  	cy.get(`input#${id}`).should('be.checked')
-			})
-
-		cy.get('iframe.cke_wysiwyg_frame', { timeout: 5000 }).then($iframe => {
-			const doc = $iframe.contents()
-		
-			cy.wrap(doc).find('body.cke_editable').eq(1).invoke('attr', 'contenteditable').then(contenteditable => {
-				expect(contenteditable).to.eq('false')
-			})
-		})
-
-		cy.get('#event_inscription_access')
-			.find('option:selected')
-			.contains(conteudo.visualizacao)
-
-		cy.get('#event_situation')
-			.find('option:selected')
-			.contains(conteudo.situacao)
-
-		cy.get('#event_end_class')
-			.find('option:selected')
-			.contains(conteudo.notificar_concluir_primeira_aula)
-
-		cy.get('#event_notify_users')
-			.find('option:selected')
-			.contains('Não')
-
-		cy.get('#event_trial_days')
-			.should('have.value', '0')
-
-		cy.get('#event_enable_trial_days')
-			.should('not.be.checked')
-
-		cy.get('div.col-md-6.col-lg-4')
-			.contains('Exigir confirmação de inscrição pelo Organizador?')
-			.parents('.col-md-6.col-lg-4')
-			.find(`label:contains('Habilitado')`)
-			.invoke('attr', 'for')
-			.then((id) => {
-			  	cy.get(`input#${id}`).should('be.checked')
-			})
-
-		cy.get('#event_subscription_value')
-			.should('have.value', '0,00')
-
-		cy.get('#event_payment_enabled')
-			.should('not.be.checked')
-
-		cy.get('#event_installments_number')
-			.should('have.value', '1')
-
-		cy.get('#event_addition')
-			.should('have.value', '0.0')
-
-		// Cancelar a edição do catálogo e validar redirecionamento
-		cy.contains('#event-cancel','Cancelar')
-			.should('be.visible')
-			.click()
-
-		cy.contains('#page-breadcrumb', 'Catálogo de cursos')
-			.should('be.visible')
+		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
+		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE
-		// Clicar no botão de excluir do catálogo, mensagem de confirmação e confirmar exclusão
-		cy.get(`tr.event-row[name='${conteudo.nome}']`)
-		.find('a[title="Excluir"]')
-		.click()
+		cy.log('## DELETE ##')
 
-		cy.contains('#modal-remove-events-index', 'Excluir Catálogo de Cursos')
-		.should('be.visible')
-
-		cy.contains('#modal-remove-events-index_sub_title', conteudo.nome)
-		.should('be.visible')
-
-		cy.contains('#modal-remove-events-index-msg_title', 'Você tem certeza que deseja excluir este item de portfólio?')
-		.should('be.visible')
-
-		cy.get('#modal-remove-events-index-confirmed')
-		.click({ force: true })
-
-		cy.contains('.flash.notice', 'Item do Catálogo de Cursos excluído com sucesso.', { timeout: 5000 })
-		.should('be.visible')
-
-		// Aguardar 4s devido a atualização da página
-		cy.wait(4000)
-
-		// Verificar se o catálogo foi excluído e não é exibido na listagem
-		cy.get(`tr.event-row[name='${conteudo.nome}']`)
-		.should('not.exist')
+		cy.cancelarFormularioConteudo(tipoConteudo)
+		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 })

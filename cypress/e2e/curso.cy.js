@@ -55,6 +55,13 @@ describe('curso', () => {
 		habilitar_chat: false
 	}
 
+	before(() => {
+		// Carrega os labels do arquivo JSON
+		cy.fixture('labels.json').then((labels) => {
+			Cypress.env('labels', labels)
+		})
+	})
+
 	beforeEach( () => {
 		// Ativa o tratamento de exceção não capturada especificamente para este teste
 		Cypress.on('uncaught:exception', (err, runnable) => {
@@ -84,6 +91,41 @@ describe('curso', () => {
 		Cypress.removeAllListeners('uncaught:exception')
 	})
 	
+	/** DOCUMENTAÇÃO:
+	 * @name
+	 * 1-CRUD curso com dados default
+	 * 
+	 * @description
+	 * Testa o fluxo de criação, leitura, atualização e exclusão de um curso com dados default
+	 * 
+	 * @steps
+	 * 1. Cria um curso com dados default (nome e descrição).
+	 * 2. Valida os dados do curso criado e se é exibido na lista de conteúdos.
+	 * 3. Edita o curso criado com novos dados.
+	 * 4. Valida os dados do curso editado.
+	 * 5. Exclui o curso criado.
+	 * 
+	 * @expected
+	 * Que o curso seja criado, editado e excluído com sucesso.
+	 * 
+	 * @priority
+	 * Alta
+	 * 
+	 * @type
+	 * E2E
+	 * 
+	 * @time
+	 * 1m
+	 * 
+	 * @tags
+	 * CRUD, curso
+	 * 
+	 * @testCase
+	 * à confirmar
+	 * 
+	 * @author Karla Daiany
+	 * @version 1.0.0
+	 */
 	it('1-CRUD curso com dados default', () =>{
 		// Massa de dados para criação do curso
         const conteudo = {
@@ -92,6 +134,8 @@ describe('curso', () => {
 		}
 
 		// CREATE
+		cy.log('## CREATE ##')
+
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
@@ -99,13 +143,16 @@ describe('curso', () => {
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
+		cy.log('## READ ##')
+
         cy.editarConteudo(conteudo.nome, tipoConteudo)
         
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
-		cy.validarDadosConteudo(dadosParaValidar)
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// UPDATE
-		// Massa de dados para edição do curso
+		cy.log('## UPDATE ##')
+
 		const novoNome = faker.commerce.productName()
 		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
 		const conteudoEdit = {
@@ -158,19 +205,57 @@ describe('curso', () => {
 		cy.salvarConteudo(conteudoEdit.nome, tipoConteudo)
 
 		// READ-UPDATE
+		cy.log('## READ-UPDATE ##')
+
 		cy.editarConteudo(conteudoEdit.nome, tipoConteudo)
 
 		const todasCategorias = [...categorias, ...novasCategorias]
-
 		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
-
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE
+		cy.log('## DELETE ##')
+
 		cy.cancelarFormularioConteudo(tipoConteudo)
 		cy.excluirConteudo(conteudoEdit.nome, tipoConteudo)
 	})
 
+	/** DOCUMENTAÇÃO:
+	 * @name
+	 * 2-CRUD curso liberado, com anexo, com pagamento, sem acréscimo, com confirmação, com visualização para inscritos
+	 * 
+	 * @description
+	 * Testa o fluxo de criação, leitura, atualização e exclusão de um curso liberado, com anexo, com pagamento, sem acréscimo, 
+	 * com confirmação da inscrição e com visualização para inscritos.
+	 * 
+	 * @steps
+	 * 1. Cria um curso liberado, com anexo, com pagamento, sem acréscimo, com confirmação da inscrição e com visualização para inscritos.
+	 * 2. Valida os dados do curso criado e se é exibido na lista de conteúdos.
+	 * 3. Edita o curso criado com novos dados.
+	 * 4. Valida os dados do curso editado.
+	 * 5. Exclui o curso criado.
+	 * 
+	 * @expected
+	 * Que o curso seja criado, editado e excluído com sucesso.
+	 * 
+	 * @priority
+	 * Alta
+	 * 
+	 * @type
+	 * E2E
+	 * 
+	 * @time
+	 * 1m
+	 * 
+	 * @tags
+	 * CRUD, curso
+	 * 
+	 * @testCase
+	 * à confirmar
+	 * 
+	 * @author Karla Daiany
+	 * @version 1.0.0
+	 */
 	it('2-CRUD curso liberado, com anexo, com pagamento, sem acréscimo, com confirmação, com visualização para inscritos', () => {
 		// Massa de dados para criação do curso
 		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
@@ -217,6 +302,8 @@ describe('curso', () => {
 		}
 
 		// CREATE
+		cy.log('## CREATE ##')
+
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
@@ -224,13 +311,16 @@ describe('curso', () => {
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
+		cy.log('## READ ##')
+
         cy.editarConteudo(conteudo.nome, tipoConteudo)
 
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
         cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// UPDATE
-		// Massa de dados para edição do curso
+		cy.log('## UPDATE ##')
+
 		const novoNome = faker.commerce.productName()
 		novasCategorias = [`Cat3-${faker.hacker.noun()}`, `Cat4-${faker.hacker.noun()}`]
 		const conteudoEdit = {
@@ -274,8 +364,9 @@ describe('curso', () => {
 		cy.salvarConteudo(conteudoEdit.nome, tipoConteudo)
 
 		// READ-UPDATE
-		// Massa de dados complementar para validação
-		const conteudo_extra = {
+		cy.log('## READ-UPDATE ##')
+
+		let dadosEspecificos = {
 			endereco: '',
 			complemento: '',
 			cidade: '',
@@ -286,16 +377,52 @@ describe('curso', () => {
 		cy.editarConteudo(conteudoEdit.nome, tipoConteudo)
 
 		const todasCategorias = [...categorias, ...novasCategorias]
-
-		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit, ...conteudo_extra }
-		
+		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit, ...dadosEspecificos }		
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE
+		cy.log('## DELETE ##')
+		
 		cy.cancelarFormularioConteudo(tipoConteudo)
 		cy.excluirConteudo(conteudoEdit.nome, tipoConteudo)
 	})
 
+	/** DOCUMENTAÇÃO:
+	 * @name
+	 * 3-CRUD curso liberado, com anexo, com pagamento, com acréscimo, sem confirmação, com visualização para público
+	 * 
+	 * @description
+	 * Testa o fluxo de criação, leitura, atualização e exclusão de um curso liberado, com anexo, com pagamento, com acréscimo,
+	 * sem confirmação da inscrição e com visualização para público.
+	 * 
+	 * @steps
+	 * 1. Cria um curso liberado, com anexo, com pagamento, com acréscimo, sem confirmação da inscrição e com visualização para público.
+	 * 2. Valida os dados do curso criado e se é exibido na lista de conteúdos.
+	 * 3. Edita o curso criado com novos dados.
+	 * 4. Valida os dados do curso editado.
+	 * 5. Exclui o curso criado.
+	 * 
+	 * @expected
+	 * Que o curso seja criado, editado e excluído com sucesso.
+	 * 
+	 * @priority
+	 * Alta
+	 * 
+	 * @type
+	 * E2E
+	 * 
+	 * @time
+	 * 1m
+	 * 
+	 * @tags
+	 * CRUD, curso
+	 * 
+	 * @testCase
+	 * à confirmar
+	 * 
+	 * @author Karla Daiany
+	 * @version 1.0.0
+	 */
 	it('3-CRUD curso liberado, com anexo, com pagamento, c/acréscimo, sem confirmação, com visualização para público', () => {
 		// Massa de dados para criação do curso
 		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`, `Cat3-${faker.hacker.noun()}`]
@@ -337,6 +464,8 @@ describe('curso', () => {
 		}
 
 		// CREATE
+		cy.log('## CREATE ##')
+
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
@@ -344,13 +473,16 @@ describe('curso', () => {
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
+		cy.log('## READ ##')
+
         cy.editarConteudo(conteudo.nome, tipoConteudo)
 
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
         cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// UPDATE
-		// Massa de dados para edição do curso
+		cy.log('## UPDATE ##')
+
 		const novoNome = faker.commerce.productName()
 		novasCategorias = [`Cat4-${faker.hacker.noun()}`, `Cat5-${faker.hacker.noun()}`]		
 		const conteudoEdit = {
@@ -392,23 +524,60 @@ describe('curso', () => {
 		cy.salvarConteudo(conteudoEdit.nome, tipoConteudo)
 
 		// READ-UPDATE
+		cy.log('## READ-UPDATE ##')
+
 		cy.editarConteudo(conteudoEdit.nome, tipoConteudo)
 
 		const todasCategorias = [...categorias, ...novasCategorias]
-
 		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
-
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE
+		cy.log('## DELETE ##')
+
 		cy.cancelarFormularioConteudo(tipoConteudo)
 		cy.excluirConteudo(conteudoEdit.nome, tipoConteudo)
 	})
 
+	/** DOCUMENTAÇÃO:
+	 * @name
+	 * 4-CRUD curso suspenso, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores
+	 * 
+	 * @description
+	 * Testa o fluxo de criação, leitura, atualização e exclusão de um curso suspenso, sem anexo, sem pagamento, com confirmação da inscrição
+	 * e com visualização para colaboradores.
+	 * 
+	 * @steps
+	 * 1. Cria um curso suspenso, sem anexo, sem pagamento, com confirmação da inscrição e com visualização para colaboradores.
+	 * 2. Valida os dados do curso criado e se é exibido na lista de conteúdos.
+	 * 3. Edita o curso criado com novos dados.
+	 * 4. Valida os dados do curso editado.
+	 * 5. Exclui o curso criado.
+	 * 
+	 * @expected
+	 * Que o curso seja criado, editado e excluído com sucesso.
+	 * 
+	 * @priority
+	 * Alta
+	 * 
+	 * @type
+	 * E2E
+	 * 
+	 * @time
+	 * 1m
+	 * 
+	 * @tags
+	 * CRUD, curso
+	 * 
+	 * @testCase
+	 * à confirmar
+	 * 
+	 * @author Karla Daiany
+	 * @version 1.0.0
+	 */
 	it('4-CRUD curso suspenso, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
 		// Massa de dados para criação do curso
 		categorias = [`Cat1-${faker.hacker.noun()}`]
-
 		const conteudo = {
 			nome: nome,
 			data_inicio: gerarDataAtual(),
@@ -443,6 +612,8 @@ describe('curso', () => {
 		}
 
 		// CREATE
+		cy.log('## CREATE ##')
+
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
@@ -450,13 +621,16 @@ describe('curso', () => {
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
+		cy.log('## READ ##')
+
         cy.editarConteudo(conteudo.nome, tipoConteudo)
 
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
         cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// UPDATE
-		// Massa de dados para edição do curso
+		cy.log('## UPDATE ##')
+
 		novasCategorias = [`Cat2-${faker.hacker.noun()}`, `Cat3-${faker.hacker.noun()}`]
 		const conteudoEdit = {
 			data_inicio: '01/01/2000',
@@ -473,19 +647,57 @@ describe('curso', () => {
 		cy.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ-UPDATE
+		cy.log('## READ-UPDATE ##')
+
 		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
-		let todasCategorias = [...categorias, ...novasCategorias]
-
+		const todasCategorias = [...categorias, ...novasCategorias]
 		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
-
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE
+		cy.log('## DELETE ##')
+		
 		cy.cancelarFormularioConteudo(tipoConteudo)
 		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
+	/** DOCUMENTAÇÃO:
+	 * @name
+	 * 5-CRUD curso em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores
+	 * 
+	 * @description
+	 * Testa o fluxo de criação, leitura, atualização e exclusão de um curso em desenvolvimento, sem anexo, sem pagamento, 
+	 * com confirmação da inscrição e com visualização para colaboradores.
+	 * 
+	 * @steps
+	 * 1. Cria um curso em desenvolvimento, sem anexo, sem pagamento, com confirmação da inscrição e com visualização para colaboradores.
+	 * 2. Valida os dados do curso criado e se é exibido na lista de conteúdos.
+	 * 3. Edita o curso criado com novos dados.
+	 * 4. Valida os dados do curso editado.
+	 * 5. Exclui o curso criado.
+	 * 
+	 * @expected
+	 * Que o curso seja criado, editado e excluído com sucesso.
+	 * 
+	 * @priority
+	 * Alta
+	 * 
+	 * @type
+	 * E2E
+	 * 
+	 * @time
+	 * 1m
+	 * 
+	 * @tags
+	 * CRUD, curso
+	 * 
+	 * @testCase
+	 * à confirmar
+	 * 
+	 * @author Karla Daiany
+	 * @version 1.0.0
+	 */
 	it('5-CRUD curso em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
 		// Massa de dados para criação do curso
 		categorias = [`Cat1-${faker.hacker.noun()}`]
@@ -514,6 +726,8 @@ describe('curso', () => {
 		}
 
 		// CREATE
+		cy.log('## CREATE ##')
+
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfil('administrador')
 		cy.addConteudo(tipoConteudo)
@@ -521,13 +735,16 @@ describe('curso', () => {
 		cy.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
+		cy.log('## READ ##')
+
 		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 		
 		// UPDATE
-		// Massa de dados para edição do curso
+		cy.log('## UPDATE ##')
+
 		const conteudoEdit = {
 			tipo: 'Outros',
 			visualizacao: 'Inscritos',
@@ -538,16 +755,56 @@ describe('curso', () => {
 		cy.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ-UPDATE
+		cy.log('## READ-UPDATE ##')
+
 		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
 		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
+		cy.log('## DELETE ##')
+
 		cy.cancelarFormularioConteudo(tipoConteudo)
 		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
+	/** DOCUMENTAÇÃO:
+	 * @name
+	 * 6-CRUD curso liberado, sem anexo, sem pagamento, sem confirmação, com visualização para público
+	 * 
+	 * @description
+	 * Testa o fluxo de criação, leitura, atualização e exclusão de um curso liberado, sem anexo, sem pagamento, sem confirmação da inscrição
+	 * e com visualização para público.
+	 * 
+	 * @steps
+	 * 1. Cria um curso liberado, sem anexo, sem pagamento, sem confirmação da inscrição e com visualização para público.
+	 * 2. Valida os dados do curso criado e se é exibido na lista de conteúdos.
+	 * 3. Edita o curso criado com novos dados.
+	 * 4. Valida os dados do curso editado.
+	 * 5. Exclui o curso criado.
+	 * 
+	 * @expected
+	 * Que o curso seja criado, editado e excluído com sucesso.
+	 * 
+	 * @priority
+	 * Alta
+	 * 
+	 * @type
+	 * E2E
+	 * 
+	 * @time
+	 * 1m
+	 * 
+	 * @tags
+	 * CRUD, curso
+	 * 
+	 * @testCase
+	 * à confirmar
+	 * 
+	 * @author Karla Daiany
+	 * @version 1.0.0
+	 */
 	it('6-CRUD curso liberado, sem anexo, sem pagamento, sem confirmação, com visualização para público', () => {
 		// Massa de dados para criação do curso
 		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
@@ -578,6 +835,8 @@ describe('curso', () => {
 		}
 
 		// CREATE
+		cy.log('## CREATE ##')
+
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
@@ -585,13 +844,16 @@ describe('curso', () => {
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
+		cy.log('## READ ##')
+
         cy.editarConteudo(conteudo.nome, tipoConteudo)
 
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
         cy.validarDadosConteudo(dadosParaValidar, categorias)
 		
 		// UPDATE
-		// Massa de dados para edição do curso
+		cy.log('## UPDATE ##')
+
 		const conteudoEdit = {
 			tipo: 'Palestra'
 		}
@@ -600,16 +862,56 @@ describe('curso', () => {
 		cy.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ-UPDATE
+		cy.log('## READ-UPDATE ##')
+
 		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
 		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
+		cy.log('## DELETE ##')
+
 		cy.cancelarFormularioConteudo(tipoConteudo)
 		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
+	/** DOCUMENTAÇÃO:
+	 * @name
+	 * 7-CRUD curso em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários
+	 * 
+	 * @description
+	 * Testa o fluxo de criação, leitura, atualização e exclusão de um curso em desenvolvimento, sem anexo, sem pagamento, 
+	 * com confirmação da inscrição e com visualização para usuários.
+	 * 
+	 * @steps
+	 * 1. Cria um curso em desenvolvimento, sem anexo, sem pagamento, com confirmação da inscrição e com visualização para usuários.
+	 * 2. Valida os dados do curso criado e se é exibido na lista de conteúdos.
+	 * 3. Edita o curso criado com novos dados.
+	 * 4. Valida os dados do curso editado.
+	 * 5. Exclui o curso criado.
+	 * 
+	 * @expected
+	 * Que o curso seja criado, editado e excluído com sucesso.
+	 * 
+	 * @priority
+	 * Alta
+	 * 
+	 * @type
+	 * E2E
+	 * 
+	 * @time
+	 * 1m
+	 * 
+	 * @tags
+	 * CRUD, curso
+	 * 
+	 * @testCase
+	 * à confirmar
+	 * 
+	 * @author Karla Daiany
+	 * @version 1.0.0
+	 */
 	it('7-CRUD curso em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários', () => {
 		// Massa de dados para criação do curso
 		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
@@ -628,6 +930,8 @@ describe('curso', () => {
 		}
 
 		// CREATE
+		cy.log('## CREATE ##')
+
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
@@ -635,13 +939,16 @@ describe('curso', () => {
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
+		cy.log('## READ ##')
+
         cy.editarConteudo(conteudo.nome, tipoConteudo)
 
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
         cy.validarDadosConteudo(dadosParaValidar, categorias)		
 
 		// UPDATE
-		// Massa de dados para edição do curso
+		cy.log('## UPDATE ##')
+
 		delCategorias = categorias[0]
 		const conteudoEdit = {
 			vigencia: '0',
@@ -655,6 +962,8 @@ describe('curso', () => {
 		cy.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ-UPDATE
+		cy.log('## READ-UPDATE ##')
+
 		cy.editarConteudo(conteudo.nome, tipoConteudo)
 		
 		const todasCategorias = categorias.filter(categoria => 
@@ -665,6 +974,8 @@ describe('curso', () => {
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE
+		cy.log('## DELETE ##')
+
 		cy.cancelarFormularioConteudo(tipoConteudo)
 		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
