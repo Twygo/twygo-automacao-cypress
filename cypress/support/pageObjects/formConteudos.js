@@ -4,6 +4,9 @@ class formConteudos {
 			seletor: '#event_name', 
 			tipo: 'input'
 		},
+		nome_portfolio: {
+			seletor: '#model_name',
+		},
 		data_inicio: { 
 			seletor: '#date_start', 
 			tipo: 'input' 
@@ -117,11 +120,11 @@ class formConteudos {
 			seletor: "input.form-control.as-input[name='event[category]']",
 			tipo: 'tag'
 		},
-		add_categoria: {
+		addCategoria: {
 			seletor: "input.form-control.as-input[name='event[category_extra]']",
 			tipo: 'add_tag'
 		},
-		remover_categoria: {
+		removerCategoria: {
 			seletor: 'li.as-selection-item.blur',
 			tipo: 'del_tag'
 		},
@@ -406,7 +409,7 @@ class formConteudos {
 
 	criarCursoViaCatalogo(nomeConteudo) {
 		cy.get(`tr.event-row[name='${nomeConteudo}']`)
-			.find('a[title="Criar  Curso"]')
+			.find('a[title="Criar  Curso"]', { timeout: 5000 })
 			.click()
 	}
 }

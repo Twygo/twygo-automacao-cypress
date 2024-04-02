@@ -5,7 +5,7 @@ describe('limpar dados da organização', ()=> {
 	it('deve limpar os dados da organização', () => {
 		// !!! PRÉ-CONDIÇÃO !!!
 		cy.loginTwygoAutomacao()
-		cy.alterarPerfilParaAdministrador()
+		cy.alterarPerfil('administrador')
 		
 		// Acessar menu da Sophia
 		cy.get('img[src*="sophia"]')

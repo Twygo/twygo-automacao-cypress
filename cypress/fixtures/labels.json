@@ -15,7 +15,7 @@
         "criarCurso": {
             "breadcrumb": "Catálogo de cursos",
             "msgSucesso": "Conteúdo salvo com sucesso.",
-            "breadcrumbAdicionar": "Lista de cursos",
+            "breadcrumbAdicionar": "Lista de c",
             "tituloPgAdicionar": "Novo Curso",
             "breadcrumbEdicao": "Detalhes do evento",
             "tituloPgEdicao": "Editar Cursos",
@@ -26,7 +26,15 @@
         },
         "catalogo": {
             "breadcrumb": "Catálogo de cursos",
-            "msgSucesso": "Item do Catálogo de Cursos salvo com sucesso."
+            "msgSucesso": "Item do Catálogo de Cursos salvo com sucesso.",
+            "breadcrumbAdicionar": "Catálogo de Cursos > Adicionar Novo",
+            "tituloPgAdicionar": "Novo Catálogo de Cursos",
+            "breadcrumbEdicao": "Detalhes do Item de Portfólio",
+            "tituloPgEdicao": "Edição de Catálogo de Cursos",
+            "tituloModalExclusao": "Excluir Catálogo de Cursos",
+            "texto1ModalExclusao": "Você tem certeza que deseja excluir este item de portfólio?",
+            "texto2ModalExclusao": "Esta ação não poderá ser desfeita.",
+            "msgSucessoExclusao": "Item do Catálogo de Cursos excluído com sucesso."
         }
     },
     "perfil": {

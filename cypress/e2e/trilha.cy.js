@@ -4,10 +4,10 @@ import { faker } from '@faker-js/faker'
 import { getAuthToken } from '../support/auth_helper'
 import { gerarDataAtual } from '../support/utils_helper'
 
-describe('curso', () => {
+describe('trilha', () => {
 	let nome, tipoConteudo, categorias, novasCategorias, delCategorias
 
-	// Campos e dados default do formulário de curso
+	// Campos e dados default do formulário de trilha
 	let formularioConteudo = {
 		nome: '',
 		data_inicio: '',
@@ -18,9 +18,7 @@ describe('curso', () => {
 		tipo: 'Treinamento',
 		modalidade: 'Online',
 		sincronismo: 'Gravado',
-		canal: '',
 		carga_horaria: '0',
-		numero_turma: '',
 		vigencia: '0',
 		atualizar_inscritos: false,
 		local: '',
@@ -31,28 +29,13 @@ describe('curso', () => {
 		estado: '',
 		pais: '',
 		email_responsavel: Cypress.env('login'),
-		site: '',
 		notificar_responsavel: false,
-		rotulo_contato: '',
-		hashtag: '',
 		addCategoria: '',
 		removerCategoria: '',
 		remover_banner: false,
-		permite_anexo: 'Desabilitado',
-		mensagem_anexo: '',
-		status_iframe_anexo: false,
 		visualizacao: 'Inscritos',
 		situacao: 'Em desenvolvimento',
-		notificar_concluir_primeira_aula: 'Não',
-		notificar_usuarios: 'Não',
-		dias_teste: '0',
-		habilitar_dias_teste: false,
-		exige_confirmacao: 'Habilitado',
-		valor_inscricao: '0,00',
-		habilitar_pagamento: false,
-		nr_parcelas: '1',
-		valor_acrescimo: '0.0',
-		habilitar_chat: false
+		exige_confirmacao: 'Habilitado'
 	}
 
 	beforeEach( () => {
@@ -62,7 +45,7 @@ describe('curso', () => {
 		})
 
 		// Define o tipo de conteúdo
-		tipoConteudo = 'curso'
+		tipoConteudo = 'trilha'
 
 		// Gera um nome aleatório para o conteúdo
 		nome = faker.commerce.productName()
