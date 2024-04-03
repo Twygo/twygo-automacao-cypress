@@ -1,5 +1,6 @@
 import formConteudos from "./pageObjects/formConteudos"
 import estruturaAtividades from "./pageObjects/estruturaAtividades"
+import formAtividades from "./pageObjects/formAtividades"
 
 /** DOCUMENTAÇÃO:
  * @name loginTwygoAutomacao
@@ -852,16 +853,18 @@ Cypress.Commands.add('salvarAtividades', () => {
 })
 
 Cypress.Commands.add('editarAtividade', (nomeConteudo, nomeAtividade) => {
+  const TIMEOUT_PADRAO = 5000
   const labels = Cypress.env('labels')
   const { breadcrumb, tituloPgEdicao } = labels.atividades
 
   // Edita a atividade
-  cy.contains(`.dd-label, '${nomeAtividade}'`)
-    .find('.dd-edit', 'Editar')
-    .click()
+  cy.contains('li.dd-item', nomeAtividade)
+    .find('.dd-edit')
+    .should('be.visible')
+    .click( )
 
   // Validar se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb)
+  cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO})
     .should('be.visible')
 
   cy.contains('#breadcrumb', `> ${nomeConteudo}`)
@@ -869,4 +872,22 @@ Cypress.Commands.add('editarAtividade', (nomeConteudo, nomeAtividade) => {
 
   cy.contains('.detail_title', tituloPgEdicao)
     .should('be.visible')
+})
+
+Cypress.Commands.add('preencherDadosAtividade', (dados, opcoes = { limpar: false }) => {
+  const formulario = new formAtividades()
+  
+  Object.keys(dados).forEach(nomeCampo => {
+      const valor = dados[nomeCampo]
+      formulario.preencherCampo(nomeCampo, valor, opcoes)
+  })
+})
+
+Cypress.Commands.add('validarDadosAtividade', (dados) => {
+  const formulario = new formAtividades()
+
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+    formulario.validarCampo(nomeCampo, valor)
+  })
 })

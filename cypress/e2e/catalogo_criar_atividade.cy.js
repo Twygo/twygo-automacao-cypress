@@ -2,13 +2,24 @@
 import { faker } from '@faker-js/faker'
 import { getAuthToken } from '../support/auth_helper' 
 import estruturaAtividades from '../support/pageObjects/estruturaAtividades'
+import formAtividades from '../support/pageObjects/formAtividades'
 
 describe('Criar atividade', () => {
+    const TIMEOUT_PADRAO = 5000
     const atividades = new estruturaAtividades()
+    const formAtividade = new formAtividades()
 
-    let nomeConteudo, tipoConteudo
+    let nomeConteudo, tipoConteudo, nomeAtividade
 
     let atividadeDefault = 'Novo 1'
+
+    // Formulários padrões
+    let formAtividadeDefault = {
+        titulo: 'Novo 1',
+        peso: 1,
+        liberado: false,
+        tipoAtividade: 'Texto'
+    }
 
     before(() => {
         cy.fixture('labels.json').then((labels) => {
@@ -17,11 +28,17 @@ describe('Criar atividade', () => {
     })
 
     beforeEach(() => {
+        // Ativa o tratamento de exceção não capturada especificamente para este teste
+		Cypress.on('uncaught:exception', (err, runnable) => {
+            return false
+        })
+
         // Define o tipo de conteúdo
         tipoConteudo = 'catalogo'
 
-        // Gera um nome aleatório para o conteúdo
+        // Gera um nome aleatório para o conteúdo e para a atividade
         nomeConteudo = faker.commerce.productName()
+        nomeAtividade = faker.commerce.productName()
 
         // Obtém o token de autenticação 
         getAuthToken()
@@ -37,6 +54,11 @@ describe('Criar atividade', () => {
         cy.criarCatalogoViaApi(body)
     })
 
+    afterEach(() => {
+		// Desativa o tratamento após o teste para evitar afetar outros testes
+		Cypress.removeAllListeners('uncaught:exception')
+	})
+
     it('Deve criar uma atividade default', () => {
         // CREATE
 		cy.log('## CREATE ##')
@@ -47,7 +69,38 @@ describe('Criar atividade', () => {
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         atividades.adicionarAtividade()
         cy.salvarAtividades()
-        //TODO: ajustar editarAtividade
+        
+        //READ
+        cy.log('## READ ##')
+        
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
         cy.editarAtividade(nomeConteudo, atividadeDefault)
+        cy.validarDadosAtividade(formAtividadeDefault)
+    })
+
+    it('Deve criar uma atividade do tipo "PDF Estampado"', () => {
+        // Massa de dados para criação de atividade
+        const dados = {
+            titulo: nomeAtividade,
+            peso: faker.number.int({min: 1, max: 9}),
+            liberado: true,
+            tipoAtividade: 'PDF Estampado'
+        }
+        // CREATE
+        cy.log('## CREATE ##')
+
+        cy.loginTwygoAutomacao()
+        cy.alterarPerfil('administrador')
+        cy.acessarPgCatalogo()
+        cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
+        atividades.adicionarAtividade()
+        cy.salvarAtividades()
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, atividadeDefault)
+
+        cy.preencherDadosAtividade(dados, {limpar: true})
     })
 })
