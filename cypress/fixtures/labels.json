@@ -35,6 +35,17 @@
             "texto1ModalExclusao": "Você tem certeza que deseja excluir este item de portfólio?",
             "texto2ModalExclusao": "Esta ação não poderá ser desfeita.",
             "msgSucessoExclusao": "Item do Catálogo de Cursos excluído com sucesso."
+        },
+        "trilha": {
+            "breadcrumb": "Lista de conteúdos",
+            "msgSucesso": "Conteúdo salvo com sucesso.",
+            "breadcrumbAdicionar": "Lista de conteúdos > Adicionar",
+            "tituloPgAdicionar": "Nova trilha",
+            "breadcrumbEdicao": "Lista de conteúdos",
+            "tituloPgEdicao": "Editar trilhas",
+            "tituloModalExclusao": "Excluir conteúdo",
+            "texto1ModalExclusao": "Ao excluir a trilha você não excluirá os conteúdos dentro dela, apenas o agrupamento. Tem certeza que deseja prosseguir?",
+            "msgSucessoExclusao": "Conteúdo excluído com sucesso"
         }
     },
     "perfil": {
@@ -44,5 +55,11 @@
         "aluno": "Aluno",
         "pgInicial": "Lista de conteúdos",
         "pgInicialAluno": "Dashboard"
+    },
+    "atividades": {
+        "breadcrumb": "Atividades",
+        "tituloPg": "Estrutura de atividades",
+        "msgSucesso": "Atividades atualizadas com sucesso",
+        "tituloPgEdicao": "Edição de Espaço"
     }
 }

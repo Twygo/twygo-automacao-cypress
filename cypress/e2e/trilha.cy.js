@@ -63,9 +63,6 @@ describe('trilha', () => {
 
 		// Obtém o token de autenticação
 		getAuthToken()
-
-		// Exclui todos os trilhas antes de iniciar o teste
-		cy.excluirtrilhaViaApi()
 	})
 	
 	afterEach(() => {
@@ -322,14 +319,14 @@ describe('trilha', () => {
 
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 3-CRUD trilha liberada, sem confirmação, com visualização para público
+	 * 3-CRUD trilha liberada, sem confirmação, com visualização para inscritos
 	 * 
 	 * @description
 	 * Testa o fluxo de criação, leitura, atualização e exclusão de uma trilha liberada, sem confirmação da inscrição
-	 * e com visualização para público.
+	 * e com visualização para inscritos.
 	 * 
 	 * @steps
-	 * 1. Cria uma trilha liberada, sem confirmação da inscrição e com visualização para público.
+	 * 1. Cria uma trilha liberada, sem confirmação da inscrição e com visualização para inscritos.
 	 * 2. Valida os dados da trilha criada e se é exibida na lista de conteúdos.
 	 * 3. Edita a trilha criada com novos dados.
 	 * 4. Valida os dados da trilha editada.
@@ -417,8 +414,7 @@ describe('trilha', () => {
 			email_responsavel: faker.internet.email(),
 			notificar_responsavel: true,
 			addCategoria: novasCategorias,
-			situacao: 'Em desenvolvimento',
-			exige_confirmacao: 'Desabilitado'
+			situacao: 'Em desenvolvimento'
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
@@ -442,14 +438,14 @@ describe('trilha', () => {
 
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 4-CRUD trilha suspensa, com confirmação, com visualização para colaboradores
+	 * 4-CRUD trilha suspensa, com confirmação, com visualização para inscritos
 	 * 
 	 * @description
 	 * Testa o fluxo de criação, leitura, atualização e exclusão de uma trilha suspensa, com confirmação da inscrição
-	 * e com visualização para colaboradores.
+	 * e com visualização para inscritos.
 	 * 
 	 * @steps
-	 * 1. Cria uma trilha suspensa, com confirmação da inscrição e com visualização para colaboradores.
+	 * 1. Cria uma trilha suspensa, com confirmação da inscrição e com visualização para inscritos.
 	 * 2. Valida os dados da trilha criada e se é exibida na lista de conteúdos.
 	 * 3. Edita a trilha criada com novos dados.
 	 * 4. Valida os dados da trilha editada.
@@ -550,14 +546,14 @@ describe('trilha', () => {
 
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 5-CRUD trilha em desenvolvimento, com confirmação, com visualização para colaboradores
+	 * 5-CRUD trilha suspensa, sem confirmação, com visualização para inscritos
 	 * 
 	 * @description
-	 * Testa o fluxo de criação, leitura, atualização e exclusão de uma trilha em desenvolvimento, com confirmação da inscrição
-	 * e com visualização para colaboradores.
+	 * Testa o fluxo de criação, leitura, atualização e exclusão de uma trilha suspensa, sem confirmação da inscrição
+	 * e com visualização para inscritos.
 	 * 
 	 * @steps
-	 * 1. Cria uma trilha em desenvolvimento, com confirmação da inscrição e com visualização para colaboradores.
+	 * 1. Cria uma trilha suspensa, sem confirmação da inscrição e com visualização para inscritos.
 	 * 2. Valida os dados da trilha criada e se é exibida na lista de conteúdos.
 	 * 3. Edita a trilha criada com novos dados.
 	 * 4. Valida os dados da trilha editada.
@@ -646,14 +642,14 @@ describe('trilha', () => {
 
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 6-CRUD trilha liberada, sem confirmação, com visualização para público
+	 * 6-CRUD trilha em desenvolvimento, sem confirmação, com visualização para inscritos
 	 * 
 	 * @description
-	 * Testa o fluxo de criação, leitura, atualização e exclusão de uma trilha liberada, sem confirmação da inscrição
-	 * e com visualização para público.
+	 * Testa o fluxo de criação, leitura, atualização e exclusão de uma trilha em desenvolvimento, sem confirmação da inscrição
+	 * e com visualização para inscritos.
 	 * 
 	 * @steps
-	 * 1. Cria uma trilha liberada, sem confirmação da inscrição e com visualização para público.
+	 * 1. Cria uma trilha em desenvolvimento, sem confirmação da inscrição e com visualização para inscritos.
 	 * 2. Valida os dados da trilha criada e se é exibida na lista de conteúdos.
 	 * 3. Edita a trilha criada com novos dados.
 	 * 4. Valida os dados da trilha editada.
@@ -696,8 +692,7 @@ describe('trilha', () => {
 			notificar_responsavel: false,
 			addCategoria: categorias,
 			situacao: 'Em desenvolvimento',
-			exige_confirmacao: 'Desabilitado',
-			habilitar_pagamento: false
+			exige_confirmacao: 'Desabilitado'
 		}
 
 		// CREATE
@@ -751,14 +746,14 @@ describe('trilha', () => {
 
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 7-CRUD trilha em desenvolvimento, com confirmação, com visualização para usuários
+	 * 7-CRUD trilha em desenvolvimento, com confirmação, com visualização para inscritos
 	 * 
 	 * @description
 	 * Testa o fluxo de criação, leitura, atualização e exclusão de uma trilha em desenvolvimento, com confirmação da inscrição
-	 * e com visualização para usuários.
+	 * e com visualização para inscritos.
 	 * 
 	 * @steps
-	 * 1. Cria uma trilha em desenvolvimento, com confirmação da inscrição e com visualização para usuários.
+	 * 1. Cria uma trilha em desenvolvimento, com confirmação da inscrição e com visualização para inscritos.
 	 * 2. Valida os dados da trilha criada e se é exibida na lista de conteúdos.
 	 * 3. Edita a trilha criada com novos dados.
 	 * 4. Valida os dados da trilha editada.
@@ -846,6 +841,4 @@ describe('trilha', () => {
 		cy.cancelarFormularioConteudo(tipoConteudo)
 		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
-
-	//TODO: Atualizar a documentação dos cenários editados
 })

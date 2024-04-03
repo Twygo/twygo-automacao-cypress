@@ -1,4 +1,5 @@
 import formConteudos from "./pageObjects/formConteudos"
+import estruturaAtividades from "./pageObjects/estruturaAtividades"
 
 /** DOCUMENTAÇÃO:
  * @name loginTwygoAutomacao
@@ -432,20 +433,20 @@ Cypress.Commands.add('addConteudo', function(tipoConteudo) {
   
   switch (tipoConteudo) {
     case 'curso':
-      cy.get('button', '#menu-button-4')
+      cy.get('#menu-button-4')
         .should('be.visible')
         .click()
 
-      cy.get('button', '#menu-list-4-menuitem-2')
+      cy.get('#menu-list-4-menuitem-2')
         .should('be.visible')
         .click()
       break
     case 'trilha':
-      cy.get('button', '#menu-button-4')
+      cy.get('#menu-button-4')
         .should('be.visible')
         .click()
 
-      cy.get('button', '#menu-list-4-menuitem-1')
+      cy.get('#menu-list-4-menuitem-1')
         .should('be.visible')
         .click()
       break
@@ -679,6 +680,39 @@ Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo) {
 
   switch(tipoConteudo) {
     case 'trilha':
+      seletor = `tr[tag-name='${nomeConteudo}']`  
+      // Clica em 'Opções' e 'Excluir'
+      cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+        .find('svg[aria-label="Options"]')
+        .click()
+
+      cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+        .wait(2000)	
+        .contains('button', 'Excluir')
+        .click({ force: true })
+
+      // Valida o modal de exclusão
+      cy.contains('.chakra-modal__header', tituloModalExclusao, { timeout: TIMEOUT_PADRAO })
+        .should('be.visible')
+
+      cy.contains('.chakra-text', nomeConteudo)
+        .should('be.visible')
+
+      cy.contains('.chakra-text', texto1ModalExclusao)
+        .should('be.visible')
+
+      // Confirma a exclusão
+      cy.contains('button.chakra-button', 'Excluir')
+        .click({ force: true})
+
+      // Valida a mensagem de sucesso da exclusão
+      cy.contains('.chakra-alert__desc', msgSucessoExclusao, { timeout: TIMEOUT_PADRAO })
+        .should('be.visible')
+
+      // Verifica se o conteúdo foi excluído e não é exibido na listagem
+      cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+        .should('not.exist')
+      break
     case 'curso':        
       seletor = `tr[tag-name='${nomeConteudo}']`  
       // Clica em 'Opções' e 'Excluir'
@@ -750,4 +784,89 @@ Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo) {
     default:
       throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso' ou 'catalogo'`)
   }    
+})
+
+Cypress.Commands.add('addAtividadeConteudo', function(nomeConteudo, tipoConteudo) {
+  const TIMEOUT_PADRAO = 5000
+  
+  const labels = Cypress.env('labels')
+  const { breadcrumb, tituloPg } = labels.atividades
+
+  let seletor = ''
+
+  switch (tipoConteudo) {
+    case 'trilha':
+    case 'curso':
+      seletor = `tr[tag-name='${nomeConteudo}']`    
+      // Clica em 'Opções' e 'Atividades'
+      cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+        .find('svg[aria-label="Options"]')
+        .click()
+
+      cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+        .contains('button', 'Atividades')
+        .click()
+      break
+    case 'catalogo':
+      seletor = `tr.event-row[name='${nomeConteudo}']`
+      // Clica para expandir opções
+      cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+        .find('.div-table-arrow-down')
+        .click()
+      // Clica em 'Atividades'
+      cy.get('#content-link', { timeout: TIMEOUT_PADRAO})
+        .click()
+      break
+    case 'biblioteca':
+      seletor = `tr.event-name[title='${nomeConteudo}']`
+      // Clica em 'Atividades'
+      cy.contains('button', 'Atividades', { timeout: TIMEOUT_PADRAO})
+        .click()
+      break
+    default:
+      throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso', 'catalogo' ou 'biblioteca'`)
+  }
+
+  // Validar se a página foi carregada corretamente
+  cy.contains('#page-breadcrumb', breadcrumb)
+    .should('be.visible')
+
+  cy.contains('#breadcrumb', `> ${nomeConteudo}`)
+    .should('be.visible')
+
+  cy.contains('.detail_title', tituloPg)
+    .should('be.visible')
+})
+
+Cypress.Commands.add('salvarAtividades', () => {
+  const atividades = new estruturaAtividades()
+  const labels = Cypress.env('labels')
+  const { msgSucesso } = labels.atividades
+
+  // Salva a atividade
+  atividades.salvarAtividade()
+
+  // Confirma a mensagem de sucesso
+  cy.contains('.flash.notice', msgSucesso)
+    .should('be.visible')
+})
+
+Cypress.Commands.add('editarAtividade', (nomeConteudo, nomeAtividade) => {
+  const labels = Cypress.env('labels')
+  const { breadcrumb, tituloPgEdicao } = labels.atividades
+
+  // Edita a atividade
+  cy.contains(`.dd-label, '${nomeAtividade}'`)
+    .find('.dd-edit', 'Editar')
+    .click()
+
+  // Validar se a página foi carregada corretamente
+  cy.contains('#page-breadcrumb', breadcrumb)
+    .should('be.visible')
+
+  cy.contains('#breadcrumb', `> ${nomeConteudo}`)
+    .should('be.visible')
+
+  cy.contains('.detail_title', tituloPgEdicao)
+    .should('be.visible')
 })
