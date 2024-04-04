@@ -13,12 +13,100 @@ describe('Criar atividade', () => {
 
     let atividadeDefault = 'Novo 1'
 
-    // Formulários padrões
+    // Formulários padrões (obs.: o default é do tipo Texto)
     let formAtividadeDefault = {
         titulo: 'Novo 1',
         peso: 1,
         liberado: false,
-        tipoAtividade: 'Texto'
+        tipoAtividade: 'Texto',
+        descricaoTexto: '',
+        resumoAtividade: '',
+        tempoMinPermanencia: false
+    }
+
+    let formAtividadePdf = {
+        titulo: 'Novo 1',
+        peso: 1,
+        liberado: false,
+        tipoAtividade: 'PDF Estampado',
+        seguranca: 'Somente Visualizar',
+        resumoAtividade: '',
+        tempoMinPermanencia: false
+    }
+
+    let formAtividadeVideo = {
+        titulo: 'Novo 1',
+        peso: 1,
+        liberado: false,
+        tipoAtividade: 'Vídeo',
+        marcarConcluidoVideo: false,
+        naoMostrarProgresso: false,
+        seguranca: 'Somente Visualizar',
+        resumoAtividade: '',
+        tempoMinPermanencia: false
+    }
+
+    let formAtividadeVideoExterno = {
+        titulo: 'Novo 1',
+        peso: 1,
+        liberado: false,
+        tipoAtividade: 'Vídeo Externo',
+        youtube: 'checked',
+        vimeo: 'unchecked',
+        eventials: 'unchecked',
+        videoUrl: '',
+        marcarConcluidoVideoExterno: false,
+        naoMostrarProgressoVideoExterno: false,
+        chatTwygo: false,
+        desabilitarChatFimTransmissao: false,
+        resumoAtividade: '',
+        tempoMinPermanencia: false
+    }
+
+    let formAtividadeArquivo = {
+        titulo: 'Novo 1',
+        peso: 1,
+        liberado: false,
+        tipoAtividade: 'Arquivo',
+        seguranca: 'Somente Visualizar',
+        resumoAtividade: '',
+        tempoMinPermanencia: false
+    }
+
+    let formAtividadeQuestionario = {
+        titulo: 'Novo 1',
+        peso: 1,
+        liberado: false,
+        tipoAtividade: 'Questionário',
+        exibicaoPerguntas: 'Exibir mesmas perguntas nas tentativas',
+        visualizacaoRespostas: 'Exibir Apenas Nota',
+        pontuacaoMinima: '',
+        tentativas: '',
+        percPontuacaoFinal: '0',
+        perguntasCat1: 'Todas',
+        perguntasCat2: 'Todas',
+        quantidadePerguntas: '',
+        resumoAtividade: '',
+        tempoMinPermanencia: false
+    }
+
+    let formAtividadeScorm = {
+        titulo: 'Novo 1',
+        peso: 1,
+        liberado: false,
+        tipoAtividade: 'Scorm',
+        marcarConcluidoScorm: false,
+        resumoAtividade: ''
+    }
+
+    let formAtividadeGames = {
+        titulo: 'Novo 1',
+        peso: 1,
+        liberado: false,
+        tipoAtividade: 'Games',
+        codigoCompartilhamento: '',
+        resumoAtividade: '',
+        tempoMinPermanencia: false
     }
 
     before(() => {
@@ -59,7 +147,7 @@ describe('Criar atividade', () => {
 		Cypress.removeAllListeners('uncaught:exception')
 	})
 
-    it('Deve criar uma atividade default', () => {
+    it('Criar uma atividade default', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
@@ -79,14 +167,37 @@ describe('Criar atividade', () => {
         cy.validarDadosAtividade(formAtividadeDefault)
     })
 
-    it('Deve criar uma atividade do tipo "PDF Estampado"', () => {
+    it('Criar uma atividade default do tipo "Texto"', () => {    
+        // CREATE
+        cy.log('## CREATE ##')
+
+        cy.loginTwygoAutomacao()
+        cy.alterarPerfil('administrador')
+        cy.acessarPgCatalogo()
+        cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
+        atividades.adicionarAtividade()
+        cy.salvarAtividades()
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, atividadeDefault)
+        formAtividade.salvar()
+
+        //READ
+        cy.log('## READ ##')
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, atividadeDefault)
+        cy.validarDadosAtividade(formAtividadeDefault)        
+    })
+
+    it('Deve criar uma atividade default do tipo "PDF Estampado"', () => {
         // Massa de dados para criação de atividade
         const dados = {
-            titulo: nomeAtividade,
-            peso: faker.number.int({min: 1, max: 9}),
-            liberado: true,
             tipoAtividade: 'PDF Estampado'
         }
+
         // CREATE
         cy.log('## CREATE ##')
 
@@ -102,5 +213,14 @@ describe('Criar atividade', () => {
         cy.editarAtividade(nomeConteudo, atividadeDefault)
 
         cy.preencherDadosAtividade(dados, {limpar: true})
+        formAtividade.salvar()
+
+        //READ
+        cy.log('## READ ##')
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, atividadeDefault)
+        cy.validarDadosAtividade(formAtividadePdf)        
     })
 })
