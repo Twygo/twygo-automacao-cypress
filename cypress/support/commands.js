@@ -891,3 +891,59 @@ Cypress.Commands.add('validarDadosAtividade', (dados) => {
     formulario.validarCampo(nomeCampo, valor)
   })
 })
+
+Cypress.Commands.add('verificarProcessamentoScorm', (nomeConteudo, nomeAtividade, tipoConteudo) => {
+  const TIMEOUT_PADRAO = 5000
+  const formulario = new formAtividades() // Certifique-se de que 'formAtividades' está acessível
+
+  function verificar() {
+    cy.get('body').then($body => {
+      if ($body.find('span[style="font-style:italic;opacity:50%;font-size:11px;margin-left:20px;color:black;"]:contains("Processando scorm")').length > 0) {
+        cy.log('Arquivo Scorm ainda está sendo processado. Aguardando...')
+
+        cy.wait(TIMEOUT_PADRAO)
+
+        if (tipoConteudo === 'trilha' || tipoConteudo === 'curso') {
+          cy.acessarPgListaConteudos()
+        } else if (tipoConteudo === 'catalogo') {
+          cy.acessarPgCatalogo()
+        }
+        
+        cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
+        cy.editarAtividade(nomeConteudo, nomeAtividade)
+
+        // Chama o comando customizado novamente para verificar o estado do processamento
+        cy.verificarProcessamentoScorm(nomeConteudo, nomeAtividade, tipoConteudo)
+      } else {
+        cy.log('Arquivo Scorm processado com sucesso.')
+      }
+    })
+  }
+
+  verificar()
+})
+
+Cypress.Commands.add("criarCursoViaApi", (body, attempt = 1) => {
+  const url = `/api/v1/o/${Cypress.env('orgId')}/courses`
+  
+  cy.request({
+    method: 'POST',
+    url: url,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${Cypress.env('token')}`
+    },
+    body: body,
+    failOnStatusCode: false
+  }).then((response) => {
+    if (response.status !== 201 && attempt < 3) {
+      cy.log(`Tentativa ${attempt}: Falha na requisição. Tentando novamente`)
+      cy.criarCatalogoViaApi(body, attempt + 1)
+    } else if (response.status !== 201) {
+      cy.log(`Tentativa ${attempt}: Falha na requisição. Não foi possível criar o catálogo`)
+      throw new Error(`Erro na criação do catálogo: ${response}`)
+    } else {
+      expect(response.status).to.eq(201)
+    }
+  })
+})

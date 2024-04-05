@@ -25,13 +25,17 @@ class formAtividades {
         seletorValor: '#content_content_type'
       },
       resumoAtividade: {
-        seletor: 'div#cke_2_contents iframe.cke_wysiwyg_frame',
+        seletor: 'div#cke_content_briefing iframe.cke_wysiwyg_frame',
         tipo: 'iframe_text'
       },
       tempoMinPermanencia: {
         seletor: '#enable_minimum_permanence_time',
         tipo: 'checkbox',
         default: false
+      },
+      tempoMinPermanenciaValor: {
+        seletor: '#minimum_permanence_time',
+        tipo: 'input'
       },
       escolherArquivo: {
         seletor: '#file',
@@ -47,16 +51,17 @@ class formAtividades {
       },
       // Texto
       descricaoTexto: {
-        seletor: 'div#cke_1_contents iframe.cke_wysiwyg_frame',
+        seletor: 'div#cke_content_description iframe.cke_wysiwyg_frame',
         tipo: 'iframe_text'
       },
       // PDF
       enviarPdf: {
         seletor: '#pdf_link',
-        tipo: 'button'
+        tipo: 'uploadButton'
       },
       descricaoArquivoPdf: {
-        seletor: '#pdf-description'
+        seletor: '#pdf-description',
+        tipo: 'fileDescription'
       },
       // Segurança para PDF, Vídeos e Arquivos
       seguranca: {
@@ -67,10 +72,11 @@ class formAtividades {
       // Vídeo
       enviarVideo: {
         seletor: '#video_link',
-        tipo: 'button'
+        tipo: 'uploadButton'
       },
       descricaoArquivoVideo: {
-        seletor: '#video-description'
+        seletor: '#video-description',
+        tipo: 'fileDescription'
       },
       marcarConcluidoVideo: {
         seletor: '#mark_completed_video',
@@ -84,17 +90,17 @@ class formAtividades {
       },
       // Vídeo Externo
       youtube: {
-        seletor: 'value="youtube"',
-        tipo: 'radio',
+        seletor: 'input[value="youtube"]',
+        tipo: 'radioVideo',
         default: 'checked'
       },
       vimeo: {
-        seletor: 'value="vimeo"',
-        tipo: 'radio'
+        seletor: 'input[value="vimeo"]',
+        tipo: 'radioVideo'
       },
       eventials: {
-        seletor: 'value="eventials"',
-        tipo: 'radio'
+        seletor: 'input[value="eventials"]',
+        tipo: 'radioVideo'
       },
       // Preencher URL YouTube e Vimeo
       videoUrl: {
@@ -133,16 +139,17 @@ class formAtividades {
         default: false
       },
       // Arquivos
-      enviarArquivos: {
+      enviarArquivo: {
         seletor: '#other_link',
-        tipo: 'button'
+        tipo: 'uploadButton'
       },
       descricaoArquivo: {
-        seletor: '#other-description'
+        seletor: '#other-description',
+        tipo: 'fileDescription'
       },
       // Questionário
       selecionarQuestionario: {
-        seletor: '#question_list_name',
+        seletor: '#question_list_filter',
         tipo: 'search',
         seletorValor: '.item_name'
       },
@@ -165,7 +172,7 @@ class formAtividades {
         tipo: 'input'
       },
       percPontuacaoFinal: {
-        seletor: '#content_score_percentage',
+        seletor: '#content_final_score_ratio',
         tipo: 'input',
         default: '0'
       },
@@ -190,10 +197,11 @@ class formAtividades {
       // Scorm
       enviarScorm: {
         seletor: '#scorm_link',
-        tipo: 'button'
+        tipo: 'uploadButton'
       },
       descricaoArquivoScorm: {
-        seletor: '#scorm-description'
+        seletor: '#scorm-description',
+        tipo: 'fileDescription'
       },
       marcarConcluidoScorm: {
         seletor: '#mark_completed_scorm',
@@ -261,10 +269,34 @@ class formAtividades {
               .click()
               .type(valorFinal)
               .type('{enter}')
+            
+            cy.get('.item_name')
+              .contains(valorFinal)
+              .click()
             break
           case 'button':
             cy.get(seletor)
               .click()
+            break
+          case 'uploadButton':
+            if (valorFinal) {
+              cy.get(seletor)
+                .click()
+
+              cy.get('#file')
+                .selectFile(`cypress/fixtures/${valorFinal}`, { force: true })
+
+              cy.get('#button_send_file')
+                .click()
+
+              cy.get(seletor, { timeout: 15000 })
+                .contains('Substituir arquivo', { timeout: 15000 })
+                .should('be.visible')
+            }
+            break
+          case 'radioVideo':
+          case 'fileDescription':
+            // Nenhuma ação necessária
             break
           default:
             throw new Error(`Tipo de campo ${tipo} não suportado`)    
@@ -306,9 +338,18 @@ class formAtividades {
             .should(valor ? 'be.checked' : 'not.be.checked')
           break
         case 'radio':
-            const valorMapeado = mapeamentoTipoAtividade[valor]  
-            cy.get(seletorValor)
-                .should('have.value', valorMapeado)
+          const valorMapeado = mapeamentoTipoAtividade[valor]  
+          cy.get(seletorValor)
+            .should('have.value', valorMapeado)
+          break
+        case 'radioVideo':
+          if (valorFinal) {
+            cy.get(`${seletor}[value="${nomeCampo}"]`)
+              .should('be.checked')
+          } else {
+            cy.get(`${seletor}[value="${nomeCampo}"]`)
+              .should('not.be.checked')
+          }
           break
         case 'select':
           cy.get(seletor)
@@ -325,9 +366,46 @@ class formAtividades {
           })
           break      
         case 'search':
-          cy.get(seletorValor)
+          if (valor) {
+            cy.get(seletor)
+            .find(seletorValor)
             .should('have.text', valor)
+          } else {
+            cy.get(seletor)
+            .find(seletorValor)
+            .should('not.exist')
+          }
           break
+        case 'uploadButton':
+          if (valorFinal) {
+            cy.get(seletor)
+              .should('contain', 'Substituir arquivo')
+          } else {
+            cy.get(seletor)
+              .should('contain', 'Enviar arquivo')          
+          }
+          break
+        case 'fileDescription':
+          if (valorFinal === '') {
+            cy.get(seletor).should($desc => {
+              const descText = $desc.text().trim()
+              expect(descText).to.be.empty
+            })
+        } else if (valorFinal.nome && valorFinal.tamanho) {
+            cy.get(seletor).should($desc => {
+              let descText = $desc.text().trim()
+              descText = descText.replace(/\s*\n\s*/g, ' ')
+    
+              const nomeEsperado = `Nome: ${valorFinal.nome}`
+              const tamanhoFormatado = `Tamanho: ${valorFinal.tamanho}`
+                
+              expect(descText).to.include(nomeEsperado)
+              expect(descText).to.include(tamanhoFormatado)
+            })
+        } else {
+            cy.get(seletor).should('exist')
+        }
+        break
       }
     }
 
@@ -335,6 +413,10 @@ class formAtividades {
       cy.get('#button_send_form')
         .click()
     }
-  }
-  
+
+    voltar = () => {
+      cy.contains('.btn-back', 'Voltar')
+        .click( { force: true } )
+    }
+  }  
   export default formAtividades

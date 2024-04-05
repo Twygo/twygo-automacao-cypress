@@ -29,6 +29,11 @@ describe('Criar atividade', () => {
         peso: 1,
         liberado: false,
         tipoAtividade: 'PDF Estampado',
+        enviarPdf: '',
+        descricaoArquivoPdf: {
+            nome: '',
+            tamanho: ''
+        },
         seguranca: 'Somente Visualizar',
         resumoAtividade: '',
         tempoMinPermanencia: false
@@ -39,6 +44,11 @@ describe('Criar atividade', () => {
         peso: 1,
         liberado: false,
         tipoAtividade: 'Vídeo',
+        enviarArquivo: '',
+        descricaoArquivo: {
+            nome: '',
+            tamanho: ''
+        },
         marcarConcluidoVideo: false,
         naoMostrarProgresso: false,
         seguranca: 'Somente Visualizar',
@@ -51,9 +61,9 @@ describe('Criar atividade', () => {
         peso: 1,
         liberado: false,
         tipoAtividade: 'Vídeo Externo',
-        youtube: 'checked',
-        vimeo: 'unchecked',
-        eventials: 'unchecked',
+        youtube: true,
+        vimeo: false,
+        eventials: false,
         videoUrl: '',
         marcarConcluidoVideoExterno: false,
         naoMostrarProgressoVideoExterno: false,
@@ -63,11 +73,16 @@ describe('Criar atividade', () => {
         tempoMinPermanencia: false
     }
 
-    let formAtividadeArquivo = {
+    let formAtividadeArquivos = {
         titulo: 'Novo 1',
         peso: 1,
         liberado: false,
-        tipoAtividade: 'Arquivo',
+        tipoAtividade: 'Arquivos',
+        enviarArquivo: '',
+        descricaoArquivo: {
+            nome: '',
+            tamanho: ''
+        },
         seguranca: 'Somente Visualizar',
         resumoAtividade: '',
         tempoMinPermanencia: false
@@ -78,6 +93,7 @@ describe('Criar atividade', () => {
         peso: 1,
         liberado: false,
         tipoAtividade: 'Questionário',
+        selecionarQuestionario: '',
         exibicaoPerguntas: 'Exibir mesmas perguntas nas tentativas',
         visualizacaoRespostas: 'Exibir Apenas Nota',
         pontuacaoMinima: '',
@@ -95,6 +111,11 @@ describe('Criar atividade', () => {
         peso: 1,
         liberado: false,
         tipoAtividade: 'Scorm',
+        enviarArquivo: '',
+        descricaoArquivo: {
+            nome: '',
+            tamanho: ''
+        },
         marcarConcluidoScorm: false,
         resumoAtividade: ''
     }
@@ -147,7 +168,7 @@ describe('Criar atividade', () => {
 		Cypress.removeAllListeners('uncaught:exception')
 	})
 
-    it('Criar uma atividade default', () => {
+    it('1. Criar uma atividade default', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
@@ -167,7 +188,7 @@ describe('Criar atividade', () => {
         cy.validarDadosAtividade(formAtividadeDefault)
     })
 
-    it('Criar uma atividade default do tipo "Texto"', () => {    
+    it('2. CRUD atividade do tipo "Texto"', () => {    
         // CREATE
         cy.log('## CREATE ##')
 
@@ -189,10 +210,36 @@ describe('Criar atividade', () => {
         // Espera explícita devido ao tempo de atualização da página após salvar
         cy.wait(TIMEOUT_PADRAO)
         cy.editarAtividade(nomeConteudo, atividadeDefault)
-        cy.validarDadosAtividade(formAtividadeDefault)        
+        cy.validarDadosAtividade(formAtividadeDefault)
+        
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        const dadosUpdate = {
+            titulo: faker.commerce.productName(),
+            peso: faker.number.int({min: 1, max: 9}),
+            liberado: true,
+            descricaoTexto: faker.lorem.sentence(10),
+            resumoAtividade: faker.lorem.sentence(5),
+            tempoMinPermanencia: true,
+            tempoMinPermanenciaValor: '00:08'
+        }
+
+        cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
+        formAtividade.salvar()
+
+        // READ - UPDATE
+        cy.log('## READ - UPDATE ##')
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
+
+        const dadosAtualizados = { ...formAtividadeDefault, ...dadosUpdate }
+        cy.validarDadosAtividade(dadosAtualizados)        
     })
 
-    it('Deve criar uma atividade default do tipo "PDF Estampado"', () => {
+    it('3. CRUD atividade do tipo "PDF Estampado"', () => {
         // Massa de dados para criação de atividade
         const dados = {
             tipoAtividade: 'PDF Estampado'
@@ -221,6 +268,425 @@ describe('Criar atividade', () => {
         // Espera explícita devido ao tempo de atualização da página após salvar
         cy.wait(TIMEOUT_PADRAO)
         cy.editarAtividade(nomeConteudo, atividadeDefault)
-        cy.validarDadosAtividade(formAtividadePdf)        
+        cy.validarDadosAtividade(formAtividadePdf)
+        
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        const dadosUpdate = {
+            titulo: faker.commerce.productName(),
+            peso: faker.number.int({min: 1, max: 9}),
+            liberado: true,
+            enviarPdf: 'teste_pdf.pdf',
+            descricaoArquivoPdf: {
+                nome: 'teste_pdf.pdf',
+                tamanho: '28102'
+            },
+            seguranca: 'Somente Baixar',
+            resumoAtividade: faker.lorem.sentence(15),
+            tempoMinPermanencia: true,
+            tempoMinPermanenciaValor: '00:12'
+        }
+
+        cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
+        formAtividade.salvar()
+
+        // READ - UPDATE
+        cy.log('## READ - UPDATE ##')
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
+
+        const dadosAtualizados = { ...formAtividadePdf, ...dadosUpdate }
+        cy.validarDadosAtividade(dadosAtualizados)        
+        
+    })
+
+    it('4. CRUD atividade do tipo "Vídeo"', () => {
+        // Massa de dados para criação de atividade
+        const dados = {
+            tipoAtividade: 'Vídeo'
+        }
+
+        // CREATE
+        cy.log('## CREATE ##')
+
+        cy.loginTwygoAutomacao()
+        cy.alterarPerfil('administrador')
+        cy.acessarPgCatalogo()
+        cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
+        atividades.adicionarAtividade()
+        cy.salvarAtividades()
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, atividadeDefault)
+
+        cy.preencherDadosAtividade(dados, {limpar: true})
+        formAtividade.salvar()
+
+        //READ
+        cy.log('## READ ##')
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, atividadeDefault)
+        cy.validarDadosAtividade(formAtividadeVideo)  
+        
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        const dadosUpdate = {
+            titulo: faker.commerce.productName(),
+            peso: faker.number.int({min: 1, max: 9}),
+            liberado: true,
+            enviarVideo: 'teste_video.mp4',
+            descricaoArquivoVideo: {
+                nome: 'teste_video.mp4',
+                tamanho: '50809927'
+            },
+            marcarConcluidoVideo: true,
+            naoMostrarProgresso: true,
+            seguranca: 'Somente Baixar',
+            resumoAtividade: faker.lorem.sentence(50),
+            tempoMinPermanencia: true,
+            tempoMinPermanenciaValor: '00:25'
+        }
+
+        cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
+        formAtividade.salvar()
+
+        // READ - UPDATE
+        cy.log('## READ - UPDATE ##')
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
+
+        const dadosAtualizados = { ...formAtividadeVideo, ...dadosUpdate }
+        cy.validarDadosAtividade(dadosAtualizados)        
+    })
+
+    it('5. CRUD atividade do tipo "Vídeo Externo - Youtube"', () => {
+        // Massa de dados para criação de atividade
+        const dados = {
+            tipoAtividade: 'Vídeo Externo'
+        }
+
+        // CREATE
+        cy.log('## CREATE ##')
+
+        cy.loginTwygoAutomacao()
+        cy.alterarPerfil('administrador')
+        cy.acessarPgCatalogo()
+        cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
+        atividades.adicionarAtividade()
+        cy.salvarAtividades()
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, atividadeDefault)
+
+        cy.preencherDadosAtividade(dados, {limpar: true})
+        formAtividade.salvar()
+
+        //READ
+        cy.log('## READ ##')
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, atividadeDefault)
+        cy.validarDadosAtividade(formAtividadeVideoExterno) 
+        
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        const dadosUpdate = {
+            titulo: faker.commerce.productName(),
+            peso: faker.number.int({min: 1, max: 9}),
+            liberado: true,
+            youtube: true,
+            vimeo: false,
+            eventials: false,
+            videoUrl: 'https://www.youtube.com/watch?v=OyTN-MF-OEg',
+            marcarConcluidoVideoExterno: true,
+            naoMostrarProgressoVideoExterno: true,
+            chatTwygo: true,
+            desabilitarChatFimTransmissao: true,
+            resumoAtividade: faker.lorem.sentence(8),
+            tempoMinPermanencia: true,
+            tempoMinPermanenciaValor: '00:02'
+        }
+
+        cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
+        formAtividade.salvar()
+
+        // READ - UPDATE
+        cy.log('## READ - UPDATE ##')
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
+
+        const dadosAtualizados = { ...formAtividadeVideoExterno, ...dadosUpdate }
+        cy.validarDadosAtividade(dadosAtualizados)        
+    })
+
+    it('6. CRUD atividade do tipo "Arquivos"', () => {
+        // Massa de dados para criação de atividade
+        const dados = {
+            tipoAtividade: 'Arquivos'
+        }
+
+        // CREATE
+        cy.log('## CREATE ##')
+
+        cy.loginTwygoAutomacao()
+        cy.alterarPerfil('administrador')
+        cy.acessarPgCatalogo()
+        cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
+        atividades.adicionarAtividade()
+        cy.salvarAtividades()
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, atividadeDefault)
+
+        cy.preencherDadosAtividade(dados, {limpar: true})
+        formAtividade.salvar()
+
+        //READ
+        cy.log('## READ ##')
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, atividadeDefault)
+        cy.validarDadosAtividade(formAtividadeArquivos)
+        
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        const dadosUpdate = {
+            titulo: faker.commerce.productName(),
+            peso: faker.number.int({min: 1, max: 9}),
+            liberado: true,
+            enviarArquivo: 'Sophia_estudiosa.png',
+            descricaoArquivo: {
+                nome: 'Sophia_estudiosa.png',
+                tamanho: '34264'
+            },
+            seguranca: 'Somente Baixar',
+            resumoAtividade: faker.lorem.sentence(22),
+            tempoMinPermanencia: true,
+            tempoMinPermanenciaValor: '00:01'
+        }
+
+        cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
+        formAtividade.salvar()
+
+        // READ - UPDATE
+        cy.log('## READ - UPDATE ##')
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
+
+        const dadosAtualizados = { ...formAtividadeArquivos, ...dadosUpdate }
+        cy.validarDadosAtividade(dadosAtualizados)
+    })
+
+    it('7. CRUD atividade do tipo "Questionário"', () => {
+        // Massa de dados para criação de atividade
+        const dados = {
+            tipoAtividade: 'Questionário',
+            selecionarQuestionario: 'teste'
+        }
+
+        // CREATE
+        cy.log('## CREATE ##')
+
+        cy.loginTwygoAutomacao()
+        cy.alterarPerfil('administrador')
+        cy.acessarPgCatalogo()
+        cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
+        atividades.adicionarAtividade()
+        cy.salvarAtividades()
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, atividadeDefault)
+
+        cy.preencherDadosAtividade(dados, {limpar: true})
+        formAtividade.salvar()
+
+        //READ
+        cy.log('## READ ##')
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, atividadeDefault)
+        cy.validarDadosAtividade(formAtividadeQuestionario)
+        
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        const dadosUpdate = {
+            titulo: faker.commerce.productName(),
+            peso: faker.number.int({min: 1, max: 9}),
+            liberado: true,
+            exibicaoPerguntas: 'Exibir perguntas diferentes a cada tentativa',
+            visualizacaoRespostas: 'Exibir Respondidas',
+            pontuacaoMinima: '50',
+            tentativas: '2',
+            percPontuacaoFinal: '70',
+            perguntasCat1: 'Todas',
+            perguntasCat2: 'Todas',
+            quantidadePerguntas: '',
+            resumoAtividade: faker.lorem.sentence(6),
+            tempoMinPermanencia: true,
+            tempoMinPermanenciaValor: '01:00'
+        }
+
+        cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
+        formAtividade.salvar()
+
+        // READ - UPDATE
+        cy.log('## READ - UPDATE ##')
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
+
+        const dadosAtualizados = { ...formAtividadeQuestionario, ...dadosUpdate }
+        cy.validarDadosAtividade(dadosAtualizados)
+    })
+
+    it('8. CRUD atividade do tipo "Scorm"', () => {
+        // Massa de dados para criação de atividade
+        const dados = {
+            tipoAtividade: 'Scorm',
+            enviarScorm: 'teste_scorm.zip',
+            descricaoArquivoScorm: {
+                nome: 'teste_scorm.zip',
+                tamanho: '7,61 MB'
+            }
+        }
+
+        // CREATE
+        cy.log('## CREATE ##')
+
+        cy.loginTwygoAutomacao()
+        cy.alterarPerfil('administrador')
+        cy.acessarPgCatalogo()
+        cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
+        atividades.adicionarAtividade()
+        cy.salvarAtividades()
+
+        // Espera explícita devido ao tempo de atualização da página e do processamento do scorm após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, atividadeDefault)
+
+        cy.preencherDadosAtividade(dados, {limpar: true})
+        formAtividade.salvar()
+
+        //READ
+        cy.log('## READ ##')
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, atividadeDefault)
+        cy.verificarProcessamentoScorm(nomeConteudo, atividadeDefault, tipoConteudo)
+        cy.validarDadosAtividade(formAtividadeScorm)   
+        
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        const dadosUpdate = {
+            titulo: faker.commerce.productName(),
+            peso: faker.number.int({min: 1, max: 9}),
+            liberado: true,
+            enviarScorm: 'teste_scorm2.zip',
+            descricaoArquivoScorm: {
+                nome: 'teste_scorm2.zip',
+                tamanho: '8,3 MB'
+            },    
+            marcarConcluidoScorm: true,
+            resumoAtividade: faker.lorem.sentence(19)
+        }
+
+        cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
+        formAtividade.salvar()
+
+        // READ - UPDATE
+        cy.log('## READ - UPDATE ##')
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
+        cy.verificarProcessamentoScorm(nomeConteudo, dadosUpdate.titulo, tipoConteudo)
+
+        const dadosAtualizados = { ...formAtividadeScorm, ...dadosUpdate }
+        cy.validarDadosAtividade(dadosAtualizados)        
+     
+    })
+
+    it('9. Criar uma atividade default do tipo "Games"', () => {
+        // Massa de dados para criação de atividade
+        const dados = {
+            tipoAtividade: 'Games'
+        }
+
+        // CREATE
+        cy.log('## CREATE ##')
+
+        cy.loginTwygoAutomacao()
+        cy.alterarPerfil('administrador')
+        cy.acessarPgCatalogo()
+        cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
+        atividades.adicionarAtividade()
+        cy.salvarAtividades()
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, atividadeDefault)
+
+        cy.preencherDadosAtividade(dados, {limpar: true})
+        formAtividade.salvar()
+
+        //READ
+        cy.log('## READ ##')
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, atividadeDefault)
+        cy.validarDadosAtividade(formAtividadeGames)
+        
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        const dadosUpdate = {
+            titulo: faker.commerce.productName(),
+            peso: faker.number.int({min: 1, max: 9}),
+            liberado: true,
+            codigoCompartilhamento: '<iframe src= "https://kahoot.it/challenge/0857294?challenge-id=502fec44-a2dc-4312-807a-65e1d9bc4a4d_1695673333050" width=620 height=280></iframe>',
+            resumoAtividade: faker.lorem.sentence(2),
+            tempoMinPermanencia: true,
+            tempoMinPermanenciaValor: '00:03'
+        }
+
+        cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
+        formAtividade.salvar()
+
+        // READ - UPDATE
+        cy.log('## READ - UPDATE ##')
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(TIMEOUT_PADRAO)
+        cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
+
+        const dadosAtualizados = { ...formAtividadeGames, ...dadosUpdate }
+        cy.validarDadosAtividade(dadosAtualizados)        
+        
     })
 })
