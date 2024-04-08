@@ -2,7 +2,7 @@
 
 describe('login', () => {
     it('deve logar com sucesso', () => {
-        cy.visit('/users/login')
+        cy.acessarPgLogin() 
 
         cy.get('#user_email')
             .type(Cypress.env('login'))

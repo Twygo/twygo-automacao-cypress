@@ -111,7 +111,7 @@ describe('criar curso via catálogo', () => {
 
     /** DOCUMENTAÇÃO:
 	 * @name
-	 * 1-CRUD deve criar um curso via catálogo com visualização para inscritos
+	 * 1. CRUD deve criar um curso via catálogo com visualização para inscritos
 	 * 
 	 * @description
 	 * Testa o fluxo de criar um curso utilizando um catálogo, criado via API, com visualização para inscritos.
@@ -132,7 +132,7 @@ describe('criar curso via catálogo', () => {
 	 * Alta
 	 * 
 	 * @type
-	 * E2E
+	 * Regressão - CRUD - E2E
 	 * 
 	 * @time
 	 * 1m
@@ -140,13 +140,13 @@ describe('criar curso via catálogo', () => {
 	 * @tags
 	 * CRUD, Catalogo, Curso, Criar curso via catálogo
 	 * 
-	 * @test_case
+	 * @testCase
 	 * à confirmar
 	 * 
 	 * @author Karla Daiany
 	 * @version 1.0.0
 	 */
-	it('1-CRUD deve criar um curso via catálogo com visualização para inscritos', () => {    
+	it('1. CRUD deve criar um curso via catálogo com visualização para inscritos', () => {    
         // Massa de dados para criar um curso via catálogo
 		const catalogo = {
 			nome: nome,
@@ -262,7 +262,7 @@ describe('criar curso via catálogo', () => {
 		tipoConteudo = 'curso'		//INFO: Alterado o tipo de conteúdo devido a BUG
 		cy.editarConteudo(conteudoEdit.nome, tipoConteudo)
 
-		dadosParaValidar = { ...formularioConteudo, ...catalogo, ...dadosEspecificos, ...conteudoEdit }
+		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
@@ -276,7 +276,7 @@ describe('criar curso via catálogo', () => {
 
     /** DOCUMENTAÇÃO:
 	 * @name
-	 * 2-CRUD deve criar um curso via catálogo com visualização para colaborador
+	 * 2. CRUD deve criar um curso via catálogo com visualização para colaborador
 	 * 
 	 * @description
 	 * Testa o fluxo de criar um curso utilizando um catálogo, criado via API, com visualização para colaborador.
@@ -297,7 +297,7 @@ describe('criar curso via catálogo', () => {
 	 * Alta
 	 * 
 	 * @type
-	 * E2E
+	 * Regressão - CRUD - E2E
 	 * 
 	 * @time
 	 * 1m
@@ -305,13 +305,13 @@ describe('criar curso via catálogo', () => {
 	 * @tags
 	 * CRUD, Catalogo, Curso, Criar curso via catálogo
 	 * 
-	 * @test_case
+	 * @testCase
 	 * à confirmar
 	 * 
 	 * @author Karla Daiany
 	 * @version 1.0.0 
 	 */
-	it('2-CRUD deve criar um curso via catálogo com visualização para colaborador', () => {
+	it('2. CRUD deve criar um curso via catálogo com visualização para colaborador', () => {
 		// Massa de dados para criar um curso via catálogo
 		const catalogo = {
 			nome: nome,
@@ -417,7 +417,7 @@ describe('criar curso via catálogo', () => {
 		tipoConteudo = 'curso'		//INFO: Alterado o tipo de conteúdo devido a BUG
 		cy.editarConteudo(conteudoEdit.nome, tipoConteudo)
 
-		dadosParaValidar = { ...formularioConteudo, ...catalogo, ...dadosEspecificos, ...conteudoEdit }
+		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
@@ -431,7 +431,7 @@ describe('criar curso via catálogo', () => {
 
     /** DOCUMENTAÇÃO:
 	 * @name
-	 * 3-CRUD deve criar um curso via catálogo com visualização para usuários
+	 * 3. CRUD deve criar um curso via catálogo com visualização para usuários
 	 * 
 	 * @description
 	 * Testa o fluxo de criar um curso utilizando um catálogo, criado via API, com visualização para usuários.
@@ -452,7 +452,7 @@ describe('criar curso via catálogo', () => {
 	 * Alta
 	 * 
 	 * @type
-	 * E2E
+	 * Regressão - CRUD - E2E
 	 * 
 	 * @time
 	 * 1m
@@ -460,13 +460,13 @@ describe('criar curso via catálogo', () => {
 	 * @tags
 	 * CRUD, Catalogo, Curso, Criar curso via catálogo
 	 * 
-	 * @test_case
+	 * @testCase
 	 * à confirmar
 	 * 
 	 * @author Karla Daiany
 	 * @version 1.0.0
 	 */
-	it('3-CRUD deve criar um curso via catálogo com visualização para usuários', () => {
+	it('3. CRUD deve criar um curso via catálogo com visualização para usuários', () => {
 		// Massa de dados para criar um curso via catálogo
         const catalogo = {
 			nome: nome,
@@ -545,7 +545,7 @@ describe('criar curso via catálogo', () => {
 		tipoConteudo = 'curso'		//INFO: Alterado o tipo de conteúdo devido a BUG
 		cy.editarConteudo(catalogo.nome, tipoConteudo)
 
-		dadosParaValidar = { ...formularioConteudo, ...catalogo, ...dadosEspecificos, ...conteudoEdit }
+		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
@@ -559,7 +559,7 @@ describe('criar curso via catálogo', () => {
 
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 4-CRUD deve criar um curso via catálogo com visualização para público
+	 * 4. CRUD deve criar um curso via catálogo com visualização para público
 	 * 
 	 * @description
 	 * Testa o fluxo de criar um curso utilizando um catálogo, criado via API, com visualização para público.
@@ -580,7 +580,7 @@ describe('criar curso via catálogo', () => {
 	 * Alta
 	 * 
 	 * @type
-	 * E2E
+	 * Regressão - CRUD - E2E
 	 * 
 	 * @time
 	 * 1m
@@ -588,13 +588,13 @@ describe('criar curso via catálogo', () => {
 	 * @tags
 	 * CRUD, Catalogo, Curso, Criar curso via catálogo
 	 * 
-	 * @test_case
+	 * @testCase
 	 * à confirmar
 	 * 
 	 * @author Karla Daiany
 	 * @version 1.0.0 
 	 */
-	it('4-CRUD deve criar um curso via catálogo com visualização para público', () => {
+	it('4. CRUD deve criar um curso via catálogo com visualização para público', () => {
 		// Massa de dados para criar um curso via catálogo
         const catalogo = {
 			nome: nome,
@@ -666,7 +666,7 @@ describe('criar curso via catálogo', () => {
 		tipoConteudo = 'curso'		//INFO: Alterado o tipo de conteúdo devido a BUG
 		cy.editarConteudo(catalogo.nome, tipoConteudo)
 
-		dadosParaValidar = { ...formularioConteudo, ...catalogo, ...dadosEspecificos, ...conteudoEdit }
+		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
@@ -680,7 +680,7 @@ describe('criar curso via catálogo', () => {
 	
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 5-CRUD deve criar um curso via catálogo que estava em desenvolvimento editado para liberado
+	 * 5. CRUD deve criar um curso via catálogo que estava em desenvolvimento editado para liberado
 	 * 
 	 * @description
 	 * Testa o fluxo de criar um curso utilizando um catálogo que estava em desenvolvimento e que foi editado para liberado.
@@ -702,7 +702,7 @@ describe('criar curso via catálogo', () => {
 	 * Alta
 	 * 
 	 * @type
-	 * E2E
+	 * Regressão - CRUD - E2E
 	 * 
 	 * @time
 	 * 1m
@@ -710,13 +710,13 @@ describe('criar curso via catálogo', () => {
 	 * @tags
 	 * CRUD, Catalogo, Curso, Criar curso via catálogo
 	 * 
-	 * @test_case
+	 * @testCase
 	 * à confirmar
 	 * 
 	 * @author Karla Daiany
 	 * @version 1.0.0
 	 */	
-	it('5-CRUD deve criar um curso via catálogo que estava em desenvolvimento editado para liberado', () => {
+	it('5. CRUD deve criar um curso via catálogo que estava em desenvolvimento editado para liberado', () => {
 		// Massa de dados para criar um curso via catálogo
 		const catalogo = {
 			nome: nome,
@@ -842,7 +842,7 @@ describe('criar curso via catálogo', () => {
 		tipoConteudo = 'curso'		//INFO: Alterado o tipo de conteúdo devido a BUG
 		cy.editarConteudo(conteudoEdit3.nome, tipoConteudo)
 
-		dadosParaValidar = { ...formularioConteudo, ...catalogo, ...conteudoEdit1, ...conteudoEdit2, ...dadosEspecificos, ...conteudoEdit3 }
+		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit3 }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
@@ -856,7 +856,7 @@ describe('criar curso via catálogo', () => {
 
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 6-CRUD deve criar um curso via catálogo que estava suspenso editado para liberado
+	 * 6. CRUD deve criar um curso via catálogo que estava suspenso editado para liberado
 	 * 
 	 * @description
 	 * Testa o fluxo de criar um curso utilizando um catálogo que estava suspenso e que foi editado para liberado.
@@ -882,21 +882,21 @@ describe('criar curso via catálogo', () => {
 	 * Alta
 	 * 
 	 * @type
-	 * E2E
+	 * Regressão - CRUD - E2E
 	 * 
 	 * @time
-	 * 1m
+	 * 2m
 	 * 
 	 * @tags 
 	 * CRUD, Catalogo, Curso, Criar curso via catálogo
 	 * 
-	 * @test_case
+	 * @testCase
 	 * à confirmar
 	 * 
 	 * @author Karla Daiany
 	 * @version 1.0.0
 	 */
-	it('6-CRUD deve criar um curso via catálogo que estava suspenso editado para liberado', () => {
+	it('6. CRUD deve criar um curso via catálogo que estava suspenso editado para liberado', () => {
 		// Massa de dados para criar um curso via catálogo
 		const catalogo = {
 			nome: nome,
@@ -1009,7 +1009,7 @@ describe('criar curso via catálogo', () => {
 
 		nome = faker.commerce.productName()
 		const conteudoEdit3 = {
-			nome: nome,
+			nome: faker.commerce.productName(),
 			visualizacao: 'Usuários',
 			situacao: 'Em desenvolvimento'
 		}
@@ -1024,7 +1024,7 @@ describe('criar curso via catálogo', () => {
 		tipoConteudo = 'curso'		//INFO: Alterado o tipo de conteúdo devido a BUG
 		cy.editarConteudo(conteudoEdit3.nome, tipoConteudo)
 
-		dadosParaValidar = { ...formularioConteudo, ...catalogo, ...conteudoEdit1, ...conteudoEdit2, ...dadosEspecificos, ...conteudoEdit3 }
+		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit3 }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE CATALOGO
@@ -1105,17 +1105,7 @@ describe('criar curso via catálogo', () => {
 
 		const todasCategorias = [...categorias, ...novasCategorias]
 
-		dadosParaValidar = { 
-			...formularioConteudo, 
-			...catalogo,
-			...conteudoEdit1,
-			...conteudoEdit2, 
-			...dadosEspecificos, 
-			...conteudoEdit3, 
-			...conteudoEdit4,
-			...dadosEspecificos2
-		}
-
+		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit4, ...dadosEspecificos2 }
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE
@@ -1127,7 +1117,7 @@ describe('criar curso via catálogo', () => {
 
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 7-CRUD deve criar um curso via catálogo com todos os campos preenchidos
+	 * 7. CRUD deve criar um curso via catálogo com todos os campos preenchidos
 	 * 
 	 * @description
 	 * Testa o fluxo de criação, leitura, edição e exclusão de um curso criado via catálogo
@@ -1149,7 +1139,7 @@ describe('criar curso via catálogo', () => {
 	 * Alta
 	 * 
 	 * @type
-	 * E2E
+	 * Regressão - CRUD - E2E
 	 * 
 	 * @time
 	 * 5m
@@ -1157,13 +1147,13 @@ describe('criar curso via catálogo', () => {
 	 * @tags
 	 * CRUD, Catalogo, Curso, Criar curso via catálogo
 	 * 
-	 * @test_case
+	 * @testCase
 	 * à confirmar
 	 * 
 	 * @author Karla Daiany
 	 * @version 1.0.0
 	 */
-	it('7-CRUD deve criar um curso via catálogo com todos os campos preenchidos', () => {
+	it('7. CRUD deve criar um curso via catálogo com todos os campos preenchidos', () => {
 		// Massa de dados para criação do catálogo
 		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
 		const conteudo = {
@@ -1302,7 +1292,7 @@ describe('criar curso via catálogo', () => {
 			!delCategorias.includes(categoria)
 		)
 		
-		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...dadosEspecificos, ...conteudoEdit }
+		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE

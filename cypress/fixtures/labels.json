@@ -46,6 +46,19 @@
             "tituloModalExclusao": "Excluir conteúdo",
             "texto1ModalExclusao": "Ao excluir a trilha você não excluirá os conteúdos dentro dela, apenas o agrupamento. Tem certeza que deseja prosseguir?",
             "msgSucessoExclusao": "Conteúdo excluído com sucesso"
+        },
+        "biblioteca": {
+            "breadcrumb": "Biblioteca",
+            "msgSucesso": "Biblioteca salva com sucesso.",
+            "breadcrumbAdicionar": "Biblioteca > Adicionar Nova",
+            "tituloPgAdicionar": "Nova Biblioteca",
+            "breadcrumbEdicao": "Detalhes da Biblioteca",
+            "tituloPgEdicao": "Editar trilhas",
+            "tituloModalExclusao": "Excluir Biblioteca",
+            "texto1ModalExclusao": "Você tem certeza que deseja excluir esta biblioteca?",
+            "texto2ModalExclusao": "Esta ação não poderá ser desfeita.",
+            "msgSucessoExclusao": "Biblioteca excluída com sucesso.",
+            "msgNenhumResultado": "Nenhuma biblioteca registrada."
         }
     },
     "perfil": {

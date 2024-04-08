@@ -95,7 +95,7 @@ describe('catálogo', () => {
 	
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 1-CRUD catalogo com dados default
+	 * 1. CRUD catalogo com dados default
 	 * 
 	 * @description
 	 * Testa o fluxo de criação, leitura, atualização e exclusão de um catálogo com dados default
@@ -114,7 +114,7 @@ describe('catálogo', () => {
 	 * Alta
 	 * 
 	 * @type
-	 * E2E
+	 * Regressão - CRUD - E2E
 	 * 
 	 * @time
 	 * 1m
@@ -122,13 +122,13 @@ describe('catálogo', () => {
 	 * @tags
 	 * CRUD, Catalogo
 	 * 
-	 * @test_case
+	 * @testCase
 	 * à confirmar
 	 * 
 	 * @author Karla Daiany
 	 * @version 1.0.0
 	 */
-	it('1-CRUD catalogo com dados default', () => {
+	it('1. CRUD catalogo com dados default', () => {
 		// Massa de dados para criação do catálogo
 		const conteudo = {
 			nome: faker.commerce.productName(),
@@ -211,7 +211,7 @@ describe('catálogo', () => {
 
 		cy.editarConteudo(conteudoEdit.nome, tipoConteudo)
 
-		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
+		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
@@ -223,7 +223,7 @@ describe('catálogo', () => {
 
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 2-CRUD catalogo liberado, com anexo, com pagamento, sem acréscimo, com confirmação, com visualização para inscritos
+	 * 2. CRUD catalogo liberado, com anexo, com pagamento, sem acréscimo, com confirmação, com visualização para inscritos
 	 * 
 	 * @description
 	 * Testa o fluxo de criação, leitura, atualização e exclusão de um catálogo liberado, com anexo, com pagamento, sem acréscimo, 
@@ -243,7 +243,7 @@ describe('catálogo', () => {
 	 * Alta
 	 * 
 	 * @type
-	 * E2E
+	 * Regressão - CRUD - E2E
 	 * 
 	 * @time
 	 * 1m
@@ -251,13 +251,13 @@ describe('catálogo', () => {
 	 * @tags
 	 * CRUD, Catalogo
 	 * 
-	 * @test_case
+	 * @testCase
 	 * à confirmar
 	 * 
 	 * @author Karla Daiany
 	 * @version 1.0.0
 	 */
-	it('2-CRUD catalogo liberado, com anexo, com pagamento, sem acréscimo, com confirmação, com visualização para inscritos', () => {
+	it('2. CRUD catalogo liberado, com anexo, com pagamento, sem acréscimo, com confirmação, com visualização para inscritos', () => {
 		// Massa de dados para criação do catálogo
 		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
 		const conteudo = {
@@ -378,7 +378,7 @@ describe('catálogo', () => {
 			pais: ''
 		}
 
-		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit, ...dadosEspecificos }
+		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit, ...dadosEspecificos }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
@@ -390,7 +390,7 @@ describe('catálogo', () => {
 
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 3-CRUD catalogo liberado, com anexo, com pagamento, c/acréscimo, sem confirmação, com visualização para público
+	 * 3. CRUD catalogo liberado, com anexo, com pagamento, c/acréscimo, sem confirmação, com visualização para público
 	 * 
 	 * @description
 	 * Testa o fluxo de criação, leitura, atualização e exclusão de um catálogo liberado, com anexo, com pagamento, com acréscimo,
@@ -410,7 +410,7 @@ describe('catálogo', () => {
 	 * Alta
 	 * 
 	 * @type
-	 * E2E
+	 * Regressão - CRUD - E2E
 	 * 
 	 * @time
 	 * 1m
@@ -418,13 +418,13 @@ describe('catálogo', () => {
 	 * @tags
 	 * CRUD, Catalogo
 	 * 
-	 * @test_case
+	 * @testCase
 	 * à confirmar
 	 * 
 	 * @author Karla Daiany
 	 * @version 1.0.0
 	 */
-	it('3-CRUD catalogo liberado, com anexo, com pagamento, c/acréscimo, sem confirmação, com visualização para público', () => {
+	it('3. CRUD catalogo liberado, com anexo, com pagamento, c/acréscimo, sem confirmação, com visualização para público', () => {
 		// Massa de dados para criação do catálogo
 		const categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`, `Cat3-${faker.hacker.noun()}`]
 		const conteudo = {
@@ -530,7 +530,7 @@ describe('catálogo', () => {
 		cy.editarConteudo(conteudoEdit.nome, tipoConteudo)
 
 		const todasCategorias = [...categorias, ...novasCategorias]
-		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
+		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE
@@ -542,7 +542,7 @@ describe('catálogo', () => {
 
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 4-CRUD catalogo suspenso, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores
+	 * 4. CRUD catalogo suspenso, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores
 	 * 
 	 * @description
 	 * Testa o fluxo de criação, leitura, atualização e exclusão de um catálogo suspenso, sem anexo, sem pagamento, com confirmação de inscrição
@@ -562,7 +562,7 @@ describe('catálogo', () => {
 	 * Alta
 	 * 
 	 * @type
-	 * E2E
+	 * Regressão - CRUD - E2E
 	 * 
 	 * @time
 	 * 1m
@@ -570,13 +570,13 @@ describe('catálogo', () => {
 	 * @tags
 	 * CRUD, Catalogo
 	 * 
-	 * @test_case
+	 * @testCase
 	 * à confirmar
 	 * 
 	 * @author Karla Daiany
 	 * @version 1.0.0 
 	 */
-	it('4-CRUD catalogo suspenso, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
+	it('4. CRUD catalogo suspenso, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
 		// Massa de dados para criação do catálogo
 		categorias = [`Cat1-${faker.hacker.noun()}`]
 		const conteudo = {
@@ -646,7 +646,7 @@ describe('catálogo', () => {
 		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
 		const todasCategorias = [...categorias, ...novasCategorias]
-		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
+		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE
@@ -658,7 +658,7 @@ describe('catálogo', () => {
 
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 5-CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores
+	 * 5. CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores
 	 * 
 	 * @description
 	 * Testa o fluxo de criação, leitura, atualização e exclusão de um catálogo em desenvolvimento, sem anexo, sem pagamento, com confirmação de inscrição
@@ -678,7 +678,7 @@ describe('catálogo', () => {
 	 * Alta
 	 * 
 	 * @type
-	 * E2E
+	 * Regressão - CRUD - E2E
 	 * 
 	 * @time
 	 * 1m
@@ -686,13 +686,13 @@ describe('catálogo', () => {
 	 * @tags
 	 * CRUD, Catalogo
 	 * 
-	 * @test_case
+	 * @testCase
 	 * à confirmar
 	 * 
 	 * @author Karla Daiany
 	 * @version 1.0.0
 	 */	
-	it('5-CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
+	it('5. CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
 		// Massa de dados para criação do catálogo
 		categorias = [`Cat1-${faker.hacker.noun()}`]
 		const conteudo = {
@@ -751,7 +751,7 @@ describe('catálogo', () => {
 
 		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
-		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
+		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
@@ -763,7 +763,7 @@ describe('catálogo', () => {
 
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 6-CRUD catalogo liberado, sem anexo, sem pagamento, sem confirmação, com visualização para público
+	 * 6. CRUD catalogo liberado, sem anexo, sem pagamento, sem confirmação, com visualização para público
 	 * 
 	 * @description
 	 * Testa o fluxo de criação, leitura, atualização e exclusão de um catálogo liberado, sem anexo, sem pagamento, sem confirmação de inscrição
@@ -783,7 +783,7 @@ describe('catálogo', () => {
 	 * Alta
 	 * 
 	 * @type
-	 * E2E
+	 * Regressão - CRUD - E2E
 	 * 
 	 * @time
 	 * 1m
@@ -791,13 +791,13 @@ describe('catálogo', () => {
 	 * @tags
 	 * CRUD, Catalogo
 	 * 
-	 * @test_case
+	 * @testCase
 	 * à confirmar
 	 * 
 	 * @author Karla Daiany
 	 * @version 1.0.0
 	 */
-	it('6-CRUD catalogo liberado, sem anexo, sem pagamento, sem confirmação, com visualização para público', () => {
+	it('6. CRUD catalogo liberado, sem anexo, sem pagamento, sem confirmação, com visualização para público', () => {
 		// Massa de dados para criação do catálogo
 		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
 		const conteudo = {
@@ -854,7 +854,7 @@ describe('catálogo', () => {
 
 		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
-		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
+		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
@@ -866,7 +866,7 @@ describe('catálogo', () => {
 
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 7-CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários
+	 * 7. CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários
 	 * 
 	 * @description
 	 * Testa o fluxo de criação, leitura, atualização e exclusão de um catálogo em desenvolvimento, sem anexo, sem pagamento, com confirmação de inscrição
@@ -886,7 +886,7 @@ describe('catálogo', () => {
 	 * Alta
 	 * 
 	 * @type
-	 * E2E
+	 * Regressão - CRUD - E2E
 	 * 
 	 * @time
 	 * 1m
@@ -894,13 +894,13 @@ describe('catálogo', () => {
 	 * @tags
 	 * CRUD, Catalogo
 	 * 
-	 * @test_case
+	 * @testCase
 	 * à confirmar
 	 * 
 	 * @author Karla Daiany
 	 * @version 1.0.0
 	 */
-	it('7-CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários', () => {
+	it('7. CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários', () => {
 		// Massa de dados para criação do catálogo
 		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
 		const conteudo = {
@@ -962,7 +962,7 @@ describe('catálogo', () => {
 			!delCategorias.includes(categoria)
 		)
 
-		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
+		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE

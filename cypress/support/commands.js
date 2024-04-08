@@ -1,6 +1,7 @@
 import formConteudos from "./pageObjects/formConteudos"
 import estruturaAtividades from "./pageObjects/estruturaAtividades"
 import formAtividades from "./pageObjects/formAtividades"
+import formBiblioteca from "./pageObjects/formBiblioteca"
 
 /** DOCUMENTAÇÃO:
  * @name loginTwygoAutomacao
@@ -182,6 +183,56 @@ Cypress.Commands.add('acessarPgListaConteudos', function() {
   // Verificar se a página de lista de conteúdos foi acessada com sucesso
   cy.contains('#page-breadcrumb', breadcrumb)
     .should('be.visible')
+})
+
+/** DOCUMENTAÇÃO:
+ * @name acessarPgBiblioteca
+ * 
+ * @description
+ * Comando personalizado para acessar a página da biblioteca.
+ * 
+ * @actions
+ * 1. Acessa a página da biblioteca.
+ * 
+ * @example
+ * cy.acessarPgBiblioteca()
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('acessarPgBiblioteca', function() {
+  cy.visit(`/o/${Cypress.env('orgId')}/events/?tab=libraries`)
+
+  const labels = Cypress.env('labels')
+  const { breadcrumb } = labels.conteudo.biblioteca
+
+  // Verificar se a página da biblioteca foi acessada com sucesso
+  cy.contains('#page-breadcrumb', breadcrumb)
+    .should('be.visible')
+})
+
+/** DOCUMENTAÇÃO:
+ * @name acessarPgLogin
+ * 
+ * @description
+ * Comando personalizado para acessar a página de login.
+ * 
+ * @actions
+ * 1. Acessa a página de login.
+ * 
+ * @example
+ * cy.acessarPgLogin()
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('acessarPgLogin', function() {
+  cy.visit('/users/login')
+
+  cy.title()
+    .should('eq', 'Login - Automação')
 })
 
 /** DOCUMENTAÇÃO:
@@ -413,7 +464,7 @@ Cypress.Commands.add('validarDadosConteudo', (conteudo, categoria) => {
  * 1. Acessa a opção de 'Adicionar' conforme cada tipo de conteúdo para iniciar o processo de criação do conteúdo.
  * 2. Valida a exibição da página de criação do conteúdo.
  * 
- * @param {String} tipoConteudo - O tipo do conteúdo a ser adicionado (e.g., 'trilha', 'curso', 'catalogo'). Este parâmetro influencia no seletor utilizado para
+ * @param {String} tipoConteudo - O tipo do conteúdo a ser adicionado (e.g., 'trilha', 'curso', 'catalogo', 'biblioteca'). Este parâmetro influencia no seletor utilizado para
  * encontrar o botão de adição e na página carregada para criação do conteúdo.
  * 
  * @example
@@ -422,7 +473,7 @@ Cypress.Commands.add('validarDadosConteudo', (conteudo, categoria) => {
  * @observations
  * Este comando não realiza o preenchimento dos campos do conteúdo. Para isso, @see preencherDadosConteudo
  * 
- * @throws {Error} - Se o tipo de conteúdo informado não for 'trilha', 'curso' ou 'catalogo'.
+ * @throws {Error} - Se o tipo de conteúdo informado não for 'trilha', 'curso', 'catalogo' ou 'biblioteca'.
  * 
  * @author Karla Daiany
  * @version 1.0.0
@@ -453,11 +504,16 @@ Cypress.Commands.add('addConteudo', function(tipoConteudo) {
       break
     case 'catalogo':
       cy.contains('button', 'Adicionar')
-      .should('be.visible')
-      .click()  
+        .should('be.visible')
+        .click()  
+      break
+    case 'biblioteca':
+      cy.contains('#add-library', 'Adicionar')
+        .should('be.visible')
+        .click()
       break
     default:
-      throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso' ou 'catalogo'`)
+      throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso', 'catalogo' ou 'biblioteca'`)
   }
 
   // Validar se a página foi carregada corretamente
@@ -525,6 +581,13 @@ Cypress.Commands.add('editarConteudo', function(nomeConteudo, tipoConteudo) {
         cy.get(seletor, { timeout: TIMEOUT_PADRAO})
           .find('a[title="Editar"]')
           .click()
+      break
+    case 'biblioteca':
+      cy.get('tr.event-row')
+        .contains('td.event-name', nomeConteudo)
+        .parent()
+        .find('a.event-edit')
+        .click()
       break
     default:
       throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso' ou 'catalogo'`)
@@ -596,8 +659,11 @@ Cypress.Commands.add('salvarConteudo', function(nomeConteudo, tipoConteudo) {
     case 'catalogo':
       seletor = `tr.event-row[name='${nomeConteudo}']`
       break
+    case 'biblioteca':
+      seletor = `td.event-name[title='${nomeConteudo}']`
+      break
     default:
-      throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso' ou 'catalogo'`)
+      throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso', 'catalogo' ou 'biblioteca'`)
   }
 
   // Verifica se o conteúdo foi criado e é exibido na listagem
@@ -668,125 +734,186 @@ Cypress.Commands.add('cancelarFormularioConteudo', function(tipoConteudo) {
  * @version 1.0.0
  * @since 1.0.0
  */
-Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo) {
+Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo, listaConteudos = []) {
   // Define o timeout para validação das páginas
-  const TIMEOUT_PADRAO = 6000
+  const TIMEOUT_PADRAO = 8000
 
   // Acessa o arquivo de labels
   const labels = Cypress.env('labels')
-  const { tituloModalExclusao, texto1ModalExclusao, texto2ModalExclusao, msgSucessoExclusao } = labels.conteudo[tipoConteudo]
 
-  // Define o seletor para encontrar o conteúdo na listagem
-  let seletor = ''
+  // Função para excluir um conteúdo específico
+  const excluirConteudoEspecifico = (nomeConteudo, tipoConteudo) => {
+    const { tituloModalExclusao, texto1ModalExclusao, texto2ModalExclusao, msgSucessoExclusao } = labels.conteudo[tipoConteudo]
 
-  switch(tipoConteudo) {
-    case 'trilha':
-      seletor = `tr[tag-name='${nomeConteudo}']`  
-      // Clica em 'Opções' e 'Excluir'
-      cy.get(seletor, { timeout: TIMEOUT_PADRAO})
-        .find('svg[aria-label="Options"]')
-        .click()
+    // Define o seletor para encontrar o conteúdo na listagem
+    let seletor = ''
 
-      cy.get(seletor, { timeout: TIMEOUT_PADRAO})
-        .wait(2000)	
-        .contains('button', 'Excluir')
-        .click({ force: true })
+    // Utiliza o seletor para encontrar o conteúdo na listagem, clicar em 'Opções' e 'Excluir', clica em 'Excluir' e valida o modal de exclusão
+    switch(tipoConteudo) {
+      case 'trilha':
+        seletor = `tr[tag-name='${nomeConteudo}']`  
 
-      // Valida o modal de exclusão
-      cy.contains('.chakra-modal__header', tituloModalExclusao, { timeout: TIMEOUT_PADRAO })
-        .should('be.visible')
+        // Clica em 'Opções' e 'Excluir'
+        cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+          .find('svg[aria-label="Options"]')
+          .click()
 
-      cy.contains('.chakra-text', nomeConteudo)
-        .should('be.visible')
+        cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+          .wait(2000)	
+          .contains('button', 'Excluir')
+          .click({ force: true })
 
-      cy.contains('.chakra-text', texto1ModalExclusao)
-        .should('be.visible')
+        // Valida o modal de exclusão
+        cy.contains('.chakra-modal__header', tituloModalExclusao, { timeout: TIMEOUT_PADRAO })
+          .should('be.visible')
 
-      // Confirma a exclusão
-      cy.contains('button.chakra-button', 'Excluir')
-        .click({ force: true})
+        cy.contains('.chakra-text', nomeConteudo)
+          .should('be.visible')
 
-      // Valida a mensagem de sucesso da exclusão
-      cy.contains('.chakra-alert__desc', msgSucessoExclusao, { timeout: TIMEOUT_PADRAO })
-        .should('be.visible')
+        cy.contains('.chakra-text', texto1ModalExclusao)
+          .should('be.visible')
+        break
+      case 'curso':
+        seletor = `tr[tag-name='${nomeConteudo}']`
 
-      // Verifica se o conteúdo foi excluído e não é exibido na listagem
-      cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+        // Clica em 'Opções' e 'Excluir'
+        cy.get(seletor, { timeout: TIMEOUT_PADRAO })
+          .find('svg[aria-label="Options"]')
+          .click()
+
+        cy.get(seletor, { timeout: TIMEOUT_PADRAO })
+          .wait(2000)
+          .contains('button', 'Excluir')
+          .click({ force: true })
+
+        // Valida o modal de exclusão
+        cy.contains('.chakra-modal__header', tituloModalExclusao, { timeout: TIMEOUT_PADRAO })
+          .should('be.visible')
+
+        cy.contains('.chakra-heading', nomeConteudo)
+          .should('be.visible')
+
+        cy.contains('.chakra-modal__body', texto1ModalExclusao)
+          .should('be.visible')
+
+        cy.contains('.chakra-modal__body', texto2ModalExclusao)
+          .should('be.visible')
+        break
+      case 'catalogo':
+        seletor = `tr.event-row[name='${nomeConteudo}']`
+        cy.get(seletor, { timeout: TIMEOUT_PADRAO })
+          .find('a[title="Excluir"]')
+          .click()
+
+        cy.contains('#modal-remove-events-index', tituloModalExclusao)
+          .should('be.visible')
+
+        cy.contains('#modal-remove-events-index_sub_title', nomeConteudo)
+          .should('be.visible')
+
+        cy.contains('#modal-remove-events-index-msg_title', texto1ModalExclusao)
+          .should('be.visible')
+        break
+      case 'biblioteca':
+        cy.get('tr.event-row')
+          .contains('td.event-name', nomeConteudo)
+          .parent()
+          .find('a.event-remove')
+          .click()
+
+        cy.contains('#modal-remove-events-index', tituloModalExclusao)
+          .should('be.visible')
+
+        cy.contains('strong', 'Biblioteca')
+          .should('be.visible')
+
+        cy.contains('#modal-remove-events-index-msg_title', texto1ModalExclusao)
+          .should('be.visible')
+
+        cy.contains('#modal-remove-events-index-msg_title', texto2ModalExclusao)
+          .should('be.visible')
+        break
+      default:
+        throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso', 'catalogo' ou 'biblioteca'`)
+    }
+
+    // Confirma a exclusão
+    switch(tipoConteudo) {
+      case 'trilha':
+      case 'curso':
+        cy.contains('button.chakra-button', 'Excluir')
+          .click({ force: true })
+        break
+      case 'catalogo':
+      case 'biblioteca':
+        cy.get('#modal-remove-events-index-confirmed')
+          .click({ force: true })
+        break
+      default:
+        throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso', 'catalogo' ou 'biblioteca'`)
+    }
+
+    // Valida a mensagem de sucesso da exclusão
+    if (nomeConteudo) {
+      if (tipoConteudo === 'catalogo' || tipoConteudo === 'biblioteca') {
+        cy.contains('.flash.notice', msgSucessoExclusao, { timeout: TIMEOUT_PADRAO })
+          .should('be.visible')
+      } else {
+        cy.contains('.chakra-alert__desc', msgSucessoExclusao, { timeout: TIMEOUT_PADRAO })
+          .should('be.visible')
+      }  
+    }
+
+    // Verifica se o conteúdo foi excluído e não é exibido na listagem
+    if (tipoConteudo === 'biblioteca') {
+      cy.get(`td.event-name[title='${nomeConteudo}']`, { timeout: TIMEOUT_PADRAO })
         .should('not.exist')
-      break
-    case 'curso':        
-      seletor = `tr[tag-name='${nomeConteudo}']`  
-      // Clica em 'Opções' e 'Excluir'
-      cy.get(seletor, { timeout: TIMEOUT_PADRAO})
-        .find('svg[aria-label="Options"]')
-        .click()
-
-      cy.get(seletor, { timeout: TIMEOUT_PADRAO})
-        .wait(2000)	
-        .contains('button', 'Excluir')
-        .click({ force: true })
-
-      // Valida o modal de exclusão
-      cy.contains('.chakra-modal__header', tituloModalExclusao, { timeout: TIMEOUT_PADRAO })
-        .should('be.visible')
-
-      cy.contains('.chakra-heading', nomeConteudo)
-        .should('be.visible')
-
-      cy.contains('.chakra-modal__body', texto1ModalExclusao)
-        .should('be.visible')
-
-      cy.contains('.chakra-modal__body', texto2ModalExclusao)
-        .should('be.visible')
-
-      // Confirma a exclusão
-      cy.contains('button.chakra-button', 'Excluir')
-        .click({ force: true})
-
-      // Valida a mensagem de sucesso da exclusão
-      cy.contains('.chakra-alert__desc', msgSucessoExclusao, { timeout: TIMEOUT_PADRAO })
-        .should('be.visible')
-
-      // Verifica se o conteúdo foi excluído e não é exibido na listagem
-      cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+    } else {
+      cy.get(seletor, { timeout: TIMEOUT_PADRAO })
         .should('not.exist')
-      break
-    case 'catalogo':
-      seletor = `tr.event-row[name='${nomeConteudo}']`
-      
-      // Clica em 'Excluir'
-      cy.get(seletor, { timeout: TIMEOUT_PADRAO})
-        .find('a[title="Excluir"]')
-        .click()
+    }
+  }
 
-      // Valida o modal de exclusão
-      cy.contains('#modal-remove-events-index', tituloModalExclusao)
-        .should('be.visible')
-  
-      cy.contains('#modal-remove-events-index_sub_title', nomeConteudo)
-        .should('be.visible')
-  
-      cy.contains('#modal-remove-events-index-msg_title', texto1ModalExclusao)
-        .should('be.visible')
-
-      cy.contains('#modal-remove-events-index-msg_title', texto1ModalExclusao)
-        .should('be.visible')
-  
-      cy.get('#modal-remove-events-index-confirmed')
-        .click({ force: true })
-  
-      cy.contains('.flash.notice', msgSucessoExclusao, { timeout: TIMEOUT_PADRAO })
-        .should('be.visible')
-  
-      // Verifica se o conteúdo foi excluído e não é exibido na listagem
-      cy.get(seletor, { timeout: TIMEOUT_PADRAO})
-        .should('not.exist')
-      break
-    default:
-      throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso' ou 'catalogo'`)
-  }    
+  // Verifica se foi fornecido um nome de conteúdo específico
+  if (nomeConteudo) {
+    excluirConteudoEspecifico(nomeConteudo, tipoConteudo)
+  } else if (listaConteudos.length !== 0) {
+    // Itera sobre a lista de conteúdos e exclui cada um deles
+    listaConteudos.forEach((conteudo) => {
+      excluirConteudoEspecifico(conteudo, tipoConteudo)
+    })
+  } else {
+    cy.log('Nenhum conteúdo foi fornecido para exclusão.')
+  }
 })
 
+/** DOCUMENTAÇÃO:
+ * @name addAtividadeConteudo
+ * 
+ * @description
+ * Comando personalizado para adicionar uma atividade em um conteúdo específico e validar o redirecionamento correto da página.
+ * 
+ * @actions
+ * 1. Define um timeout padrão de 5 segundos.
+ * 2. Clica no conteúdo específico, conforme o tipo de conteúdo, para adicionar a atividade.
+ * 3. Valida a exibição da página de adição de atividades.
+ * 
+ * @param {String} nomeConteudo - O nome do conteúdo a ser acessado para adicionar a atividade.
+ * @param {String} tipoConteudo - O tipo do conteúdo a ser acessado (e.g., 'trilha', 'curso', 'catalogo', 'biblioteca'). 
+ * Este parâmetro influencia no seletor utilizado para encontrar o conteúdo na listagem e na página carregada para adição de atividades.
+ * 
+ * @example
+ * cy.addAtividadeConteudo('Nome do Conteúdo', 'tipoConteudo')
+ * 
+ * @throws {Error} - Se o tipo de conteúdo informado não for 'trilha', 'curso', 'catalogo' ou 'biblioteca'.
+ * 
+ * @observations
+ * Este comando não realiza o preenchimento dos campos da atividade. Para isso, @see preencherDadosAtividade
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('addAtividadeConteudo', function(nomeConteudo, tipoConteudo) {
   const TIMEOUT_PADRAO = 5000
   
@@ -839,6 +966,23 @@ Cypress.Commands.add('addAtividadeConteudo', function(nomeConteudo, tipoConteudo
     .should('be.visible')
 })
 
+/** DOCUMENTAÇÃO:
+ * @name salvarAtividades
+ * 
+ * @description
+ * Comando personalizado para salvar uma atividade e validar a mensagem de sucesso.
+ * 
+ * @actions
+ * 1. Salva a atividade.
+ * 2. Valida a exibição da mensagem de sucesso após o salvamento.
+ * 
+ * @example
+ * cy.salvarAtividades()
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('salvarAtividades', () => {
   const atividades = new estruturaAtividades()
   const labels = Cypress.env('labels')
@@ -852,6 +996,29 @@ Cypress.Commands.add('salvarAtividades', () => {
     .should('be.visible')
 })
 
+/** DOCUMENTAÇÃO:
+ * @name editarAtividade
+ * 
+ * @description
+ * Comando personalizado para editar a atividade específica de um conteúdo específico e validar o redirecionamento correto da página.
+ * 
+ * @actions
+ * 1. Define um timeout padrão de 5 segundos.
+ * 2. Edita a atividade específica com base no nome do conteúdo e da atividade.
+ * 3. Valida a exibição da página de edição da atividade.
+ * 
+ * @param {String} nomeConteudo - O nome do conteúdo a ser editado. Este nome é utilizado para encontrar o conteúdo na listagem e 
+ * clicar no botão de edição da atividade.
+ * @param {String} nomeAtividade - O nome da atividade a ser editada. Este nome é utilizado para encontrar a atividade na listagem e 
+ * clicar no botão de edição.
+ * 
+ * @example
+ * cy.editarAtividade('Nome do Conteúdo', 'Nome da Atividade')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('editarAtividade', (nomeConteudo, nomeAtividade) => {
   const TIMEOUT_PADRAO = 5000
   const labels = Cypress.env('labels')
@@ -874,6 +1041,30 @@ Cypress.Commands.add('editarAtividade', (nomeConteudo, nomeAtividade) => {
     .should('be.visible')
 })
 
+/** DOCUMENTAÇÃO:
+ * @name preencherDadosAtividade
+ * 
+ * @description
+ * Comando personalizado para preencher os campos da atividade.
+ * 
+ * @actions
+ * 1. Preenche os campos da atividade com base nos dados fornecidos.
+ * 2. Limpa os campos antes de preencher, se a opção 'limpar' for verdadeira.
+ * 
+ * @param {Object} dados - Os dados a serem preenchidos nos campos da atividade.
+ * @param {Object} opcoes - Habilita ou não a limpeza dos campos antes do seu preenchimento.
+ * 
+ * @example
+ * cy.preencherDadosAtividade({ nome: 'Nome da Atividade', descricao: 'Descrição da Atividade' }, { limpar: true })
+ * ou
+ * cy.preencherDadosAtividade(dados, { limpar: false })
+ * 
+ * @throws {Error} - Se o campo informado não for válido. // Existente no método 'preencherCampo' da classe 'formAtividades'
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('preencherDadosAtividade', (dados, opcoes = { limpar: false }) => {
   const formulario = new formAtividades()
   
@@ -883,6 +1074,28 @@ Cypress.Commands.add('preencherDadosAtividade', (dados, opcoes = { limpar: false
   })
 })
 
+/** DOCUMENTAÇÃO:
+ * @name validarDadosAtividade
+ * 
+ * @description
+ * Comando personalizado para validar os dados de uma atividade.
+ * 
+ * @actions
+ * 1. Valida os campos da atividade com base nos dados fornecidos.
+ * 
+ * @param {Object} dados - Os dados a serem validados nos campos da atividade.
+ * 
+ * @example
+ * cy.validarDadosAtividade({ nome: 'Nome da Atividade', descricao: 'Descrição da Atividade' })
+ * ou
+ * cy.validarDadosAtividade(dados)
+ * 
+ * @throws {Error} - Se o campo informado não for válido. // Existente no método 'validarCampo' da classe 'formAtividades'
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('validarDadosAtividade', (dados) => {
   const formulario = new formAtividades()
 
@@ -891,7 +1104,31 @@ Cypress.Commands.add('validarDadosAtividade', (dados) => {
     formulario.validarCampo(nomeCampo, valor)
   })
 })
-
+/** DOCUMENTAÇÃO:
+ * @name verificarProcessamentoScorm
+ * 
+ * @description
+ * Comando personalizado para verificar a conclusão do processamento de um arquivo Scorm.
+ * 
+ * @actions
+ * 1. Verifica se o arquivo Scorm ainda está sendo processado.
+ * 2. Aguarda um tempo de 5 segundos e verifica novamente.
+ * 3. Se o arquivo Scorm ainda estiver sendo processado, recarrega a página e tenta novamente.
+ * 4. Caso contrário, exibe a mensagem de sucesso.
+ * 
+ * @param {String} nomeConteudo - O nome do conteúdo que contém o arquivo Scorm a ser processado.
+ * @param {String} nomeAtividade - O nome da atividade que contém o arquivo Scorm a ser processado.
+ * @param {String} tipoConteudo - O tipo do conteúdo que contém o arquivo Scorm a ser processado (e.g., 'trilha', 'curso', 'catalogo', 'biblioteca').
+ * 
+ * @example
+ * cy.verificarProcessamentoScorm('Nome do Conteúdo', 'Nome da Atividade', 'tipoConteudo')
+ * ou
+ * cy.verificarProcessamentoScorm(nomeConteudo, nomeAtividade, tipoConteudo)
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('verificarProcessamentoScorm', (nomeConteudo, nomeAtividade, tipoConteudo) => {
   const TIMEOUT_PADRAO = 5000
   const formulario = new formAtividades() // Certifique-se de que 'formAtividades' está acessível
@@ -907,6 +1144,8 @@ Cypress.Commands.add('verificarProcessamentoScorm', (nomeConteudo, nomeAtividade
           cy.acessarPgListaConteudos()
         } else if (tipoConteudo === 'catalogo') {
           cy.acessarPgCatalogo()
+        } else if (tipoConteudo === 'biblioteca') {
+          cy.acessarPgBiblioteca()
         }
         
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
@@ -923,6 +1162,70 @@ Cypress.Commands.add('verificarProcessamentoScorm', (nomeConteudo, nomeAtividade
   verificar()
 })
 
+/** DOCUMENTAÇÃO
+ * @name excluirAtividade
+ * 
+ * @description
+ * Comando personalizado para excluir uma atividade específica, confirmae a exclusão e salvar a atualização da estrutura de atividades.
+ * 
+ * @actions
+ * 1. Clica no botão de exclusão da atividade específica.
+ * 2. Confirma a exclusão da atividade (arquivo enviado para lixeira).
+ * 3. Salva a atualização da estrutura de atividades.
+ * 4. Verifica se a atividade foi excluída.
+ * 
+ * @param {String} nomeAtividade - O nome da atividade a ser excluída.
+ * 
+ * @example
+ * cy.excluirAtividade('Nome da Atividade')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('excluirAtividade', (nomeAtividade) => {
+  cy.contains('li.dd-item', nomeAtividade)
+    .find('.dd-delete')
+    .should('be.visible')
+    .click()
+
+  // Confirma que a atividade foi enviada para lixeira
+  cy.get('#deleted-list')
+    .contains('li.dd-item', nomeAtividade)
+    .should('be.visible')
+
+  // Salva atualização da estrutura de atividades
+  cy.salvarAtividades()
+
+  // Confirma que a atividade foi excluída
+  cy.get('li.dd-item')
+    .contains(nomeAtividade)
+    .should('not.exist')
+})
+
+/** DOCUMENTAÇÃO:
+ * @name criarCursoViaApi
+ * 
+ * @description
+ * Comando personalizado para criar um curso via API.
+ * 
+ * @actions
+ * 1. Realiza uma requisição do tipo POST para a criação de um curso.
+ * 2. Valida se o status da requisição é 201 (Created).
+ * 3. Caso a requisição falhe, tenta novamente até 3 vezes.
+ * 
+ * @param {Object} body - O corpo da requisição para a criação do curso.
+ * @param {Number} attempt - A tentativa atual de criação do curso.
+ * 
+ * @example
+ * cy.criarCursoViaApi(body, attempt)
+ * 
+ * @throws {Error} - Se a requisição falhar após 3 tentativas.
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add("criarCursoViaApi", (body, attempt = 1) => {
   const url = `/api/v1/o/${Cypress.env('orgId')}/courses`
   
@@ -946,4 +1249,199 @@ Cypress.Commands.add("criarCursoViaApi", (body, attempt = 1) => {
       expect(response.status).to.eq(201)
     }
   })
+})
+
+/** DOCUMENTAÇÃO:
+ * @name preencherDadosBiblioteca
+ * 
+ * @description
+ * Comando personalizado para preencher os campos de uma biblioteca.
+ * 
+ * @actions
+ * 1. Preenche os campos da biblioteca com base nos dados fornecidos.
+ * 
+ * @param {Object} conteudo - Os dados a serem preenchidos nos campos da biblioteca.
+ * 
+ * @example
+ * cy.preencherDadosBiblioteca({ nome: 'Nome da Biblioteca', descricao: 'Descrição da Biblioteca' })
+ * ou
+ * cy.preencherDadosBiblioteca(dados)
+ * 
+ * @throws {Error} - Se o campo informado não for válido. // Existente no método 'preencherCampo' da classe 'formBiblioteca'
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('preencherDadosBiblioteca', (conteudo, opcoes = { limpar: false }) => {
+  const formulario = new formBiblioteca()
+  
+  Object.keys(conteudo).forEach(nomeCampo => {
+      const valor = conteudo[nomeCampo]
+      formulario.preencherCampo(nomeCampo, valor, opcoes)
+  })
+}) 
+
+/** DOCUMENTAÇÃO:
+ * @name validarDadosBiblioteca
+ * 
+ * @description
+ * Comando personalizado para validar os dados de uma biblioteca.
+ * 
+ * @actions
+ * 1. Valida os campos da biblioteca com base nos dados fornecidos.
+ * 
+ * @param {Object} conteudo - Os dados a serem validados nos campos da biblioteca.
+ * 
+ * @example
+ * cy.validarDadosBiblioteca({ nome: 'Nome da Biblioteca', descricao: 'Descrição da Biblioteca' })
+ * ou
+ * cy.validarDadosBiblioteca(dados)
+ * 
+ * @throws {Error} - Se o campo informado não for válido. // Existente no método 'validarCampo' da classe 'formBiblioteca'
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('validarDadosBiblioteca', (conteudo) => {
+  const formulario = new formBiblioteca()
+
+  Object.keys(conteudo).forEach(nomeCampo => {
+    const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
+    formulario.validarCampo(nomeCampo, valor)
+  })
+})
+
+/** DOCUMENTAÇÃO:
+ * @name listaConteudo
+ * 
+ * @description
+ * Comando personalizado para listar os conteúdos de um tipo específico.
+ * 
+ * @actions
+ * 1. Verifica se existem conteúdos do tipo especificado.
+ * 2. Lista os conteúdos encontrados.
+ * 
+ * @param {String} tipoConteudo - O tipo de conteúdo a ser listado (e.g., 'trilha', 'curso', 'catalogo', 'biblioteca').
+ * @param {Array} listaConteudos - A lista de conteúdos encontrados.
+ * 
+ * @example
+ * cy.listaConteudo('trilha', listaConteudos)
+ * 
+ * @throws {Error} - Se o tipo de conteúdo informado não for 'trilha', 'curso', 'catalogo' ou 'biblioteca'.
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('listaConteudo', (tipoConteudo, listaConteudos) => {
+  const labels = Cypress.env('labels')
+
+  let seletor = ''
+  
+  switch(tipoConteudo) {
+    case 'trilha':
+      seletor = `tr[tag-name] td[role="gridcell"] span:contains("Trilha")`
+      break
+    case 'curso':
+      seletor = `tr[tag-name] td[role="gridcell"] span:contains("Curso")` 
+      break
+    case 'catalogo':
+      seletor = `tr.event-row`
+      break
+    case 'biblioteca':
+      seletor = `tr.event-row td.event-name` 
+      break
+    default:
+      throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso', 'catalogo' ou 'biblioteca'`)
+  }
+
+  cy.get('body').then(($body) => {
+    if ($body.find(seletor).length > 0) {
+      cy.get(seletor)
+        .each(($el) => {
+          let nomeConteudo = ''
+
+          if (tipoConteudo === 'trilha' || tipoConteudo === 'curso') {
+            nomeConteudo = $el.closest('tr').attr('tag-name')
+          } else {
+            nomeConteudo = $el.text().trim()
+          }
+
+          listaConteudos.push(nomeConteudo)
+        })
+        .then(() => {
+          cy.log(listaConteudos.join(', '))
+        })
+    } else {
+      cy.log('Nenhum conteúdo encontrado.')
+    }
+  })
+})
+
+/** DOCUMENTAÇÃO:
+ * @name criarBibliotecaDefault
+ * 
+ * @description
+ * Comando personalizado para criar uma biblioteca com dados padrão.
+ * 
+ * @actions
+ * 1. Adiciona um conteúdo do tipo 'biblioteca'.
+ * 2. Preenche os campos da biblioteca com os dados padrão.
+ * 3. Salva a biblioteca.
+ * 
+ * @param {String} nomeConteudo - O nome da biblioteca a ser criada.
+ * 
+ * @example
+ * cy.criarBibliotecaDefault('Nome da Biblioteca')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('criarBibliotecaDefault', (nomeConteudo) => {
+  const dados = {
+    nome: nomeConteudo,
+    descricao: 'Descrição teste para criação de biblioteca',
+  }
+
+  const tipoConteudo = 'biblioteca'
+
+  cy.addConteudo(tipoConteudo)
+  cy.preencherDadosBiblioteca(dados, { limpar: true } )
+  cy.salvarConteudo(dados.nome, tipoConteudo)
+})
+
+/** DOCUMENTAÇÃO:
+ * @name criarTrilhaDefault
+ * 
+ * @description
+ * Comando personalizado para criar uma trilha com dados padrão.
+ * 
+ * @actions
+ * 1. Adiciona um conteúdo do tipo 'trilha'.
+ * 2. Preenche os campos da trilha com os dados padrão.
+ * 3. Salva a trilha.
+ * 
+ * @param {String} nomeConteudo - O nome da trilha a ser criada.
+ * 
+ * @example
+ * cy.criarTrilhaDefault('Nome da Trilha')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('criarTrilhaDefault', (nomeConteudo) => {
+  const dados = {
+    nome: nomeConteudo,
+    descricao: 'Descrição teste para criação de trilha',
+  }
+
+  const tipoConteudo = 'trilha'
+
+  cy.addConteudo(tipoConteudo)
+  cy.preencherDadosConteudo(dados, { limpar: true } )
+  cy.salvarConteudo(dados.nome, tipoConteudo)
 })

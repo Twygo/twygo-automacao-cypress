@@ -5,7 +5,7 @@ import { getAuthToken } from '../support/auth_helper'
 import { gerarDataAtual } from '../support/utils_helper'
 
 describe('trilha', () => {
-	let nome, tipoConteudo, categorias, novasCategorias, delCategorias
+	let nome, tipoConteudo, categorias, novasCategorias, delCategorias, listaConteudos
 
 	// Campos e dados default do formulário de trilha
 	let formularioConteudo = {
@@ -44,7 +44,7 @@ describe('trilha', () => {
 		})
 	})
 
-	beforeEach( () => {
+	beforeEach(() => {
 		// Ativa o tratamento de exceção não capturada especificamente para este teste
 		Cypress.on('uncaught:exception', (err, runnable) => {
 		  	return false
@@ -61,8 +61,17 @@ describe('trilha', () => {
 		novasCategorias = []
 		delCategorias = []
 
-		// Obtém o token de autenticação
+		// Exclui todos os cursos da lista de conteúdos
 		getAuthToken()
+		cy.excluirCursoViaApi()
+
+		// Exclui todos os conteúdos do tipo trilha antes de iniciar o teste
+		cy.loginTwygoAutomacao()
+		cy.alterarPerfil('administrador')
+		
+		listaConteudos = []
+		cy.listaConteudo(tipoConteudo, listaConteudos)
+		cy.excluirConteudo(null, tipoConteudo, listaConteudos)		
 	})
 	
 	afterEach(() => {
@@ -72,7 +81,7 @@ describe('trilha', () => {
 	
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 1-CRUD trilha com dados default
+	 * 1. CRUD trilha com dados default
 	 * 
 	 * @description
 	 * Testa o fluxo de criação, leitura, atualização e exclusão de uma trilha com dados default
@@ -91,7 +100,7 @@ describe('trilha', () => {
 	 * Alta
 	 * 
 	 * @type
-	 * E2E
+	 * Regressão - CRUD - E2E
 	 * 
 	 * @time
 	 * 1m
@@ -105,7 +114,7 @@ describe('trilha', () => {
 	 * @author Karla Daiany
 	 * @version 1.0.0
 	 */
-	it('1-CRUD trilha com dados default', () =>{
+	it('1. CRUD trilha com dados default', () =>{
 		// Massa de dados para criação da trilha
         const conteudo = {
 			nome: nome,
@@ -115,8 +124,6 @@ describe('trilha', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
@@ -183,7 +190,7 @@ describe('trilha', () => {
 
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 2-CRUD trilha liberada, com confirmação, com visualização para inscritos
+	 * 2. CRUD trilha liberada, com confirmação, com visualização para inscritos
 	 * 
 	 * @description
 	 * Testa o fluxo de criação, leitura, atualização e exclusão de uma trilha liberada, com confirmação da inscrição 
@@ -203,7 +210,7 @@ describe('trilha', () => {
 	 * Alta
 	 * 
 	 * @type
-	 * E2E
+	 * Regressão - CRUD - E2E
 	 * 
 	 * @time
 	 * 1m
@@ -217,7 +224,7 @@ describe('trilha', () => {
 	 * @author Karla Daiany
 	 * @version 1.0.0
 	 */
-	it('2-CRUD trilha liberada, com confirmação, com visualização para inscritos', () => {
+	it('2. CRUD trilha liberada, com confirmação, com visualização para inscritos', () => {
 		// Massa de dados para criação da trilha
 		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
 		const conteudo = {
@@ -249,8 +256,6 @@ describe('trilha', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
@@ -319,7 +324,7 @@ describe('trilha', () => {
 
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 3-CRUD trilha liberada, sem confirmação, com visualização para inscritos
+	 * 3. CRUD trilha liberada, sem confirmação, com visualização para inscritos
 	 * 
 	 * @description
 	 * Testa o fluxo de criação, leitura, atualização e exclusão de uma trilha liberada, sem confirmação da inscrição
@@ -339,7 +344,7 @@ describe('trilha', () => {
 	 * Alta
 	 * 
 	 * @type
-	 * E2E
+	 * Regressão - CRUD - E2E
 	 * 
 	 * @time
 	 * 1m
@@ -353,7 +358,7 @@ describe('trilha', () => {
 	 * @author Karla Daiany
 	 * @version 1.0.0
 	 */
-	it('3-CRUD trilha liberada, sem confirmação, com visualização para inscritos', () => {
+	it('3. CRUD trilha liberada, sem confirmação, com visualização para inscritos', () => {
 		// Massa de dados para criação da trilha
 		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`, `Cat3-${faker.hacker.noun()}`]
 		const conteudo = {
@@ -379,8 +384,6 @@ describe('trilha', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
@@ -438,7 +441,7 @@ describe('trilha', () => {
 
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 4-CRUD trilha suspensa, com confirmação, com visualização para inscritos
+	 * 4. CRUD trilha suspensa, com confirmação, com visualização para inscritos
 	 * 
 	 * @description
 	 * Testa o fluxo de criação, leitura, atualização e exclusão de uma trilha suspensa, com confirmação da inscrição
@@ -458,7 +461,7 @@ describe('trilha', () => {
 	 * Alta
 	 * 
 	 * @type
-	 * E2E
+	 * Regressão - CRUD - E2E
 	 * 
 	 * @time
 	 * 1m
@@ -472,7 +475,7 @@ describe('trilha', () => {
 	 * @author Karla Daiany
 	 * @version 1.0.0
 	 */
-	it('4-CRUD trilha suspensa, com confirmação, com visualização para inscritos', () => {
+	it('4. CRUD trilha suspensa, com confirmação, com visualização para inscritos', () => {
 		// Massa de dados para criação da trilha
 		categorias = [`Cat1-${faker.hacker.noun()}`]
 		const conteudo = {
@@ -498,8 +501,6 @@ describe('trilha', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
@@ -546,7 +547,7 @@ describe('trilha', () => {
 
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 5-CRUD trilha suspensa, sem confirmação, com visualização para inscritos
+	 * 5. CRUD trilha suspensa, sem confirmação, com visualização para inscritos
 	 * 
 	 * @description
 	 * Testa o fluxo de criação, leitura, atualização e exclusão de uma trilha suspensa, sem confirmação da inscrição
@@ -566,7 +567,7 @@ describe('trilha', () => {
 	 * Alta
 	 * 
 	 * @type
-	 * E2E
+	 * Regressão - CRUD - E2E
 	 * 
 	 * @time
 	 * 1m
@@ -580,7 +581,7 @@ describe('trilha', () => {
 	 * @author Karla Daiany
 	 * @version 1.0.0
 	 */
-	it('5-CRUD trilha suspensa, sem confirmação, com visualização para inscritos', () => {
+	it('5. CRUD trilha suspensa, sem confirmação, com visualização para inscritos', () => {
 		// Massa de dados para criação da trilha
 		categorias = [`Cat1-${faker.hacker.noun()}`]
 		const conteudo = {
@@ -601,8 +602,6 @@ describe('trilha', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.addConteudo(tipoConteudo)
 		cy.preencherDadosConteudo(conteudo, { limpar: true })
 		cy.salvarConteudo(conteudo.nome, tipoConteudo)
@@ -642,7 +641,7 @@ describe('trilha', () => {
 
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 6-CRUD trilha em desenvolvimento, sem confirmação, com visualização para inscritos
+	 * 6. CRUD trilha em desenvolvimento, sem confirmação, com visualização para inscritos
 	 * 
 	 * @description
 	 * Testa o fluxo de criação, leitura, atualização e exclusão de uma trilha em desenvolvimento, sem confirmação da inscrição
@@ -662,7 +661,7 @@ describe('trilha', () => {
 	 * Alta
 	 * 
 	 * @type
-	 * E2E
+	 * Regressão - CRUD - E2E
 	 * 
 	 * @time
 	 * 1m
@@ -676,7 +675,7 @@ describe('trilha', () => {
 	 * @author Karla Daiany
 	 * @version 1.0.0
 	 */
-	it('6-CRUD trilha em desenvolvimento, sem confirmação, com visualização para inscritos', () => {
+	it('6. CRUD trilha em desenvolvimento, sem confirmação, com visualização para inscritos', () => {
 		// Massa de dados para criação da trilha
 		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
 		const conteudo = {
@@ -698,8 +697,6 @@ describe('trilha', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
@@ -746,7 +743,7 @@ describe('trilha', () => {
 
 	/** DOCUMENTAÇÃO:
 	 * @name
-	 * 7-CRUD trilha em desenvolvimento, com confirmação, com visualização para inscritos
+	 * 7. CRUD trilha em desenvolvimento, com confirmação, com visualização para inscritos
 	 * 
 	 * @description
 	 * Testa o fluxo de criação, leitura, atualização e exclusão de uma trilha em desenvolvimento, com confirmação da inscrição
@@ -766,7 +763,7 @@ describe('trilha', () => {
 	 * Alta
 	 * 
 	 * @type
-	 * E2E
+	 * Regressão - CRUD - E2E
 	 * 
 	 * @time
 	 * 1m
@@ -780,7 +777,7 @@ describe('trilha', () => {
 	 * @author Karla Daiany
 	 * @version 1.0.0
 	 */
-	it('7-CRUD trilha em desenvolvimento, com confirmação, com visualização para inscritos', () => {
+	it('7. CRUD trilha em desenvolvimento, com confirmação, com visualização para inscritos', () => {
 		// Massa de dados para criação da trilha
 		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
 		const conteudo = {
@@ -795,8 +792,6 @@ describe('trilha', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)

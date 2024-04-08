@@ -1,422 +1,497 @@
 class formAtividades {
-    elementos = {
-      titulo: {
-        seletor: '#content_title',
-        tipo: 'input',
-        default: 'Novo 1'
-      },
-      peso: {
-        seletor: '#content_duration',
-        tipo: 'input',
-        default: 1
-      },
-      liberado: {
-        seletor: '#content_status',
-        tipo: 'checkbox',
-        default: false
-      },
-      preRequisitos: {
-        seletor: '.new-requirement',
-        tipo: 'button'
-      },
-      tipoAtividade: {
-        seletor: '.radiobox-content',
-        tipo: 'radio',
-        seletorValor: '#content_content_type'
-      },
-      resumoAtividade: {
-        seletor: 'div#cke_content_briefing iframe.cke_wysiwyg_frame',
-        tipo: 'iframe_text'
-      },
-      tempoMinPermanencia: {
-        seletor: '#enable_minimum_permanence_time',
-        tipo: 'checkbox',
-        default: false
-      },
-      tempoMinPermanenciaValor: {
-        seletor: '#minimum_permanence_time',
-        tipo: 'input'
-      },
-      escolherArquivo: {
-        seletor: '#file',
-        tipo: 'button'
-      },
-      salvarEnvioArquivo: {
-        seletor: '#button_send_file',
-        tipo: 'button'
-      },
-      cancelarEnvioArquivo: {
-        seletor: '#event-cancel',
-        tipo: 'button'
-      },
-      // Texto
-      descricaoTexto: {
-        seletor: 'div#cke_content_description iframe.cke_wysiwyg_frame',
-        tipo: 'iframe_text'
-      },
-      // PDF
-      enviarPdf: {
-        seletor: '#pdf_link',
-        tipo: 'uploadButton'
-      },
-      descricaoArquivoPdf: {
-        seletor: '#pdf-description',
-        tipo: 'fileDescription'
-      },
-      // Segurança para PDF, Vídeos e Arquivos
-      seguranca: {
-        seletor: '#content_file_security',
-        tipo: 'select',
-        default: 'Somente Visualizar'
-      },
-      // Vídeo
-      enviarVideo: {
-        seletor: '#video_link',
-        tipo: 'uploadButton'
-      },
-      descricaoArquivoVideo: {
-        seletor: '#video-description',
-        tipo: 'fileDescription'
-      },
-      marcarConcluidoVideo: {
-        seletor: '#mark_completed_video',
-        tipo: 'checkbox',
-        default: false
-      },
-      naoMostrarProgresso: {
-        seletor: '#controll_bar_video',
-        tipo: 'checkbox',
-        default: false
-      },
-      // Vídeo Externo
-      youtube: {
-        seletor: 'input[value="youtube"]',
-        tipo: 'radioVideo',
-        default: 'checked'
-      },
-      vimeo: {
-        seletor: 'input[value="vimeo"]',
-        tipo: 'radioVideo'
-      },
-      eventials: {
-        seletor: 'input[value="eventials"]',
-        tipo: 'radioVideo'
-      },
-      // Preencher URL YouTube e Vimeo
-      videoUrl: {
-        seletor: '#content_video_url',
-        tipo: 'input'
-      },
-      // Preencher URL e Chat Eventials
-      videoEventials: {
-        seletor: '#eventials_video',
-        tipo: 'input'
-      },
-      chatEventials: {
-        seletor: '#eventials_chat',
-        tipo: 'input'
-      },
-      // Opção para YouTube, Vimeo e Eventials
-      marcarConcluidoVideoExterno: {
-        seletor: '#mark_completed_external',
-        tipo: 'checkbox',
-        default: false
-      },
-      // Opções para YouTube e Eventials
-      naoMostrarProgressoVideoExterno: {
-        seletor: '#controll_bar_external',
-        tipo: 'checkbox',
-        default: false
-      },
-      chatTwygo: {
-        seletor: '#enable_content_chat_external',
-        tipo: 'checkbox',
-        default: false
-      },
-      desabilitarChatFimTransmissao: {
-        seletor: '#disable_chat_at_end_external',
-        tipo: 'checkbox',
-        default: false
-      },
-      // Arquivos
-      enviarArquivo: {
-        seletor: '#other_link',
-        tipo: 'uploadButton'
-      },
-      descricaoArquivo: {
-        seletor: '#other-description',
-        tipo: 'fileDescription'
-      },
-      // Questionário
-      selecionarQuestionario: {
-        seletor: '#question_list_filter',
-        tipo: 'search',
-        seletorValor: '.item_name'
-      },
-      exibicaoPerguntas: {
-        seletor: '#content_question_draw',
-        tipo: 'select',
-        default: 'Exibir mesmas perguntas nas tentativas'
-      },
-      visualizacaoRespostas: {
-        seletor: '#content_question_list_method',
-        tipo: 'select',
-        default: 'Exibir Apenas Nota'
-      },
-      pontuacaoMinima: {
-        seletor: '#content_minimum_score',
-        tipo: 'input'
-      },
-      tentativas: {
-        seletor: '#content_attempts',
-        tipo: 'input'
-      },
-      percPontuacaoFinal: {
-        seletor: '#content_final_score_ratio',
-        tipo: 'input',
-        default: '0'
-      },
-      adicionarPerguntas: {
-        seletor: '.add_category',
-        tipo: 'button'
-      },
-      perguntasCat1: {
-        seletor: '#question_params_questions_category1',
-        tipo: 'select',
-        default: 'Todas'
-      },
-      perguntasCat2: {
-        seletor: '#question_params_questions_category2',
-        tipo: 'select',
-        default: 'Todas'
-      },
-      quantidadePerguntas: {
-        seletor: '#question_params_questions_amount',
-        tipo: 'input'
-      },
-      // Scorm
-      enviarScorm: {
-        seletor: '#scorm_link',
-        tipo: 'uploadButton'
-      },
-      descricaoArquivoScorm: {
-        seletor: '#scorm-description',
-        tipo: 'fileDescription'
-      },
-      marcarConcluidoScorm: {
-        seletor: '#mark_completed_scorm',
-        tipo: 'checkbox'
-      },
-      // Games
-      codigoCompartilhamento: {
-        seletor: '#game-key',
-        tipo: 'input'
-      }
-    }
-  
-    preencherCampo(nomeCampo, valor, opcoes = { limpar: false }) {
-      const campo = this.elementos[nomeCampo]
-  
-      if (!campo) {
-        throw new Error(`Campo ${nomeCampo} não encontrado`)
-      }
-  
-      const { seletor, tipo, default: valorDefault } = campo
-  
-      let valorFinal = valor !== undefined ? valor : valorDefault
-  
-      if (opcoes.limpar && tipo === 'input') {
-        cy.get(seletor)
-          .clear()
-        if (valorFinal === '') {
-          return
-        }
-      }
-  
-      if (valorFinal === '' && tipo === 'input') {
-        cy.get(seletor)
-          .clear()
-      } else if (valorFinal !== undefined) {
-        switch (tipo) {
-          case 'input':
-            cy.get(seletor)
-              .type(valorFinal)
-            break
-          case 'checkbox':
-            cy.get(seletor).then($checkbox => {
-              const isChecked = $checkbox.is(':checked')
-              if ((valorFinal && !isChecked) || (!valorFinal && isChecked)) {
-                cy.get(seletor).click()
-              }
-            })
-            break
-          case 'radio':
-            cy.contains(seletor, valorFinal)
-              .click()
-            break
-          case 'iframe_text':
-            cy.get(seletor, { timeout: 5000 }).then($iframe => {
-              const doc = $iframe.contents()
-              cy.wrap(doc).find('body.cke_editable').click({ force: true }).clear().type(valorFinal, { force: true })
-            })
-            break
-          case 'select':
-            cy.get(seletor)
-              .select(valorFinal)
-            break
-          case 'search':
-            cy.get(seletor)
-              .click()
-              .type(valorFinal)
-              .type('{enter}')
-            
-            cy.get('.item_name')
-              .contains(valorFinal)
-              .click()
-            break
-          case 'button':
-            cy.get(seletor)
-              .click()
-            break
-          case 'uploadButton':
-            if (valorFinal) {
-              cy.get(seletor)
-                .click()
+	// Mapeamento de elementos da tela de criação de atividades (Edição de Espaço)
+	elementos = {
+		titulo: {
+			seletor: '#content_title',
+			tipo: 'input',
+			default: 'Novo 1'
+		},
+		peso: {
+			seletor: '#content_duration',
+			tipo: 'input',
+			default: 1
+		},
+		liberado: {
+			seletor: '#content_status',
+			tipo: 'checkbox',
+			default: false
+		},
+		preRequisitos: {
+			seletor: '.new-requirement',
+			tipo: 'button'
+		},
+		tipoAtividade: {
+			seletor: '.radiobox-content',
+			tipo: 'radio',
+			seletorValor: '#content_content_type'
+		},
+		resumoAtividade: {
+			seletor: 'div#cke_content_briefing iframe.cke_wysiwyg_frame',
+			tipo: 'iframe_text'
+		},
+		tempoMinPermanencia: {
+			seletor: '#enable_minimum_permanence_time',
+			tipo: 'checkbox',
+			default: false
+		},
+		tempoMinPermanenciaValor: {
+			seletor: '#minimum_permanence_time',
+			tipo: 'input'
+		},
+		escolherArquivo: {
+			seletor: '#file',
+			tipo: 'button'
+		},
+		salvarEnvioArquivo: {
+			seletor: '#button_send_file',
+			tipo: 'button'
+		},
+		cancelarEnvioArquivo: {
+			seletor: '#event-cancel',
+			tipo: 'button'
+		},
+		// Texto
+		descricaoTexto: {
+			seletor: 'div#cke_content_description iframe.cke_wysiwyg_frame',
+			tipo: 'iframe_text'
+		},
+		// PDF
+		enviarPdf: {
+			seletor: '#pdf_link',
+			tipo: 'uploadButton'
+		},
+		descricaoArquivoPdf: {
+			seletor: '#pdf-description',
+			tipo: 'fileDescription'
+		},
+		// Segurança para PDF, Vídeos e Arquivos
+		seguranca: {
+			seletor: '#content_file_security',
+			tipo: 'select',
+			default: 'Somente Visualizar'
+		},
+		// Vídeo
+		enviarVideo: {
+			seletor: '#video_link',
+			tipo: 'uploadButton'
+		},
+		descricaoArquivoVideo: {
+			seletor: '#video-description',
+			tipo: 'fileDescription'
+		},
+		marcarConcluidoVideo: {
+			seletor: '#mark_completed_video',
+			tipo: 'checkbox',
+			default: false
+		},
+		naoMostrarProgresso: {
+			seletor: '#controll_bar_video',
+			tipo: 'checkbox',
+			default: false
+		},
+		// Vídeo Externo
+		youtube: {
+			seletor: 'input[value="youtube"]',
+			tipo: 'radioVideo',
+			default: 'checked'
+		},
+		vimeo: {
+			seletor: 'input[value="vimeo"]',
+			tipo: 'radioVideo'
+		},
+		eventials: {
+			seletor: 'input[value="eventials"]',
+			tipo: 'radioVideo'
+		},
+		// Preencher URL YouTube e Vimeo
+		videoUrl: {
+			seletor: '#content_video_url',
+			tipo: 'input'
+		},
+		// Preencher URL e Chat Eventials
+		videoEventials: {
+			seletor: '#eventials_video',
+			tipo: 'inputText'
+		},
+		chatEventials: {
+			seletor: '#eventials_chat',
+			tipo: 'inputText'
+		},
+		// Opção para YouTube, Vimeo e Eventials
+		marcarConcluidoVideoExterno: {
+			seletor: '#mark_completed_external',
+			tipo: 'checkbox',
+			default: false
+		},
+		// Opções para YouTube e Eventials
+		naoMostrarProgressoVideoExterno: {
+			seletor: '#controll_bar_external',
+			tipo: 'checkbox',
+			default: false
+		},
+		chatTwygo: {
+			seletor: '#enable_content_chat_external',
+			tipo: 'checkbox',
+			default: false
+		},
+		desabilitarChatFimTransmissao: {
+			seletor: '#disable_chat_at_end_external',
+			tipo: 'checkbox',
+			default: false
+		},
+		// Arquivos
+		enviarArquivo: {
+			seletor: '#other_link',
+			tipo: 'uploadButton'
+		},
+		descricaoArquivo: {
+			seletor: '#other-description',
+			tipo: 'fileDescription'
+		},
+		// Questionário
+		selecionarQuestionario: {
+			seletor: '#question_list_filter',
+			tipo: 'search',
+			seletorValor: '.label_box .label_name span'
+		},
+		exibicaoPerguntas: {
+			seletor: '#content_question_draw',
+			tipo: 'select',
+			default: 'Exibir mesmas perguntas nas tentativas'
+		},
+		visualizacaoRespostas: {
+			seletor: '#content_question_list_method',
+			tipo: 'select',
+			default: 'Exibir Apenas Nota'
+		},
+		pontuacaoMinima: {
+			seletor: '#content_minimum_score',
+			tipo: 'input'
+		},
+		tentativas: {
+			seletor: '#content_attempts',
+			tipo: 'input'
+		},
+		percPontuacaoFinal: {
+			seletor: '#content_final_score_ratio',
+			tipo: 'input',
+			default: '0'
+		},
+		adicionarPerguntas: {
+			seletor: '.add_category',
+			tipo: 'button'
+		},
+		perguntasCat1: {
+			seletor: '#question_params_questions_category1',
+			tipo: 'select',
+			default: 'Todas'
+		},
+		perguntasCat2: {
+			seletor: '#question_params_questions_category2',
+			tipo: 'select',
+			default: 'Todas'
+		},
+		quantidadePerguntas: {
+			seletor: '#question_params_questions_amount',
+			tipo: 'input'
+		},
+		// Scorm
+		enviarScorm: {
+			seletor: '#scorm_link',
+			tipo: 'uploadButton'
+		},
+		descricaoArquivoScorm: {
+			seletor: '#scorm-description',
+			tipo: 'fileDescription'
+		},
+		marcarConcluidoScorm: {
+			seletor: '#mark_completed_scorm',
+			tipo: 'checkbox'
+		},
+		// Games
+		codigoCompartilhamento: {
+			seletor: '#game-key',
+			tipo: 'input'
+		}
+	}
 
-              cy.get('#file')
-                .selectFile(`cypress/fixtures/${valorFinal}`, { force: true })
+	/** DOCUMENTAÇÃO:
+	 * @name preencherCampo
+	 * 
+	 * @description 
+	 * Preenche os campo de um formulário com base no nome, tipo e valor informado.
+	 * 
+	 * @actions
+	 * 1. Busca o campo na lista de elementos com base no nome informado
+	 * 2. Verifica se o campo foi encontrado
+	 * 3. Verifica se o campo deve ser limpo antes de preencher
+	 * 4. Localiza o tipo de campo na lista de ações suportadas
+	 * 5. Executa a ação de preenchimento do campo
+	 * 
+	 * 
+	 * @param {string} nomeCampo - Nome do campo a ser preenchido
+	 * @param {string} valor - Valor a ser preenchido no campo
+	 * @param {boolean} opcoes.limpar - Determina se o campo deve ser limpo antes de preencher
+	 * 
+	 * @example
+	 * preencherCampo('nome', 'Nome do Evento')
+	 * 
+	 * @throws {Error} Campo {nomeCampo} não encontrado
+	 * @throws {Error} Tipo de campo {tipo} não suportado
+	 * @throws {Error} Campo {nomeCampo} não pode ser preenchido com valor {valorFinal}
+	 * 
+	 * @author Karla Daiany
+	 * @version 1.0.0
+	 * @since 1.0.0
+	 */
+	preencherCampo(nomeCampo, valor, opcoes = { limpar: false }) {
+		const campo = this.elementos[nomeCampo]
 
-              cy.get('#button_send_file')
-                .click()
+		if (!campo) {
+			throw new Error(`Campo ${nomeCampo} não encontrado`)
+		}
 
-              cy.get(seletor, { timeout: 15000 })
-                .contains('Substituir arquivo', { timeout: 15000 })
-                .should('be.visible')
-            }
-            break
-          case 'radioVideo':
-          case 'fileDescription':
-            // Nenhuma ação necessária
-            break
-          default:
-            throw new Error(`Tipo de campo ${tipo} não suportado`)    
-        }
-      } else {
-        throw new Error(`Campo ${nomeCampo} não pode ser preenchido com valor ${valorFinal}`)
-      }
-    }
-  
-    validarCampo(nomeCampo, valor) {
-      const campo = this.elementos[nomeCampo]
+		const { seletor, tipo, default: valorDefault } = campo
 
-      const mapeamentoTipoAtividade = {
-        'Texto': 'text',
-        'PDF Estampado': 'pdf',
-        'Vídeo': 'video',
-        'Vídeo Externo': 'external',
-        'Arquivos': 'other',
-        'Questionário': 'questions',
-        'Scorm': 'scorm',
-        'Games': 'games'
-      }
-  
-      if (!campo) {
-        throw new Error(`Campo ${nomeCampo} não encontrado`)
-      }
-  
-      const { seletor, tipo, seletorValor, default: valorDefault } = campo
-  
-      let valorFinal = valor !== undefined ? valor : valorDefault
-  
-      switch (tipo) {
-        case 'input':
-          cy.get(seletor)
-            .should('have.value', valor)
-          break
-        case 'checkbox':
-          cy.get(seletor)
-            .should(valor ? 'be.checked' : 'not.be.checked')
-          break
-        case 'radio':
-          const valorMapeado = mapeamentoTipoAtividade[valor]  
-          cy.get(seletorValor)
-            .should('have.value', valorMapeado)
-          break
-        case 'radioVideo':
-          if (valorFinal) {
-            cy.get(`${seletor}[value="${nomeCampo}"]`)
-              .should('be.checked')
-          } else {
-            cy.get(`${seletor}[value="${nomeCampo}"]`)
-              .should('not.be.checked')
-          }
-          break
-        case 'select':
-          cy.get(seletor)
-            .find('option:selected')
-            .should('have.text', valorFinal)
-          break
-        case 'iframe_text':
-          cy.get(seletor, { timeout: 5000 }).then($iframe => {
-            const doc = $iframe.contents()
-          
-            cy.wrap(doc).find('body.cke_editable').then($body => {
-              cy.wrap($body).should('have.text', valorFinal)
-            })
-          })
-          break      
-        case 'search':
-          if (valor) {
-            cy.get(seletor)
-            .find(seletorValor)
-            .should('have.text', valor)
-          } else {
-            cy.get(seletor)
-            .find(seletorValor)
-            .should('not.exist')
-          }
-          break
-        case 'uploadButton':
-          if (valorFinal) {
-            cy.get(seletor)
-              .should('contain', 'Substituir arquivo')
-          } else {
-            cy.get(seletor)
-              .should('contain', 'Enviar arquivo')          
-          }
-          break
-        case 'fileDescription':
-          if (valorFinal === '') {
-            cy.get(seletor).should($desc => {
-              const descText = $desc.text().trim()
-              expect(descText).to.be.empty
-            })
-        } else if (valorFinal.nome && valorFinal.tamanho) {
-            cy.get(seletor).should($desc => {
-              let descText = $desc.text().trim()
-              descText = descText.replace(/\s*\n\s*/g, ' ')
-    
-              const nomeEsperado = `Nome: ${valorFinal.nome}`
-              const tamanhoFormatado = `Tamanho: ${valorFinal.tamanho}`
-                
-              expect(descText).to.include(nomeEsperado)
-              expect(descText).to.include(tamanhoFormatado)
-            })
-        } else {
-            cy.get(seletor).should('exist')
-        }
-        break
-      }
-    }
+		let valorFinal = valor !== undefined ? valor : valorDefault
 
-    salvar = () => {
-      cy.get('#button_send_form')
-        .click()
-    }
+		if (opcoes.limpar && tipo === 'input') {
+			cy.get(seletor)
+				.clear()
+			if (valorFinal === '') {
+				return
+			}
+		}
 
-    voltar = () => {
-      cy.contains('.btn-back', 'Voltar')
-        .click( { force: true } )
-    }
-  }  
-  export default formAtividades
+		if (valorFinal === '' && tipo === 'input') {
+			cy.get(seletor)
+				.clear()
+		} else if (valorFinal !== undefined) {
+			switch (tipo) {
+				case 'input':
+				case 'inputText':
+					cy.get(seletor)
+						.type(valorFinal)
+					break
+				case 'checkbox':
+					cy.get(seletor).then($checkbox => {
+						const isChecked = $checkbox.is(':checked')
+						if ((valorFinal && !isChecked) || (!valorFinal && isChecked)) {
+							cy.get(seletor).click()
+						}
+					})
+					break
+				case 'radio':
+					cy.contains(seletor, valorFinal)
+						.click()
+					break
+				case 'iframe_text':
+					cy.get(seletor, { timeout: 5000 }).then($iframe => {
+						const doc = $iframe.contents()
+						cy.wrap(doc).find('body.cke_editable').click({ force: true }).clear().type(valorFinal, { force: true })
+					})
+					break
+				case 'select':
+					cy.get(seletor)
+						.select(valorFinal)
+					break
+				case 'search':
+					cy.get(seletor)
+						.click()
+						.type(valorFinal)
+						.type('{enter}')
+
+					cy.get('.item_name')
+						.contains(valorFinal)
+						.click()
+					break
+				case 'button':
+					cy.get(seletor)
+						.click()
+					break
+				case 'uploadButton':
+					if (valorFinal) {
+						cy.get(seletor)
+							.click()
+
+						cy.get('#file')
+							.selectFile(`cypress/fixtures/${valorFinal}`, { force: true })
+
+						cy.get('#button_send_file')
+							.click()
+
+						cy.get(seletor, { timeout: 15000 })
+							.contains('Substituir arquivo', { timeout: 15000 })
+							.should('be.visible')
+					}
+					break
+				case 'radioVideo':
+					if (valorFinal) {
+						cy.get(seletor)
+							.click()
+					}
+					break
+				case 'fileDescription':
+					// Nenhuma ação necessária
+					break
+				default:
+					throw new Error(`Tipo de campo ${tipo} não suportado`)
+			}
+		} else {
+			throw new Error(`Campo ${nomeCampo} não pode ser preenchido com valor ${valorFinal}`)
+		}
+	}
+
+	/** DOCUMENTAÇÃO:
+	 * @name validarCampo
+	 * 
+	 * @description
+	 * Valida o campo de um formulário com base no nome e valor informado.
+	 * 
+	 * @actions
+	 * 1. Busca o campo na lista de elementos com base no nome informado
+	 * 2. Verifica se o campo foi encontrado
+	 * 3. Localiza o tipo de campo na lista de ações suportadas
+	 * 4. Executa a ação de validação do campo
+	 * 
+	 * @param {string} nomeCampo - Nome do campo a ser validado
+	 * @param {string} valor - Valor a ser validado no campo
+	 * 
+	 * @example
+	 * validarCampo('nome', 'Nome do Evento')
+	 * 
+	 * @throws {Error} Campo {nomeCampo} não encontrado
+	 * @throws {Error} Tipo de campo {tipo} não suportado
+	 * 
+	 * @author Karla Daiany
+	 * @version 1.0.0
+	 * @since 1.0.0
+	 */
+	validarCampo(nomeCampo, valor) {
+		const campo = this.elementos[nomeCampo]
+
+		const mapeamentoTipoAtividade = {
+			'Texto': 'text',
+			'PDF Estampado': 'pdf',
+			'Vídeo': 'video',
+			'Vídeo Externo': 'external',
+			'Arquivos': 'other',
+			'Questionário': 'questions',
+			'Scorm': 'scorm',
+			'Games': 'games'
+		}
+
+		if (!campo) {
+			throw new Error(`Campo ${nomeCampo} não encontrado`)
+		}
+
+		const { seletor, tipo, seletorValor, default: valorDefault } = campo
+
+		let valorFinal = valor !== undefined ? valor : valorDefault
+
+		switch (tipo) {
+			case 'input':
+				cy.get(seletor)
+					.should('have.value', valor)
+				break
+			case 'inputText':
+				cy.get(seletor)
+					.should('have.text', valor)
+				break
+			case 'checkbox':
+				cy.get(seletor)
+					.should(valor ? 'be.checked' : 'not.be.checked')
+				break
+			case 'radio':
+				const valorMapeado = mapeamentoTipoAtividade[valor]
+				cy.get(seletorValor)
+					.should('have.value', valorMapeado)
+				break
+			case 'radioVideo':
+				if (valorFinal) {
+					cy.get(`${seletor}[value="${nomeCampo}"]`)
+						.should('be.checked')
+				} else {
+					cy.get(`${seletor}[value="${nomeCampo}"]`)
+						.should('not.be.checked')
+				}
+				break
+			case 'select':
+				cy.get(seletor)
+					.find('option:selected')
+					.should('have.text', valorFinal)
+				break
+			case 'iframe_text':
+				cy.get(seletor, { timeout: 5000 }).then($iframe => {
+					const doc = $iframe.contents()
+
+					cy.wrap(doc).find('body.cke_editable').then($body => {
+						cy.wrap($body).should('have.text', valorFinal)
+					})
+				})
+				break
+			case 'search':
+				if (valor) {
+					cy.get(seletor)
+						.find(seletorValor)
+						.should('have.attr', 'title', `${valor} - Prova`)
+				} else {
+					cy.get(seletor)
+						.find(seletorValor)
+						.should('not.exist')
+				}
+				break
+			case 'uploadButton':
+				if (valorFinal) {
+					cy.get(seletor)
+						.should('contain', 'Substituir arquivo')
+				} else {
+					cy.get(seletor)
+						.should('contain', 'Enviar arquivo')
+				}
+				break
+			case 'fileDescription':
+				if (valorFinal === '') {
+					cy.get(seletor).should($desc => {
+						const descText = $desc.text().trim()
+						expect(descText).to.be.empty
+					})
+				} else if (valorFinal.nome && valorFinal.tamanho) {
+					cy.get(seletor).should($desc => {
+						let descText = $desc.text().trim()
+						descText = descText.replace(/\s*\n\s*/g, ' ')
+
+						const nomeEsperado = `Nome: ${valorFinal.nome}`
+						const tamanhoFormatado = `Tamanho: ${valorFinal.tamanho}`
+
+						expect(descText).to.include(nomeEsperado)
+						expect(descText).to.include(tamanhoFormatado)
+					})
+				} else {
+					cy.get(seletor).should('exist')
+				}
+				break
+			default:
+				throw new Error(`Tipo de campo ${tipo} não suportado`)
+		}
+	}
+
+	// Função para clicar no botão "Salvar" da tela de criação de atividades (Edição de Espaço)
+	salvar() {
+		cy.get('#button_send_form')
+			.click()
+	}
+
+	// Função para clicar no botão "Cancelar" da tela de criação de atividades (Edição de Espaço)
+	cancelar() {
+		cy.get('#event-cancel')
+			.click()
+	}
+
+	// Função para clicar no botão "Voltar" da tela de criação de atividades (Edição de Espaço)
+	voltar() {
+		cy.contains('.btn-back', 'Voltar')
+			.click()
+	}
+}
+export default formAtividades

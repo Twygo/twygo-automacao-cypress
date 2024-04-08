@@ -44,8 +44,8 @@ describe('Criar atividade', () => {
         peso: 1,
         liberado: false,
         tipoAtividade: 'Vídeo',
-        enviarArquivo: '',
-        descricaoArquivo: {
+        enviarVideo: '',
+        descricaoArquivoVideo: {
             nome: '',
             tamanho: ''
         },
@@ -111,8 +111,8 @@ describe('Criar atividade', () => {
         peso: 1,
         liberado: false,
         tipoAtividade: 'Scorm',
-        enviarArquivo: '',
-        descricaoArquivo: {
+        enviarScorm: '',
+        descricaoArquivoScorm: {
             nome: '',
             tamanho: ''
         },
@@ -168,6 +168,40 @@ describe('Criar atividade', () => {
 		Cypress.removeAllListeners('uncaught:exception')
 	})
 
+    /** DOCUMENTAÇÃO:
+     * @name
+     * 1. Criar uma atividade default
+     * 
+     * @description
+     * Testa a criação de uma atividade do tipo "Texto" com os dados padrões.
+     * 
+     * @steps
+     * 1. Acessa as atividades do catálogo.
+     * 2. Adiciona uma atividade.
+     * 3. Salva as alterações na estrutura de atividades.
+     * 4. Edita a atividade criada e valida seus dados.
+     * 
+     * @expected
+     * Espera-se que a atividade seja criada com sucesso e que os dados informados sejam exibidos corretamente.
+     * 
+     * @priority
+     * Alta
+     * 
+     * @type
+     * Regressão, Catálogo, Atividade
+     * 
+     * @time
+     * 1m
+     * 
+     * @tags
+     * Atividade, Catálogo, Texto
+     * 
+     * @testCase
+     * à confirmar
+     * 
+     * @author Karla Daiany
+     * @version 1.0.0
+     */
     it('1. Criar uma atividade default', () => {
         // CREATE
 		cy.log('## CREATE ##')
@@ -188,6 +222,46 @@ describe('Criar atividade', () => {
         cy.validarDadosAtividade(formAtividadeDefault)
     })
 
+    /** DOCUMENTAÇÃO:
+     * @name
+     * 2. CRUD atividade do tipo "Texto"
+     * 
+     * @description
+     * Testa o fluxo de criação, leitura, atualização e exclusão de uma atividade do tipo "Texto", mantendo o mesmo
+     * tipo de atividade para todos os testes.
+     * 
+     * @steps
+     * 1. Acessa as atividades do catálogo.
+     * 2. Adiciona uma atividade (default: texto).
+     * 3. Salva as alterações na estrutura de atividades.
+     * 4. Edita a atividade default criada e preenche com os dados do teste.
+     * 5. Salva a atualização da atividade.
+     * 6. Edita a atividade e valida os dados.
+     * 7. Atualiza os dados da atividade.
+     * 8. Edita a atividade atualizada e valida os dados.
+     * 9. Exclui a atividade.
+     * 
+     * @expected
+     * Espera-se que a atividade seja criada, editada, atualizada e excluída com sucesso.
+     * 
+     * @priority
+     * Alta
+     * 
+     * @type
+     * Regressão - CRUD - E2E
+     * 
+     * @time
+     * 1m
+     * 
+     * @tags
+     * Catálogo, CRUD, Atividade, Texto
+     * 
+     * @testCase
+     * à confirmar
+     * 
+     * @author Karla Daiany
+     * @version 1.0.0
+     */
     it('2. CRUD atividade do tipo "Texto"', () => {    
         // CREATE
         cy.log('## CREATE ##')
@@ -216,7 +290,7 @@ describe('Criar atividade', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            titulo: faker.commerce.productName(),
+            titulo: nomeAtividade,
             peso: faker.number.int({min: 1, max: 9}),
             liberado: true,
             descricaoTexto: faker.lorem.sentence(10),
@@ -235,10 +309,56 @@ describe('Criar atividade', () => {
         cy.wait(TIMEOUT_PADRAO)
         cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
 
-        const dadosAtualizados = { ...formAtividadeDefault, ...dadosUpdate }
-        cy.validarDadosAtividade(dadosAtualizados)        
+        let dadosParaValidar = { ...formAtividadeDefault, ...dadosUpdate }
+        cy.validarDadosAtividade(dadosParaValidar)     
+        
+        // DELETE
+        cy.log('## DELETE ##')
+
+        formAtividade.cancelar()
+        cy.excluirAtividade(dadosUpdate.titulo)
     })
 
+    /** DOCUMENTAÇÃO:
+     * @name
+     * 3. CRUD atividade do tipo "PDF Estampado"
+     * 
+     * @description
+     * Testa o fluxo de criação, leitura, atualização e exclusão de uma atividade do tipo "PDF Estampado", mantendo o mesmo
+     * tipo de atividade para todos os testes.
+     * 
+     * @steps
+     * 1. Acessa as atividades do catálogo.
+     * 2. Adiciona uma atividade (default: texto).
+     * 3. Salva as alterações na estrutura de atividades.
+     * 4. Edita a atividade default criada e preenche com os dados do teste.
+     * 5. Salva a atualização da atividade.
+     * 6. Edita a atividade e valida os dados.
+     * 7. Atualiza os dados da atividade.
+     * 8. Edita a atividade atualizada e valida os dados.
+     * 9. Exclui a atividade.
+     * 
+     * @expected
+     * Espera-se que a atividade seja criada, editada, atualizada e excluída com sucesso.
+     * 
+     * @priority
+     * Alta
+     * 
+     * @type
+     * Regressão - CRUD - E2E
+     * 
+     * @time
+     * 1m
+     * 
+     * @tags
+     * Catálogo, CRUD, Atividade, PDF Estampado
+     * 
+     * @testCase
+     * à confirmar
+     * 
+     * @author Karla Daiany
+     * @version 1.0.0
+     */
     it('3. CRUD atividade do tipo "PDF Estampado"', () => {
         // Massa de dados para criação de atividade
         const dados = {
@@ -274,7 +394,7 @@ describe('Criar atividade', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            titulo: faker.commerce.productName(),
+            titulo: nomeAtividade,
             peso: faker.number.int({min: 1, max: 9}),
             liberado: true,
             enviarPdf: 'teste_pdf.pdf',
@@ -298,11 +418,56 @@ describe('Criar atividade', () => {
         cy.wait(TIMEOUT_PADRAO)
         cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
 
-        const dadosAtualizados = { ...formAtividadePdf, ...dadosUpdate }
-        cy.validarDadosAtividade(dadosAtualizados)        
+        let dadosParaValidar = { ...formAtividadePdf, ...dadosUpdate }
+        cy.validarDadosAtividade(dadosParaValidar)        
         
+        // DELETE
+        cy.log('## DELETE ##')
+
+        formAtividade.cancelar()
+        cy.excluirAtividade(dadosUpdate.titulo)
     })
 
+    /** DOCUMENTAÇÃO:
+     * @name
+     * 4. CRUD atividade do tipo "Vídeo"
+     * 
+     * @description
+     * Testa o fluxo de criação, leitura, atualização e exclusão de uma atividade do tipo "Vídeo", mantendo o mesmo
+     * tipo de atividade para todos os testes.
+     * 
+     * @steps
+     * 1. Acessa as atividades do catálogo.
+     * 2. Adiciona uma atividade (default: texto).
+     * 3. Salva as alterações na estrutura de atividades.
+     * 4. Edita a atividade default criada e preenche com os dados do teste.
+     * 5. Salva a atualização da atividade.
+     * 6. Edita a atividade e valida os dados.
+     * 7. Atualiza os dados da atividade.
+     * 8. Edita a atividade atualizada e valida os dados.
+     * 9. Exclui a atividade.
+     * 
+     * @expected
+     * Espera-se que a atividade seja criada, editada, atualizada e excluída com sucesso.
+     * 
+     * @priority
+     * Alta
+     * 
+     * @type
+     * Regressão - CRUD - E2E
+     * 
+     * @time
+     * 1m
+     * 
+     * @tags
+     * Catálogo, CRUD, Atividade, Vídeo
+     * 
+     * @testCase
+     * à confirmar
+     * 
+     * @author Karla Daiany
+     * @version 1.0.0
+     */
     it('4. CRUD atividade do tipo "Vídeo"', () => {
         // Massa de dados para criação de atividade
         const dados = {
@@ -338,7 +503,7 @@ describe('Criar atividade', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            titulo: faker.commerce.productName(),
+            titulo: nomeAtividade,
             peso: faker.number.int({min: 1, max: 9}),
             liberado: true,
             enviarVideo: 'teste_video.mp4',
@@ -364,10 +529,56 @@ describe('Criar atividade', () => {
         cy.wait(TIMEOUT_PADRAO)
         cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
 
-        const dadosAtualizados = { ...formAtividadeVideo, ...dadosUpdate }
-        cy.validarDadosAtividade(dadosAtualizados)        
+        let dadosParaValidar = { ...formAtividadeVideo, ...dadosUpdate }
+        cy.validarDadosAtividade(dadosParaValidar)   
+        
+        // DELETE
+        cy.log('## DELETE ##')
+
+        formAtividade.cancelar()
+        cy.excluirAtividade(dadosUpdate.titulo)
     })
 
+    /** DOCUMENTAÇÃO:
+     * @name
+     * 5. CRUD atividade do tipo "Vídeo Externo - Youtube"
+     * 
+     * @description
+     * Testa o fluxo de criação, leitura, atualização e exclusão de uma atividade do tipo "Vídeo Externo - Youtube", mantendo o mesmo
+     * tipo de atividade para todos os testes.
+     * 
+     * @steps
+     * 1. Acessa as atividades do catálogo.
+     * 2. Adiciona uma atividade (default: texto).
+     * 3. Salva as alterações na estrutura de atividades.
+     * 4. Edita a atividade default criada e preenche com os dados do teste.
+     * 5. Salva a atualização da atividade.
+     * 6. Edita a atividade e valida os dados.
+     * 7. Atualiza os dados da atividade.
+     * 8. Edita a atividade atualizada e valida os dados.
+     * 9. Exclui a atividade.
+     * 
+     * @expected
+     * Espera-se que a atividade seja criada, editada, atualizada e excluída com sucesso.
+     * 
+     * @priority
+     * Alta
+     * 
+     * @type
+     * Regressão - CRUD - E2E
+     * 
+     * @time
+     * 1m
+     * 
+     * @tags
+     * Catálogo, CRUD, Atividade, Vídeo Externo
+     * 
+     * @testCase
+     * à confirmar
+     * 
+     * @author Karla Daiany
+     * @version 1.0.0
+     */
     it('5. CRUD atividade do tipo "Vídeo Externo - Youtube"', () => {
         // Massa de dados para criação de atividade
         const dados = {
@@ -403,7 +614,7 @@ describe('Criar atividade', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            titulo: faker.commerce.productName(),
+            titulo: nomeAtividade,
             peso: faker.number.int({min: 1, max: 9}),
             liberado: true,
             youtube: true,
@@ -429,10 +640,56 @@ describe('Criar atividade', () => {
         cy.wait(TIMEOUT_PADRAO)
         cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
 
-        const dadosAtualizados = { ...formAtividadeVideoExterno, ...dadosUpdate }
-        cy.validarDadosAtividade(dadosAtualizados)        
+        let dadosParaValidar = { ...formAtividadeVideoExterno, ...dadosUpdate }
+        cy.validarDadosAtividade(dadosParaValidar)   
+
+        // DELETE
+        cy.log('## DELETE ##')
+
+        formAtividade.cancelar()
+        cy.excluirAtividade(dadosUpdate.titulo)  
     })
 
+    /** DOCUMENTAÇÃO:
+     * @name
+     * 6. CRUD atividade do tipo "Arquivos"
+     * 
+     * @description
+     * Testa o fluxo de criação, leitura, atualização e exclusão de uma atividade do tipo "Arquivos", mantendo o mesmo
+     * tipo de atividade para todos os testes.
+     * 
+     * @steps
+     * 1. Acessa as atividades do catálogo.
+     * 2. Adiciona uma atividade (default: texto).
+     * 3. Salva as alterações na estrutura de atividades.
+     * 4. Edita a atividade default criada e preenche com os dados do teste.
+     * 5. Salva a atualização da atividade.
+     * 6. Edita a atividade e valida os dados.
+     * 7. Atualiza os dados da atividade.
+     * 8. Edita a atividade atualizada e valida os dados.
+     * 9. Exclui a atividade.
+     * 
+     * @expected
+     * Espera-se que a atividade seja criada, editada, atualizada e excluída com sucesso.
+     * 
+     * @priority
+     * Alta
+     * 
+     * @type
+     * Regressão - CRUD - E2E
+     * 
+     * @time
+     * 1m
+     * 
+     * @tags
+     * Catálogo, CRUD, Atividade, Arquivos
+     * 
+     * @testCase
+     * à confirmar
+     * 
+     * @author Karla Daiany
+     * @version 1.0.0
+     */
     it('6. CRUD atividade do tipo "Arquivos"', () => {
         // Massa de dados para criação de atividade
         const dados = {
@@ -468,7 +725,7 @@ describe('Criar atividade', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            titulo: faker.commerce.productName(),
+            titulo: nomeAtividade,
             peso: faker.number.int({min: 1, max: 9}),
             liberado: true,
             enviarArquivo: 'Sophia_estudiosa.png',
@@ -492,10 +749,55 @@ describe('Criar atividade', () => {
         cy.wait(TIMEOUT_PADRAO)
         cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
 
-        const dadosAtualizados = { ...formAtividadeArquivos, ...dadosUpdate }
-        cy.validarDadosAtividade(dadosAtualizados)
+        let dadosParaValidar = { ...formAtividadeArquivos, ...dadosUpdate }
+        cy.validarDadosAtividade(dadosParaValidar)
+        // DELETE
+        cy.log('## DELETE ##')
+
+        formAtividade.cancelar()
+        cy.excluirAtividade(dadosUpdate.titulo)
     })
 
+    /** DOCUMENTAÇÃO:
+     * @name
+     * 7. CRUD atividade do tipo "Questionário"
+     * 
+     * @description
+     * Testa o fluxo de criação, leitura, atualização e exclusão de uma atividade do tipo "Questionário", mantendo o mesmo
+     * tipo de atividade para todos os testes.
+     * 
+     * @steps
+     * 1. Acessa as atividades do catálogo.
+     * 2. Adiciona uma atividade (default: texto).
+     * 3. Salva as alterações na estrutura de atividades.
+     * 4. Edita a atividade default criada e preenche com os dados do teste.
+     * 5. Salva a atualização da atividade.
+     * 6. Edita a atividade e valida os dados.
+     * 7. Atualiza os dados da atividade.
+     * 8. Edita a atividade atualizada e valida os dados.
+     * 9. Exclui a atividade.
+     * 
+     * @expected
+     * Espera-se que a atividade seja criada, editada, atualizada e excluída com sucesso.
+     * 
+     * @priority
+     * Alta
+     * 
+     * @type
+     * Regressão - CRUD - E2E
+     * 
+     * @time
+     * 1m
+     * 
+     * @tags
+     * Catálogo, CRUD, Atividade, Questionário
+     * 
+     * @testCase
+     * à confirmar
+     * 
+     * @author Karla Daiany
+     * @version 1.0.0
+     */
     it('7. CRUD atividade do tipo "Questionário"', () => {
         // Massa de dados para criação de atividade
         const dados = {
@@ -526,13 +828,15 @@ describe('Criar atividade', () => {
         // Espera explícita devido ao tempo de atualização da página após salvar
         cy.wait(TIMEOUT_PADRAO)
         cy.editarAtividade(nomeConteudo, atividadeDefault)
-        cy.validarDadosAtividade(formAtividadeQuestionario)
+
+        let dadosParaValidar = { ...formAtividadeQuestionario, ...dados }
+        cy.validarDadosAtividade(dadosParaValidar)
         
         // UPDATE
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            titulo: faker.commerce.productName(),
+            titulo: nomeAtividade,
             peso: faker.number.int({min: 1, max: 9}),
             liberado: true,
             exibicaoPerguntas: 'Exibir perguntas diferentes a cada tentativa',
@@ -558,10 +862,56 @@ describe('Criar atividade', () => {
         cy.wait(TIMEOUT_PADRAO)
         cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
 
-        const dadosAtualizados = { ...formAtividadeQuestionario, ...dadosUpdate }
-        cy.validarDadosAtividade(dadosAtualizados)
+        dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
+        cy.validarDadosAtividade(dadosParaValidar)
+
+        // DELETE
+        cy.log('## DELETE ##')
+
+        formAtividade.cancelar()
+        cy.excluirAtividade(dadosUpdate.titulo)
     })
 
+    /** DOCUMENTAÇÃO:
+     * @name
+     * 8. CRUD atividade do tipo "Scorm"
+     * 
+     * @description
+     * Testa o fluxo de criação, leitura, atualização e exclusão de uma atividade do tipo "Scorm", mantendo o mesmo
+     * tipo de atividade para todos os testes.
+     * 
+     * @steps
+     * 1. Acessa as atividades do catálogo.
+     * 2. Adiciona uma atividade (default: texto).
+     * 3. Salva as alterações na estrutura de atividades.
+     * 4. Edita a atividade default criada e preenche com os dados do teste.
+     * 5. Salva a atualização da atividade.
+     * 6. Edita a atividade e valida os dados.
+     * 7. Atualiza os dados da atividade.
+     * 8. Edita a atividade atualizada e valida os dados.
+     * 9. Exclui a atividade.
+     * 
+     * @expected
+     * Espera-se que a atividade seja criada, editada, atualizada e excluída com sucesso.
+     * 
+     * @priority
+     * Alta
+     * 
+     * @type
+     * Regressão - CRUD - E2E
+     * 
+     * @time
+     * 2m
+     * 
+     * @tags
+     * Catálogo, CRUD, Atividade, Scorm
+     * 
+     * @testCase
+     * à confirmar
+     * 
+     * @author Karla Daiany
+     * @version 1.0.0
+     */
     it('8. CRUD atividade do tipo "Scorm"', () => {
         // Massa de dados para criação de atividade
         const dados = {
@@ -597,13 +947,15 @@ describe('Criar atividade', () => {
         cy.wait(TIMEOUT_PADRAO)
         cy.editarAtividade(nomeConteudo, atividadeDefault)
         cy.verificarProcessamentoScorm(nomeConteudo, atividadeDefault, tipoConteudo)
-        cy.validarDadosAtividade(formAtividadeScorm)   
+
+        let dadosParaValidar = { ...formAtividadeScorm, ...dados }
+        cy.validarDadosAtividade(dadosParaValidar)   
         
         // UPDATE
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            titulo: faker.commerce.productName(),
+            titulo: nomeAtividade,
             peso: faker.number.int({min: 1, max: 9}),
             liberado: true,
             enviarScorm: 'teste_scorm2.zip',
@@ -626,11 +978,56 @@ describe('Criar atividade', () => {
         cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
         cy.verificarProcessamentoScorm(nomeConteudo, dadosUpdate.titulo, tipoConteudo)
 
-        const dadosAtualizados = { ...formAtividadeScorm, ...dadosUpdate }
-        cy.validarDadosAtividade(dadosAtualizados)        
+        dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
+        cy.validarDadosAtividade(dadosParaValidar)        
      
+        // DELETE
+        cy.log('## DELETE ##')
+
+        formAtividade.cancelar()
+        cy.excluirAtividade(dadosUpdate.titulo)
     })
 
+    /** DOCUMENTAÇÃO:
+     * @name
+     * 9. Criar uma atividade default do tipo "Games"
+     * 
+     * @description
+     * Testa o fluxo de criação, leitura, atualização e exclusão de uma atividade do tipo "Games", mantendo o mesmo
+     * tipo de atividade para todos os testes.
+     * 
+     * @steps
+     * 1. Acessa as atividades do catálogo.
+     * 2. Adiciona uma atividade (default: texto).
+     * 3. Salva as alterações na estrutura de atividades.
+     * 4. Edita a atividade default criada e preenche com os dados do teste.
+     * 5. Salva a atualização da atividade.
+     * 6. Edita a atividade e valida os dados.
+     * 7. Atualiza os dados da atividade.
+     * 8. Edita a atividade atualizada e valida os dados.
+     * 9. Exclui a atividade.
+     * 
+     * @expected
+     * Espera-se que a atividade seja criada, editada, atualizada e excluída com sucesso.
+     * 
+     * @priority
+     * Alta
+     * 
+     * @type
+     * Regressão - CRUD - E2E
+     * 
+     * @time
+     * 1m
+     * 
+     * @tags
+     * Catálogo, CRUD, Atividade, Games
+     * 
+     * @testCase
+     * à confirmar
+     * 
+     * @author Karla Daiany
+     * @version 1.0.0
+     */
     it('9. Criar uma atividade default do tipo "Games"', () => {
         // Massa de dados para criação de atividade
         const dados = {
@@ -666,7 +1063,7 @@ describe('Criar atividade', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            titulo: faker.commerce.productName(),
+            titulo: nomeAtividade,
             peso: faker.number.int({min: 1, max: 9}),
             liberado: true,
             codigoCompartilhamento: '<iframe src= "https://kahoot.it/challenge/0857294?challenge-id=502fec44-a2dc-4312-807a-65e1d9bc4a4d_1695673333050" width=620 height=280></iframe>',
@@ -685,8 +1082,13 @@ describe('Criar atividade', () => {
         cy.wait(TIMEOUT_PADRAO)
         cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
 
-        const dadosAtualizados = { ...formAtividadeGames, ...dadosUpdate }
-        cy.validarDadosAtividade(dadosAtualizados)        
+        let dadosParaValidar = { ...formAtividadeGames, ...dadosUpdate }
+        cy.validarDadosAtividade(dadosParaValidar)        
         
+        // DELETE
+        cy.log('## DELETE ##')
+
+        formAtividade.cancelar()
+        cy.excluirAtividade(dadosUpdate.titulo)
     })
 })
