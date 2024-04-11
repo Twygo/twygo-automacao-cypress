@@ -755,12 +755,16 @@ describe('Criar atividade', () => {
         // Massa de dados para criação de atividade
         const dados = {
             tipoAtividade: 'Questionário',
-            selecionarQuestionario: 'teste'
+            selecionarQuestionario: faker.lorem.sentence(3)
         }
+
+        // Criar questionário
+        cy.criarQuestionarioDefault(dados.selecionarQuestionario)
 
         // CREATE
         cy.log('## CREATE ##')
 
+        cy.acessarPgBiblioteca()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         atividades.adicionarAtividade()
         cy.salvarAtividades()

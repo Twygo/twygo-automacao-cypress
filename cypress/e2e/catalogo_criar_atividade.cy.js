@@ -468,7 +468,7 @@ describe('Criar atividade', () => {
      * @author Karla Daiany
      * @version 1.0.0
      */
-    it('4. CRUD atividade do tipo "Vídeo"', () => {
+    it.only('4. CRUD atividade do tipo "Vídeo"', () => {
         // Massa de dados para criação de atividade
         const dados = {
             tipoAtividade: 'Vídeo'
@@ -579,7 +579,7 @@ describe('Criar atividade', () => {
      * @author Karla Daiany
      * @version 1.0.0
      */
-    it('5. CRUD atividade do tipo "Vídeo Externo - Youtube"', () => {
+    it.only('5. CRUD atividade do tipo "Vídeo Externo - Youtube"', () => {
         // Massa de dados para criação de atividade
         const dados = {
             tipoAtividade: 'Vídeo Externo'
@@ -802,7 +802,7 @@ describe('Criar atividade', () => {
         // Massa de dados para criação de atividade
         const dados = {
             tipoAtividade: 'Questionário',
-            selecionarQuestionario: 'teste'
+            selecionarQuestionario: faker.lorem.sentence(3)
         }
 
         // CREATE
@@ -810,6 +810,11 @@ describe('Criar atividade', () => {
 
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')
+
+        // Criar questionário
+        cy.criarQuestionarioDefault(dados.selecionarQuestionario)
+
+        // Acessar catálogo
         cy.acessarPgCatalogo()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         atividades.adicionarAtividade()

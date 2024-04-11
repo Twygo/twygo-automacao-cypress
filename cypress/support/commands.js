@@ -2,6 +2,8 @@ import formConteudos from "./pageObjects/formConteudos"
 import estruturaAtividades from "./pageObjects/estruturaAtividades"
 import formAtividades from "./pageObjects/formAtividades"
 import formBiblioteca from "./pageObjects/formBiblioteca"
+import formQuestionarios from "./pageObjects/formQuestionarios"
+import formPerguntas from "./pageObjects/formPerguntas"
 
 /** DOCUMENTAÇÃO:
  * @name loginTwygoAutomacao
@@ -233,6 +235,29 @@ Cypress.Commands.add('acessarPgLogin', function() {
 
   cy.title()
     .should('eq', 'Login - Automação')
+})
+
+/** DOCUMENTAÇÃO:
+ * @name acessarPgQuestionarios
+ * 
+ * @description
+ * Comando personalizado para acessar a página de questionários.
+ * 
+ * @actions
+ * 1. Acessa a página de questionários.
+ * 
+ * @example
+ * cy.acessarPgQuestionarios()
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('acessarPgQuestionarios', function() {
+  cy.visit(`/o/${Cypress.env('orgId')}/question_lists`)
+
+  const labels = Cypress.env('labels')
+  const { breadcrumb } = labels.questionario
 })
 
 /** DOCUMENTAÇÃO:
@@ -1104,6 +1129,7 @@ Cypress.Commands.add('validarDadosAtividade', (dados) => {
     formulario.validarCampo(nomeCampo, valor)
   })
 })
+
 /** DOCUMENTAÇÃO:
  * @name verificarProcessamentoScorm
  * 
@@ -1444,4 +1470,425 @@ Cypress.Commands.add('criarTrilhaDefault', (nomeConteudo) => {
   cy.addConteudo(tipoConteudo)
   cy.preencherDadosConteudo(dados, { limpar: true } )
   cy.salvarConteudo(dados.nome, tipoConteudo)
+})
+
+/** DOCUMENTAÇÃO:
+ * @name preencherDadosQuestionario
+ * 
+ * @description
+ * Comando personalizado para preencher os campos de um questionário.
+ * 
+ * @actions
+ * 1. Preenche os campos do questionário com base nos dados fornecidos.
+ * 2. Limpa os campos antes de preencher, se a opção 'limpar' for verdadeira.
+ * 
+ * @param {Object} dados - Os dados a serem preenchidos nos campos do questionário.
+ * @param {Object} opcoes - Habilita ou não a limpeza dos campos antes do seu preenchimento.
+ * 
+ * @example
+ * cy.preencherDadosQuestionario({ nome: 'Nome do Questionário', descricao: 'Descrição do Questionário' }, { limpar: true })
+ * ou
+ * cy.preencherDadosQuestionario(dados, { limpar: false })
+ * 
+ * @throws {Error} - Se o campo informado não for válido. // Existente no método 'preencherCampo' da classe 'formQuestionarios'
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('preencherDadosQuestionario', (dados, opcoes = { limpar: false }) => {
+  const formulario = new formQuestionarios()
+  
+  Object.keys(dados).forEach(nomeCampo => {
+      const valor = dados[nomeCampo]
+      formulario.preencherCampo(nomeCampo, valor, opcoes)
+  })
+})
+
+/** DOCUMENTAÇÃO:
+ * @name validarDadosQuestionario
+ * 
+ * @description
+ * Comando personalizado para validar os dados de um questionário.
+ * 
+ * @actions
+ * 1. Valida os campos do questionário com base nos dados fornecidos.
+ * 
+ * @param {Object} dados - Os dados a serem validados nos campos do questionário.
+ * 
+ * @example
+ * cy.validarDadosQuestionario({ nome: 'Nome do Questionário', descricao: 'Descrição do Questionário' })
+ * ou
+ * cy.validarDadosQuestionario(dados)
+ * 
+ * @throws {Error} - Se o campo informado não for válido. // Existente no método 'validarCampo' da classe 'formQuestionarios'
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('validarDadosQuestionario', (dados) => {
+  const formulario = new formQuestionarios()
+
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+    formulario.validarCampo(nomeCampo, valor)
+  })
+})
+
+/** DOCUMENTAÇÃO:
+ * @name listaQuestionarios
+ * 
+ * @description
+ * Comando personalizado para listar os questionários.
+ * 
+ * @actions
+ * 1. Verifica se existem questionários.
+ * 2. Lista os questionários encontrados.
+ * 
+ * @param {Array} listaQuestionarios - A lista de questionários encontrados.
+ * 
+ * @example
+ * cy.listaQuestionarios(listaQuestionarios)
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */ 
+Cypress.Commands.add('listaQuestionarios', (listaQuestionarios) => {
+  const seletor = '.question-list-row'
+
+  cy.get('body').then(($body) => {
+    if ($body.find('tbody').length > 0) {
+      if ($body.find(seletor).length > 0) {
+        cy.get(seletor)
+          .each(($el) => {
+            let nomeQuestionario = ''
+            nomeQuestionario = $el.closest('tr').attr('name')
+            listaQuestionarios.push(nomeQuestionario)
+          })
+          .then(() => {
+            cy.log(listaQuestionarios.join(', '))
+          })
+      } else {
+        cy.log('Nenhum questionário encontrado.')
+      }
+    } else {
+      cy.log('O elemento <tbody> não foi encontrado.')
+    }
+  })
+})
+
+/** DOCUMENTAÇÃO:
+ * @name excluirQuestionarios
+ * 
+ * @description
+ * Comando personalizado para excluir questionários específicos ou uma lista de questionários.
+ * 
+ * @actions
+ * 1. Clica no botão de exclusão do questionário específico ou de cada questionário da lista.
+ * 2. Confirma a exclusão do questionário.
+ * 3. Valida a mensagem de sucesso após a exclusão.
+ * 4. Verifica se o questionário foi excluído.
+ * 
+ * @param {String} nomeQuestionario - O nome do questionário a ser excluído.
+ * @param {Array} listaQuestionario - A lista de questionários a serem excluídos.
+ * 
+ * @example
+ * cy.excluirQuestionarios('Nome do Questionário', listaQuestionario)
+ * ou
+ * cy.excluirQuestionarios(nomeQuestionario, [])
+ * ou
+ * cy.excluirQuestionarios('', listaQuestionario)
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('excluirQuestionarios', (nomeQuestionario, listaQuestionario) => {
+  // Define o timeout para validação das páginas
+  const TIMEOUT_PADRAO = 8000
+  
+  // Acessa o arquivo de labels
+  const labels = Cypress.env('labels')
+
+  // Inicializa formulário de questionários
+  const formulario = new formQuestionarios()
+
+  // Função para excluir um questionário específico
+  const excluirQuestionarioEspecifico = (nomeQuestionario) => {
+    const { tituloModalExclusao, textoModalExclusao, msgSucessoExclusao } = labels.questionario
+
+    const seletor = `tr[name='${nomeQuestionario}']`
+
+    // Clica em 'Excluir'
+    cy.get(seletor, { timeout: TIMEOUT_PADRAO })
+      .wait(2000)
+      .find(formulario.elementos.btnExcluir.seletor, formulario.elementos.btnExcluir.title)
+      .click({ force: true })
+
+    // Valida o título do modal de exclusão
+    cy.get('.panel-header h3')
+      .invoke('text')
+      .then((text) => {
+        expect(text.trim()).to.equal(tituloModalExclusao)
+      })
+
+    // Valida o texto do modal de exclusão
+    cy.get('.panel-header strong')
+      .invoke('text')
+      .then((text) => {
+        expect(text.trim()).to.equal(textoModalExclusao)
+      })    
+      
+    // Confirma a exclusão
+    cy.contains(formulario.elementos.btnConfirmarExclusao.seletor, 'Confirmar')
+      .click({ force: true })
+
+    // Valida a mensagem de sucesso da exclusão
+    cy.contains('.flash.notice', msgSucessoExclusao, { timeout: TIMEOUT_PADRAO })
+      .should('be.visible')
+
+    // Verifica se o questionário foi excluído e não é exibido na listagem
+    cy.get(seletor, { timeout: TIMEOUT_PADRAO })
+      .should('not.exist')
+  }
+
+  // Verifica se foi fornecido um nome de conteúdo específico
+  if (nomeQuestionario) {
+    excluirQuestionarioEspecifico(nomeQuestionario)
+  } else if (listaQuestionario.length !== 0) {
+    // Itera sobre a lista de conteúdos e exclui cada um deles
+    listaQuestionario.forEach((questionario) => {
+      excluirQuestionarioEspecifico(questionario)
+    })
+  } else {
+    cy.log('Nenhum conteúdo foi fornecido para exclusão.')
+  }
+})
+
+/** DOCUMENTAÇÃO:
+ * @name salvarQuestionario
+ * 
+ * @description
+ * Comando personalizado para salvar um questionário e validar a mensagem de sucesso.
+ * 
+ * @actions
+ * 1. Salva o questionário.
+ * 2. Valida a exibição da mensagem de sucesso após o salvamento.
+ * 3. Verifica se o questionário foi salvo.
+ * 
+ * @param {String} nomeQuestionario - O nome do questionário a ser salvo.
+ * 
+ * @example
+ * cy.salvarQuestionario('Nome do Questionário')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('salvarQuestionario', (nomeQuestionario) => {
+  const TIMEOUT_PADRAO = 5000
+  const formulario = new formQuestionarios()
+  const labels = Cypress.env('labels')
+  const { msgSucesso } = labels.questionario
+
+  // Salva o questionário
+  formulario.salvarQuestionario()
+
+  // Confirma a mensagem de sucesso
+  cy.contains('.flash.notice', msgSucesso)
+    .should('be.visible')
+
+  // Verifica se o questionário foi salvo
+  cy.get(`tr[name='${nomeQuestionario}']`, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+})
+
+/** DOCUMENTAÇÃO:
+ * @name editarQuestionario
+ * 
+ * @description
+ * Comando personalizado para editar um questionário específico e validar o redirecionamento correto da página.
+ * 
+ * @actions
+ * 1. Edita o questionário específico.
+ * 2. Valida a exibição da página de edição do questionário.
+ * 
+ * @param {String} nomeQuestionario - O nome do questionário a ser editado.
+ * 
+ * @example
+ * cy.editarQuestionario('Nome do Questionário')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('editarQuestionario', (nomeQuestionario) => {
+  const TIMEOUT_PADRAO = 5000
+  const formulario = new formQuestionarios()
+  const labels = Cypress.env('labels')
+  const { breadcrumb, tituloPgEdicao } = labels.questionario
+
+  // Edita o questionário
+  cy.get(`tr[name='${nomeQuestionario}']`, { timeout: TIMEOUT_PADRAO })
+    .find(formulario.elementos.btnEditar.seletor, formulario.elementos.btnEditar.title)
+    .click()
+
+  // Validar se a página foi carregada corretamente
+  cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+
+  cy.contains('.detail_title', tituloPgEdicao)
+    .should('be.visible')
+})
+
+/** DOCUMENTAÇÃO:
+ * @name criarQuestionarioDefault
+ * 
+ * @description
+ * Comando personalizado para criar um questionário com dados padrão.
+ * 
+ * @actions
+ * 1. Acessa a página de questionários.
+ * 2. Adiciona um questionário.
+ * 3. Preenche com o nome (conforme o parâmetro fornecido) e salva o questionário.
+ * 
+ * @param {String} nomeQuestionario - O nome do questionário a ser criado.
+ * 
+ * @example
+ * cy.criarQuestionarioDefault('Nome do Questionário')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+ * 
+Cypress.Commands.add('criarQuestionarioDefault', (nomeQuestionario) => {
+  const formulario = new formQuestionarios()
+  
+  const dados = {
+    nome: nomeQuestionario
+  }
+
+  cy.acessarPgQuestionarios()
+  formulario.addQuestionario()
+  cy.preencherDadosQuestionario(dados)
+  cy.salvarQuestionario(dados.nome)
+})
+
+Cypress.Commands.add('acessarPerguntasQuestionario', (nomeQuestionario) => {
+  const TIMEOUT_PADRAO = 5000
+  const form = new formQuestionarios()
+  const labels = Cypress.env('labels')
+  const { breadcrumb, tituloPg } = labels.perguntas
+
+  // Acessa as perguntas do questionário
+  cy.get(`tr[name='${nomeQuestionario}']`, { timeout: TIMEOUT_PADRAO })
+    .find(form.elementos.btnPerguntas.seletor)
+    .click()
+
+  // Valida se a página foi carregada corretamente
+  cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+
+  cy.contains('#breadcrumb', `> ${nomeQuestionario}`, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+
+  cy.contains('.detail_title', tituloPg)
+    .should('be.visible')
+})
+
+Cypress.Commands.add('preencherDadosPergunta', (conteudo, opcoes = { limpar: false }) => {
+  const formulario = new formPerguntas()
+  
+  Object.keys(conteudo).forEach(nomeCampo => {
+      const valor = conteudo[nomeCampo]
+      formulario.preencherCampo(nomeCampo, valor, opcoes)
+  })
+}) 
+
+Cypress.Commands.add('validarDadosPergunta', (conteudo) => {
+  const formulario = new formPerguntas()
+
+  Object.keys(conteudo).forEach(nomeCampo => {
+    const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
+    formulario.validarCampo(nomeCampo, valor)
+  })
+})
+
+Cypress.Commands.add('salvarPergunta', (descPergunta, index) => {
+  const TIMEOUT_PADRAO = 5000
+  const formulario = new formPerguntas()
+  const labels = Cypress.env('labels')
+  const { msgSucesso } = labels.perguntas
+
+  // Salva a pergunta
+  cy.get(`tr[id='question-new-${index}']`, { timeout: TIMEOUT_PADRAO })
+    .parent('tbody')
+    .within(() => {
+      formulario.salvar()
+    })  
+
+  // Confirma a mensagem de sucesso
+  cy.contains('.flash.notice', msgSucesso)
+    .should('be.visible')
+
+  // Verifica se a pergunta foi salva
+  cy.get(`tr[title*='${descPergunta.slice(0, 1000)}']`, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+})
+
+Cypress.Commands.add('excluirPergunta', (descPergunta) => {
+  const TIMEOUT_PADRAO = 5000
+  const formulario = new formPerguntas()
+
+  cy.get(`tr[title*='${descPergunta.slice(0, 30)}']`, { timeout: TIMEOUT_PADRAO })
+    .parent('tbody')
+    .within(() => {
+      formulario.remover()
+    
+      // Lida com a mensagem de confirmação do navegador
+      cy.on('window:confirm', (message) => {
+        expect(message).to.equal('Você tem certeza que deseja remover esta pergunta?')
+        return true
+    })
+  })
+
+  // Verifica se a pergunta foi excluída e não é exibida na listagem
+  cy.get(`tr[title*='${descPergunta.slice(0, 30)}']`, { timeout: TIMEOUT_PADRAO })
+    .should('not.exist')
+})
+
+Cypress.Commands.add('expandirPergunta', (descPergunta) => {
+  const TIMEOUT_PADRAO = 5000
+  const formulario = new formPerguntas()
+
+  cy.get(`tr[title*='${descPergunta.slice(0, 30)}']`, { timeout: TIMEOUT_PADRAO })
+    .parent('tbody')
+    .within(() => {
+      formulario.expandirPergunta()
+    })  
+})
+
+Cypress.Commands.add('salvarEdicaoPergunta', (oldDescPergunta, newDescPergunta) => {
+  const TIMEOUT_PADRAO = 5000
+  const formulario = new formPerguntas()
+  const labels = Cypress.env('labels')
+  const { msgSucesso } = labels.perguntas
+
+  // Salva a pergunta
+  cy.get(`tr[title*='${oldDescPergunta.slice(0, 30)}']`, { timeout: TIMEOUT_PADRAO })
+    .parent('tbody')
+    .within(() => {
+      formulario.salvar()
+    })  
+
+  // Confirma a mensagem de sucesso
+  cy.contains('.flash.notice', msgSucesso)
+    .should('be.visible')
+
+  // Verifica se a pergunta foi salva
+  cy.get(`tr[title*='${newDescPergunta.slice(0, 1000)}']`, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
 })

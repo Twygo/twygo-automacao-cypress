@@ -74,5 +74,19 @@
         "tituloPg": "Estrutura de atividades",
         "msgSucesso": "Atividades atualizadas com sucesso",
         "tituloPgEdicao": "Edição de Espaço"
+    },
+    "questionario": {
+        "breadcrumb": "Questionários",
+        "tituloPg": "Novo Questionário",
+        "msgSucesso": "Questionário salvo com sucesso.",
+        "tituloPgEdicao": "Edição de Questionário",
+        "tituloModalExclusao": "Remover Questionário",
+        "textoModalExclusao": "Você tem certeza que deseja remover este questionário?",
+        "msgSucessoExclusao": "Questionário excluído com sucesso."
+    },
+    "perguntas": {
+        "breadcrumb": "Questionários",
+        "msgSucesso": "Questão atualizada com sucesso",
+        "tituloPg": "Perguntas"
     }
 }

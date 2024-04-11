@@ -735,6 +735,9 @@ describe('Criar atividade', () => {
 
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')
+
+        // Criar atividade
+        cy.acessarPgListaConteudos()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         atividades.adicionarAtividade()
         cy.salvarAtividades()
@@ -763,7 +766,7 @@ describe('Criar atividade', () => {
             peso: faker.number.int({min: 1, max: 9}),
             liberado: false,
             tipoAtividade: 'Questionário',
-            selecionarQuestionario: 'teste',
+            selecionarQuestionario: faker.lorem.sentence(3),
             exibicaoPerguntas: 'Exibir perguntas aleatoriamente',
             visualizacaoRespostas: 'Exibir Respondidas e Respostas Corretas',
             pontuacaoMinima: '88',
@@ -776,6 +779,9 @@ describe('Criar atividade', () => {
             tempoMinPermanencia: true,
             tempoMinPermanenciaValor: '02:00'
         }
+
+        // Criar questionário
+        cy.criarQuestionarioDefault(dadosUpdate.selecionarQuestionario)
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
         formAtividade.salvar()
@@ -1077,7 +1083,7 @@ describe('Criar atividade', () => {
             peso: faker.number.int({min: 1, max: 9}),
             liberado: true,
             tipoAtividade: 'Questionário',
-            selecionarQuestionario: 'teste',
+            selecionarQuestionario: faker.lorem.sentence(3),
             exibicaoPerguntas: 'Exibir perguntas conforme ordem pré-definida',
             visualizacaoRespostas: 'Exibir Respondidas',
             pontuacaoMinima: '50',
@@ -1090,6 +1096,9 @@ describe('Criar atividade', () => {
             tempoMinPermanencia: true,
             tempoMinPermanenciaValor: '01:00'
         }
+
+        // Criar questionário
+        cy.criarQuestionarioDefault(dados.selecionarQuestionario)
 
         // CREATE
         cy.log('## CREATE ##')
