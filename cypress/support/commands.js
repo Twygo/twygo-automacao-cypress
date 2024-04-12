@@ -4,6 +4,7 @@ import formAtividades from "./pageObjects/formAtividades"
 import formBiblioteca from "./pageObjects/formBiblioteca"
 import formQuestionarios from "./pageObjects/formQuestionarios"
 import formPerguntas from "./pageObjects/formPerguntas"
+import formUsuarios from "./pageObjects/formUsuarios"
 
 /** DOCUMENTAÇÃO:
  * @name loginTwygoAutomacao
@@ -1892,3 +1893,209 @@ Cypress.Commands.add('salvarEdicaoPergunta', (oldDescPergunta, newDescPergunta) 
   cy.get(`tr[title*='${newDescPergunta.slice(0, 1000)}']`, { timeout: TIMEOUT_PADRAO })
     .should('be.visible')
 })
+
+Cypress.Commands.add('preencherDadosUsuario', (conteudo, opcoes = { limpar: false }) => {
+  const formulario = new formUsuarios()
+  
+  Object.keys(conteudo).forEach(nomeCampo => {
+      const valor = conteudo[nomeCampo]
+      formulario.preencherCampo(nomeCampo, valor, opcoes)
+  })
+}) 
+
+Cypress.Commands.add('validarDadosUsuario', (conteudo) => {
+  const formulario = new formUsuarios()
+
+  Object.keys(conteudo).forEach(nomeCampo => {
+    const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
+    formulario.validarCampo(nomeCampo, valor)
+  })
+})
+
+Cypress.Commands.add('salvarUsuario', (nomeUsuario) => {
+  const TIMEOUT_PADRAO = 5000
+  const formulario = new formUsuarios()
+  const labels = Cypress.env('labels')
+  const { msgSucesso } = labels.usuarios
+
+  // Salva o usuário
+  formulario.salvar()
+
+  // Confirma a mensagem de sucesso
+  cy.contains('.flash.success', msgSucesso, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+
+  // Verifica se o usuário foi criado com sucesso
+  cy.get('.student-name')
+    .should('have.text', nomeUsuario)
+})
+
+Cypress.Commands.add('excluirUsuario', (nomeUsuario) => {
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { tituloModalExclusao, texto1ModalExclusao, texto2ModalExclusao, btnConfirmar, msgSucessoExclusao } = labels.usuarios
+
+  cy.contains('tr.professional-row', nomeUsuario)
+    .within(() => {
+      cy.get('a.professional-delete')
+        .click()
+    })
+
+  // Valida o título do modal de exclusão
+  cy.get('.panel-header h3')
+    .invoke('text')
+    .then((text) => {
+      expect(text.trim()).to.equal(tituloModalExclusao)
+    })
+
+  // Valida o texto do modal de exclusão
+  cy.get('.panel-header strong')
+    .invoke('text')
+    .then((text) => {
+      expect(text.trim()).to.equal('Usuário')
+    })
+
+  cy.get('.panel-header.name')
+    .invoke('text')
+    .then((text) => {
+      expect(text.trim()).to.equal(nomeUsuario)
+    })
+
+  cy.get('.are_you_sure_destroy')
+    .invoke('text')
+    .then((text) => {
+      expect(text.trim()).to.equal(texto1ModalExclusao)
+    })
+
+  cy.get('.row.inactivate-option.hidden p')
+    .invoke('text')
+    .then((text) => {
+      expect(text.trim()).to.equal(texto2ModalExclusao)
+    })
+
+  // Confirma a exclusão do usuário
+  cy.get('.remove-professional')
+    .contains(btnConfirmar)
+    .click()
+
+  // Valida a mensagem de sucesso após a exclusão
+  cy.contains('.flash.success', msgSucessoExclusao, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+
+  // Verifica se o usuário foi excluído e não é exibido na listagem
+  cy.contains('tr.professional-row', nomeUsuario, {timeout: 0})
+    .should('not.exist')
+})
+
+Cypress.Commands.add('editarUsuario', (nomeUsuario) => {
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { breadcrumb, tituloPgEdicao } = labels.usuarios
+
+  // Edita o usuário
+  cy.contains('tr.professional-row', nomeUsuario)
+    .within(() => {
+      cy.get('a.professional-edit')
+        .click()
+    })
+
+  // Valida se a página foi carregada corretamente
+  cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+
+  cy.contains('.detail_title', tituloPgEdicao)
+    .should('be.visible')
+})
+
+// Cypress.Commands.add('excluirUsuarioViaApi', function() {
+//   cy.request({
+//     method: 'GET',
+//     url: `/api/v1/o/${Cypress.env('orgId')}/students`,
+//     headers: {
+//       'Content-Type': 'application/x-www-form-urlencoded',
+//       'Authorization': `Bearer ${Cypress.env('token')}`
+//     },
+//   }).then((response) => {
+//     if (response.status !== 200) {
+//       throw new Error(`Erro ao obter a listagem de usuários: ${response}`)
+//     }
+
+//     const students = response.body.students
+//     students.forEach((student) => {
+//       cy.request({
+//         method: 'DELETE',
+//         url: `/api/v1/o/${Cypress.env('orgId')}/students/${student.id}`,
+//         headers: {
+//           'Content-Type': 'application/x-www-form-urlencoded',
+//           'Authorization': `Bearer ${Cypress.env('token')}`
+//         },
+//       }).then((deleteResponse) => {
+//         if (deleteResponse.status !== 200) {
+//           throw new Error(`Erro ao excluir o usuário: ${deleteResponse}`)
+//         }
+//       })
+//     })
+//   })
+// })
+
+Cypress.Commands.add('excluirUsuarioViaApi', function() {
+  cy.request({
+    method: 'GET',
+    url: `/api/v1/o/${Cypress.env('orgId')}/students`,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': `Bearer ${Cypress.env('token')}`
+    },
+  }).then((response) => {
+    if (response.status !== 200) {
+      throw new Error(`Erro ao obter a listagem de usuários: ${response}`)
+    }
+
+    const students = response.body.students
+    students.forEach((student) => {
+      if (student.id !== Cypress.env('userAdminId')) {
+        cy.request({
+          method: 'DELETE',
+          url: `/api/v1/o/${Cypress.env('orgId')}/students/${student.id}`,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${Cypress.env('token')}`
+          },
+        }).then((deleteResponse) => {
+          if (deleteResponse.status !== 200) {
+            throw new Error(`Erro ao excluir o usuário: ${deleteResponse}`)
+          }
+        })
+      }
+    })
+  })
+})
+
+Cypress.Commands.add('acessarPgUsuarios', () => {
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { breadcrumb } = labels.usuarios
+
+  cy.visit(`/o/${Cypress.env('orgId')}/users`)
+  
+  // Valida se a página foi carregada corretamente
+  cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+})
+
+Cypress.Commands.add('addUsuario', () => {
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { breadcrumb, tituloPgAdicionar } = labels.usuarios
+
+  cy.get('#add-professional')
+    .click()
+
+  // Valida se a página foi carregada corretamente
+  cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+
+  cy.contains('.detail_title', tituloPgAdicionar, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+})
+

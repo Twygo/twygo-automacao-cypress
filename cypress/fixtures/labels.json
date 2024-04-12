@@ -88,5 +88,18 @@
         "breadcrumb": "Questionários",
         "msgSucesso": "Questão atualizada com sucesso",
         "tituloPg": "Perguntas"
+    },
+    "usuarios": {
+        "breadcrumb": "Usuários",
+        "msgSucesso": "Usuário salvo com sucesso.",
+        "breadcrumbAdicionar": "Usuários",
+        "tituloPgAdicionar": "Novo Usuário",
+        "breadcrumbEdicao": "Usuários",
+        "tituloPgEdicao": "Edição de Usuário",
+        "tituloModalExclusao": "Exclusão de usuário",
+        "texto1ModalExclusao": "Ao remover este usuário, todos os vínculos com os cursos desta organização serão removidos, caso sua organização seja a Gerenciadora, a exclusão ocorrerá nas parceiras também. Você tem certeza que deseja excluir este usuário?",
+        "texto2ModalExclusao": "Você pode restringir o acesso do usuário clicando no botão Inativar.",
+        "btnConfirmar": "Sim, excluir mesmo assim",
+        "msgSucessoExclusao": "Usuário excluído com sucesso."
     }
 }

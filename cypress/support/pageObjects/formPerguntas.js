@@ -115,11 +115,6 @@ class formPerguntas {
             .click( { force: true } )
     }
 
-    preencherCampo(campo, valor) {
-        cy.get(this.elementos[campo].seletor)
-            .type(valor)
-    }
-
     preencherCampo(nomeCampo, valor, opcoes = { limpar: false }) {
 		const campo = this.elementos[nomeCampo]
 

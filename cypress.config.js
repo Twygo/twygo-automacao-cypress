@@ -14,6 +14,7 @@ module.exports = defineConfig({
     // Define as variáveis de ambiente que serão utilizadas nos testes
     login: 'karla.oliveira@twygo.com',
     password: 'aut123',
-    orgId: 37527
+    orgId: 37527,
+    userAdminId: 1044231
   }
 });
