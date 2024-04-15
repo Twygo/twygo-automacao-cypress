@@ -1,8 +1,10 @@
+import { de } from "@faker-js/faker"
+
 class formUsuarios {
     elementos = {
         email: {
             seletor: '#professional_email',
-            tipo: 'input'
+            tipo: 'input-email'
         },
         nome: {
             seletor: '#professional_first_name',
@@ -30,11 +32,11 @@ class formUsuarios {
         },
         cep: {
             seletor: '#professional_zip_code',
-            tipo: 'input'
+            tipo: 'input-zipcode'
         },
         endereco: {
             seletor: '#professional_address',
-            tipo: 'input'
+            tipo: 'input-endereco'
         },
         numero: {
             seletor: '#professional_address_number',
@@ -93,15 +95,15 @@ class formUsuarios {
             tipo: 'checkbox'
         },
         perfilAdministrador: {
-            seletor: '#user_profile_settings_admin',
+            seletor: 'input#user_profile_settings_admin.checkboxProfile',
             tipo: 'checkbox'
         },
         perfilInstrutor: {
-            seletor: '#user_profile_settings_instructor',
+            seletor: 'input#user_profile_settings_instructor.checkboxProfile',
             tipo: 'checkbox'
         },
         perfilGestor: {
-            seletor: '#user_profile_settings_manager_class',
+            seletor: 'input#user_profile_settings_manager_class.checkboxProfile',
             tipo: 'checkbox'
         },
         perfilLiderEquipe: {
@@ -163,11 +165,46 @@ class formUsuarios {
             .click()
     }
 
-    inativar() {
-        cy.get('.button-inactive')
-            .click()
+    voltar() {
+        cy.get('.back-container a.btn.btn-default.btn-back')
+            .should('be.visible')
+            .should('not.be.disabled')
+            .should('contain.text', 'Voltar')
+            .click({ force: true })
+            .then(() => {
+                cy.get('#professional-cancel')
+                    .should('be.visible')
+                    .should('not.be.disabled')
+                    .click({ force: true })
+            })
     }
 
+    /** DOCUMENTAÇÃO:
+     * @name preencherCampo
+     * 
+     * @description
+     * Método para preencher campos de um formulário
+     * 
+     * @actions
+     * 1. Verifica se o campo existe
+     * 2. Verifica se o campo deve ser limpo antes de preencher
+     * 3. Preenche o campo de acordo com o tipo
+     * 
+     * @param {string} nomeCampo - Nome do campo a ser preenchido
+     * @param {string} valor - Valor a ser preenchido no campo
+     * @param {object} opcoes - Opções para definir se o campo deve ser limpo antes de preencher
+     * 
+     * @example
+     * preencherCampo('nome', 'Nome do Evento')
+     * 
+     * @throws {Error} - Caso o campo não seja encontrado
+     * @throws {Error} - Caso o tipo do campo não seja suportado
+     * @throws {Error} - Caso o campo não possa ser preenchido com o valor informado
+     * 
+     * @author Karla Daiany
+     * @version 1.0.0
+     * @since 1.0.0
+     */
     preencherCampo(nomeCampo, valor, opcoes = { limpar: false }) {
 		const campo = this.elementos[nomeCampo]
 
@@ -192,22 +229,57 @@ class formUsuarios {
 				.clear()
 		} else if (valorFinal !== undefined) {
 			switch (tipo) {
-				case 'input':
-                    cy.wait(1000)
+				case 'input-email':
+                case 'input-zipcode':
                     cy.get(seletor)
-						.type(valorFinal)
-                        .wait(1000)
+						.clear()
+                        .type(valorFinal)
+                        .wait(2000)
 					break
-				case 'checkbox':
+                case 'input-endereco':
+                    cy.get(seletor)
+                        .click()
+                        .clear()
+                        .wait(2000)
+                        .type(valorFinal, {delay: 200})
+                    break
+                case 'input':
+                    cy.get(seletor)
+                        .type(valorFinal)
+                    break
+                case 'checkbox':
 					cy.get(seletor).then($checkbox => {
 						const isChecked = $checkbox.is(':checked')
 						if ((valorFinal && !isChecked) || (!valorFinal && isChecked)) {
-							cy.get(seletor)
-                                .click( { force: true } )
-                            cy.wait(1000)
+							cy.get(seletor).click().then(() => {
+								if (seletor === '#professional_enable_communities' && valorFinal === false) {
+									cy.wait(1000)
+									cy.get('body').then(($body) => {
+										if ($body.find('button:contains("Sair")').length) {
+											cy.contains('button', 'Sair').click()
+										}
+									})
+								}
+							})
 						}
 					})
 					break
+                case 'checkbox2':
+                    cy.get(seletor).then($checkbox => {
+                        const isChecked = $checkbox.is(':checked')
+                        if (valorFinal && !isChecked) {
+                        // Marcar o checkbox
+                        cy.get(seletor)
+                            .invoke('val', 'true')
+                            .invoke('prop', 'checked', true)
+                        } else if (!valorFinal && isChecked) {
+                        // Desmarcar o checkbox
+                        cy.get(seletor)
+                            .invoke('val', 'false')
+                            .invoke('prop', 'checked', false)
+                        }
+                    })
+                    break                    
 				case 'select':
 					cy.get(seletor)
 						.select(valorFinal)
@@ -227,6 +299,29 @@ class formUsuarios {
 		}
 	}
 
+    /** DOCUMENTAÇÃO:
+     * @name validarCampo
+     * 
+     * @description
+     * Método para validar campos de um formulário
+     * 
+     * @actions
+     * 1. Verifica se o campo existe
+     * 2. Valida o campo de acordo com o tipo
+     * 
+     * @param {string} nomeCampo - Nome do campo a ser validado
+     * @param {string} valor - Valor a ser validado no campo
+     * 
+     * @example
+     * validarCampo('nome', 'Nome do Evento')
+     * 
+     * @throws {Error} - Caso o campo não seja encontrado
+     * @throws {Error} - Caso o tipo do campo não seja suportado
+     * 
+     * @author Karla Daiany
+     * @version 1.0.0
+     * @since 1.0.0
+     */
     validarCampo(nomeCampo, valor) {
 		const campo = this.elementos[nomeCampo]
 
@@ -240,10 +335,25 @@ class formUsuarios {
 
 		switch (tipo) {
 			case 'input':
-				cy.get(seletor)
-					.should('have.value', valor)
+            case 'input-email':
+            case 'input-endereco':
+				if (nomeCampo === 'empresa' && valorFinal === '') {
+                    valorFinal = Cypress.env('orgName')
+                }
+                cy.get(seletor)
+					.should('have.value', valorFinal)
 				break
-			case 'checkbox':
+            case 'input-zipcode':
+                cy.get(seletor)
+                    .invoke('val')
+                    .should(val => {
+                        expect(val).to.satisfy(val => 
+                            val === '' || /\d{5}-\d{3}/.test(val),
+                        )
+                    })
+                break
+            case 'checkbox':
+            case 'checkbox2':
 				cy.get(seletor)
 					.should(valor ? 'be.checked' : 'not.be.checked')
 				break

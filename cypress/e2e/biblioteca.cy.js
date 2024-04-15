@@ -1,5 +1,5 @@
 import 'cypress-real-events/support'
-import { faker } from '@faker-js/faker'
+import { fakerPT_BR } from '@faker-js/faker'
 
 describe('Biblioteca', () => {  
     let nome, tipoConteudo, listaConteudos
@@ -28,7 +28,7 @@ describe('Biblioteca', () => {
         tipoConteudo = 'biblioteca'
 
         // Gera um nome aleatório para a biblioteca
-        nome = faker.commerce.productName()
+        nome = fakerPT_BR.commerce.productName()
 
         // Acessa página de biblioteca e gera uma lista com os conteúdos para serem excluídos
         cy.loginTwygoAutomacao()
@@ -85,7 +85,7 @@ describe('Biblioteca', () => {
         // Massa de dados para criação da biblioteca
         const dados = {
             nome: nome,
-            descricao: faker.lorem.paragraph(),
+            descricao: fakerPT_BR.lorem.paragraph(),
             canal: 'Em companhia'
         }
 
@@ -108,8 +108,8 @@ describe('Biblioteca', () => {
         cy.log('## UPDATE ##')
 
         const novosDados = {
-            nome: faker.commerce.productName(),
-            descricao: `Edição da descrição da biblioteca: ${faker.lorem.paragraph()}`,
+            nome: fakerPT_BR.commerce.productName(),
+            descricao: `Edição da descrição da biblioteca: ${fakerPT_BR.lorem.paragraph()}`,
             canal: 'Aberto'
         }
 
@@ -171,7 +171,7 @@ describe('Biblioteca', () => {
         // Massa de dados para criação da biblioteca
         const dados = {
             nome: nome,
-            descricao: faker.lorem.paragraph(),
+            descricao: fakerPT_BR.lorem.paragraph(),
             canal: 'Aberto'
         }
 
@@ -194,8 +194,8 @@ describe('Biblioteca', () => {
         cy.log('## UPDATE ##')
 
         const novosDados = {
-            nome: faker.commerce.productName(),
-            descricao: `Edição da descrição da biblioteca: ${faker.lorem.paragraph()}`,
+            nome: fakerPT_BR.commerce.productName(),
+            descricao: `Edição da descrição da biblioteca: ${fakerPT_BR.lorem.paragraph()}`,
             canal: 'Outros'
         }
 
@@ -257,7 +257,7 @@ describe('Biblioteca', () => {
         // Massa de dados para criação da biblioteca
         const dados = {
             nome: nome,
-            descricao: faker.lorem.paragraph(),
+            descricao: fakerPT_BR.lorem.paragraph(),
             canal: 'Outros'
         }
 
@@ -280,8 +280,8 @@ describe('Biblioteca', () => {
         cy.log('## UPDATE ##')
 
         const novosDados = {
-            nome: faker.commerce.productName(),
-            descricao: `Edição da descrição da biblioteca: ${faker.lorem.paragraph()}`,
+            nome: fakerPT_BR.commerce.productName(),
+            descricao: `Edição da descrição da biblioteca: ${fakerPT_BR.lorem.paragraph()}`,
             canal: ''
         }
 
@@ -343,7 +343,7 @@ describe('Biblioteca', () => {
         // Massa de dados para criação da biblioteca
         const dados = {
             nome: nome,
-            descricao: faker.lorem.paragraph()
+            descricao: fakerPT_BR.lorem.paragraph()
         }
 
         // CREATE
@@ -365,8 +365,8 @@ describe('Biblioteca', () => {
         cy.log('## UPDATE ##')
 
         const novosDados = {
-            nome: faker.commerce.productName(),
-            descricao: `Edição da descrição da biblioteca: ${faker.lorem.paragraph()}`,
+            nome: fakerPT_BR.commerce.productName(),
+            descricao: `Edição da descrição da biblioteca: ${fakerPT_BR.lorem.paragraph()}`,
             canal: 'Em companhia'
         }
 

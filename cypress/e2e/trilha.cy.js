@@ -1,6 +1,6 @@
 /// reference types="cypress" />
 import 'cypress-real-events/support'
-import { faker } from '@faker-js/faker'
+import { fakerPT_BR } from '@faker-js/faker'
 import { getAuthToken } from '../support/auth_helper'
 import { gerarDataAtual } from '../support/utils_helper'
 
@@ -54,7 +54,7 @@ describe('trilha', () => {
 		tipoConteudo = 'trilha'
 
 		// Gera um nome aleatório para o conteúdo
-		nome = faker.commerce.productName()
+		nome = fakerPT_BR.commerce.productName()
 
 		// Inicializa o array de categorias
 		categorias = []
@@ -118,7 +118,7 @@ describe('trilha', () => {
 		// Massa de dados para criação da trilha
         const conteudo = {
 			nome: nome,
-            descricao: `${faker.commerce.productDescription()} do evento ${nome}`,
+            descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${nome}`,
 		}
 
 		// CREATE
@@ -139,20 +139,20 @@ describe('trilha', () => {
 		// UPDATE
 		cy.log('## UPDATE ##')
 
-		const novoNome = faker.commerce.productName()
-		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
+		const novoNome = fakerPT_BR.commerce.productName()
+		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudoEdit = {
 			nome: novoNome,
 			data_inicio: '29/03/2024',
 			hora_inicio: '12:00',
 			data_fim: '29/04/2024',
 			hora_fim: '22:00',
-			descricao: `${faker.commerce.productDescription()} editado do evento ${novoNome}`,
+			descricao: `${fakerPT_BR.commerce.productDescription()} editado do evento ${novoNome}`,
 			tipo: 'Congresso',
 			modalidade: 'Presencial',
 			sincronismo: 'Ao vivo',
-			carga_horaria: faker.number.int({ min: 1, max: 9 }),
-			vigencia: faker.number.int({ min: 1, max: 9 }),
+			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			atualizar_inscritos: true,
 			local: 'Centro de Eventos',
 			cep: '85803-760',
@@ -161,7 +161,7 @@ describe('trilha', () => {
 			cidade: 'Cascavel',
 			estado: 'PR',
 			pais: 'Brasil',
-			email_responsavel: faker.internet.email(),
+			email_responsavel: fakerPT_BR.internet.email(),
 			notificar_responsavel: true,
 			addCategoria: categorias,
 			remover_banner: true,
@@ -226,19 +226,19 @@ describe('trilha', () => {
 	 */
 	it('2. CRUD trilha liberada, com confirmação, com visualização para inscritos', () => {
 		// Massa de dados para criação da trilha
-		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
+		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
 			data_inicio: '29/03/2024',
 			hora_inicio: '01:00',
 			data_fim: '29/04/2024',
 			hora_fim: '23:00',
-			descricao: `${faker.commerce.productDescription()} do evento ${nome}`,
+			descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${nome}`,
 			tipo: 'Congresso',
 			modalidade: 'Presencial',
 			sincronismo: 'Ao vivo',
-			carga_horaria: faker.number.int({ min: 1, max: 9 }),
-			vigencia: faker.number.int({ min: 1, max: 9 }),
+			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			local: 'Centro de Eventos',
 			cep: '85804-455',
 			endereco: 'Rua das Flores',
@@ -246,7 +246,7 @@ describe('trilha', () => {
 			cidade: 'Joinville',
 			estado: 'SC',
 			pais: 'Brasil',
-			email_responsavel: faker.internet.email(),
+			email_responsavel: fakerPT_BR.internet.email(),
 			notificar_responsavel: true,
 			addCategoria: categorias,
 			situacao: 'Liberado',
@@ -271,23 +271,23 @@ describe('trilha', () => {
 		// UPDATE
 		cy.log('## UPDATE ##')
 
-		const novoNome = faker.commerce.productName()
-		novasCategorias = [`Cat3-${faker.hacker.noun()}`, `Cat4-${faker.hacker.noun()}`]
+		const novoNome = fakerPT_BR.commerce.productName()
+		novasCategorias = [`Cat3-${fakerPT_BR.hacker.noun()}`, `Cat4-${fakerPT_BR.hacker.noun()}`]
 		const conteudoEdit = {
 			nome: novoNome,
 			data_inicio: '01/01/2023',
 			hora_inicio: '00:01',
 			data_fim: '31/01/2025',
 			hora_fim: '23:59',
-			descricao: `${faker.commerce.productDescription()} do evento ${novoNome}`,
+			descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${novoNome}`,
 			tipo: 'Feira',
 			modalidade: 'Online',
 			sincronismo: 'Gravado',
-			carga_horaria: faker.number.int({ min: 1, max: 9 }),
-			vigencia: faker.number.int({ min: 1, max: 9 }),
+			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			atualizar_inscritos: true,
 			local: 'T&D Connect',
-			email_responsavel: faker.internet.email(),
+			email_responsavel: fakerPT_BR.internet.email(),
 			notificar_responsavel: false,
 			addCategoria: novasCategorias,
 			remover_banner: true,
@@ -360,21 +360,21 @@ describe('trilha', () => {
 	 */
 	it('3. CRUD trilha liberada, sem confirmação, com visualização para inscritos', () => {
 		// Massa de dados para criação da trilha
-		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`, `Cat3-${faker.hacker.noun()}`]
+		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`, `Cat3-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
 			data_inicio: '29/01/2023',
 			hora_inicio: '11:20',
 			data_fim: '29/01/2024',
 			hora_fim: '22:02',
-			descricao: `${faker.commerce.productDescription()} do evento ${nome}`,
+			descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${nome}`,
 			tipo: 'Feira',
 			modalidade: 'Online',
 			sincronismo: 'Gravado',
-			carga_horaria: faker.number.int({ min: 10, max: 99 }),
-			vigencia: faker.number.int({ min: 10, max: 99 }),
+			carga_horaria: fakerPT_BR.number.int({ min: 10, max: 99 }),
+			vigencia: fakerPT_BR.number.int({ min: 10, max: 99 }),
 			local: 'Youtube',
-			email_responsavel: faker.internet.email(),
+			email_responsavel: fakerPT_BR.internet.email(),
 			notificar_responsavel: false,
 			addCategoria: categorias,
 			situacao: 'Liberado',
@@ -399,22 +399,22 @@ describe('trilha', () => {
 		// UPDATE
 		cy.log('## UPDATE ##')
 
-		const novoNome = faker.commerce.productName()
-		novasCategorias = [`Cat4-${faker.hacker.noun()}`, `Cat5-${faker.hacker.noun()}`]		
+		const novoNome = fakerPT_BR.commerce.productName()
+		novasCategorias = [`Cat4-${fakerPT_BR.hacker.noun()}`, `Cat5-${fakerPT_BR.hacker.noun()}`]		
 		const conteudoEdit = {
 			nome: novoNome,
 			data_inicio: '10/03/2000',
 			hora_inicio: '00:00',
 			data_fim: '31/12/2050',
 			hora_fim: '03:40',
-			descricao: `${faker.commerce.productDescription()} do evento ${novoNome}`,
+			descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${novoNome}`,
 			tipo: 'Webinar',
 			modalidade: 'Presencial',
 			sincronismo: 'Ao vivo',
-			carga_horaria: faker.number.int({ min: 1, max: 9 }),
-			vigencia: faker.number.int({ min: 1, max: 9 }),
+			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			atualizar_inscritos: true,
-			email_responsavel: faker.internet.email(),
+			email_responsavel: fakerPT_BR.internet.email(),
 			notificar_responsavel: true,
 			addCategoria: novasCategorias,
 			situacao: 'Em desenvolvimento'
@@ -477,21 +477,21 @@ describe('trilha', () => {
 	 */
 	it('4. CRUD trilha suspensa, com confirmação, com visualização para inscritos', () => {
 		// Massa de dados para criação da trilha
-		categorias = [`Cat1-${faker.hacker.noun()}`]
+		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
 			data_inicio: gerarDataAtual(),
 			hora_inicio: '01:00',
 			data_fim: gerarDataAtual(),
 			hora_fim: '23:00',
-			descricao: `${faker.commerce.productDescription()} do evento ${nome}`,
+			descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${nome}`,
 			tipo: 'Outros',
 			modalidade: 'Online',
 			sincronismo: 'Gravado',
-			carga_horaria: faker.number.int({ min: 100, max: 999 }),
-			vigencia: faker.number.int({ min: 100, max: 999 }),
+			carga_horaria: fakerPT_BR.number.int({ min: 100, max: 999 }),
+			vigencia: fakerPT_BR.number.int({ min: 100, max: 999 }),
 			local: 'Youtube',
-			email_responsavel: faker.internet.email(),
+			email_responsavel: fakerPT_BR.internet.email(),
 			notificar_responsavel: false,
 			addCategoria: categorias,
 			situacao: 'Suspenso',
@@ -516,7 +516,7 @@ describe('trilha', () => {
 		// UPDATE
 		cy.log('## UPDATE ##')
 
-		novasCategorias = [`Cat2-${faker.hacker.noun()}`, `Cat3-${faker.hacker.noun()}`]
+		novasCategorias = [`Cat2-${fakerPT_BR.hacker.noun()}`, `Cat3-${fakerPT_BR.hacker.noun()}`]
 		const conteudoEdit = {
 			data_inicio: '01/01/2000',
 			data_fim: '28/02/2030',
@@ -583,17 +583,17 @@ describe('trilha', () => {
 	 */
 	it('5. CRUD trilha suspensa, sem confirmação, com visualização para inscritos', () => {
 		// Massa de dados para criação da trilha
-		categorias = [`Cat1-${faker.hacker.noun()}`]
+		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
-			descricao: `${faker.commerce.productDescription()} do evento ${nome}`,
+			descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${nome}`,
 			tipo: 'Palestra',
 			modalidade: 'Online',
 			sincronismo: 'Gravado',
-			carga_horaria: faker.number.int({ min: 1000, max: 9999 }),
-			vigencia: faker.number.int({ min: 1000, max: 9999 }),
+			carga_horaria: fakerPT_BR.number.int({ min: 1000, max: 9999 }),
+			vigencia: fakerPT_BR.number.int({ min: 1000, max: 9999 }),
 			local: 'Twygo',
-			email_responsavel: faker.internet.email(),
+			email_responsavel: fakerPT_BR.internet.email(),
 			addCategoria: categorias,
 			situacao: 'Suspenso',
 			exige_confirmacao: 'Desabilitado'
@@ -677,17 +677,17 @@ describe('trilha', () => {
 	 */
 	it('6. CRUD trilha em desenvolvimento, sem confirmação, com visualização para inscritos', () => {
 		// Massa de dados para criação da trilha
-		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
+		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
-			descricao: `${faker.commerce.productDescription()} do evento ${nome}`,
+			descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${nome}`,
 			tipo: 'Webinar',
 			modalidade: 'Online',
 			sincronismo: 'Gravado',
-			carga_horaria: faker.number.int({ min: 1, max: 99 }),
-			vigencia: faker.number.int({ min: 1, max: 99 }),
+			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 99 }),
+			vigencia: fakerPT_BR.number.int({ min: 1, max: 99 }),
 			local: 'Zoom',
-			email_responsavel: faker.internet.email(),
+			email_responsavel: fakerPT_BR.internet.email(),
 			notificar_responsavel: false,
 			addCategoria: categorias,
 			situacao: 'Em desenvolvimento',
@@ -779,10 +779,10 @@ describe('trilha', () => {
 	 */
 	it('7. CRUD trilha em desenvolvimento, com confirmação, com visualização para inscritos', () => {
 		// Massa de dados para criação da trilha
-		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
+		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
-			descricao: `${faker.commerce.productDescription()} do evento ${nome}`,
+			descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${nome}`,
 			sincronismo: 'Ao vivo',
 			vigencia: '10000',
 			local: 'Twitch',

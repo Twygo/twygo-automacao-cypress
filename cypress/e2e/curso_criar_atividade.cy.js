@@ -1,5 +1,5 @@
 /// reference types="cypress" />
-import { faker } from '@faker-js/faker'
+import { fakerPT_BR } from '@faker-js/faker'
 import { getAuthToken } from '../support/auth_helper' 
 import estruturaAtividades from '../support/pageObjects/estruturaAtividades'
 import formAtividades from '../support/pageObjects/formAtividades'
@@ -146,8 +146,8 @@ describe('Criar atividade', () => {
         tipoConteudo = 'curso'
 
         // Gera um nome aleatório para o conteúdo e para a atividade
-        nomeConteudo = faker.commerce.productName()
-        nomeAtividade = faker.commerce.productName()
+        nomeConteudo = fakerPT_BR.commerce.productName()
+        nomeAtividade = fakerPT_BR.commerce.productName()
 
         // Obtém o token de autenticação 
         getAuthToken()
@@ -158,7 +158,7 @@ describe('Criar atividade', () => {
         // Cria um curso default
         const body = {
             name: nomeConteudo,
-            description: faker.lorem.sentence(5)
+            description: fakerPT_BR.lorem.sentence(5)
         }
         cy.criarCursoViaApi(body)
     })
@@ -258,10 +258,10 @@ describe('Criar atividade', () => {
         // Massa de dados para criação de atividade        
         const dados = {
             titulo: nomeAtividade,
-            peso: faker.number.int({min: 1, max: 9}),
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
             liberado: true,
-            descricaoTexto: faker.lorem.sentence(10),
-            resumoAtividade: faker.lorem.sentence(5),
+            descricaoTexto: fakerPT_BR.lorem.sentence(10),
+            resumoAtividade: fakerPT_BR.lorem.sentence(5),
             tempoMinPermanencia: true,
             tempoMinPermanenciaValor: '00:05'
         }
@@ -295,12 +295,12 @@ describe('Criar atividade', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            titulo: `Edição de nome para ${faker.commerce.productName()}`,
-            peso: faker.number.int({min: 1, max: 9}),
+            titulo: `Edição de nome para ${fakerPT_BR.commerce.productName()}`,
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
             liberado: false,
             tipoAtividade: 'Games',
             codigoCompartilhamento: '<iframe src= "https://kahoot.it/challenge/0857294?challenge-id=502fec44-a2dc-4312-807a-65e1d9bc4a4d_1695673333050" width=620 height=280></iframe>',
-            resumoAtividade: faker.lorem.sentence(5),
+            resumoAtividade: fakerPT_BR.lorem.sentence(5),
             tempoMinPermanencia: false
         }
 
@@ -364,7 +364,7 @@ describe('Criar atividade', () => {
         // Massa de dados para criação de atividade
         const dados = {
             titulo: nomeAtividade,
-            peso: faker.number.int({min: 1, max: 9}),
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
             liberado: true,
             tipoAtividade: 'PDF Estampado',
             enviarPdf: 'teste_pdf.pdf',
@@ -373,7 +373,7 @@ describe('Criar atividade', () => {
                 tamanho: '28102'
             },
             seguranca: 'Visualizar e Baixar',
-            resumoAtividade: faker.lorem.sentence(5),
+            resumoAtividade: fakerPT_BR.lorem.sentence(5),
             tempoMinPermanencia: true,
             tempoMinPermanenciaValor: '00:32'
         }
@@ -407,8 +407,8 @@ describe('Criar atividade', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            titulo: `Edição de nome para ${faker.commerce.productName()}`,
-            peso: faker.number.int({min: 1, max: 9}),
+            titulo: `Edição de nome para ${fakerPT_BR.commerce.productName()}`,
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
             liberado: false,
             tipoAtividade: 'Vídeo',
             enviarVideo: 'teste_video.mp4',
@@ -419,7 +419,7 @@ describe('Criar atividade', () => {
             marcarConcluidoVideo: true,
             naoMostrarProgresso: true,
             seguranca: 'Visualizar e Baixar',
-            resumoAtividade: faker.lorem.sentence(5),
+            resumoAtividade: fakerPT_BR.lorem.sentence(5),
             tempoMinPermanencia: false
         }
 
@@ -479,11 +479,11 @@ describe('Criar atividade', () => {
      * @author Karla Daiany
      * @version 1.0.0
      */
-    it.only('4. CRUD atividade do tipo "Vídeo"', () => {
+    it('4. CRUD atividade do tipo "Vídeo"', () => {
         // Massa de dados para criação de atividade
         const dados = {
             titulo: nomeAtividade,
-            peso: faker.number.int({min: 1, max: 9}),
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
             liberado: true,
             tipoAtividade: 'Vídeo',
             enviarVideo: 'teste_video.mp4',
@@ -494,7 +494,7 @@ describe('Criar atividade', () => {
             marcarConcluidoVideo: true,
             naoMostrarProgresso: true,
             seguranca: 'Visualizar e Baixar',
-            resumoAtividade: faker.lorem.sentence(8),
+            resumoAtividade: fakerPT_BR.lorem.sentence(8),
             tempoMinPermanencia: true,
             tempoMinPermanenciaValor: '00:06'
         }
@@ -528,8 +528,8 @@ describe('Criar atividade', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            titulo: `Edição de nome para ${faker.commerce.productName()}`,
-            peso: faker.number.int({min: 1, max: 9}),
+            titulo: `Edição de nome para ${fakerPT_BR.commerce.productName()}`,
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
             liberado: false,
             tipoAtividade: 'Scorm',
             enviarScorm: 'teste_scorm.zip',
@@ -538,7 +538,7 @@ describe('Criar atividade', () => {
                 tamanho: '7,61 MB'
             },
             marcarConcluidoScorm: true,
-            resumoAtividade: faker.lorem.sentence(5)
+            resumoAtividade: fakerPT_BR.lorem.sentence(5)
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
@@ -602,7 +602,7 @@ describe('Criar atividade', () => {
         // Massa de dados para criação de atividade
         const dados = {
             titulo: nomeAtividade,
-            peso: faker.number.int({min: 1, max: 9}),
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
             liberado: true,
             tipoAtividade: 'Vídeo Externo',
             youtube: true,
@@ -613,7 +613,7 @@ describe('Criar atividade', () => {
             naoMostrarProgressoVideoExterno: true,
             chatTwygo: true,
             desabilitarChatFimTransmissao: true,
-            resumoAtividade: faker.lorem.sentence(8),
+            resumoAtividade: fakerPT_BR.lorem.sentence(8),
             tempoMinPermanencia: true,
             tempoMinPermanenciaValor: '00:02'
         }
@@ -647,12 +647,12 @@ describe('Criar atividade', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            titulo: `Edição de nome para ${faker.commerce.productName()}`,
-            peso: faker.number.int({min: 1, max: 9}),
+            titulo: `Edição de nome para ${fakerPT_BR.commerce.productName()}`,
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
             liberado: false,
             tipoAtividade: 'Texto',
-            descricaoTexto: faker.lorem.sentence(5),
-            resumoAtividade: faker.lorem.sentence(5),
+            descricaoTexto: fakerPT_BR.lorem.sentence(5),
+            resumoAtividade: fakerPT_BR.lorem.sentence(5),
             tempoMinPermanencia: true,
             tempoMinPermanenciaValor: '10:00'
         }
@@ -717,7 +717,7 @@ describe('Criar atividade', () => {
         // Massa de dados para criação de atividade
         const dados = {
             titulo: nomeAtividade,
-            peso: faker.number.int({min: 1, max: 9}),
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
             liberado: true,
             tipoAtividade: 'Vídeo Externo',
             youtube: false,
@@ -725,7 +725,7 @@ describe('Criar atividade', () => {
             eventials: false,
             videoUrl: 'https://www.youtube.com/watch?v=OyTN-MF-OEg',
             marcarConcluidoVideoExterno: true,
-            resumoAtividade: faker.lorem.sentence(8),
+            resumoAtividade: fakerPT_BR.lorem.sentence(8),
             tempoMinPermanencia: true,
             tempoMinPermanenciaValor: '00:12'
         }
@@ -761,12 +761,16 @@ describe('Criar atividade', () => {
         // UPDATE
         cy.log('## UPDATE ##')
 
+        // Criar questionário
+        const nomeQuestionario = fakerPT_BR.commerce.productName()
+        cy.criarQuestionarioDefault(nomeQuestionario)
+
         const dadosUpdate = {
-            titulo: `Edição de nome para ${faker.commerce.productName()}`,
-            peso: faker.number.int({min: 1, max: 9}),
+            titulo: `Edição de nome para ${fakerPT_BR.commerce.productName()}`,
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
             liberado: false,
             tipoAtividade: 'Questionário',
-            selecionarQuestionario: faker.lorem.sentence(3),
+            selecionarQuestionario: nomeQuestionario,
             exibicaoPerguntas: 'Exibir perguntas aleatoriamente',
             visualizacaoRespostas: 'Exibir Respondidas e Respostas Corretas',
             pontuacaoMinima: '88',
@@ -775,14 +779,14 @@ describe('Criar atividade', () => {
             perguntasCat1: 'Todas',
             perguntasCat2: 'Todas',
             quantidadePerguntas: '',
-            resumoAtividade: faker.lorem.sentence(12),
+            resumoAtividade: fakerPT_BR.lorem.sentence(12),
             tempoMinPermanencia: true,
             tempoMinPermanenciaValor: '02:00'
         }
 
-        // Criar questionário
-        cy.criarQuestionarioDefault(dadosUpdate.selecionarQuestionario)
-
+        cy.acessarPgListaConteudos()
+        cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
+        cy.editarAtividade(nomeConteudo, dados.titulo)
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
         formAtividade.salvar()
 
@@ -842,8 +846,8 @@ describe('Criar atividade', () => {
     it('7. CRUD atividade do tipo "Vídeo Externo - Eventials"', () => {
         // Massa de dados para criação de atividade
         const dados = {
-            titulo: faker.commerce.productName(),
-            peso: faker.number.int({min: 1, max: 9}),
+            titulo: fakerPT_BR.commerce.productName(),
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
             liberado: true,
             tipoAtividade: 'Vídeo Externo',
             youtube: false,
@@ -853,7 +857,7 @@ describe('Criar atividade', () => {
             chatEventials: '<iframe width="560" height="315" src="https://www.youtube.com/embed/OyTN-MF-OEg?si=satdunCxLNcsq5-I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
             marcarConcluidoVideoExterno: true,
             naoMostrarProgressoVideoExterno: true,
-            resumoAtividade: faker.lorem.sentence(8),
+            resumoAtividade: fakerPT_BR.lorem.sentence(8),
             tempoMinPermanencia: true,
             tempoMinPermanenciaValor: '00:16'
         }
@@ -960,7 +964,7 @@ describe('Criar atividade', () => {
         // Massa de dados para criação de atividade
         const dados = {
             titulo: nomeAtividade,
-            peso: faker.number.int({min: 1, max: 9}),
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
             liberado: true,
             tipoAtividade: 'Arquivos',
             enviarArquivo: 'Sophia_estudiosa.png',
@@ -969,7 +973,7 @@ describe('Criar atividade', () => {
                 tamanho: '34264'
             },
             seguranca: 'Visualizar e Baixar',
-            resumoAtividade: faker.lorem.sentence(8),
+            resumoAtividade: fakerPT_BR.lorem.sentence(8),
             tempoMinPermanencia: true,
             tempoMinPermanenciaValor: '00:03'
         }
@@ -1076,14 +1080,15 @@ describe('Criar atividade', () => {
      * @author Karla Daiany
      * @version 1.0.0
      */
-    it('9. CRUD atividade do tipo "Questionário"', () => {
+    it('9. CRUD atividade do tipo "Questionário"', () => {               
         // Massa de dados para criação de atividade
+        const nomeQuestionario = fakerPT_BR.commerce.productName()
         const dados = {
-            titulo: faker.commerce.productName(),
-            peso: faker.number.int({min: 1, max: 9}),
+            titulo: fakerPT_BR.commerce.productName(),
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
             liberado: true,
             tipoAtividade: 'Questionário',
-            selecionarQuestionario: faker.lorem.sentence(3),
+            selecionarQuestionario: nomeQuestionario,
             exibicaoPerguntas: 'Exibir perguntas conforme ordem pré-definida',
             visualizacaoRespostas: 'Exibir Respondidas',
             pontuacaoMinima: '50',
@@ -1092,19 +1097,21 @@ describe('Criar atividade', () => {
             perguntasCat1: 'Todas',
             perguntasCat2: 'Todas',
             quantidadePerguntas: '',    
-            resumoAtividade: faker.lorem.sentence(6),
+            resumoAtividade: fakerPT_BR.lorem.sentence(6),
             tempoMinPermanencia: true,
             tempoMinPermanenciaValor: '01:00'
         }
-
-        // Criar questionário
-        cy.criarQuestionarioDefault(dados.selecionarQuestionario)
 
         // CREATE
         cy.log('## CREATE ##')
 
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')
+
+        // Criar questionário
+        cy.criarQuestionarioDefault(nomeQuestionario)
+        
+        cy.acessarPgListaConteudos()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         atividades.adicionarAtividade()
         cy.salvarAtividades()
@@ -1129,8 +1136,8 @@ describe('Criar atividade', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            titulo: faker.commerce.productName(),
-            peso: faker.number.int({min: 1, max: 9}),
+            titulo: fakerPT_BR.commerce.productName(),
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
             tipoAtividade: 'Arquivos',
             enviarArquivo: 'teste_ppt.pptx',
             descricaoArquivo: {
@@ -1207,7 +1214,7 @@ describe('Criar atividade', () => {
         // Massa de dados para criação de atividade
         const dados = {
             titulo: nomeAtividade,
-            peso: faker.number.int({min: 1, max: 9}),
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
             liberado: true,
             tipoAtividade: 'Scorm',
             enviarScorm: 'teste_scorm.zip',
@@ -1216,7 +1223,7 @@ describe('Criar atividade', () => {
                 tamanho: '7,61 MB'
             },
             marcarConcluidoScorm: true,
-            resumoAtividade: faker.lorem.sentence(19)
+            resumoAtividade: fakerPT_BR.lorem.sentence(19)
         }
 
         // CREATE
@@ -1249,12 +1256,12 @@ describe('Criar atividade', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            titulo: faker.commerce.productName(),
+            titulo: fakerPT_BR.commerce.productName(),
             peso: 1,
             liberado: false,
             tipoAtividade: 'Texto',
-            descricaoTexto: faker.lorem.sentence(10),
-            resumoAtividade: faker.lorem.sentence(3),
+            descricaoTexto: fakerPT_BR.lorem.sentence(10),
+            resumoAtividade: fakerPT_BR.lorem.sentence(3),
             tempoMinPermanencia: false    
         }
 
@@ -1322,7 +1329,7 @@ describe('Criar atividade', () => {
             liberado: false,
             tipoAtividade: 'Games',
             codigoCompartilhamento: '<iframe src= "https://kahoot.it/challenge/0857294?challenge-id=502fec44-a2dc-4312-807a-65e1d9bc4a4d_1695673333050" width=620 height=280></iframe>',
-            resumoAtividade: faker.lorem.sentence(5),
+            resumoAtividade: fakerPT_BR.lorem.sentence(5),
             tempoMinPermanencia: false
         }
 

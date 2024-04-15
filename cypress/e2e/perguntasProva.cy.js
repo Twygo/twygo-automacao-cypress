@@ -1,5 +1,5 @@
 /// reference types="cypress" />
-import { faker } from '@faker-js/faker'
+import { fakerPT_BR } from '@faker-js/faker'
 import formQuestionarios from '../support/pageObjects/formQuestionarios'
 import formPerguntas from '../support/pageObjects/formPerguntas'
 
@@ -17,7 +17,7 @@ describe('Perguntas', () => {
 
     beforeEach(() => {     
         // Massa de dados para criar questionário
-        nomeQuestionario = faker.commerce.productName()
+        nomeQuestionario = fakerPT_BR.commerce.productName()
         categorias1 = ['Atualidades', 'Entretenimento', 'Esportes', 'Tecnologia']
         categorias2 = ['Difícil', 'Fácil', 'Médio']
 
@@ -44,8 +44,8 @@ describe('Perguntas', () => {
         cy.salvarQuestionario(dadosQuest.nome)
 
         // Gera um título aleatório para a pergunta
-        titulo = faker.commerce.productName()
-        novoTitulo = faker.commerce.productName()
+        titulo = fakerPT_BR.commerce.productName()
+        novoTitulo = fakerPT_BR.commerce.productName()
     })
 
     /** DOCUMENTAÇÃO:
@@ -89,12 +89,12 @@ describe('Perguntas', () => {
         // Massa de dados para criar pergunta do tipo "Texto"
         const dados = {
             titulo: titulo,
-            descricao: faker.lorem.paragraph(),
-            ordenacao: faker.number.int({ min: 1, max: 10 }),
+            descricao: fakerPT_BR.lorem.paragraph(),
+            ordenacao: fakerPT_BR.number.int({ min: 1, max: 10 }),
             tipoPergunta: 'Texto',
             perguntaDesabilitada: true,
             perguntaObrigatoria: true,
-            explicacao: faker.lorem.sentence(),
+            explicacao: fakerPT_BR.lorem.sentence(),
             categoria1: 'Esportes',
             categoria2: 'Fácil'
         }
@@ -119,11 +119,11 @@ describe('Perguntas', () => {
         // Massa de dados para atualizar pergunta do tipo "Texto"
         const dadosUpdate = {
             titulo: novoTitulo,
-            descricao: faker.lorem.paragraph(),
-            ordenacao: faker.number.int({ min: 1, max: 10 }),
+            descricao: fakerPT_BR.lorem.paragraph(),
+            ordenacao: fakerPT_BR.number.int({ min: 1, max: 10 }),
             perguntaDesabilitada: false,
             perguntaObrigatoria: false,
-            explicacao: faker.lorem.sentence(),
+            explicacao: fakerPT_BR.lorem.sentence(),
             categoria1: 'Tecnologia',
             categoria2: 'Difícil'
         }
@@ -186,12 +186,12 @@ describe('Perguntas', () => {
         // Massa de dados para criar pergunta do tipo "Arquivo"
         const dados = {
             titulo: titulo,
-            descricao: faker.lorem.paragraph(),
-            ordenacao: faker.number.int({ min: 1, max: 10 }),
+            descricao: fakerPT_BR.lorem.paragraph(),
+            ordenacao: fakerPT_BR.number.int({ min: 1, max: 10 }),
             tipoPergunta: 'Arquivo',
             perguntaDesabilitada: true,
             perguntaObrigatoria: true,
-            explicacao: faker.lorem.sentence(),
+            explicacao: fakerPT_BR.lorem.sentence(),
             categoria1: 'Atualidades',
             categoria2: 'Médio'
         }
@@ -216,11 +216,11 @@ describe('Perguntas', () => {
         // Massa de dados para atualizar pergunta do tipo "Arquivo"
         const dadosUpdate = {
             titulo: novoTitulo,
-            descricao: faker.lorem.paragraph(),
-            ordenacao: faker.number.int({ min: 1, max: 10 }),
+            descricao: fakerPT_BR.lorem.paragraph(),
+            ordenacao: fakerPT_BR.number.int({ min: 1, max: 10 }),
             perguntaDesabilitada: false,
             perguntaObrigatoria: false,
-            explicacao: faker.lorem.sentence(),
+            explicacao: fakerPT_BR.lorem.sentence(),
             categoria1: 'Entretenimento',
             categoria2: 'Fácil'
         }
@@ -283,12 +283,12 @@ describe('Perguntas', () => {
         // Massa de dados para criar pergunta do tipo "Faixa de Valores"
         const dados = {
             titulo: titulo,
-            descricao: faker.lorem.paragraph(),
-            ordenacao: faker.number.int({ min: 1, max: 10 }),
+            descricao: fakerPT_BR.lorem.paragraph(),
+            ordenacao: fakerPT_BR.number.int({ min: 1, max: 10 }),
             tipoPergunta: 'Faixa de Valores',
             perguntaDesabilitada: true,
             perguntaObrigatoria: true,
-            explicacao: faker.lorem.sentence(),
+            explicacao: fakerPT_BR.lorem.sentence(),
             valorInicial: '1',
             valorFinal: '10'
         }
@@ -313,11 +313,11 @@ describe('Perguntas', () => {
         // Massa de dados para atualizar pergunta do tipo "Faixa de Valores"
         const dadosUpdate = {
             titulo: novoTitulo,
-            descricao: faker.lorem.paragraph(),
-            ordenacao: faker.number.int({ min: 1, max: 10 }),
+            descricao: fakerPT_BR.lorem.paragraph(),
+            ordenacao: fakerPT_BR.number.int({ min: 1, max: 10 }),
             perguntaDesabilitada: false,
             perguntaObrigatoria: false,
-            explicacao: faker.lorem.sentence(),
+            explicacao: fakerPT_BR.lorem.sentence(),
             valorInicial: '10',
             valorFinal: '20'
         }
@@ -380,14 +380,14 @@ describe('Perguntas', () => {
         // Massa de dados para criar pergunta do tipo "Única Escolha"
         const dados = {
             titulo: titulo,
-            descricao: faker.lorem.paragraph(),
-            ordenacao: faker.number.int({ min: 1, max: 10 }),
+            descricao: fakerPT_BR.lorem.paragraph(),
+            ordenacao: fakerPT_BR.number.int({ min: 1, max: 10 }),
             tipoPergunta: 'Única Escolha',
             perguntaDesabilitada: true,
             perguntaObrigatoria: true,
-            explicacao: faker.lorem.sentence(),
-            resposta1: faker.lorem.sentence(5),
-            resposta2: faker.lorem.sentence(5),
+            explicacao: fakerPT_BR.lorem.sentence(),
+            resposta1: fakerPT_BR.lorem.sentence(5),
+            resposta2: fakerPT_BR.lorem.sentence(5),
             radioResposta1: false,
             radioResposta2: true
         }
@@ -412,13 +412,13 @@ describe('Perguntas', () => {
         // Massa de dados para atualizar pergunta do tipo "Única Escolha"
         const dadosUpdate = {
             titulo: novoTitulo,
-            descricao: faker.lorem.paragraph(),
-            ordenacao: faker.number.int({ min: 1, max: 10 }),
+            descricao: fakerPT_BR.lorem.paragraph(),
+            ordenacao: fakerPT_BR.number.int({ min: 1, max: 10 }),
             perguntaDesabilitada: false,
             perguntaObrigatoria: false,
-            explicacao: faker.lorem.sentence(),
-            resposta1: faker.lorem.sentence(5),
-            resposta2: faker.lorem.sentence(5),
+            explicacao: fakerPT_BR.lorem.sentence(),
+            resposta1: fakerPT_BR.lorem.sentence(5),
+            resposta2: fakerPT_BR.lorem.sentence(5),
             radioResposta1: true,
             radioResposta2: false
         }
@@ -481,14 +481,14 @@ describe('Perguntas', () => {
         // Massa de dados para criar pergunta do tipo "Múltipla Escolha"
         const dados = {
             titulo: titulo,
-            descricao: faker.lorem.paragraph(),
-            ordenacao: faker.number.int({ min: 1, max: 10 }),
+            descricao: fakerPT_BR.lorem.paragraph(),
+            ordenacao: fakerPT_BR.number.int({ min: 1, max: 10 }),
             tipoPergunta: 'Múltipla Escolha',
             perguntaDesabilitada: true,
             perguntaObrigatoria: true,
-            explicacao: faker.lorem.sentence(),
-            resposta1: faker.lorem.sentence(5),
-            resposta2: faker.lorem.sentence(5),
+            explicacao: fakerPT_BR.lorem.sentence(),
+            resposta1: fakerPT_BR.lorem.sentence(5),
+            resposta2: fakerPT_BR.lorem.sentence(5),
             checkResposta2: true
         }
 
@@ -512,13 +512,13 @@ describe('Perguntas', () => {
         // Massa de dados para atualizar pergunta do tipo "Múltipla Escolha"
         const dadosUpdate = {
             titulo: novoTitulo,
-            descricao: faker.lorem.paragraph(),
-            ordenacao: faker.number.int({ min: 1, max: 10 }),
+            descricao: fakerPT_BR.lorem.paragraph(),
+            ordenacao: fakerPT_BR.number.int({ min: 1, max: 10 }),
             perguntaDesabilitada: false,
             perguntaObrigatoria: false,
-            explicacao: faker.lorem.sentence(),
-            resposta1: faker.lorem.sentence(5),
-            resposta2: faker.lorem.sentence(5),
+            explicacao: fakerPT_BR.lorem.sentence(),
+            resposta1: fakerPT_BR.lorem.sentence(5),
+            resposta2: fakerPT_BR.lorem.sentence(5),
             checkResposta1: true
         }
 
@@ -580,12 +580,12 @@ describe('Perguntas', () => {
         // Massa de dados para criar pergunta do tipo "Texto"
         const dados = {
             titulo: titulo,
-            descricao: faker.lorem.paragraph(),
-            ordenacao: faker.number.int({ min: 1, max: 10 }),
+            descricao: fakerPT_BR.lorem.paragraph(),
+            ordenacao: fakerPT_BR.number.int({ min: 1, max: 10 }),
             tipoPergunta: 'Texto',
             perguntaDesabilitada: true,
             perguntaObrigatoria: true,
-            explicacao: faker.lorem.sentence(),
+            explicacao: fakerPT_BR.lorem.sentence(),
             categoria1: 'Esportes',
             categoria2: 'Fácil'
         }
@@ -610,17 +610,17 @@ describe('Perguntas', () => {
         // Massa de dados para atualizar pergunta para o tipo "Múltipla Escolha"
         const dadosUpdate = {
             titulo: novoTitulo,
-            descricao: faker.lorem.paragraph(),
-            ordenacao: faker.number.int({ min: 1, max: 10 }),
+            descricao: fakerPT_BR.lorem.paragraph(),
+            ordenacao: fakerPT_BR.number.int({ min: 1, max: 10 }),
             tipoPergunta: 'Múltipla Escolha',
             perguntaDesabilitada: false,
             perguntaObrigatoria: false,
-            explicacao: faker.lorem.sentence(),
+            explicacao: fakerPT_BR.lorem.sentence(),
             categoria1: 'Tecnologia',
             categoria2: 'Difícil',
-            resposta1: faker.lorem.sentence(5),
-            resposta2: faker.lorem.sentence(5),
-            resposta3: faker.lorem.sentence(5),
+            resposta1: fakerPT_BR.lorem.sentence(5),
+            resposta2: fakerPT_BR.lorem.sentence(5),
+            resposta3: fakerPT_BR.lorem.sentence(5),
             radioResposta1: true,
             radioResposta2: true,
             radioResposta3: true
@@ -684,12 +684,12 @@ describe('Perguntas', () => {
         // Massa de dados para criar pergunta do tipo "Arquivo"
         const dados = {
             titulo: titulo,
-            descricao: faker.lorem.paragraph(),
-            ordenacao: faker.number.int({ min: 1, max: 10 }),
+            descricao: fakerPT_BR.lorem.paragraph(),
+            ordenacao: fakerPT_BR.number.int({ min: 1, max: 10 }),
             tipoPergunta: 'Arquivo',
             perguntaDesabilitada: true,
             perguntaObrigatoria: true,
-            explicacao: faker.lorem.sentence(),
+            explicacao: fakerPT_BR.lorem.sentence(),
             categoria1: 'Atualidades',
             categoria2: 'Médio'
         }
@@ -714,12 +714,12 @@ describe('Perguntas', () => {
         // Massa de dados para atualizar pergunta para o tipo "Faixa de Valores"
         const dadosUpdate = {
             titulo: novoTitulo,
-            descricao: faker.lorem.paragraph(),
-            ordenacao: faker.number.int({ min: 1, max: 10 }),
+            descricao: fakerPT_BR.lorem.paragraph(),
+            ordenacao: fakerPT_BR.number.int({ min: 1, max: 10 }),
             tipoPergunta: 'Faixa de Valores',
             perguntaDesabilitada: false,
             perguntaObrigatoria: false,
-            explicacao: faker.lorem.sentence(),
+            explicacao: fakerPT_BR.lorem.sentence(),
             categoria1: 'Entretenimento',
             categoria2: 'Fácil',
             valorInicial: '20',
@@ -783,12 +783,12 @@ describe('Perguntas', () => {
         // Massa de dados para criar pergunta do tipo "Faixa de Valores"
         const dados = {
             titulo: titulo,
-            descricao: faker.lorem.paragraph(),
-            ordenacao: faker.number.int({ min: 1, max: 10 }),
+            descricao: fakerPT_BR.lorem.paragraph(),
+            ordenacao: fakerPT_BR.number.int({ min: 1, max: 10 }),
             tipoPergunta: 'Faixa de Valores',
             perguntaDesabilitada: true,
             perguntaObrigatoria: true,
-            explicacao: faker.lorem.sentence(),
+            explicacao: fakerPT_BR.lorem.sentence(),
             valorInicial: '1',
             valorFinal: '10'
         }
@@ -813,15 +813,15 @@ describe('Perguntas', () => {
         // Massa de dados para atualizar pergunta para o tipo "Única Escolha"
         const dadosUpdate = {
             titulo: novoTitulo,
-            descricao: faker.lorem.paragraph(),
-            ordenacao: faker.number.int({ min: 1, max: 10 }),
+            descricao: fakerPT_BR.lorem.paragraph(),
+            ordenacao: fakerPT_BR.number.int({ min: 1, max: 10 }),
             tipoPergunta: 'Única Escolha',
             perguntaDesabilitada: false,
             perguntaObrigatoria: false,
-            explicacao: faker.lorem.sentence(),
-            resposta1: faker.lorem.sentence(5),
-            resposta2: faker.lorem.sentence(5),
-            resposta3: faker.lorem.sentence(5),
+            explicacao: fakerPT_BR.lorem.sentence(),
+            resposta1: fakerPT_BR.lorem.sentence(5),
+            resposta2: fakerPT_BR.lorem.sentence(5),
+            resposta3: fakerPT_BR.lorem.sentence(5),
             radioResposta1: false,
             radioResposta2: false,
             radioResposta3: true            
@@ -885,14 +885,14 @@ describe('Perguntas', () => {
         // Massa de dados para criar pergunta do tipo "Única Escolha"
         const dados = {
             titulo: titulo,
-            descricao: faker.lorem.paragraph(),
-            ordenacao: faker.number.int({ min: 1, max: 10 }),
+            descricao: fakerPT_BR.lorem.paragraph(),
+            ordenacao: fakerPT_BR.number.int({ min: 1, max: 10 }),
             tipoPergunta: 'Única Escolha',
             perguntaDesabilitada: true,
             perguntaObrigatoria: true,
-            explicacao: faker.lorem.sentence(),
-            resposta1: faker.lorem.sentence(5),
-            resposta2: faker.lorem.sentence(5),
+            explicacao: fakerPT_BR.lorem.sentence(),
+            resposta1: fakerPT_BR.lorem.sentence(5),
+            resposta2: fakerPT_BR.lorem.sentence(5),
             radioResposta1: false,
             radioResposta2: true
         }
@@ -917,12 +917,12 @@ describe('Perguntas', () => {
         // Massa de dados para atualizar pergunta para o tipo "Arquivo"
         const dadosUpdate = {
             titulo: novoTitulo,
-            descricao: faker.lorem.paragraph(),
-            ordenacao: faker.number.int({ min: 1, max: 10 }),
+            descricao: fakerPT_BR.lorem.paragraph(),
+            ordenacao: fakerPT_BR.number.int({ min: 1, max: 10 }),
             tipoPergunta: 'Arquivo',
             perguntaDesabilitada: false,
             perguntaObrigatoria: false,
-            explicacao: faker.lorem.sentence()
+            explicacao: fakerPT_BR.lorem.sentence()
         }
 
         cy.expandirPergunta(dados.descricao)
@@ -982,14 +982,14 @@ describe('Perguntas', () => {
         // Massa de dados para criar pergunta do tipo "Múltipla Escolha"
         const dados = {
             titulo: titulo,
-            descricao: faker.lorem.paragraph(),
-            ordenacao: faker.number.int({ min: 1, max: 10 }),
+            descricao: fakerPT_BR.lorem.paragraph(),
+            ordenacao: fakerPT_BR.number.int({ min: 1, max: 10 }),
             tipoPergunta: 'Múltipla Escolha',
             perguntaDesabilitada: true,
             perguntaObrigatoria: true,
-            explicacao: faker.lorem.sentence(),
-            resposta1: faker.lorem.sentence(5),
-            resposta2: faker.lorem.sentence(5),
+            explicacao: fakerPT_BR.lorem.sentence(),
+            resposta1: fakerPT_BR.lorem.sentence(5),
+            resposta2: fakerPT_BR.lorem.sentence(5),
             checkResposta2: true
         }
 
@@ -1013,12 +1013,12 @@ describe('Perguntas', () => {
         // Massa de dados para atualizar pergunta do tipo "Texto"
         const dadosUpdate = {
             titulo: novoTitulo,
-            descricao: faker.lorem.paragraph(),
-            ordenacao: faker.number.int({ min: 1, max: 10 }),
+            descricao: fakerPT_BR.lorem.paragraph(),
+            ordenacao: fakerPT_BR.number.int({ min: 1, max: 10 }),
             tipoPergunta: 'Texto',
             perguntaDesabilitada: false,
             perguntaObrigatoria: false,
-            explicacao: faker.lorem.sentence()
+            explicacao: fakerPT_BR.lorem.sentence()
         }
 
         cy.expandirPergunta(dados.descricao)

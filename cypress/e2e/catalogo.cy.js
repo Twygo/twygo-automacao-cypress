@@ -1,6 +1,6 @@
 /// reference types="cypress" />
 import 'cypress-real-events/support'
-import { faker } from '@faker-js/faker'
+import { fakerPT_BR } from '@faker-js/faker'
 import { getAuthToken } from '../support/auth_helper'
 import { gerarDataAtual } from '../support/utils_helper'
 import formConteudos from "../support/pageObjects/formConteudos"
@@ -74,7 +74,7 @@ describe('catálogo', () => {
 		tipoConteudo = 'catalogo'
 
 		// Gera um nome aleatório para o conteúdo
-		nome = faker.commerce.productName()
+		nome = fakerPT_BR.commerce.productName()
 
 		// Inicializa o array de categorias
 		categorias = []
@@ -131,8 +131,8 @@ describe('catálogo', () => {
 	it('1. CRUD catalogo com dados default', () => {
 		// Massa de dados para criação do catálogo
 		const conteudo = {
-			nome: faker.commerce.productName(),
-			descricao: faker.commerce.productDescription()
+			nome: fakerPT_BR.commerce.productName(),
+			descricao: fakerPT_BR.commerce.productDescription()
 		}
 
 		// CREATE
@@ -156,8 +156,8 @@ describe('catálogo', () => {
 		// UPDATE
 		cy.log('## UPDATE ##')
 
-		const novoNome = faker.commerce.productName()
-		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
+		const novoNome = fakerPT_BR.commerce.productName()
+		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudoEdit = {
 			nome: novoNome,
 			data_inicio: '29/03/2024',
@@ -169,9 +169,9 @@ describe('catálogo', () => {
 			modalidade: 'Presencial',
 			sincronismo: 'Ao vivo',
 			canal: 'Outros',
-			carga_horaria: faker.number.int({ min: 1, max: 9 }),
-			numero_turma: faker.number.int({ min: 1, max: 9 }),
-			vigencia: faker.number.int({ min: 1, max: 9 }),
+			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			numero_turma: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			atualizar_inscritos: true,
 			local: 'Centro de Eventos',
 			cep: '85803-760',
@@ -180,11 +180,11 @@ describe('catálogo', () => {
 			cidade: 'Cascavel',
 			estado: 'PR',
 			pais: 'Brasil',
-			email_responsavel: faker.internet.email(),
-			site: faker.internet.url(),
+			email_responsavel: fakerPT_BR.internet.email(),
+			site: fakerPT_BR.internet.url(),
 			notificar_responsavel: true,
 			rotulo_contato: 'Contato',
-			hashtag: faker.hacker.adjective(),
+			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
 			remover_banner: true,
 			permite_anexo: 'Habilitado',
@@ -194,13 +194,13 @@ describe('catálogo', () => {
 			situacao: 'Liberado',
 			notificar_concluir_primeira_aula: 'Sim',
 			notificar_usuarios: 'Sim',
-			dias_teste: faker.number.int({ min: 1, max: 9 }),
+			dias_teste: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			habilitar_dias_teste: true,
 			exige_confirmacao: 'Desabilitado',
-			valor_inscricao: faker.commerce.price({ min: 1, max: 9 }),
+			valor_inscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
 			habilitar_pagamento: true,
-			nr_parcelas: faker.number.int({ min: 1, max: 9 }),
-			valor_acrescimo: faker.commerce.price({ min: 1, max: 9, dec: 1 })
+			nr_parcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			valor_acrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 })
 		}
 		
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
@@ -259,21 +259,21 @@ describe('catálogo', () => {
 	 */
 	it('2. CRUD catalogo liberado, com anexo, com pagamento, sem acréscimo, com confirmação, com visualização para inscritos', () => {
 		// Massa de dados para criação do catálogo
-		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
+		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
 			data_inicio: '29/03/2024',
 			hora_inicio: '01:00',
 			data_fim: '29/04/2024',
 			hora_fim: '23:00',
-			descricao: faker.commerce.productDescription(),
+			descricao: fakerPT_BR.commerce.productDescription(),
 			tipo: 'Congresso',
 			modalidade: 'Presencial',
 			sincronismo: 'Ao vivo',
 			canal: 'Outros',
-			carga_horaria: faker.number.int({ min: 1, max: 9 }),
-			numero_turma: faker.number.int({ min: 1, max: 9 }),
-			vigencia: faker.number.int({ min: 1, max: 9 }),
+			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			numero_turma: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			local: 'Centro de Eventos',
 			cep: '85804-455',
 			endereco: 'Rua das Flores',
@@ -281,11 +281,11 @@ describe('catálogo', () => {
 			cidade: 'Joinville',
 			estado: 'SC',
 			pais: 'Brasil',
-			email_responsavel: faker.internet.email(),
-			site: faker.internet.url(),
+			email_responsavel: fakerPT_BR.internet.email(),
+			site: fakerPT_BR.internet.url(),
 			notificar_responsavel: true,
 			rotulo_contato: 'Fale conosco',
-			hashtag: faker.hacker.adjective(),
+			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
 			permite_anexo: 'Habilitado',
 			status_iframe_anexo: true,
@@ -293,12 +293,12 @@ describe('catálogo', () => {
 			visualizacao: 'Inscritos',
 			situacao: 'Liberado',
 			notificar_concluir_primeira_aula: 'Sim',
-			dias_teste: faker.number.int({ min: 1, max: 9 }),
+			dias_teste: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			habilitar_dias_teste: true,
 			exige_confirmacao: 'Habilitado',
-			valor_inscricao: faker.commerce.price({ min: 1, max: 9 }),
+			valor_inscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
 			habilitar_pagamento: true,
-			nr_parcelas: faker.number.int({ min: 1, max: 9 })
+			nr_parcelas: fakerPT_BR.number.int({ min: 1, max: 9 })
 		}
 
 		// CREATE
@@ -322,8 +322,8 @@ describe('catálogo', () => {
 		// UPDATE
 		cy.log('## UPDATE ##')
 
-		const novoNome = faker.commerce.productName()
-		categorias = [`Cat3-${faker.hacker.noun()}`]
+		const novoNome = fakerPT_BR.commerce.productName()
+		categorias = [`Cat3-${fakerPT_BR.hacker.noun()}`]
 		const conteudoEdit = {
 			nome: novoNome,
 			data_inicio: '01/01/2023',
@@ -335,16 +335,16 @@ describe('catálogo', () => {
 			modalidade: 'Online',
 			sincronismo: 'Gravado',
 			canal: '',
-			carga_horaria: faker.number.int({ min: 1, max: 9 }),
-			numero_turma: faker.number.int({ min: 1, max: 9 }),
-			vigencia: faker.number.int({ min: 1, max: 9 }),
+			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			numero_turma: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			atualizar_inscritos: true,
 			local: 'T&D Connect',
-			email_responsavel: faker.internet.email(),
-			site: faker.internet.url(),
+			email_responsavel: fakerPT_BR.internet.email(),
+			site: fakerPT_BR.internet.url(),
 			notificar_responsavel: false,
 			rotulo_contato: 'Contato',
-			hashtag: faker.hacker.adjective(),
+			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
 			remover_banner: true,
 			permite_anexo: 'Desabilitado',
@@ -353,10 +353,10 @@ describe('catálogo', () => {
 			situacao: 'Suspenso',
 			notificar_concluir_primeira_aula: 'Não',
 			notificar_usuarios: 'Sim',
-			dias_teste: faker.number.int({ min: 1, max: 9 }),
+			dias_teste: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			habilitar_dias_teste: false,
 			exige_confirmacao: 'Desabilitado',
-			valor_inscricao: faker.commerce.price({ min: 1, max: 9 }),
+			valor_inscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
 			habilitar_pagamento: false
 		}
 
@@ -426,26 +426,26 @@ describe('catálogo', () => {
 	 */
 	it('3. CRUD catalogo liberado, com anexo, com pagamento, c/acréscimo, sem confirmação, com visualização para público', () => {
 		// Massa de dados para criação do catálogo
-		const categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`, `Cat3-${faker.hacker.noun()}`]
+		const categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`, `Cat3-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
 			data_inicio: '29/01/2023',
 			hora_inicio: '11:20',
 			data_fim: '29/01/2024',
 			hora_fim: '22:02',
-			descricao: faker.commerce.productDescription(),
+			descricao: fakerPT_BR.commerce.productDescription(),
 			tipo: 'Feira',
 			modalidade: 'Online',
 			sincronismo: 'Gravado',
 			canal: 'Em companhia',
-			carga_horaria: faker.number.int({ min: 10, max: 99 }),
-			numero_turma: faker.number.int({ min: 10, max: 99 }),
-			vigencia: faker.number.int({ min: 10, max: 99 }),
+			carga_horaria: fakerPT_BR.number.int({ min: 10, max: 99 }),
+			numero_turma: fakerPT_BR.number.int({ min: 10, max: 99 }),
+			vigencia: fakerPT_BR.number.int({ min: 10, max: 99 }),
 			local: 'Youtube',
-			email_responsavel: faker.internet.email(),
-			site: faker.internet.url(),
+			email_responsavel: fakerPT_BR.internet.email(),
+			site: fakerPT_BR.internet.url(),
 			rotulo_contato: 'Entre em contato conosco para mais informações.',
-			hashtag: faker.hacker.adjective(),
+			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
 			permite_anexo: 'Habilitado',
 			status_iframe_anexo: true,
@@ -453,13 +453,13 @@ describe('catálogo', () => {
 			situacao: 'Liberado',
 			notificar_concluir_primeira_aula: 'Sim',
 			notificar_usuarios: 'Sim',
-			dias_teste: faker.number.int({ min: 10, max: 99 }),
+			dias_teste: fakerPT_BR.number.int({ min: 10, max: 99 }),
 			habilitar_dias_teste: true,
 			exige_confirmacao: 'Desabilitado',
-			valor_inscricao: faker.commerce.price({ min: 10, max: 99 }),
+			valor_inscricao: fakerPT_BR.commerce.price({ min: 10, max: 99 }),
 			habilitar_pagamento: true,
-			nr_parcelas: faker.number.int({ min: 10, max: 12 }),
-			valor_acrescimo: faker.commerce.price({ min: 1, max: 9, dec: 1 })
+			nr_parcelas: fakerPT_BR.number.int({ min: 10, max: 12 }),
+			valor_acrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 })
 		}
 
 		// CREATE
@@ -483,8 +483,8 @@ describe('catálogo', () => {
 		// UPDATE
 		cy.log('## UPDATE ##')
 
-		const novoNome = faker.commerce.productName()
-		novasCategorias = [`Cat4-${faker.hacker.noun()}`, `Cat5-${faker.hacker.noun()}`]
+		const novoNome = fakerPT_BR.commerce.productName()
+		novasCategorias = [`Cat4-${fakerPT_BR.hacker.noun()}`, `Cat5-${fakerPT_BR.hacker.noun()}`]
 		const conteudoEdit = {
 			nome: novoNome,
 			data_inicio: '10/03/2000',
@@ -496,28 +496,28 @@ describe('catálogo', () => {
 			modalidade: 'Presencial',
 			sincronismo: 'Ao vivo',
 			canal: 'Aberto',
-			carga_horaria: faker.number.int({ min: 1, max: 9 }),
-			numero_turma: faker.number.int({ min: 1, max: 9 }),
-			vigencia: faker.number.int({ min: 1, max: 9 }),
+			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			numero_turma: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			atualizar_inscritos: true,
 			local: '',
-			email_responsavel: faker.internet.email(),
-			site: faker.internet.url(),
+			email_responsavel: fakerPT_BR.internet.email(),
+			site: fakerPT_BR.internet.url(),
 			notificar_responsavel: true,
 			rotulo_contato: 'Mande-nos um e-mail',
-			hashtag: faker.hacker.adjective(),
+			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: novasCategorias,
 			remover_banner: true,
 			permite_anexo: 'Habilitado',
 			status_iframe_anexo: true,
-			mensagem_anexo: faker.lorem.sentence(),
+			mensagem_anexo: fakerPT_BR.lorem.sentence(),
 			visualizacao: 'Colaborador',
 			situacao: 'Em desenvolvimento',
 			notificar_concluir_primeira_aula: 'Não',
-			dias_teste: faker.number.int({ min: 1, max: 9 }),
+			dias_teste: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			habilitar_dias_teste: false,
 			exige_confirmacao: 'Desabilitado',
-			valor_inscricao: faker.commerce.price({ min: 1, max: 9 }),
+			valor_inscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
 			habilitar_pagamento: false
 		}
 
@@ -578,29 +578,29 @@ describe('catálogo', () => {
 	 */
 	it('4. CRUD catalogo suspenso, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
 		// Massa de dados para criação do catálogo
-		categorias = [`Cat1-${faker.hacker.noun()}`]
+		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
 			data_inicio: gerarDataAtual(),
 			hora_inicio: '01:00',
 			data_fim: gerarDataAtual(),
 			hora_fim: '23:00',
-			descricao: faker.commerce.productDescription(),
+			descricao: fakerPT_BR.commerce.productDescription(),
 			tipo: 'Outros',
 			modalidade: 'Online',
 			sincronismo: 'Gravado',
 			canal: 'Aberto',
-			carga_horaria: faker.number.int({ min: 100, max: 999 }),
-			numero_turma: faker.number.int({ min: 100, max: 999 }),
-			vigencia: faker.number.int({ min: 100, max: 999 }),
+			carga_horaria: fakerPT_BR.number.int({ min: 100, max: 999 }),
+			numero_turma: fakerPT_BR.number.int({ min: 100, max: 999 }),
+			vigencia: fakerPT_BR.number.int({ min: 100, max: 999 }),
 			local: 'Youtube',
-			email_responsavel: faker.internet.email(),
-			site: faker.internet.url(),
-			hashtag: faker.hacker.adjective(),
+			email_responsavel: fakerPT_BR.internet.email(),
+			site: fakerPT_BR.internet.url(),
+			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
 			visualizacao: 'Colaborador',
 			situacao: 'Suspenso',
-			dias_teste: faker.number.int({ min: 100, max: 999 }),
+			dias_teste: fakerPT_BR.number.int({ min: 100, max: 999 }),
 			exige_confirmacao: 'Habilitado'
 		}
 
@@ -625,7 +625,7 @@ describe('catálogo', () => {
 		// UPDATE
 		cy.log('## UPDATE ##')
 		
-		novasCategorias = [`Cat2-${faker.hacker.noun()}`, `Cat3-${faker.hacker.noun()}`]
+		novasCategorias = [`Cat2-${fakerPT_BR.hacker.noun()}`, `Cat3-${fakerPT_BR.hacker.noun()}`]
 		const conteudoEdit = {
 			data_inicio: '01/01/2000',
 			data_fim: '28/02/2030',
@@ -694,26 +694,26 @@ describe('catálogo', () => {
 	 */	
 	it('5. CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
 		// Massa de dados para criação do catálogo
-		categorias = [`Cat1-${faker.hacker.noun()}`]
+		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
-			descricao: faker.commerce.productDescription(),
+			descricao: fakerPT_BR.commerce.productDescription(),
 			tipo: 'Palestra',
 			modalidade: 'Online',
 			sincronismo: 'Gravado',
 			canal: 'Aberto',
-			carga_horaria: faker.number.int({ min: 1000, max: 9999 }),
-			numero_turma: faker.number.int({ min: 1000, max: 9999 }),
-			vigencia: faker.number.int({ min: 1000, max: 9999 }),
+			carga_horaria: fakerPT_BR.number.int({ min: 1000, max: 9999 }),
+			numero_turma: fakerPT_BR.number.int({ min: 1000, max: 9999 }),
+			vigencia: fakerPT_BR.number.int({ min: 1000, max: 9999 }),
 			local: 'Twygo',
-			email_responsavel: faker.internet.email(),
-			site: faker.internet.url(),
-			hashtag: faker.hacker.adjective(),
+			email_responsavel: fakerPT_BR.internet.email(),
+			site: fakerPT_BR.internet.url(),
+			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
 			visualizacao: 'Usuários',
 			situacao: 'Suspenso',
 			notificar_concluir_primeira_aula: 'Não',
-			dias_teste: faker.number.int({ min: 1000, max: 9999 }),
+			dias_teste: fakerPT_BR.number.int({ min: 1000, max: 9999 }),
 			exige_confirmacao: 'Habilitado'
 		}
 
@@ -799,20 +799,20 @@ describe('catálogo', () => {
 	 */
 	it('6. CRUD catalogo liberado, sem anexo, sem pagamento, sem confirmação, com visualização para público', () => {
 		// Massa de dados para criação do catálogo
-		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
+		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
-			descricao: faker.commerce.productDescription(),
+			descricao: fakerPT_BR.commerce.productDescription(),
 			tipo: 'Webinar',
 			modalidade: 'Online',
 			sincronismo: 'Gravado',
 			canal: 'Aberto',
-			carga_horaria: faker.number.int({ min: 1, max: 99 }),
-			numero_turma: faker.number.int({ min: 1, max: 99 }),
-			vigencia: faker.number.int({ min: 1, max: 99 }),
+			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 99 }),
+			numero_turma: fakerPT_BR.number.int({ min: 1, max: 99 }),
+			vigencia: fakerPT_BR.number.int({ min: 1, max: 99 }),
 			local: 'Zoom',
-			email_responsavel: faker.internet.email(),
-			site: faker.internet.url(),
+			email_responsavel: fakerPT_BR.internet.email(),
+			site: fakerPT_BR.internet.url(),
 			addCategoria: categorias,
 			visualizacao: 'Público',
 			situacao: 'Liberado',
@@ -902,18 +902,18 @@ describe('catálogo', () => {
 	 */
 	it('7. CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários', () => {
 		// Massa de dados para criação do catálogo
-		categorias = [`Cat1-${faker.hacker.noun()}`, `Cat2-${faker.hacker.noun()}`]
+		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
-			descricao: faker.commerce.productDescription(),
+			descricao: fakerPT_BR.commerce.productDescription(),
 			tipo: 'Treinamento',
 			modalidade: 'Online',
 			sincronismo: 'Ao vivo',
 			canal: 'Aberto',
 			vigencia: '10000',
 			local: 'Twitch',
-			site: faker.internet.url(),
-			hashtag: `#${faker.hacker.abbreviation()}`,
+			site: fakerPT_BR.internet.url(),
+			hashtag: `#${fakerPT_BR.hacker.abbreviation()}`,
 			addCategoria: categorias,
 			visualizacao: 'Usuários',
 			situacao: 'Em desenvolvimento',

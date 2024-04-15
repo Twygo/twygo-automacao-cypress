@@ -1,5 +1,5 @@
 /// reference types="cypress" />
-import { faker } from '@faker-js/faker'
+import { fakerPT_BR } from '@faker-js/faker'
 import estruturaAtividades from '../support/pageObjects/estruturaAtividades'
 import formAtividades from '../support/pageObjects/formAtividades'
 
@@ -145,8 +145,8 @@ describe('Criar atividade', () => {
         tipoConteudo = 'biblioteca'
 
         // Gera um nome aleatório para o conteúdo e para a atividade
-        nomeConteudo = faker.commerce.productName()
-        nomeAtividade = faker.commerce.productName()
+        nomeConteudo = fakerPT_BR.commerce.productName()
+        nomeAtividade = fakerPT_BR.commerce.productName()
 
         // Acessa página de biblioteca e gera uma lista com os conteúdos para serem excluídos
         cy.loginTwygoAutomacao()
@@ -283,8 +283,8 @@ describe('Criar atividade', () => {
 
         const dadosUpdate = {
             titulo: nomeAtividade,
-            descricaoTexto: faker.lorem.sentence(10),
-            resumoAtividade: faker.lorem.sentence(5)
+            descricaoTexto: fakerPT_BR.lorem.sentence(10),
+            resumoAtividade: fakerPT_BR.lorem.sentence(5)
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
@@ -385,7 +385,7 @@ describe('Criar atividade', () => {
                 nome: 'teste_pdf.pdf',
                 tamanho: '28102'
             },
-            resumoAtividade: faker.lorem.sentence(15)
+            resumoAtividade: fakerPT_BR.lorem.sentence(15)
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
@@ -486,7 +486,7 @@ describe('Criar atividade', () => {
                 nome: 'teste_video.mp4',
                 tamanho: '50809927'
             },
-            resumoAtividade: faker.lorem.sentence(50)
+            resumoAtividade: fakerPT_BR.lorem.sentence(50)
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
@@ -588,7 +588,7 @@ describe('Criar atividade', () => {
             videoUrl: 'https://www.youtube.com/watch?v=OyTN-MF-OEg',
             marcarConcluidoVideoExterno: true,
             naoMostrarProgressoVideoExterno: true,
-            resumoAtividade: faker.lorem.sentence(8)
+            resumoAtividade: fakerPT_BR.lorem.sentence(8)
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
@@ -689,7 +689,7 @@ describe('Criar atividade', () => {
                 nome: 'Sophia_estudiosa.png',
                 tamanho: '34264'
             },
-            resumoAtividade: faker.lorem.sentence(22)
+            resumoAtividade: fakerPT_BR.lorem.sentence(22)
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
@@ -755,7 +755,7 @@ describe('Criar atividade', () => {
         // Massa de dados para criação de atividade
         const dados = {
             tipoAtividade: 'Questionário',
-            selecionarQuestionario: faker.lorem.sentence(3)
+            selecionarQuestionario: fakerPT_BR.lorem.sentence(3)
         }
 
         // Criar questionário
@@ -791,7 +791,7 @@ describe('Criar atividade', () => {
 
         const dadosUpdate = {
             titulo: nomeAtividade,
-            resumoAtividade: faker.lorem.sentence(6)
+            resumoAtividade: fakerPT_BR.lorem.sentence(6)
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
@@ -900,7 +900,7 @@ describe('Criar atividade', () => {
                 nome: 'teste_scorm2.zip',
                 tamanho: '8,3 MB'
             },    
-            resumoAtividade: faker.lorem.sentence(19)
+            resumoAtividade: fakerPT_BR.lorem.sentence(19)
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
@@ -998,7 +998,7 @@ describe('Criar atividade', () => {
         const dadosUpdate = {
             titulo: nomeAtividade,
             codigoCompartilhamento: '<iframe src= "https://kahoot.it/challenge/0857294?challenge-id=502fec44-a2dc-4312-807a-65e1d9bc4a4d_1695673333050" width=620 height=280></iframe>',
-            resumoAtividade: faker.lorem.sentence(2)
+            resumoAtividade: fakerPT_BR.lorem.sentence(2)
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})

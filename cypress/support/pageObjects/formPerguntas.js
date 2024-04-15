@@ -115,6 +115,29 @@ class formPerguntas {
             .click( { force: true } )
     }
 
+    /** DOCUMENTAÇÃO:
+     * @name preencherCampo
+     * 
+     * @description
+     * Preenche um campo do formulário com um valor específico e define se o campo deve ser limpo antes de preencher.
+     * 
+     * @actions
+     * 1. Verifica se o campo existe no formulário
+     * 2. Verifica o tipo do campo
+     * 3. Verifica se o campo deve ser limpo antes de preencher
+     * 4. Preenche o campo com o valor informado
+     * 
+     * @param {string} nomeCampo - Nome do campo a ser preenchido
+     * @param {string} valor - Valor a ser preenchido no campo
+     * @param {object} opcoes - Opções para definir se o campo deve ser limpo antes de preencher
+     * 
+     * @example
+     * preencherCampo('titulo', 'Título da pergunta')
+     * 
+     * @author Karla Daiany
+     * @version 1.0.0
+     * @since 1.0.0
+     */
     preencherCampo(nomeCampo, valor, opcoes = { limpar: false }) {
 		const campo = this.elementos[nomeCampo]
 
@@ -175,6 +198,30 @@ class formPerguntas {
 		}
 	}
 
+    /** DOCUMENTAÇÃO:
+     * @name validarCampo
+     * 
+     * @description
+     * Valida o valor de um campo do formulário.
+     * 
+     * @actions
+     * 1. Verifica se o campo existe no formulário
+     * 2. Verifica o tipo do campo
+     * 3. Valida o valor do campo
+     * 
+     * @param {string} nomeCampo - Nome do campo a ser validado
+     * @param {string} valor - Valor a ser validado no campo
+     * 
+     * @example
+     * validarCampo('titulo', 'Título da pergunta')
+     * 
+     * @throws {Error} - Lança um erro se o campo não for encontrado
+     * @throws {Error} - Lança um erro se o tipo do campo não for suportado
+     * 
+     * @author Karla Daiany
+     * @version 1.0.0
+     * @since 1.0.0
+     */
     validarCampo(nomeCampo, valor) {
 		const campo = this.elementos[nomeCampo]
 

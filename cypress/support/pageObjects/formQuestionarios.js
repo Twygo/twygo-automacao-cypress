@@ -143,7 +143,7 @@ class formQuestionarios {
 
 		let valorFinal = valor !== undefined ? valor : valorDefault
 
-		if (opcoes.limpar && tipo === 'input') {
+		if (opcoes.limpar && tipo === 'input' || tipo === 'input_title') {
 			cy.get(seletor)
 				.clear()
 			if (valorFinal === '') {

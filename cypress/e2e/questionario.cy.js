@@ -1,5 +1,5 @@
 ///reference types="cypress" />
-import { faker } from '@faker-js/faker'
+import { fakerPT_BR } from '@faker-js/faker'
 import formQuestionarios from '../support/pageObjects/formQuestionarios'
 
 describe('Questionário', () => {
@@ -30,7 +30,7 @@ describe('Questionário', () => {
 
     beforeEach(() => {     
         // Gerar um nome aleatório para o questionário
-        nomeQuestionario = faker.commerce.productName()
+        nomeQuestionario = fakerPT_BR.commerce.productName()
         nomeCategoria1 = 'Assunto'
         nomeCategoria2 = 'Dificuldade'
 
@@ -119,7 +119,7 @@ describe('Questionário', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            nome: faker.commerce.productName(),
+            nome: fakerPT_BR.commerce.productName(),
             tipoProva: false,
             tipoPesquisa: true,
             comentarioAluno: false,
@@ -214,7 +214,7 @@ describe('Questionário', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            nome: faker.commerce.productName(),
+            nome: fakerPT_BR.commerce.productName(),
             tipoProva: true,
             tipoPesquisa: false,
             comentarioAluno: false,
@@ -309,7 +309,7 @@ describe('Questionário', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            nome: faker.commerce.productName(),
+            nome: fakerPT_BR.commerce.productName(),
             tipoProva: false,
             tipoPesquisa: true,
             comentarioAluno: false,
@@ -404,7 +404,7 @@ describe('Questionário', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            nome: faker.commerce.productName(),
+            nome: fakerPT_BR.commerce.productName(),
             tipoProva: true,
             tipoPesquisa: false,
             comentarioAluno: false,
@@ -500,7 +500,7 @@ describe('Questionário', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            nome: faker.commerce.productName(),
+            nome: fakerPT_BR.commerce.productName(),
             tipoProva: false,
             tipoPesquisa: true,
             comentarioAluno: true,
@@ -613,7 +613,7 @@ describe('Questionário', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            nome: faker.commerce.productName(),
+            nome: fakerPT_BR.commerce.productName(),
             tipoProva: true,
             tipoPesquisa: false,
             comentarioAluno: true,
@@ -715,11 +715,13 @@ describe('Questionário', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            nome: faker.commerce.productName(),
+            nome: fakerPT_BR.commerce.productName(),
             tipoProva: false,
             tipoPesquisa: true,
-            excluirCategoria: 'Entretenimento',
-            excluirCategoria: 'Difícil'
+            nomeCategoria1: nomeCategoria1,
+            nomeCategoria2: nomeCategoria2,
+            addCategoria1: addCategoria1,
+            addCategoria2: addCategoria2
         }
 
         cy.preencherDadosQuestionario(dadosUpdate, { limpar: true })

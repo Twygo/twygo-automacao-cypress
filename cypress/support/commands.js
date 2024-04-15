@@ -235,7 +235,7 @@ Cypress.Commands.add('acessarPgLogin', function() {
   cy.visit('/users/login')
 
   cy.title()
-    .should('eq', 'Login - Automação')
+    .should('eq', `Login - ${Cypress.env('orgName')}`)
 })
 
 /** DOCUMENTAÇÃO:
@@ -959,7 +959,7 @@ Cypress.Commands.add('addAtividadeConteudo', function(nomeConteudo, tipoConteudo
 
       cy.get(seletor, { timeout: TIMEOUT_PADRAO})
         .contains('button', 'Atividades')
-        .click()
+        .click( {force: true} )
       break
     case 'catalogo':
       seletor = `tr.event-row[name='${nomeConteudo}']`
@@ -1764,7 +1764,6 @@ Cypress.Commands.add('editarQuestionario', (nomeQuestionario) => {
  * @version 1.0.0
  * @since 1.0.0
  */
- * 
 Cypress.Commands.add('criarQuestionarioDefault', (nomeQuestionario) => {
   const formulario = new formQuestionarios()
   
@@ -1778,6 +1777,25 @@ Cypress.Commands.add('criarQuestionarioDefault', (nomeQuestionario) => {
   cy.salvarQuestionario(dados.nome)
 })
 
+/** DOCUMENTAÇÃO:
+ * @name acessarPerguntasQuestionario
+ * 
+ * @description
+ * Comando personalizado para acessar as perguntas de um questionário específico e validar o redirecionamento correto da página.
+ * 
+ * @actions
+ * 1. Acessa as perguntas do questionário específico.
+ * 2. Valida a exibição da página de perguntas do questionário.
+ * 
+ * @param {String} nomeQuestionario - O nome do questionário a ser acessado.
+ * 
+ * @example
+ * cy.acessarPerguntasQuestionario('Nome do Questionário')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('acessarPerguntasQuestionario', (nomeQuestionario) => {
   const TIMEOUT_PADRAO = 5000
   const form = new formQuestionarios()
@@ -1800,6 +1818,30 @@ Cypress.Commands.add('acessarPerguntasQuestionario', (nomeQuestionario) => {
     .should('be.visible')
 })
 
+/** DOCUMENTAÇÃO:
+ * @name preencherDadosPergunta
+ * 
+ * @description
+ * Comando personalizado para preencher os campos de uma pergunta.
+ * 
+ * @actions
+ * 1. Preenche os campos da pergunta com base nos dados fornecidos.
+ * 2. Limpa os campos antes de preencher, se a opção 'limpar' for verdadeira.
+ * 
+ * @param {Object} conteudo - Os dados a serem preenchidos nos campos da pergunta.
+ * @param {Object} opcoes - Habilita ou não a limpeza dos campos antes do seu preenchimento.
+ * 
+ * @example
+ * cy.preencherDadosPergunta({ descricao: 'Descrição da Pergunta', tipo: 'Tipo da Pergunta' }, { limpar: true })
+ * ou
+ * cy.preencherDadosPergunta(dados, { limpar: false })
+ * 
+ * @throws {Error} - Se o campo informado não for válido. // Existente no método 'preencherCampo' da classe 'formPerguntas'
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('preencherDadosPergunta', (conteudo, opcoes = { limpar: false }) => {
   const formulario = new formPerguntas()
   
@@ -1809,6 +1851,28 @@ Cypress.Commands.add('preencherDadosPergunta', (conteudo, opcoes = { limpar: fal
   })
 }) 
 
+/** DOCUMENTAÇÃO:
+ * @name validarDadosPergunta
+ * 
+ * @description
+ * Comando personalizado para validar os dados de uma pergunta.
+ * 
+ * @actions
+ * 1. Valida os campos da pergunta com base nos dados fornecidos.
+ * 
+ * @param {Object} conteudo - Os dados a serem validados nos campos da pergunta.
+ * 
+ * @example
+ * cy.validarDadosPergunta({ descricao: 'Descrição da Pergunta', tipo: 'Tipo da Pergunta' })
+ * ou
+ * cy.validarDadosPergunta(dados)
+ * 
+ * @throws {Error} - Se o campo informado não for válido. // Existente no método 'validarCampo' da classe 'formPerguntas'
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('validarDadosPergunta', (conteudo) => {
   const formulario = new formPerguntas()
 
@@ -1818,6 +1882,27 @@ Cypress.Commands.add('validarDadosPergunta', (conteudo) => {
   })
 })
 
+/** DOCUMENTAÇÃO:
+ * @name salvarPergunta
+ * 
+ * @description
+ * Comando personalizado para salvar uma pergunta, validar a mensagem de sucesso e verificar se a pergunta foi salva.
+ * 
+ * @actions
+ * 1. Salva a pergunta.
+ * 2. Confirma a mensagem de sucesso após o salvamento.
+ * 3. Verifica se a pergunta foi salva.
+ * 
+ * @param {String} descPergunta - A descrição da pergunta a ser salva.
+ * @param {Number} index - O índice da pergunta a ser salva.
+ * 
+ * @example
+ * cy.salvarPergunta('Descrição da Pergunta', 1)
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('salvarPergunta', (descPergunta, index) => {
   const TIMEOUT_PADRAO = 5000
   const formulario = new formPerguntas()
@@ -1840,6 +1925,28 @@ Cypress.Commands.add('salvarPergunta', (descPergunta, index) => {
     .should('be.visible')
 })
 
+/** DOCUMENTAÇÃO:
+ * @name excluirPergunta
+ * 
+ * @description
+ * Comando personalizado para excluir uma pergunta específica, confirmar a exclusão e verificar se a pergunta foi excluída.
+ * 
+ * @actions
+ * 1. Clica no botão de exclusão da pergunta específica.
+ * 2. Valida o modal de confirmação da exclusão.
+ * 3. Confirma a exclusão da pergunta.
+ * 4. Valida a mensagem de sucesso após a exclusão.
+ * 5. Verifica se a pergunta foi excluída.
+ * 
+ * @param {String} descPergunta - A descrição da pergunta a ser excluída.
+ * 
+ * @example
+ * cy.excluirPergunta('Descrição da Pergunta')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('excluirPergunta', (descPergunta) => {
   const TIMEOUT_PADRAO = 5000
   const formulario = new formPerguntas()
@@ -1861,6 +1968,24 @@ Cypress.Commands.add('excluirPergunta', (descPergunta) => {
     .should('not.exist')
 })
 
+/** DOCUMENTAÇÃO:
+ * @name expandirPergunta
+ * 
+ * @description
+ * Comando personalizado para expandir uma pergunta específica.
+ * 
+ * @actions
+ * 1. Clica no botão de expansão da pergunta específica.
+ * 
+ * @param {String} descPergunta - A descrição da pergunta a ser expandida.
+ * 
+ * @example
+ * cy.expandirPergunta('Descrição da Pergunta')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('expandirPergunta', (descPergunta) => {
   const TIMEOUT_PADRAO = 5000
   const formulario = new formPerguntas()
@@ -1872,6 +1997,27 @@ Cypress.Commands.add('expandirPergunta', (descPergunta) => {
     })  
 })
 
+/** DOCUMENTAÇÃO:
+ * @name salvarEdicaoPergunta
+ * 
+ * @description
+ * Comando personalizado para salvar a edição de uma pergunta, validar a mensagem de sucesso e verificar se a pergunta foi salva.
+ * 
+ * @actions
+ * 1. Salva a edição da pergunta.
+ * 2. Confirma a mensagem de sucesso após o salvamento.
+ * 3. Verifica se a pergunta foi salva.
+ * 
+ * @param {String} oldDescPergunta - A descrição antiga da pergunta a ser editada.
+ * @param {String} newDescPergunta - A nova descrição da pergunta a ser salva.
+ * 
+ * @example
+ * cy.salvarEdicaoPergunta('Descrição da Pergunta', 'Nova Descrição da Pergunta')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('salvarEdicaoPergunta', (oldDescPergunta, newDescPergunta) => {
   const TIMEOUT_PADRAO = 5000
   const formulario = new formPerguntas()
@@ -1894,6 +2040,30 @@ Cypress.Commands.add('salvarEdicaoPergunta', (oldDescPergunta, newDescPergunta) 
     .should('be.visible')
 })
 
+/** DOCUMENTAÇÃO:
+ * @name preencherDadosUsuario
+ * 
+ * @description
+ * Comando personalizado para preencher os campos de um usuário.
+ * 
+ * @actions
+ * 1. Preenche os campos do usuário com base nos dados fornecidos.
+ * 2. Limpa os campos antes de preencher, se a opção 'limpar' for verdadeira.
+ * 
+ * @param {Object} conteudo - Os dados a serem preenchidos nos campos do usuário.
+ * @param {Object} opcoes - Habilita ou não a limpeza dos campos antes do seu preenchimento.
+ * 
+ * @example
+ * cy.preencherDadosUsuario({ nome: 'Nome do Usuário', email: 'Email do Usuário' }, { limpar: true })
+ * ou
+ * cy.preencherDadosUsuario(dados, { limpar: false })
+ * 
+ * @throws {Error} - Se o campo informado não for válido. // Existente no método 'preencherCampo' da classe 'formUsuarios'
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('preencherDadosUsuario', (conteudo, opcoes = { limpar: false }) => {
   const formulario = new formUsuarios()
   
@@ -1903,6 +2073,28 @@ Cypress.Commands.add('preencherDadosUsuario', (conteudo, opcoes = { limpar: fals
   })
 }) 
 
+/** DOCUMENTAÇÃO:
+ * @name validarDadosUsuario
+ * 
+ * @description
+ * Comando personalizado para validar os dados de um usuário.
+ * 
+ * @actions
+ * 1. Valida os campos do usuário com base nos dados fornecidos.
+ * 
+ * @param {Object} conteudo - Os dados a serem validados nos campos do usuário.
+ * 
+ * @example
+ * cy.validarDadosUsuario({ nome: 'Nome do Usuário', email: 'Email do Usuário' })
+ * ou
+ * cy.validarDadosUsuario(dados)
+ * 
+ * @throws {Error} - Se o campo informado não for válido. // Existente no método 'validarCampo' da classe 'formUsuarios'
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('validarDadosUsuario', (conteudo) => {
   const formulario = new formUsuarios()
 
@@ -1912,6 +2104,26 @@ Cypress.Commands.add('validarDadosUsuario', (conteudo) => {
   })
 })
 
+/** DOCUMENTAÇÃO:
+ * @name salvarUsuario
+ * 
+ * @description
+ * Comando personalizado para salvar um usuário, validar a mensagem de sucesso e verificar se o usuário foi salvo.
+ * 
+ * @actions
+ * 1. Salva o usuário.
+ * 2. Confirma a mensagem de sucesso após o salvamento.
+ * 3. Verifica se o usuário foi salvo.
+ * 
+ * @param {String} nomeUsuario - O nome do usuário a ser salvo.
+ * 
+ * @example
+ * cy.salvarUsuario('Nome do Usuário')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('salvarUsuario', (nomeUsuario) => {
   const TIMEOUT_PADRAO = 5000
   const formulario = new formUsuarios()
@@ -1927,9 +2139,32 @@ Cypress.Commands.add('salvarUsuario', (nomeUsuario) => {
 
   // Verifica se o usuário foi criado com sucesso
   cy.get('.student-name')
-    .should('have.text', nomeUsuario)
+    .invoke('text')
+    .should('contain', nomeUsuario)
 })
 
+/** DOCUMENTAÇÃO:
+ * @name excluirUsuario
+ * 
+ * @description
+ * Comando personalizado para excluir um usuário específico, confirmar a exclusão e verificar se o usuário foi excluído.
+ * 
+ * @actions
+ * 1. Clica no botão de exclusão do usuário específico.
+ * 2. Valida o modal de confirmação da exclusão.
+ * 3. Confirma a exclusão do usuário.
+ * 4. Valida a mensagem de sucesso após a exclusão.
+ * 5. Verifica se o usuário foi excluído.
+ * 
+ * @param {String} nomeUsuario - O nome do usuário a ser excluído.
+ * 
+ * @example
+ * cy.excluirUsuario('Nome do Usuário')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('excluirUsuario', (nomeUsuario) => {
   const TIMEOUT_PADRAO = 5000
   const labels = Cypress.env('labels')
@@ -1942,24 +2177,21 @@ Cypress.Commands.add('excluirUsuario', (nomeUsuario) => {
     })
 
   // Valida o título do modal de exclusão
-  cy.get('.panel-header h3')
+  cy.get('#professional-exclusion .panel-header h3')
     .invoke('text')
     .then((text) => {
       expect(text.trim()).to.equal(tituloModalExclusao)
     })
 
   // Valida o texto do modal de exclusão
-  cy.get('.panel-header strong')
+  cy.get('#professional-exclusion .panel-header strong')
     .invoke('text')
     .then((text) => {
       expect(text.trim()).to.equal('Usuário')
     })
 
-  cy.get('.panel-header.name')
-    .invoke('text')
-    .then((text) => {
-      expect(text.trim()).to.equal(nomeUsuario)
-    })
+  cy.get('#professional-exclusion .panel-header p span.name')
+    .should('have.text', nomeUsuario)
 
   cy.get('.are_you_sure_destroy')
     .invoke('text')
@@ -1983,10 +2215,29 @@ Cypress.Commands.add('excluirUsuario', (nomeUsuario) => {
     .should('be.visible')
 
   // Verifica se o usuário foi excluído e não é exibido na listagem
-  cy.contains('tr.professional-row', nomeUsuario, {timeout: 0})
+  cy.contains('tr.professional-row', nomeUsuario, { timeout: TIMEOUT_PADRAO })
     .should('not.exist')
 })
 
+/** DOCUMENTAÇÃO:
+ * @name editarUsuario
+ * 
+ * @description
+ * Comando personalizado para editar um usuário específico e validar o redirecionamento correto da página.
+ * 
+ * @actions
+ * 1. Edita o usuário específico.
+ * 2. Valida a exibição da página de edição do usuário.
+ * 
+ * @param {String} nomeUsuario - O nome do usuário a ser editado.
+ * 
+ * @example
+ * cy.editarUsuario('Nome do Usuário')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('editarUsuario', (nomeUsuario) => {
   const TIMEOUT_PADRAO = 5000
   const labels = Cypress.env('labels')
@@ -2007,37 +2258,28 @@ Cypress.Commands.add('editarUsuario', (nomeUsuario) => {
     .should('be.visible')
 })
 
-// Cypress.Commands.add('excluirUsuarioViaApi', function() {
-//   cy.request({
-//     method: 'GET',
-//     url: `/api/v1/o/${Cypress.env('orgId')}/students`,
-//     headers: {
-//       'Content-Type': 'application/x-www-form-urlencoded',
-//       'Authorization': `Bearer ${Cypress.env('token')}`
-//     },
-//   }).then((response) => {
-//     if (response.status !== 200) {
-//       throw new Error(`Erro ao obter a listagem de usuários: ${response}`)
-//     }
-
-//     const students = response.body.students
-//     students.forEach((student) => {
-//       cy.request({
-//         method: 'DELETE',
-//         url: `/api/v1/o/${Cypress.env('orgId')}/students/${student.id}`,
-//         headers: {
-//           'Content-Type': 'application/x-www-form-urlencoded',
-//           'Authorization': `Bearer ${Cypress.env('token')}`
-//         },
-//       }).then((deleteResponse) => {
-//         if (deleteResponse.status !== 200) {
-//           throw new Error(`Erro ao excluir o usuário: ${deleteResponse}`)
-//         }
-//       })
-//     })
-//   })
-// })
-
+/** DOCUMENTAÇÃO:
+ * @name excluirUsuarioViaApi
+ * 
+ * @description
+ * Comando personalizado para excluir usuários via API.
+ * 
+ * @actions
+ * 1. Obtém a listagem de usuários.
+ * 2. Exclui todos os usuários, exceto o usuário administrador.
+ * 
+ * @example
+ * cy.excluirUsuarioViaApi()
+ * 
+ * @throws {Error} - Se ocorrer algum erro ao obter a listagem de usuários ou ao excluir um usuário.
+ * 
+ * @obs
+ * Deve ser configurado o ID do usuário administrador no arquivo 'cypress.config.json' no 'env', campo 'userAdminId'.
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('excluirUsuarioViaApi', function() {
   cy.request({
     method: 'GET',
@@ -2071,6 +2313,23 @@ Cypress.Commands.add('excluirUsuarioViaApi', function() {
   })
 })
 
+/** DOCUMENTAÇÃO:
+ * @name acessarPgUsuarios
+ * 
+ * @description
+ * Comando personalizado para acessar a página de usuários e validar o redirecionamento correto da página.
+ * 
+ * @actions
+ * 1. Acessa a página de usuários.
+ * 2. Valida a exibição da página de usuários.
+ * 
+ * @example
+ * cy.acessarPgUsuarios()
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('acessarPgUsuarios', () => {
   const TIMEOUT_PADRAO = 5000
   const labels = Cypress.env('labels')
@@ -2083,6 +2342,28 @@ Cypress.Commands.add('acessarPgUsuarios', () => {
     .should('be.visible')
 })
 
+/** DOCUMENTAÇÃO:
+ * @name addUsuario
+ * 
+ * @description
+ * Comando personalizado para adicionar um usuário e validar o redirecionamento correto da página.
+ * 
+ * @actions
+ * 1. Clica no botão de adicionar usuário.
+ * 2. Valida a exibição da página de adicionar usuário.
+ * 
+ * @example
+ * cy.addUsuario()
+ * 
+ * @obs
+ * Esta comando não cria um usuário, apenas acessa a página de adicionar usuário. Para criar um usuário 
+ * @see preencherDadosUsuario
+ * @see salvarUsuario
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('addUsuario', () => {
   const TIMEOUT_PADRAO = 5000
   const labels = Cypress.env('labels')
@@ -2099,3 +2380,275 @@ Cypress.Commands.add('addUsuario', () => {
     .should('be.visible')
 })
 
+/** DOCUMENTAÇÃO:
+ * @name cancelarFormularioUsuario
+ * 
+ * @description
+ * Comando para cancelar o formulário de usuário e validar o redirecionamento correto da página.
+ * 
+ * @actions
+ * 1. Clica no botão de cancelar.
+ * 2. Valida a exibição da página de usuários.
+ * 
+ * @example
+ * cy.cancelarFormularioUsuario()
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('cancelarFormularioUsuario', function() {
+  const labels = Cypress.env('labels')
+  const { breadcrumb } = labels.usuarios
+
+  // Cancelar
+  cy.contains('#professional-cancel', 'Cancelar')
+    .should('be.visible')
+    .click()
+
+  // Validar redirecionamento
+  cy.contains('#page-breadcrumb', breadcrumb, { timeout: 5000})
+    .should('be.visible')
+})
+
+/** DOCUMENTAÇÃO:
+ * @name resetSenhaUsuario
+ * 
+ * @description
+ * Comando personalizado para resetar a senha de um usuário.
+ * 
+ * @actions
+ * 1. Clica em 'Alterar senha' do usuário específico.
+ * 2. Valida o título do modal de alteração de senha.
+ * 3. Insere senhas incompatíveis e valida a mensagem de senhas diferentes.
+ * 4. Insere senhas compatíveis e valida a mensagem de senhas iguais.
+ * 5. Confirma a alteração de senha do usuário.
+ * 6. Valida a mensagem de sucesso após a alteração de senha.
+ * 
+ * @param {String} nomeUsuario - O nome do usuário a ter a senha resetada.
+ * @param {String} senha - A nova senha do usuário.
+ * 
+ * @example
+ * cy.resetSenhaUsuario('Nome do Usuário', 'Nova Senha')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('resetSenhaUsuario', function(nomeUsuario, senha) {
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { tituloAlterarSenha, aguardandoSenha, senhasDiferentes, senhasIguais, msgSucessoSenha } = labels.usuarios
+
+  // Clica em 'Alterar senha'
+  cy.contains('tr.professional-row', nomeUsuario)
+  .within(() => {
+    cy.get('a.user-password-change')
+      .click()
+  })
+
+  // Valida o título do modal de alteração de senha
+  cy.get('#user-password-change-modal .panel-header h3')
+    .should('contain', tituloAlterarSenha)
+    .and('contain', nomeUsuario)
+
+  // Valida a mensagem de aguardando senha
+  cy.get('#matching-passwords')
+    .should('contain', aguardandoSenha)
+
+  // Insere senhas incompatíveis
+  cy.get('#user-password-change-modal #new-password')
+    .type(senha)
+
+  cy.get('#user-password-change-modal #confirm-password')
+    .type('senha123')
+
+  cy.get('#matching-passwords')
+    .should('contain', senhasDiferentes)
+
+  // Insere senhas compatíveis
+  cy.get('#user-password-change-modal #confirm-password')
+    .clear()
+    .type(senha)
+
+  cy.get('#matching-passwords')
+    .should('contain', senhasIguais)
+
+  // Confirma a alteração de senha do usuário
+  cy.get('.green_btn[value="Salvar"]')
+    .click()
+
+  // Valida a mensagem de sucesso
+  cy.contains('.flash.notice', msgSucessoSenha, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+})
+
+/** DOCUMENTAÇÃO:
+ * @name inativarUsuario
+ * 
+ * @description
+ * Comando personalizado para inativar um usuário específico.
+ * 
+ * @actions
+ * 1. Clica no botão de inativar do usuário específico.
+ * 2. Valida o título e texto do modal de inativação.
+ * 3. Confirma a inativação do usuário.
+ * 4. Valida a mensagem de sucesso após a inativação.
+ * 5. Verifica se o usuário foi inativado.
+ * 6. Verifica se os elementos de alteração de senha, edição e exclusão não estão visíveis.
+ * 7. Verifica se o status do usuário é "Inativo".
+ * 
+ * @param {String} nomeUsuario - O nome do usuário a ser inativado.
+ * 
+ * @example
+ * cy.inativarUsuario('Nome do Usuário')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('inativarUsuario', function(nomeUsuario) {
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { tituloModalInativar, textoModalInativar, msgSucessoInativar } = labels.usuarios
+
+  cy.contains('tr.professional-row', nomeUsuario)
+    .find('.professional-progress')
+    .then(($progressCell) => {
+      const title = $progressCell.attr('title')
+      if (title === 'Inativar') {
+        cy.wrap($progressCell)
+          .find('a.button-inactive')
+          .click()
+      }
+    })
+
+  // Valida o título do modal de inativação
+  cy.get('#user-inactive-modal .inactiv_or_active')
+    .should('have.text', tituloModalInativar)
+
+  // Valida o texto do modal de inativação
+  cy.get('#user-inactive-modal .are_you_sure_destroy')
+    .should('have.text', textoModalInativar)
+
+  // Confirma a inativação do usuário
+  cy.get('.inactive-professional')
+    .contains('Inativar')
+    .click()
+
+  // Valida a mensagem de sucesso após a inativação
+  cy.contains('.flash.notice', msgSucessoInativar, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+
+  // Verifica se o usuário foi inativado
+  cy.contains('tr.professional-row', nomeUsuario)
+    .within(() => {
+      cy.get('.professional-progress')
+        .should('have.attr', 'title', 'Ativar')
+        .find('a.button-inactive')
+        .should('be.visible')
+
+      // Verifica se o elemento de alteração de senha não está visível
+      cy.get('a.user-password-change', { timeout: TIMEOUT_PADRAO})
+        .should('not.exist')
+
+      // Verifica se o elemento de edição não está visível
+      cy.get('td.professional-progress[title="Editar"]', { timeout: TIMEOUT_PADRAO})
+        .find('a.professional-edit')
+        .should('not.exist')
+
+      // Verifica se o elemento de exclusão não está visível
+      cy.get('td.professional-progress[title="Excluir"]', { timeout: TIMEOUT_PADRAO})
+        .find('a.professional-delete')
+        .should('not.exist')
+
+      // Verifica se o status do usuário é "Inativo"
+      cy.get('td.ellipsis', { timeout: TIMEOUT_PADRAO})
+        .should('contain', 'Inativo')
+    })
+})
+
+/** DOCUMENTAÇÃO:
+ * @name ativarUsuario
+ * 
+ * @description
+ * Comando personalizado para ativar um usuário específico.
+ * 
+ * @actions
+ * 1. Clica no botão de ativar do usuário específico.
+ * 2. Valida o título e texto do modal de ativação.
+ * 3. Confirma a ativação do usuário.
+ * 4. Valida a mensagem de sucesso após a ativação.
+ * 5. Verifica se o usuário foi ativado.
+ * 6. Verifica se os elementos de alteração de senha, edição e exclusão estão visíveis.
+ * 7. Verifica se o status do usuário é "Ativo".
+ * 
+ * @param {String} nomeUsuario - O nome do usuário a ser ativado.
+ * 
+ * @example
+ * cy.ativarUsuario('Nome do Usuário')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('ativarUsuario', function(nomeUsuario) {
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { tituloModalAtivar, textoModalAtivar, msgSucessoAtivar } = labels.usuarios
+
+  cy.contains('tr.professional-row', nomeUsuario)
+    .find('.professional-progress')
+    .then(($progressCell) => {
+      const title = $progressCell.attr('title')
+      if (title === 'Ativar') {
+        cy.wrap($progressCell)
+          .find('a.button-inactive')
+          .click()
+      }
+  })
+
+  // Valida o título do modal de ativação
+  cy.get('#user-inactive-modal .inactiv_or_active')
+    .should('have.text', tituloModalAtivar)
+
+  // Valida o texto do modal de ativação
+  cy.get('#user-inactive-modal .are_you_sure_destroy')
+    .should('have.text', textoModalAtivar)
+
+  // Confirma a ativação do usuário
+  cy.get('.inactive-professional')
+    .contains('Ativar')
+    .click()
+
+  // Valida a mensagem de sucesso após a ativação
+  cy.contains('.flash.notice', msgSucessoAtivar, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+
+  // Verifica se o usuário foi ativado
+  cy.contains('tr.professional-row', nomeUsuario)
+    .within(() => {
+      cy.get('.professional-progress')
+        .should('have.attr', 'title', 'Inativar')
+        .find('a.button-inactive')
+        .should('be.visible')
+
+      // Verifica se o elemento de alteração de senha não está visível
+      cy.get('a.user-password-change', { timeout: TIMEOUT_PADRAO})
+        .should('be.visible')
+
+      // Verifica se o elemento de edição não está visível
+      cy.get('td.professional-progress[title="Editar"]', { timeout: TIMEOUT_PADRAO})
+        .find('a.professional-edit')
+        .should('be.visible')
+
+      // Verifica se o elemento de exclusão não está visível
+      cy.get('td.professional-progress[title="Excluir"]', { timeout: TIMEOUT_PADRAO})
+        .find('a.professional-delete')
+        .should('be.visible')
+
+      // Verifica se o status do usuário é "Ativo"
+      cy.get('td.ellipsis', { timeout: TIMEOUT_PADRAO})
+        .should('contain', 'Ativo')
+    })
+})

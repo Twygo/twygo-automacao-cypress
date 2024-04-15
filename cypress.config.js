@@ -15,6 +15,7 @@ module.exports = defineConfig({
     login: 'karla.oliveira@twygo.com',
     password: 'aut123',
     orgId: 37527,
-    userAdminId: 1044231
+    userAdminId: 1044231,
+    orgName: 'Twygo - Atualização Tecnológica'
   }
 });
