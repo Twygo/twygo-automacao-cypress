@@ -234,7 +234,7 @@ describe('Usuário', () => {
             email: email,
             nome: nome,
             sobrenome: sobrenome,
-            cpf: fakerPT_BR.br.cpf(),
+            cpf: faker.br.cpf(),
             rg: fakerPT_BR.number.int({ min: 100000, max: 100000000 }),
             telPessoal: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
             celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
@@ -395,7 +395,7 @@ describe('Usuário', () => {
             email: email,
             nome: nome,
             sobrenome: sobrenome,
-            cpf: fakerPT_BR.br.cpf(),
+            cpf: faker.br.cpf(),
             rg: fakerPT_BR.number.int({ min: 100000, max: 100000000 }),
             telPessoal: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
             celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
@@ -544,7 +544,7 @@ describe('Usuário', () => {
             email: email,
             nome: nome,
             sobrenome: sobrenome,
-            cpf: fakerPT_BR.br.cpf(),
+            cpf: faker.br.cpf(),
             pais: 'Guernsey',
             empresa: fakerPT_BR.company.name(),
             nrColaboradores: '> 500',
@@ -694,7 +694,7 @@ describe('Usuário', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            cpf: fakerPT_BR.br.cpf(),
+            cpf: faker.br.cpf(),
             telPessoal: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
             pais: 'Pitcairn',
             cargo: fakerPT_BR.person.jobTitle(),
@@ -822,7 +822,7 @@ describe('Usuário', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            cpf: fakerPT_BR.br.cpf(),
+            cpf: faker.br.cpf(),
             celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
             cep: fakerPT_BR.string.numeric(8),
             endereco: fakerPT_BR.location.streetAddress(),
@@ -934,7 +934,7 @@ describe('Usuário', () => {
         cy.log('## UPDATE ##')
 
         const dadosUpdate = {
-            cpf: fakerPT_BR.br.cpf(),
+            cpf: faker.br.cpf(),
             rg: fakerPT_BR.number.int({ min: 100000, max: 999999999 }),
             telPessoal: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
             celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
