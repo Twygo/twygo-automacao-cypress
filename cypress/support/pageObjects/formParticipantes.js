@@ -1,136 +1,115 @@
-class formUsuarios {
+class formParticipantes {
     elementos = {
         email: {
-            seletor: '#professional_email',
+            seletor: '#event_participant_email',
             tipo: 'input-email'
         },
         nome: {
-            seletor: '#professional_first_name',
+            seletor: '#event_participant_first_name',
             tipo: 'input'
         },
         sobrenome: {
-            seletor: '#professional_last_name',
+            seletor: '#event_participant_last_name',
             tipo: 'input'
         },
         cpf: {
-            seletor: '#professional_cpf',
+            seletor: '#event_participant_cpf',
             tipo: 'input'
         },
         rg: {
-            seletor: '#professional_rg',
+            seletor: '#event_participant_rg',
             tipo: 'input'
         },
         telPessoal: {
-            seletor: '#professional_phone1',
+            seletor: '#event_participant_phone1',
             tipo: 'input'
         },
         celular: {
-            seletor: '#professional_cell_phone',
+            seletor: '#event_participant_cell_phone',
+            tipo: 'input'
+        },
+        dataExpiracao: {
+            seletor: '#event_participant_expires_at',
             tipo: 'input'
         },
         cep: {
-            seletor: '#professional_zip_code',
+            seletor: '#event_participant_zip_code',
             tipo: 'input-zipcode'
         },
         endereco: {
-            seletor: '#professional_address',
+            seletor: '#event_participant_address',
             tipo: 'input-endereco'
         },
         numero: {
-            seletor: '#professional_address_number',
+            seletor: '#event_participant_address_number',
             tipo: 'input'
         },
         complemento: {
-            seletor: '#professional_address2',
+            seletor: '#event_participant_address2',
             tipo: 'input'
         },
         bairro: {
-            seletor: '#professional_district',
+            seletor: '#event_participant_district',
             tipo: 'input'
         },
         cidade: {
-            seletor: '#professional_city',
+            seletor: '#event_participant_city',
             tipo: 'input'
         },
         estado: {
-            seletor: '#professional_state',
-            tipo: 'input'
+            seletor: '#event_participant_state',
+            tipo: 'select'
         },
         pais: {
-            seletor: '#professional_country',
+            seletor: '#event_participant_country',
             tipo: 'select'
         },
         empresa: {
-            seletor: '#professional_enterprise',
+            seletor: '#event_participant_enterprise',
             tipo: 'input'
         },
         ramo: {
-            seletor: '#professional_business_line',
+            seletor: '#event_participant_business_line',
             tipo: 'input'
         },
         nrColaboradores: {
-            seletor: '#professional_number_of_employees',
+            seletor: '#event_participant_number_of_employees',
             tipo: 'select'
         },
         site: {
-            seletor: '#professional_site',
+            seletor: '#professional_attributes_site',
             tipo: 'input'
         },
         telComercial: {
-            seletor: '#professional_phone2',
+            seletor: '#event_participant_phone2',
             tipo: 'input'
         },
         cargo: {
-            seletor: '#professional_role',
+            seletor: '#event_participant_role',
             tipo: 'input'
         },
         area: {
-            seletor: '#professional_department',
+            seletor: '#professional_attributes_department',
             tipo: 'input'
         },
-        perfilColaborador: {
-            seletor: '#professional_professional',
-            tipo: 'checkbox'
+        observacao: {
+            seletor: '#event_participant_comment',
+            tipo: 'input'
         },
-        perfilAdministrador: {
-            seletor: 'input#user_profile_settings_admin.checkboxProfile',
-            tipo: 'checkbox'
+        expandirSenha: {
+            seletor: 'h3',
+            tipo: 'button-text'
         },
-        perfilInstrutor: {
-            seletor: 'input#user_profile_settings_instructor.checkboxProfile',
-            tipo: 'checkbox'
+        novasenha: {
+            seletor: '#password',
+            tipo: 'input'
         },
-        perfilGestor: {
-            seletor: 'input#user_profile_settings_manager_class.checkboxProfile',
-            tipo: 'checkbox'
-        },
-        perfilLiderEquipe: {
-            seletor: '#professional_is_manager',
-            tipo: 'checkbox'
-        },
-        responsavel: {
-            seletor: '#manager_name',
-            tipo: 'search',
-            seletorValor: '.manager_name',
-        },
-        navegacao: {
-            seletor: '#professional_use_mode_id',
-            tipo: 'select'
-        },
-        comunidades: {
-            seletor: '#professional_enable_communities',
-            tipo: 'checkbox'
-        },
-        notificacoes: {
-            seletor: '#professional_enable_notifications',
-            tipo: 'checkbox'
+        confirmacaoSenha: {
+            seletor: '#password_confirmation',
+            tipo: 'input'
         },
         btnVoltar: {
             seletor: '.btn-default',
-            tipo: 'button'
-        },
-        btnSalvar: {
-            seletor: '.save',
             tipo: 'button'
         },
         btnSalvarENovo: {
@@ -138,13 +117,17 @@ class formUsuarios {
             tipo: 'button'
         },
         btnCancelar: {
-            seletor: '#professional-cancel',
+            seletor: '.btn-cancel',
             tipo: 'button'
+        },
+        selecionarTodos: {
+            seletor: '#confirmed_top_all_participants',
+            tipo: 'checkbox'
         }
     }
 
-    addUsuario() {
-        cy.get('#add-professional')
+    addParticipante() {
+        cy.get('.new_participant_btn')
             .click()
     }
 
@@ -154,12 +137,8 @@ class formUsuarios {
     }
 
     editar() {
-        cy.get('.professional-edit')
-            .click()
-    }
-
-    excluir() {
-        cy.get('.professional-delete')
+        cy.get('.btn.btn-primary.ghost.inline.waves-effect')
+            .contains('Editar')
             .click()
     }
 
@@ -175,6 +154,41 @@ class formUsuarios {
                     .should('not.be.disabled')
                     .click({ force: true })
             })
+    }
+
+    confirmados() {
+        cy.get('a.tab_selector[list="confirmed"]')
+            .click()
+    }
+
+    pendentes() {
+        cy.get('a.tab_selector[list="pending"]')
+            .click()
+    }
+
+    cancelados() {
+        cy.get('a.tab_selector[list="canceled"]')
+            .click()
+    }
+
+    importar() {
+        cy.get('.import')
+            .click()
+    }
+
+    alterarParaPendente() {
+        cy.get('.pending_participant')
+            .click()
+    }
+
+    alterarParaConfirmado() {
+        cy.get('.confirm_participant')
+            .click()
+    }
+
+    alterarParaCancelado() {
+        cy.get('.cancel_participant')
+            .click()
     }
 
     /** DOCUMENTAÇÃO:
@@ -369,4 +383,4 @@ class formUsuarios {
 		}
 	}
 }
-export default formUsuarios
+export default formParticipantes

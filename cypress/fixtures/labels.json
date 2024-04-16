@@ -112,5 +112,16 @@
         "tituloModalAtivar": "Ativar o usuário",
         "textoModalAtivar": "Você tem certeza que deseja realizar a ativação do usuário?",
         "msgSucessoAtivar": "Foi realizado a ativação do usuário."
+    },
+    "participantes": {
+        "breadcrumb": "Detalhes do evento",
+        "tituloPg": "Lista de Participantes",
+        "msgSucesso": "Participante criado com sucesso.",
+        "breadcrumbAdicionar": "Detalhes do evento",
+        "tituloPgAdicionar": "Adicionar",
+        "breadcrumbEdicao": "Detalhes do evento",
+        "tituloPgEdicao": "Editação de Participante",
+        "msgSucessoEdicao": "Participante atualizado com sucesso."
+
     }
 }

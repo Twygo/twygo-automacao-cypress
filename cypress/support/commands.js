@@ -5,6 +5,7 @@ import formBiblioteca from "./pageObjects/formBiblioteca"
 import formQuestionarios from "./pageObjects/formQuestionarios"
 import formPerguntas from "./pageObjects/formPerguntas"
 import formUsuarios from "./pageObjects/formUsuarios"
+import formParticipantes from "./pageObjects/formParticipantes"
 
 /** DOCUMENTAÇÃO:
  * @name loginTwygoAutomacao
@@ -2651,4 +2652,334 @@ Cypress.Commands.add('ativarUsuario', function(nomeUsuario) {
       cy.get('td.ellipsis', { timeout: TIMEOUT_PADRAO})
         .should('contain', 'Ativo')
     })
+})
+
+//TODO: Comandos para criar participante a partir daqui
+
+//OK
+Cypress.Commands.add('addParticipanteConteudo', function(nomeConteudo) {
+  const TIMEOUT_PADRAO = 5000
+  
+  const labels = Cypress.env('labels')
+  const { breadcrumb, tituloPg } = labels.participantes
+
+  // Clica em 'Opções' e 'Atividades'
+  cy.get(`tr[tag-name='${nomeConteudo}']`, { timeout: TIMEOUT_PADRAO})
+    .find('svg[aria-label="Options"]')
+    .click()
+
+  cy.get(`tr[tag-name='${nomeConteudo}']`, { timeout: TIMEOUT_PADRAO})
+    .contains('button', 'Inscrição')
+    .click( {force: true} )
+
+  // Validar se a página foi carregada corretamente
+  cy.contains('#page-breadcrumb', breadcrumb)
+    .should('be.visible')
+
+  cy.contains('.detail_title', tituloPg)
+    .should('be.visible')
+})
+
+/** DOCUMENTAÇÃO: //OK
+ * @name preencherDadosParticipante
+ * 
+ * @description
+ * Comando personalizado para preencher os campos de um usuário.
+ * 
+ * @actions
+ * 1. Preenche os campos do usuário com base nos dados fornecidos.
+ * 2. Limpa os campos antes de preencher, se a opção 'limpar' for verdadeira.
+ * 
+ * @param {Object} conteudo - Os dados a serem preenchidos nos campos do usuário.
+ * @param {Object} opcoes - Habilita ou não a limpeza dos campos antes do seu preenchimento.
+ * 
+ * @example
+ * cy.preencherDadosUsuario({ nome: 'Nome do Usuário', email: 'Email do Usuário' }, { limpar: true })
+ * ou
+ * cy.preencherDadosUsuario(dados, { limpar: false })
+ * 
+ * @throws {Error} - Se o campo informado não for válido. // Existente no método 'preencherCampo' da classe 'formUsuarios'
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('preencherDadosParticipante', (conteudo, opcoes = { limpar: false }) => {
+  const formulario = new formParticipantes()
+  
+  Object.keys(conteudo).forEach(nomeCampo => {
+      const valor = conteudo[nomeCampo]
+      formulario.preencherCampo(nomeCampo, valor, opcoes)
+  })
+}) 
+
+/** DOCUMENTAÇÃO:
+ * @name validarDadosParticipante
+ * 
+ * @description
+ * Comando personalizado para validar os dados de um usuário.
+ * 
+ * @actions
+ * 1. Valida os campos do usuário com base nos dados fornecidos.
+ * 
+ * @param {Object} conteudo - Os dados a serem validados nos campos do usuário.
+ * 
+ * @example
+ * cy.validarDadosUsuario({ nome: 'Nome do Usuário', email: 'Email do Usuário' })
+ * ou
+ * cy.validarDadosUsuario(dados)
+ * 
+ * @throws {Error} - Se o campo informado não for válido. // Existente no método 'validarCampo' da classe 'formUsuarios'
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('validarDadosParticipante', (conteudo) => {
+  const formulario = new formParticipantes()
+
+  Object.keys(conteudo).forEach(nomeCampo => {
+    const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
+    formulario.validarCampo(nomeCampo, valor)
+  })
+})
+
+/** DOCUMENTAÇÃO:
+ * @name salvarNovoParticipante
+ * 
+ * @description
+ * Comando personalizado para salvar um usuário, validar a mensagem de sucesso e verificar se o usuário foi salvo.
+ * 
+ * @actions
+ * 1. Salva o usuário.
+ * 2. Confirma a mensagem de sucesso após o salvamento.
+ * 3. Verifica se o usuário foi salvo.
+ * 
+ * @param {String} nomeUsuario - O nome do usuário a ser salvo.
+ * 
+ * @example
+ * cy.salvarUsuario('Nome do Usuário')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('salvarNovoParticipante', (nomeParticipante) => {
+  const TIMEOUT_PADRAO = 5000
+  const formulario = new formParticipantes()
+  const labels = Cypress.env('labels')
+  const { msgSucesso } = labels.participantes
+
+  // Salva o usuário
+  formulario.salvar()
+
+  // Confirma a mensagem de sucesso
+  cy.contains('.flash.notice', msgSucesso, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+
+  // Verifica se o usuário foi criado com sucesso
+  cy.contains('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+})
+
+Cypress.Commands.add('salvarEdicaoParticipante', (nomeParticipante) => {
+  const TIMEOUT_PADRAO = 5000
+  const formulario = new formParticipantes()
+  const labels = Cypress.env('labels')
+  const { msgSucessoEdicao } = labels.participantes
+
+  // Salva o usuário
+  formulario.salvar()
+
+  // Confirma a mensagem de sucesso
+  cy.contains('.flash.notice', msgSucessoEdicao, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+
+  // Verifica se o usuário foi criado com sucesso
+  cy.contains('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+})
+
+/** DOCUMENTAÇÃO:
+ * @name excluirUsuario
+ * 
+ * @description
+ * Comando personalizado para excluir um usuário específico, confirmar a exclusão e verificar se o usuário foi excluído.
+ * 
+ * @actions
+ * 1. Clica no botão de exclusão do usuário específico.
+ * 2. Valida o modal de confirmação da exclusão.
+ * 3. Confirma a exclusão do usuário.
+ * 4. Valida a mensagem de sucesso após a exclusão.
+ * 5. Verifica se o usuário foi excluído.
+ * 
+ * @param {String} nomeUsuario - O nome do usuário a ser excluído.
+ * 
+ * @example
+ * cy.excluirUsuario('Nome do Usuário')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+// Cypress.Commands.add('excluirUsuario', (nomeUsuario) => {
+//   const TIMEOUT_PADRAO = 5000
+//   const labels = Cypress.env('labels')
+//   const { tituloModalExclusao, texto1ModalExclusao, texto2ModalExclusao, btnConfirmar, msgSucessoExclusao } = labels.usuarios
+
+//   cy.contains('tr.professional-row', nomeUsuario)
+//     .within(() => {
+//       cy.get('a.professional-delete')
+//         .click()
+//     })
+
+//   // Valida o título do modal de exclusão
+//   cy.get('#professional-exclusion .panel-header h3')
+//     .invoke('text')
+//     .then((text) => {
+//       expect(text.trim()).to.equal(tituloModalExclusao)
+//     })
+
+//   // Valida o texto do modal de exclusão
+//   cy.get('#professional-exclusion .panel-header strong')
+//     .invoke('text')
+//     .then((text) => {
+//       expect(text.trim()).to.equal('Usuário')
+//     })
+
+//   cy.get('#professional-exclusion .panel-header p span.name')
+//     .should('have.text', nomeUsuario)
+
+//   cy.get('.are_you_sure_destroy')
+//     .invoke('text')
+//     .then((text) => {
+//       expect(text.trim()).to.equal(texto1ModalExclusao)
+//     })
+
+//   cy.get('.row.inactivate-option.hidden p')
+//     .invoke('text')
+//     .then((text) => {
+//       expect(text.trim()).to.equal(texto2ModalExclusao)
+//     })
+
+//   // Confirma a exclusão do usuário
+//   cy.get('.remove-professional')
+//     .contains(btnConfirmar)
+//     .click()
+
+//   // Valida a mensagem de sucesso após a exclusão
+//   cy.contains('.flash.success', msgSucessoExclusao, { timeout: TIMEOUT_PADRAO })
+//     .should('be.visible')
+
+//   // Verifica se o usuário foi excluído e não é exibido na listagem
+//   cy.contains('tr.professional-row', nomeUsuario, { timeout: TIMEOUT_PADRAO })
+//     .should('not.exist')
+// })
+
+/** DOCUMENTAÇÃO:
+ * @name editarParticipante
+ * 
+ * @description
+ * Comando personalizado para editar um usuário específico e validar o redirecionamento correto da página.
+ * 
+ * @actions
+ * 1. Edita o usuário específico.
+ * 2. Valida a exibição da página de edição do usuário.
+ * 
+ * @param {String} nomeUsuario - O nome do usuário a ser editado.
+ * 
+ * @example
+ * cy.editarUsuario('Nome do Usuário')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('editarParticipante', (nomeParticipante) => {
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { breadcrumb, tituloPgEdicao } = labels.participantes
+
+  // Edita o usuário
+  cy.contains('tr.professional-row', nomeParticipante)
+    .within(() => {
+      cy.get('a.professional-edit')
+        .click()
+    })
+
+  // Valida se a página foi carregada corretamente
+  cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+
+  cy.contains('.detail_title', tituloPgEdicao)
+    .should('be.visible')
+})
+
+/** DOCUMENTAÇÃO: //OK
+ * @name addParticipante
+ * 
+ * @description
+ * Comando personalizado para adicionar um usuário e validar o redirecionamento correto da página.
+ * 
+ * @actions
+ * 1. Clica no botão de adicionar usuário.
+ * 2. Valida a exibição da página de adicionar usuário.
+ * 
+ * @example
+ * cy.addUsuario()
+ * 
+ * @obs
+ * Esta comando não cria um usuário, apenas acessa a página de adicionar usuário. Para criar um usuário 
+ * @see preencherDadosUsuario
+ * @see salvarUsuario
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('addParticipante', () => {
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { breadcrumbAdicionar, tituloPgAdicionar } = labels.participantes
+
+  cy.get('.new_participant_btn')
+    .click()
+
+  // Valida se a página foi carregada corretamente
+  cy.contains('#page-breadcrumb', breadcrumbAdicionar, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+
+  cy.contains('.detail_title', tituloPgAdicionar, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+})
+
+/** DOCUMENTAÇÃO:
+ * @name cancelarFormularioParticipante
+ * 
+ * @description
+ * Comando para cancelar o formulário de usuário e validar o redirecionamento correto da página.
+ * 
+ * @actions
+ * 1. Clica no botão de cancelar.
+ * 2. Valida a exibição da página de usuários.
+ * 
+ * @example
+ * cy.cancelarFormularioUsuario()
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('cancelarFormularioParticipante', function() {
+  const labels = Cypress.env('labels')
+  const { breadcrumb } = labels.participantes
+
+  // Cancelar
+  cy.contains('#professional-cancel', 'Cancelar')
+    .should('be.visible')
+    .click()
+
+  // Validar redirecionamento
+  cy.contains('#page-breadcrumb', breadcrumb, { timeout: 5000})
+    .should('be.visible')
 })
