@@ -2,7 +2,7 @@
 import 'cypress-real-events/support'
 import { fakerPT_BR } from '@faker-js/faker'
 import { getAuthToken } from '../support/auth_helper'
-import { gerarDataAtual } from '../support/utils_helper'
+import { gerarData } from '../support/utils_helper'
 import formConteudos from "../support/pageObjects/formConteudos"
 
 describe('catálogo', () => {
@@ -581,9 +581,9 @@ describe('catálogo', () => {
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
-			data_inicio: gerarDataAtual(),
+			data_inicio: gerarData(),
 			hora_inicio: '01:00',
-			data_fim: gerarDataAtual(),
+			data_fim: gerarData(),
 			hora_fim: '23:00',
 			descricao: fakerPT_BR.commerce.productDescription(),
 			tipo: 'Outros',

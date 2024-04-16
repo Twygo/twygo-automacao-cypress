@@ -1,38 +1,48 @@
 /** DOCUMENTAÇÃO
- * @name gerarDataAtual
+ * @name gerarData
  * 
  * @description 
- * Função para gerar data atual no formato DD/MM/AAAA
+ * Função para gerar data atual no formato DD/MM/AAAA ou adicionar/subtrair dias, meses e anos da data atual
  * 
  * @actions
  * 1. Cria um novo objeto Date para a data atual
  * 2. Extrai o dia, mês e ano do objeto Date
  * 3. Converte dia e mês para string e garante que ambos tenham dois dígitos
  * 4. Concatena as strings de ano, mês e dia
+ * 
+ * @param {number} dias - Quantidade de dias a serem adicionados ou subtraídos da data atual
+ * @param {number} meses - Quantidade de meses a serem adicionados ou subtraídos da data atual
+ * @param {number} anos - Quantidade de anos a serem adicionados ou subtraídos da data atual
  *  
  * @returns {string} Data atual no formato DD/MM/AAAA
  * 
  * @example
- * gerarDataAtual()
+ * gerarData() [Data atual]
+ * gerarData(0, 0, 1) [Data atual + 1 ano]
+ * gerarData(0, 1, 0) [Data atual + 1 mês]
+ * gerarData(1, 0, 0) [Data atual + 1 dia]
+ * gerarData(1, 1, 1) [Data atual + 1 dia, 1 mês e 1 ano]
+ * gerarData(-1, -1, -1) [Data atual - 1 dia, 1 mês e 1 ano] * 
  * 
  * @author Karla Daiany
- * @version 1.0.0
+ * @version 1.1.0
  * @since 1.0.0
  */
-export function gerarDataAtual() {
-    // Cria um novo objeto Date para a data atual
+export function gerarData(dias = 0, meses = 0, anos = 0) {
     let dataAtual = new Date()
-
-    // Extrai o dia, mês e ano do objeto Date
+  
+    // Adiciona ou subtrai dias, meses e anos da data atual
+    dataAtual.setDate(dataAtual.getDate() + dias)
+    dataAtual.setMonth(dataAtual.getMonth() + meses)
+    dataAtual.setFullYear(dataAtual.getFullYear() + anos)
+  
     let dia = dataAtual.getDate()
     let mes = dataAtual.getMonth() + 1
     let ano = dataAtual.getFullYear()
-
-    // Converte dia e mês para string e garante que ambos tenham dois dígitos
+  
     dia = dia < 10 ? '0' + dia : dia.toString()
     mes = mes < 10 ? '0' + mes : mes.toString()
-
-    // Concatena as strings de ano, mês e dia
+  
     let dataFormatada = `${dia}/${mes}/${ano}`
     return dataFormatada
 }

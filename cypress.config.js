@@ -8,7 +8,7 @@ module.exports = defineConfig({
       // implement node event listeners here
     },
     numTestsKeptInMemory: 0,
-    retries: 2,
+    // retries: 2,
   },
   env: {
     // Define as variáveis de ambiente que serão utilizadas nos testes

@@ -96,17 +96,13 @@ class formParticipantes {
             seletor: '#event_participant_comment',
             tipo: 'input'
         },
-        expandirSenha: {
-            seletor: 'h3',
-            tipo: 'button-text'
-        },
-        novasenha: {
+        novaSenha: {
             seletor: '#password',
-            tipo: 'input'
+            tipo: 'input-password'
         },
         confirmacaoSenha: {
             seletor: '#password_confirmation',
-            tipo: 'input'
+            tipo: 'input-password-confirmation',
         },
         btnVoltar: {
             seletor: '.btn-default',
@@ -256,52 +252,20 @@ class formParticipantes {
                         .type(valorFinal, {delay: 200})
                     break
                 case 'input':
+                case 'input-password-confirmation':
                     cy.get(seletor)
                         .type(valorFinal)
                     break
-                case 'checkbox':
-					cy.get(seletor).then($checkbox => {
-						const isChecked = $checkbox.is(':checked')
-						if ((valorFinal && !isChecked) || (!valorFinal && isChecked)) {
-							cy.get(seletor).click().then(() => {
-								if (seletor === '#professional_enable_communities' && valorFinal === false) {
-									cy.wait(1000)
-									cy.get('body').then(($body) => {
-										if ($body.find('button:contains("Sair")').length) {
-											cy.contains('button', 'Sair').click()
-										}
-									})
-								}
-							})
-						}
-					})
-					break
-                case 'checkbox2':
-                    cy.get(seletor).then($checkbox => {
-                        const isChecked = $checkbox.is(':checked')
-                        if (valorFinal && !isChecked) {
-                        // Marcar o checkbox
-                        cy.get(seletor)
-                            .invoke('val', 'true')
-                            .invoke('prop', 'checked', true)
-                        } else if (!valorFinal && isChecked) {
-                        // Desmarcar o checkbox
-                        cy.get(seletor)
-                            .invoke('val', 'false')
-                            .invoke('prop', 'checked', false)
-                        }
-                    })
-                    break                    
 				case 'select':
 					cy.get(seletor)
 						.select(valorFinal)
 					break
-                case 'search':
+                case 'input-password':
+                    cy.contains('h3', 'Senha')
+                        .click()
+
                     cy.get(seletor)
                         .type(valorFinal)
-                    cy.contains('.manager-grid', valorFinal)
-                        .find('a.btn-add')
-                        .click()
                     break
 				default:
 					throw new Error(`Tipo de campo ${tipo} não suportado`)
@@ -341,7 +305,7 @@ class formParticipantes {
 			throw new Error(`Campo ${nomeCampo} não encontrado`)
 		}
 
-		const { seletor, tipo, seletorValor, default: valorDefault } = campo
+		const { seletor, tipo, default: valorDefault } = campo
 
 		let valorFinal = valor !== undefined ? valor : valorDefault
 
@@ -349,9 +313,6 @@ class formParticipantes {
 			case 'input':
             case 'input-email':
             case 'input-endereco':
-				if (nomeCampo === 'empresa' && valorFinal === '') {
-                    valorFinal = Cypress.env('orgName')
-                }
                 cy.get(seletor)
 					.should('have.value', valorFinal)
 				break
@@ -364,19 +325,14 @@ class formParticipantes {
                         )
                     })
                 break
-            case 'checkbox':
-            case 'checkbox2':
-				cy.get(seletor)
-					.should(valor ? 'be.checked' : 'not.be.checked')
-				break
 			case 'select':
 				cy.get(seletor)
 					.find('option:selected')
 					.should('have.text', valorFinal)
 				break
-            case 'search':
-                cy.get(seletorValor)
-                    .should('have.text', valorFinal)
+            case 'input-password':
+            case 'input-password-confirmation':
+                // Não é possível validar campos do tipo password
                 break
 			default:
 				throw new Error(`Tipo de campo ${tipo} não suportado`)

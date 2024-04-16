@@ -1,7 +1,7 @@
 /// reference types="cypress" />
 import { fakerPT_BR } from '@faker-js/faker'
 import { getAuthToken } from '../support/auth_helper'
-import formParticipantes from '../support/pageObjects/formParticipantes'
+import { gerarData } from '../support/utils_helper'
 let faker = require('faker-br')
 
 describe('Participante', () => {
@@ -37,9 +37,6 @@ describe('Participante', () => {
 
     let nomeCurso, descricaoCurso = ''
     let body = {}
-
-
-
     
     before(() => {
 		// Carrega os labels do arquivo JSON
@@ -49,12 +46,17 @@ describe('Participante', () => {
 	})
     
     beforeEach(() => {
+        // Ativa o tratamento de exceção não capturada especificamente para este teste
+		Cypress.on('uncaught:exception', (err, runnable) => {
+            return false
+        })
+
         // Obtém token autenticação, lista e exclui os usuários e cursos
         getAuthToken()
         cy.excluirUsuarioViaApi()
         cy.excluirCursoViaApi()
 
-        // Cria um curso via API para execução dos testes de inscrição de usuários
+        // Cria um curso via API para execução dos testes de inscrição de participantes
         nomeCurso = fakerPT_BR.commerce.productName()
         descricaoCurso = fakerPT_BR.lorem.sentence(5)
 
@@ -66,27 +68,28 @@ describe('Participante', () => {
         cy.criarCursoViaApi(body)
     })
 
+    afterEach(() => {
+		// Desativa o tratamento após o teste para evitar afetar outros testes
+		Cypress.removeAllListeners('uncaught:exception')
+	})
+
     /** DOCUMENTAÇÃO:
      * @name
-     * 1. CRUD usuário default
+     * 1. CRUD participante default
      * 
      * @description
-     * Valida a criação, leitura, atualização e exclusão de um usuário com os dados padrões obrigatórios (nome, sobrenome e email). 
-     * A atualização consiste em alterar todos os campos do usuário, exceto o email. Neste cenário, também é alterada a senha do usuário, 
-     * realizada a inativação e ativação do usuário, para depois excluí-lo.
+     * Valida a criação, leitura, atualização e exclusão de um participante com os dados padrões obrigatórios (nome, sobrenome e email). 
+     * A atualização consiste em alterar todos os campos do participante, exceto o email e configurar a senha do participante.
      * 
      * @steps
-     * 1. Cria um usuário com os dados padrões obrigatórios (nome, sobrenome e email)
-     * 2. Confirma os dados do usuário criado
-     * 3. Atualiza os dados do usuário, exceto o email
-     * 4. Confirma os dados do usuário atualizado
-     * 5. Altera a senha do usuário
-     * 6. Inativa o usuário
-     * 7. Ativa o usuário
-     * 8. Exclui o usuário
+     * 1. Cria um participante com os dados padrões obrigatórios (nome, sobrenome e email)
+     * 2. Confirma os dados do participante criado
+     * 3. Atualiza os dados do participante, exceto o email, configurando inclusive a senha
+     * 4. Confirma os dados do participante atualizado
+     * 5. Exclui o participante
      * 
      * @expected
-     * Espera-se que o usuário seja criado, atualizado, inativado, ativado e excluído com sucesso. Assim como a senha alterada.
+     * Espera-se que o participante seja criado, atualizado, tenha a senha configura e que seja excluído com sucesso.
      * 
      * @priority
      * Alta
@@ -98,7 +101,7 @@ describe('Participante', () => {
      * 1m
      * 
      * @tags
-     * Usuário, Default, CRUD, Alterar senha, Inativar, Ativar
+     * Participante, Default, CRUD, Configurar senha
      * 
      * @testCase
      * à confirmar
@@ -106,7 +109,7 @@ describe('Participante', () => {
      * @author Karla Daiany
      * @version 1.0.0
      */
-    it.only('1. CRUD usuário default', () => {
+    it('1. CRUD participante default', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
         let sobrenome = fakerPT_BR.person.lastName()
@@ -128,101 +131,79 @@ describe('Participante', () => {
         cy.preencherDadosParticipante(dados, { limpar: true })
         cy.salvarNovoParticipante(`${dados.nome} ${dados.sobrenome}`)
 
-        cy.log('## PAUSE ##')
-        cy.pause()
-
         // READ
         cy.log('## READ ##')
 
-        cy.editarUsuario(`${dados.nome} ${dados.sobrenome}`)
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         let dadosParaValidar = { ...formDefault, ...dados }
-        cy.validarDadosUsuario(dadosParaValidar)
+        cy.validarDadosParticipante(dadosParaValidar)
 
         // UPDATE
         cy.log('## UPDATE ##')
-
+        const senha = fakerPT_BR.internet.password()
         const dadosUpdate = {
             nome: fakerPT_BR.person.firstName(),
             sobrenome: fakerPT_BR.person.lastName(),
             rg: fakerPT_BR.number.int({ min: 100000, max: 999999999 }),
             telPessoal: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
             celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
+            dataExpiracao: gerarData(0, 1, 0),
             cep: fakerPT_BR.string.numeric(8),
             endereco: fakerPT_BR.location.streetAddress(),
             numero: fakerPT_BR.number.int( { min: 1, max: 9999 } ),
             complemento: `Andar: ${fakerPT_BR.number.int( { min: 1, max: 20 } )}, Sala: ${fakerPT_BR.number.int( { min: 1, max: 20 } )}`,
             bairro: fakerPT_BR.lorem.words(1),
             cidade: fakerPT_BR.location.city(),
-            estado: fakerPT_BR.location.state(),
-            pais: 'Bélgica',
+            estado: 'Minas Gerais',
+            pais: 'Bahamas',
             empresa: fakerPT_BR.company.name(),
             ramo: fakerPT_BR.lorem.words(1),
-            nrColaboradores: '1 - 10',
+            nrColaboradores: '> 500',
             site: fakerPT_BR.internet.url(),
             telComercial: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
             cargo: fakerPT_BR.person.jobTitle(),
             area: fakerPT_BR.person.jobArea(),
-            perfilColaborador: true,
-            perfilAdministrador: true,
-            perfilInstrutor: true,
-            perfilGestor: true,
-            perfilLiderEquipe: true,
-            comunidades: false,
-            notificacoes: false            
+            observacao: fakerPT_BR.lorem.words(5),
+            novaSenha: senha,
+            confirmacaoSenha: senha
         }
 
-        cy.preencherDadosUsuario(dadosUpdate, { limpar: true })
-        cy.salvarUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+        cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
+        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
 
-		cy.editarUsuario(dadosUpdate.nome)
+		cy.editarParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
 
         dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
-		cy.validarDadosUsuario(dadosUpdate)
-
-        // Alterar senha do usuário
-        const formulario = new formParticipantes()
-        const senha = fakerPT_BR.internet.password()
-        formulario.voltar()
-        cy.resetSenhaUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, senha)
-
-        // Inativação do usuário
-        cy.inativarUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
-
-        // Espera 5 segundos devido a renderização da tela
-        cy.wait(5000)
-
-        // Ativação do usuário
-        cy.ativarUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+		cy.validarDadosParticipante(dadosUpdate)
 
         // DELETE
 		cy.log('## DELETE ##')
 
+        cy.acessarPgUsuarios()
 		cy.excluirUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
     })
 
     /** DOCUMENTAÇÃO:
      * @name
-     * 2. CRUD usuário com todos os perfis (colaborador, líder de equipe, administrador, instrutor e gestor)
+     * 2. CRUD participante com todos os campos preenchidos
      * 
      * @description
-     * Valida a criação, leitura, atualização e exclusão de um usuário com todos os perfis (colaborador, líder de equipe, administrador,
-     * instrutor e gestor). Neste cenário também é alterada a senha do usuário, realizada a inativação e ativação do usuário, para depois
-     * atualizá-lo. Na edição são alterados todos os campos do usuário, exceto o email para depois excluí-lo.
+     * Valida a criação, leitura, atualização e exclusão de um participante criado com todos os campos preenchidos, inclusive com 
+     * a configuração de senha. Na edição são alterados todos os campos do participante, exceto o email. Neste cenário também é alterada a senha.
      * 
      * @steps
-     * 1. Cria um usuário com todos os perfis (colaborador, líder de equipe, administrador, instrutor e gestor)
-     * 2. Confirma os dados do usuário criado
-     * 3. Altera a senha, inativa e ativa o usuário
-     * 4. Atualiza os dados do usuário, exceto o email
-     * 5. Confirma os dados do usuário atualizado
-     * 6. Exclui o usuário
+     * 1. Cria um participante com todos os campos preenchidos, incluindo a configuração de senha
+     * 2. Confirma os dados do participante criado
+     * 3. Atualiza os dados do participante, exceto o email, alterando inclusive a senha
+     * 4. Confirma os dados do participante atualizado
+     * 5. Exclui o participante
      * 
      * @expected
-     * Espera-se que o usuário seja criado, inativado, ativado, atualizado e excluído com sucesso. Assim como a senha alterada.
+     * Espera-se que o participante seja criado, atualizado e excluído com sucesso. Assim como a senha alterada.
      * 
      * @priority
      * Alta
@@ -234,7 +215,7 @@ describe('Participante', () => {
      * 1m
      * 
      * @tags
-     * Usuário, Colaborador, Líder de equipe, Administrador, Instrutor, Gestor, CRUD, Alterar senha, Inativar, Ativar
+     * Participante, CRUD, Configurar senha
      * 
      * @testCase
      * à confirmar
@@ -242,11 +223,12 @@ describe('Participante', () => {
      * @author Karla Daiany
      * @version 1.0.0
      */
-    it('2. CRUD usuário com todos os perfis (colaborador, líder de equipe, administrador, instrutor e gestor)', () => {
+    it('2. CRUD participante com todos os campos preenchidos', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
         let sobrenome = fakerPT_BR.person.lastName()
         let email = fakerPT_BR.internet.email({ firstName: nome, lastName: sobrenome}).toLowerCase()
+        let senha = fakerPT_BR.internet.password()
 
         const dados = {
             email: email,
@@ -256,13 +238,14 @@ describe('Participante', () => {
             rg: fakerPT_BR.number.int({ min: 100000, max: 100000000 }),
             telPessoal: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
             celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
+            dataExpiracao: gerarData(0, 3, 1),
             cep: fakerPT_BR.string.numeric(8),
             endereco: fakerPT_BR.location.streetAddress(),
             numero: fakerPT_BR.number.int( { min: 1, max: 9999 } ),
             complemento: `Andar: ${fakerPT_BR.number.int( { min: 1, max: 20 } )}, Sala: ${fakerPT_BR.number.int( { min: 1, max: 20 } )}`,
             bairro: fakerPT_BR.lorem.words(1),
             cidade: fakerPT_BR.location.city(),
-            estado: fakerPT_BR.location.state(),
+            estado: 'Paraná',
             pais: 'França',
             empresa: fakerPT_BR.company.name(),
             ramo: fakerPT_BR.lorem.words(1),
@@ -271,11 +254,9 @@ describe('Participante', () => {
             telComercial: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
             cargo: fakerPT_BR.person.jobTitle(),
             area: fakerPT_BR.person.jobArea(),
-            perfilColaborador: true,
-            perfilAdministrador: true,
-            perfilInstrutor: true,
-            perfilGestor: true,
-            perfilLiderEquipe: true
+            observacao: fakerPT_BR.lorem.words(5),
+            novaSenha: senha,
+            confirmacaoSenha: senha
         }
         
         // CREATE
@@ -283,50 +264,37 @@ describe('Participante', () => {
 
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfil('administrador')
-        cy.acessarPgUsuarios()
-        cy.addUsuario()
-        cy.preencherDadosUsuario(dados, { limpar: true })
-        cy.salvarUsuario(`${dados.nome} ${dados.sobrenome}`)
+        cy.addParticipanteConteudo(nomeCurso)
+        cy.addParticipante()
+        cy.preencherDadosParticipante(dados, { limpar: true })
+        cy.salvarNovoParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         // READ
         cy.log('## READ ##')
 
-        cy.editarUsuario(`${dados.nome} ${dados.sobrenome}`)
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         let dadosParaValidar = { ...formDefault, ...dados }
-        cy.validarDadosUsuario(dadosParaValidar)
-
-        // Alterar senha do usuário
-        const formulario = new formParticipantes()
-        const senha = fakerPT_BR.internet.password()
-        formulario.voltar()
-        cy.resetSenhaUsuario(`${dados.nome} ${dados.sobrenome}`, senha)
-
-        // Inativação do usuário
-        cy.inativarUsuario(`${dados.nome} ${dados.sobrenome}`)
-
-        // Espera 5 segundos devido a renderização da tela
-        cy.wait(5000)
-
-        // Ativação do usuário
-        cy.ativarUsuario(`${dados.nome} ${dados.sobrenome}`)        
+        cy.validarDadosParticipante(dadosParaValidar)
 
         // UPDATE
         cy.log('## UPDATE ##')
 
+        senha = fakerPT_BR.internet.password()
         const dadosUpdate = {
             nome: fakerPT_BR.person.firstName(),
             sobrenome: fakerPT_BR.person.lastName(),
             rg: fakerPT_BR.number.int({ min: 100000, max: 999999999 }),
             telPessoal: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
             celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
+            dataExpiracao: gerarData(15, 2, 0),
             cep: fakerPT_BR.string.numeric(8),
             endereco: fakerPT_BR.location.streetAddress(),
             numero: fakerPT_BR.number.int( { min: 1, max: 9999 } ),
             complemento: `Andar: ${fakerPT_BR.number.int( { min: 1, max: 20 } )}, Sala: ${fakerPT_BR.number.int( { min: 1, max: 20 } )}`,
             bairro: fakerPT_BR.lorem.words(1),
             cidade: fakerPT_BR.location.city(),
-            estado: fakerPT_BR.location.state(),
+            estado: 'Santa Catarina',
             pais: 'Bósnia-Herzegovina',
             empresa: fakerPT_BR.company.name(),
             ramo: fakerPT_BR.lorem.words(1),
@@ -335,55 +303,46 @@ describe('Participante', () => {
             telComercial: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
             cargo: fakerPT_BR.person.jobTitle(),
             area: fakerPT_BR.person.jobArea(),
-            perfilColaborador: false,
-            perfilAdministrador: false,
-            perfilInstrutor: false,
-            perfilGestor: false,
-            perfilLiderEquipe: false,
-            comunidades: false,
-            notificacoes: false            
+            observacao: fakerPT_BR.lorem.words(5),
+            novaSenha: senha,
+            confirmacaoSenha: senha
         }
 
-        cy.editarUsuario(`${dados.nome} ${dados.sobrenome}`)
-        cy.preencherDadosUsuario(dadosUpdate, { limpar: true })
-        cy.salvarUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+        cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
+        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
 
-		cy.editarUsuario(dadosUpdate.nome)
+		cy.editarParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
 
         dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
-		cy.validarDadosUsuario(dadosParaValidar)
+		cy.validarDadosParticipante(dadosParaValidar)
 
 		// DELETE
 		cy.log('## DELETE ##')
 
-		cy.cancelarFormularioUsuario()
+        cy.acessarPgUsuarios()
 		cy.excluirUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
     })
 
     /** DOCUMENTAÇÃO:
      * @name
-     * 3. CRUD usuário somente administrador
+     * 3. CRUD participante com todos os campos preenchidos sem configurar senha
      * 
      * @description
-     * Valida a criação, leitura, atualização e exclusão de um usuário com o perfil de administrador. Na alteração são alterados dados 
-     * e desabilitado o perfil de administrador. Neste cenário também é alterada a senha do usuário, realizada a inativação e ativação do
-     * usuário, para depois excluí-lo.
+     * Valida a criação, leitura, atualização e exclusão de um participante criado com todos os campos sendo preenchidos, com exceção da senha.
+     * Na alteração são alterados alguns campos e configurada a senha.
      * 
      * @steps
-     * 1. Cria um usuário com o perfil de administrador
-     * 2. Confirma os dados do usuário criado
-     * 3. Altera alguns dados do usuário e desabilita o perfil de administrador
-     * 4. Confirma os dados do usuário atualizado
-     * 5. Altera a senha do usuário
-     * 6. Inativa o usuário
-     * 7. Ativa o usuário
-     * 8. Exclui o usuário
+     * 1. Cria um participante preenchendo todos os campos, exceto a senha
+     * 2. Confirma os dados do participante criado
+     * 3. Altera alguns dados do participante e configura a senha
+     * 4. Confirma os dados do participante atualizado
+     * 5. Exclui o participante
      * 
      * @expected
-     * Espera-se que o usuário seja criado, atualizado, inativado, ativado e excluído com sucesso. Assim como a senha alterada.
+     * Espera-se que o participante seja criado, atualizado e excluído com sucesso. Assim como a senha alterada.
      * 
      * @priority
      * Alta
@@ -395,7 +354,7 @@ describe('Participante', () => {
      * 1m
      * 
      * @tags
-     * Usuário, Administrador, CRUD, Alterar senha, Inativar, Ativar
+     * Participante, CRUD, Alterar senha
      * 
      * @testCase
      * à confirmar
@@ -403,7 +362,7 @@ describe('Participante', () => {
      * @author Karla Daiany
      * @version 1.0.0
      */
-    it('3. CRUD usuário somente administrador', () => {
+    it('3. CRUD participante com todos os campos preenchidos sem configurar senha', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
         let sobrenome = fakerPT_BR.person.lastName()
@@ -423,7 +382,7 @@ describe('Participante', () => {
             complemento: `Andar: ${fakerPT_BR.number.int( { min: 1, max: 20 } )}, Sala: ${fakerPT_BR.number.int( { min: 1, max: 20 } )}`,
             bairro: fakerPT_BR.lorem.words(1),
             cidade: fakerPT_BR.location.city(),
-            estado: fakerPT_BR.location.state(),
+            estado: 'Rio Grande do Sul',
             pais: 'França',
             empresa: fakerPT_BR.company.name(),
             ramo: fakerPT_BR.lorem.words(1),
@@ -431,8 +390,7 @@ describe('Participante', () => {
             site: fakerPT_BR.internet.url(),
             telComercial: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
             cargo: fakerPT_BR.person.jobTitle(),
-            area: fakerPT_BR.person.jobArea(),
-            perfilAdministrador: true
+            area: fakerPT_BR.person.jobArea()
         }
         
         // CREATE
@@ -440,99 +398,65 @@ describe('Participante', () => {
 
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfil('administrador')
-        cy.acessarPgUsuarios()
-        cy.addUsuario()
-        cy.preencherDadosUsuario(dados, { limpar: true })
-        cy.salvarUsuario(`${dados.nome} ${dados.sobrenome}`)
+        cy.addParticipanteConteudo(nomeCurso)
+        cy.addParticipante()
+        cy.preencherDadosParticipante(dados, { limpar: true })
+        cy.salvarNovoParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         // READ
         cy.log('## READ ##')
 
-        cy.editarUsuario(`${dados.nome} ${dados.sobrenome}`)
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         let dadosParaValidar = { ...formDefault, ...dados }
-        cy.validarDadosUsuario(dadosParaValidar)
+        cy.validarDadosParticipante(dadosParaValidar)
 
         // UPDATE
         cy.log('## UPDATE ##')
 
+        let senha = fakerPT_BR.internet.password()
         const dadosUpdate = {
-            nome: fakerPT_BR.person.firstName(),
-            sobrenome: fakerPT_BR.person.lastName(),
-            rg: fakerPT_BR.number.int({ min: 100000, max: 999999999 }),
-            telPessoal: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
-            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
-            cep: fakerPT_BR.string.numeric(8),
             endereco: fakerPT_BR.location.streetAddress(),
-            numero: fakerPT_BR.number.int( { min: 1, max: 9999 } ),
-            complemento: `Andar: ${fakerPT_BR.number.int( { min: 1, max: 20 } )}, Sala: ${fakerPT_BR.number.int( { min: 1, max: 20 } )}`,
-            bairro: fakerPT_BR.lorem.words(1),
-            cidade: fakerPT_BR.location.city(),
-            estado: fakerPT_BR.location.state(),
-            pais: 'àustria',
-            empresa: fakerPT_BR.company.name(),
-            ramo: fakerPT_BR.lorem.words(1),
-            nrColaboradores: '> 500',
-            site: fakerPT_BR.internet.url(),
-            telComercial: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
-            cargo: fakerPT_BR.person.jobTitle(),
-            area: fakerPT_BR.person.jobArea(),
-            perfilAdministrador: false,
-            comunidades: false,
-            notificacoes: false            
+            dataExpiracao: gerarData(0, 3, 0),
+            observacao: fakerPT_BR.lorem.words(5),
+            novaSenha: senha,
+            confirmacaoSenha: senha,
         }
 
-        cy.preencherDadosUsuario(dadosUpdate, { limpar: true })
-        cy.salvarUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+        cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
+        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
 
-		cy.editarUsuario(dadosUpdate.nome)
+		cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
-		cy.validarDadosUsuario(dadosParaValidar)
+		cy.validarDadosParticipante(dadosParaValidar)
         
-        // Alterar senha do usuário
-        const formulario = new formParticipantes()
-        const senha = fakerPT_BR.internet.password()
-        formulario.voltar()
-        cy.resetSenhaUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, senha)
-
-        // Inativação do usuário
-        cy.inativarUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
-
-        // Espera 5 segundos devido a renderização da tela
-        cy.wait(5000)
-
-        // Ativação do usuário
-        cy.ativarUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)        
-
 		// DELETE
 		cy.log('## DELETE ##')
 
-		cy.excluirUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+        cy.acessarPgUsuarios()
+		cy.excluirUsuario(`${dados.nome} ${dados.sobrenome}`)
     })
 
     /** DOCUMENTAÇÃO:
      * @name
-     * 4. CRUD usuário somente líder de equipe
+     * 4. CRUD participante com apenas alguns campos preenchidos sem configurar senha
      * 
      * @description
-     * Valida a criação, leitura, atualização e exclusão de um usuário com o perfil de líder de equipe. Neste cenário também é alterada a 
-     * senha do usuário, realizada a inativação e ativação do usuário, para depois atualizá-lo. Na alteração são adicionados novos dados 
-     * e habilitado o perfil de administrador. 
+     * Valida a criação, leitura, atualização e exclusão de um participante que não esteja com todos os campos preenchidos e nem configurado a senha.
      * 
      * @steps
-     * 1. Cria um usuário com o perfil de líder de equipe
-     * 2. Confirma os dados do usuário criado
-     * 3. Altera a senha, inativa e ativa o usuário
-     * 4. Atualiza os dados do usuário, adicionando novos dados e habilitando o perfil de administrador
-     * 5. Confirma os dados do usuário atualizado
-     * 6. Exclui o usuário
+     * 1. Cria um participante sem preencher todos os campos obrigatórios e sem configurar a senha
+     * 2. Confirma os dados do participante criado
+     * 3. Atualiza alguns dados do participante, sem configurar senha
+     * 4. Confirma os dados do participante atualizado
+     * 5. Exclui o participante
      * 
      * @expected
-     * Espera-se que o usuário seja criado, inativado, ativado, atualizado e excluído com sucesso. Assim como a senha alterada.
+     * Espera-se que o participante seja criado, atualizado e excluído com sucesso, mesmo que a senha não tenha sido configurada.
      * 
      * @priority
      * Alta
@@ -544,7 +468,7 @@ describe('Participante', () => {
      * 1m
      * 
      * @tags
-     * Usuário, Líder de equipe, Administrador, CRUD, Alterar senha, Inativar, Ativar
+     * Participante, CRUD
      * 
      * @testCase
      * à confirmar
@@ -552,7 +476,7 @@ describe('Participante', () => {
      * @author Karla Daiany
      * @version 1.0.0
      */
-    it('4. CRUD usuário somente líder de equipe', () => {
+    it('4. CRUD participante com apenas alguns campos preenchidos sem configurar senha', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
         let sobrenome = fakerPT_BR.person.lastName()
@@ -568,7 +492,7 @@ describe('Participante', () => {
             nrColaboradores: '> 500',
             telComercial: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
             cargo: fakerPT_BR.person.jobTitle(),
-            perfilLiderEquipe: true
+            observacao: fakerPT_BR.lorem.words(5)
         }
         
         // CREATE
@@ -576,33 +500,18 @@ describe('Participante', () => {
 
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfil('administrador')
-        cy.acessarPgUsuarios()
-        cy.addUsuario()
-        cy.preencherDadosUsuario(dados, { limpar: true })
-        cy.salvarUsuario(`${dados.nome} ${dados.sobrenome}`)
+        cy.addParticipanteConteudo(nomeCurso)
+        cy.addParticipante()
+        cy.preencherDadosParticipante(dados, { limpar: true })
+        cy.salvarNovoParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         // READ
         cy.log('## READ ##')
 
-        cy.editarUsuario(`${dados.nome} ${dados.sobrenome}`)
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         let dadosParaValidar = { ...formDefault, ...dados }
-        cy.validarDadosUsuario(dadosParaValidar)
-
-        // Alterar senha do usuário
-        const formulario = new formParticipantes()
-        const senha = fakerPT_BR.internet.password()
-        formulario.voltar()
-        cy.resetSenhaUsuario(`${dados.nome} ${dados.sobrenome}`, senha)
-
-        // Inativação do usuário
-        cy.inativarUsuario(`${dados.nome} ${dados.sobrenome}`)
-
-        // Espera 5 segundos devido a renderização da tela
-        cy.wait(5000)
-
-        // Ativação do usuário
-        cy.ativarUsuario(`${dados.nome} ${dados.sobrenome}`)        
+        cy.validarDadosParticipante(dadosParaValidar)
 
         // UPDATE
         cy.log('## UPDATE ##')
@@ -612,52 +521,44 @@ describe('Participante', () => {
             sobrenome: fakerPT_BR.person.lastName(),
             rg: fakerPT_BR.number.int({ min: 100000, max: 999999999 }),
             celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
-            pais: 'BQ',
-            perfilAdministrador: true,
-            comunidades: false,
-            notificacoes: false            
+            pais: 'BQ'
         }
 
-        cy.editarUsuario(dados.nome)
-        cy.preencherDadosUsuario(dadosUpdate, { limpar: true })
-        cy.salvarUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+        cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
+        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
 
-		cy.editarUsuario(dadosUpdate.nome)
+		cy.editarParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
 
         dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
-		cy.validarDadosUsuario(dadosParaValidar)
+		cy.validarDadosParticipante(dadosParaValidar)
 
 		// DELETE
 		cy.log('## DELETE ##')
 
-		cy.cancelarFormularioUsuario()
+        cy.acessarPgUsuarios()
 		cy.excluirUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
     })
 
     /** DOCUMENTAÇÃO:
      * @name
-     * 5. CRUD usuário somente instrutor
+     * 5. CRUD participante com alguns campos preenchidos sem configurar senha
      * 
      * @description
-     * Valida a criação, leitura, atualização e exclusão de um usuário com o perfil de instrutor. Na alteração são adicionados novos
-     * dados e desabilitado comunidades e notificações. Neste cenário também é alterada a senha do usuário, realizada a inativação e ativação
-     * do usuário, para depois excluí-lo.
+     * Valida a criação, leitura, atualização e exclusão de um participante que não esteja com todos os campos preenchidos e nem configurado a senha.
+     * Na alteração são adicionados alguns dados e removida a observação.
      * 
      * @steps
-     * 1. Cria um usuário com o perfil de instrutor
-     * 2. Confirma os dados do usuário criado
-     * 3. Atualiza os dados do usuário, adicionando novos dados e desabilitando comunidades e notificações
-     * 4. Confirma os dados do usuário atualizado
-     * 5. Altera a senha do usuário
-     * 6. Inativa o usuário
-     * 7. Ativa o usuário
-     * 8. Exclui o usuário
+     * 1. Cria um participante sem preencher todos os campos obrigatórios e sem configurar a senha
+     * 2. Confirma os dados do participante criado
+     * 3. Atualiza alguns dados do participante, sem configurar senha
+     * 4. Confirma os dados do participante atualizado
+     * 5. Exclui o participante
      * 
      * @expected
-     * Espera-se que o usuário seja criado, atualizado, inativado, ativado e excluído com sucesso. Assim como a senha alterada.
+     * Espera-se que o participante seja criado, atualizado e excluído com sucesso, mesmo que a senha não tenha sido configurada.
      * 
      * @priority
      * Alta
@@ -669,7 +570,7 @@ describe('Participante', () => {
      * 1m
      * 
      * @tags
-     * Usuário, Instrutor, CRUD, Alterar senha, Inativar, Ativar
+     * Participante, CRUD
      * 
      * @testCase
      * à confirmar
@@ -677,7 +578,7 @@ describe('Participante', () => {
      * @author Karla Daiany
      * @version 1.0.0
      */
-    it('5. CRUD usuário somente instrutor', () => {
+    it('5. CRUD participante somente instrutor', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
         let sobrenome = fakerPT_BR.person.lastName()
@@ -687,7 +588,7 @@ describe('Participante', () => {
             email: email,
             nome: nome,
             sobrenome: sobrenome,
-            perfilInstrutor: true
+            observacao: fakerPT_BR.lorem.words(5)
         }
         
         // CREATE
@@ -695,18 +596,18 @@ describe('Participante', () => {
 
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfil('administrador')
-        cy.acessarPgUsuarios()
-        cy.addUsuario()
-        cy.preencherDadosUsuario(dados, { limpar: true })
-        cy.salvarUsuario(`${dados.nome} ${dados.sobrenome}`)
+        cy.addParticipanteConteudo(nomeCurso)
+        cy.addParticipante()
+        cy.preencherDadosParticipante(dados, { limpar: true })
+        cy.salvarNovoParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         // READ
         cy.log('## READ ##')
 
-        cy.editarUsuario(`${dados.nome} ${dados.sobrenome}`)
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         let dadosParaValidar = { ...formDefault, ...dados }
-        cy.validarDadosUsuario(dadosParaValidar)
+        cy.validarDadosParticipante(dadosParaValidar)
 
         // UPDATE
         cy.log('## UPDATE ##')
@@ -716,61 +617,44 @@ describe('Participante', () => {
             telPessoal: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
             pais: 'Pitcairn',
             cargo: fakerPT_BR.person.jobTitle(),
-            comunidades: false,
-            notificacoes: false            
+            observacao: ''
         }
 
-        cy.preencherDadosUsuario(dadosUpdate, { limpar: true })
-        cy.salvarUsuario(`${dados.nome} ${dados.sobrenome}`)
+        cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
+        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
 
-		cy.editarUsuario(dados.nome)
+		cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
-		cy.validarDadosUsuario(dadosParaValidar)
-
-        // Alterar senha do usuário
-        const formulario = new formParticipantes()
-        const senha = fakerPT_BR.internet.password()
-        formulario.voltar()
-        cy.resetSenhaUsuario(`${dados.nome} ${dados.sobrenome}`, senha)
-
-        // Inativação do usuário
-        cy.inativarUsuario(`${dados.nome} ${dados.sobrenome}`)
-
-        // Espera 5 segundos devido a renderização da tela
-        cy.wait(5000)
-
-        // Ativação do usuário
-        cy.ativarUsuario(`${dados.nome} ${dados.sobrenome}`)        
+		cy.validarDadosParticipante(dadosParaValidar)
 
 		// DELETE
 		cy.log('## DELETE ##')
 
+        cy.acessarPgUsuarios()
 		cy.excluirUsuario(`${dados.nome} ${dados.sobrenome}`)
     })
 
     /** DOCUMENTAÇÃO:
      * @name
-     * 6. CRUD usuário somente gestor de turma
+     * 6. CRUD participante com e-mail, nome, sobrenome, data de expiração e senha
      * 
      * @description
-     * Valida a criação, leitura, atualização e exclusão de um usuário com o perfil de gestor de turma. Na alteração são adicionados novos
-     * dados e habilitado o perfil de instrutor. Neste cenário também é alterada a senha do usuário, realizada a inativação e ativação do
-     * usuário, para depois atualizá-lo.
+     * Valida a criação, leitura, atualização e exclusão de um participante preenchendo apenas e-mail, nome, sobrenome, data de expiração e senha.
+     * Na alteração são adicionados novos dados e removida a data de expiração. 
      * 
      * @steps
-     * 1. Cria um usuário com o perfil de gestor de turma
-     * 2. Confirma os dados do usuário criado
-     * 3. Altera a senha, inativa e ativa o usuário
-     * 4. Atualiza os dados do usuário, adicionando novos dados e habilitando o perfil de instrutor
-     * 5. Confirma os dados do usuário atualizado
-     * 7. Exclui o usuário
+     * 1. Cria um participante apenas com e-mail, nome, sobrenome, data de expiração e senha
+     * 2. Confirma os dados do participante criado
+     * 3. Atualiza os dados do participante, adicionando novos dados
+     * 4. Confirma os dados do participante atualizado
+     * 5. Exclui o participante
      * 
      * @expected
-     * Espera-se que o usuário seja criado, inativado, ativado, atualizado e excluído com sucesso. Assim como a senha alterada.
+     * Espera-se que o participante seja criado, atualizado e excluído com sucesso. Assim como a senha configurada.
      * 
      * @priority
      * Alta
@@ -782,7 +666,7 @@ describe('Participante', () => {
      * 1m
      * 
      * @tags
-     * Usuário, Gestor de turma, Instrutor, CRUD, Alterar senha, Inativar, Ativar
+     * Participante, CRUD, Configurar senha
      * 
      * @testCase
      * à confirmar
@@ -790,17 +674,20 @@ describe('Participante', () => {
      * @author Karla Daiany
      * @version 1.0.0
      */
-    it('6. CRUD usuário somente gestor de turma', () => {
+    it('6. CRUD participante com e-mail, nome, sobrenome, data de expiração e senha', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
         let sobrenome = fakerPT_BR.person.lastName()
         let email = fakerPT_BR.internet.email({ firstName: nome, lastName: sobrenome}).toLowerCase()
+        let senha = fakerPT_BR.internet.password()
 
         const dados = {
             email: email,
             nome: nome,
             sobrenome: sobrenome,
-            perfilGestor: true
+            dataExpiracao: gerarData(0, 12, 0),
+            novaSenha: senha,
+            confirmacaoSenha: senha
         }
         
         // CREATE
@@ -808,33 +695,18 @@ describe('Participante', () => {
 
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfil('administrador')
-        cy.acessarPgUsuarios()
-        cy.addUsuario()
-        cy.preencherDadosUsuario(dados, { limpar: true })
-        cy.salvarUsuario(`${dados.nome} ${dados.sobrenome}`)
+        cy.addParticipanteConteudo(nomeCurso)
+        cy.addParticipante()
+        cy.preencherDadosParticipante(dados, { limpar: true })
+        cy.salvarNovoParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         // READ
         cy.log('## READ ##')
 
-        cy.editarUsuario(`${dados.nome} ${dados.sobrenome}`)
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         let dadosParaValidar = { ...formDefault, ...dados }
-        cy.validarDadosUsuario(dadosParaValidar)
-
-        // Alterar senha do usuário
-        const formulario = new formParticipantes()
-        const senha = fakerPT_BR.internet.password()
-        formulario.voltar()
-        cy.resetSenhaUsuario(`${dados.nome} ${dados.sobrenome}`, senha)
-
-        // Inativação do usuário
-        cy.inativarUsuario(`${dados.nome} ${dados.sobrenome}`)
-
-        // Espera 5 segundos devido a renderização da tela
-        cy.wait(5000)
-
-        // Ativação do usuário
-        cy.ativarUsuario(`${dados.nome} ${dados.sobrenome}`)        
+        cy.validarDadosParticipante(dadosParaValidar)
 
         // UPDATE
         cy.log('## UPDATE ##')
@@ -842,62 +714,55 @@ describe('Participante', () => {
         const dadosUpdate = {
             cpf: faker.br.cpf(),
             celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
+            dataExpiracao: '',
             cep: fakerPT_BR.string.numeric(8),
             endereco: fakerPT_BR.location.streetAddress(),
             numero: fakerPT_BR.number.int( { min: 1, max: 9999 } ),
             bairro: fakerPT_BR.lorem.words(1),
             cidade: fakerPT_BR.location.city(),
-            estado: fakerPT_BR.location.state(),
+            estado: 'Pernambuco',
             pais: 'Ilhas Menores Distantes dos Estados Unidos',
             empresa: fakerPT_BR.company.name(),
             ramo: fakerPT_BR.lorem.words(1),
             cargo: fakerPT_BR.person.jobTitle(),
-            area: fakerPT_BR.person.jobArea(),
-            perfilInstrutor: true,
-            comunidades: false,
-            notificacoes: false            
+            area: fakerPT_BR.person.jobArea()
         }
 
-        cy.editarUsuario(dados.nome)
-        cy.preencherDadosUsuario(dadosUpdate, { limpar: true })
-        cy.salvarUsuario(`${dados.nome} ${dados.sobrenome}`)
+        cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
+        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
 
-		cy.editarUsuario(dados.nome)
+		cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
-		cy.validarDadosUsuario(dadosParaValidar)
+		cy.validarDadosParticipante(dadosParaValidar)
 
 		// DELETE
 		cy.log('## DELETE ##')
 
-		cy.cancelarFormularioUsuario()
+        cy.acessarPgUsuarios()
 		cy.excluirUsuario(`${dados.nome} ${dados.sobrenome}`)
     })
 
     /** DOCUMENTAÇÃO:
      * @name
-     * 7. CRUD usuário somente colaborador
+     * 7. CRUD participante com e-mail, nome, sobrenome e senha
      * 
      * @description
-     * Valida a criação, leitura, atualização e exclusão de um usuário com o perfil de colaborador. Na alteração são adicionados novos
-     * dados e habilitado o perfil de gestor. Neste cenário também é alterada a senha do usuário, realizada a inativação e ativação do 
-     * usuário, para depois excluí-lo.
+     * Valida a criação, leitura, atualização e exclusão de um participante criado apenas com e-mail, nome, sobrenome e senha. 
+     * Na alteração são adicionados novos dados, sem alterar a senha.
      * 
      * @steps
-     * 1. Cria um usuário com o perfil de colaborador
-     * 2. Confirma os dados do usuário criado
-     * 3. Atualiza os dados do usuário, adicionando novos dados e habilitando o perfil de gestor
-     * 4. Confirma os dados do usuário atualizado
-     * 5. Altera a senha do usuário
-     * 6. Inativa o usuário
-     * 7. Ativa o usuário
-     * 8. Exclui o usuário
+     * 1. Cria um participante com e-mail, nome, sobrenome e senha
+     * 2. Confirma os dados do participante criado
+     * 3. Atualiza os dados do participante, adicionando novos dados
+     * 4. Confirma os dados do participante atualizado
+     * 5. Exclui o participante
      * 
      * @expected
-     * Espera-se que o usuário seja criado, atualizado, inativado, ativado e excluído com sucesso. Assim como a senha alterada.
+     * Espera-se que o participante seja criado, atualizado e excluído com sucesso.
      * 
      * @priority
      * Alta
@@ -909,7 +774,7 @@ describe('Participante', () => {
      * 1m
      * 
      * @tags
-     * Usuário, Colaborador, Gestor, CRUD, Alterar senha, Inativar, Ativar
+     * Participante, CRUD, Configurar senha
      * 
      * @testCase
      * à confirmar
@@ -917,17 +782,19 @@ describe('Participante', () => {
      * @author Karla Daiany
      * @version 1.0.0
      */
-    it('7. CRUD usuário somente colaborador', () => {
+    it('7. CRUD participante com e-mail, nome, sobrenome e senha', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
         let sobrenome = fakerPT_BR.person.lastName()
         let email = fakerPT_BR.internet.email({ firstName: nome, lastName: sobrenome}).toLowerCase()
+        let senha = fakerPT_BR.internet.password()
 
         const dados = {
             email: email,
             nome: nome,
             sobrenome: sobrenome,
-            perfilColaborador: true,
+            novaSenha: senha,
+            confirmacaoSenha: senha
         }
         
         // CREATE
@@ -935,18 +802,18 @@ describe('Participante', () => {
 
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfil('administrador')
-        cy.acessarPgUsuarios()
-        cy.addUsuario()
-        cy.preencherDadosUsuario(dados, { limpar: true })
-        cy.salvarUsuario(`${dados.nome} ${dados.sobrenome}`)
+        cy.addParticipanteConteudo(nomeCurso)
+        cy.addParticipante()
+        cy.preencherDadosParticipante(dados, { limpar: true })
+        cy.salvarNovoParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         // READ
         cy.log('## READ ##')
 
-        cy.editarUsuario(`${dados.nome} ${dados.sobrenome}`)
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         let dadosParaValidar = { ...formDefault, ...dados }
-        cy.validarDadosUsuario(dadosParaValidar)
+        cy.validarDadosParticipante(dadosParaValidar)
 
         // UPDATE
         cy.log('## UPDATE ##')
@@ -962,7 +829,7 @@ describe('Participante', () => {
             complemento: `Andar: ${fakerPT_BR.number.int( { min: 1, max: 20 } )}, Sala: ${fakerPT_BR.number.int( { min: 1, max: 20 } )}`,
             bairro: fakerPT_BR.lorem.words(1),
             cidade: fakerPT_BR.location.city(),
-            estado: fakerPT_BR.location.state(),
+            estado: 'Distrito Federal',
             pais: 'Bélgica',
             empresa: fakerPT_BR.company.name(),
             ramo: fakerPT_BR.lorem.words(1),
@@ -970,41 +837,24 @@ describe('Participante', () => {
             site: fakerPT_BR.internet.url(),
             telComercial: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
             cargo: fakerPT_BR.person.jobTitle(),
-            area: fakerPT_BR.person.jobArea(),
-            perfilGestor: true,
-            comunidades: false,
-            notificacoes: false            
+            area: fakerPT_BR.person.jobArea()
         }
 
-        cy.preencherDadosUsuario(dadosUpdate, { limpar: true })
-        cy.salvarUsuario(`${dados.nome} ${dados.sobrenome}`)
+        cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
+        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
 
-		cy.editarUsuario(dados.nome)
+		cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
-		cy.validarDadosUsuario(dadosParaValidar)
-
-        // Alterar senha do usuário
-        const formulario = new formParticipantes()
-        const senha = fakerPT_BR.internet.password()
-        formulario.voltar()
-        cy.resetSenhaUsuario(`${dados.nome} ${dados.sobrenome}`, senha)
-
-        // Inativação do usuário
-        cy.inativarUsuario(`${dados.nome} ${dados.sobrenome}`)
-
-        // Espera 5 segundos devido a renderização da tela
-        cy.wait(5000)
-
-        // Ativação do usuário
-        cy.ativarUsuario(`${dados.nome} ${dados.sobrenome}`)        
+		cy.validarDadosParticipante(dadosParaValidar)
 
 		// DELETE
 		cy.log('## DELETE ##')
 
+        cy.acessarPgUsuarios()
 		cy.excluirUsuario(`${dados.nome} ${dados.sobrenome}`)
     })
 })
