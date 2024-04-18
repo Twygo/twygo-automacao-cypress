@@ -857,4 +857,98 @@ describe('Participante', () => {
         cy.acessarPgUsuarios()
 		cy.excluirUsuario(`${dados.nome} ${dados.sobrenome}`)
     })
+
+    // TODO: Inserir usuário via API e associar a um curso via tela de criação de participante
+
+    // TODO: Alterar status do participante e atualizar dados em status diferente de 'Confirmado'
+    it.only('8. Altera status participante default', () => {
+        // Massa de dados
+        let nome = fakerPT_BR.person.firstName()
+        let sobrenome = fakerPT_BR.person.lastName()
+        let email = fakerPT_BR.internet.email({ firstName: nome, lastName: sobrenome}).toLowerCase()
+
+        const dados = {
+            email: email,
+            nome: nome,
+            sobrenome: sobrenome
+        }
+        
+        // CREATE
+		cy.log('## CREATE ##')
+
+		cy.loginTwygoAutomacao()
+		cy.alterarPerfil('administrador')
+        cy.addParticipanteConteudo(nomeCurso)
+        cy.addParticipante()
+        cy.preencherDadosParticipante(dados, { limpar: true })
+        cy.salvarNovoParticipante(`${dados.nome} ${dados.sobrenome}`)
+
+        // READ
+        cy.log('## READ ##')
+
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
+
+        let dadosParaValidar = { ...formDefault, ...dados }
+        cy.validarDadosParticipante(dadosParaValidar)
+        cy.cancelarFormularioParticipante()
+
+        // Altera status para 'Pendente'
+        cy.alteraStatus(`${dados.nome} ${dados.sobrenome}`, 'Pendente')
+
+        // Altera status para 'Confirmado'
+        cy.alteraStatus(`${dados.nome} ${dados.sobrenome}`, 'Confirmado')
+
+        // Altera status para 'Cancelado'
+        cy.alteraStatus(`${dados.nome} ${dados.sobrenome}`, 'Cancelado')
+
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        const senha = fakerPT_BR.internet.password()
+        const dadosUpdate = {
+            nome: fakerPT_BR.person.firstName(),
+            sobrenome: fakerPT_BR.person.lastName(),
+            rg: fakerPT_BR.number.int({ min: 100000, max: 999999999 }),
+            telPessoal: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
+            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
+            dataExpiracao: gerarData(0, 1, 0),
+            cep: fakerPT_BR.string.numeric(8),
+            endereco: fakerPT_BR.location.streetAddress(),
+            numero: fakerPT_BR.number.int( { min: 1, max: 9999 } ),
+            complemento: `Andar: ${fakerPT_BR.number.int( { min: 1, max: 20 } )}, Sala: ${fakerPT_BR.number.int( { min: 1, max: 20 } )}`,
+            bairro: fakerPT_BR.lorem.words(1),
+            cidade: fakerPT_BR.location.city(),
+            estado: 'Minas Gerais',
+            pais: 'Bahamas',
+            empresa: fakerPT_BR.company.name(),
+            ramo: fakerPT_BR.lorem.words(1),
+            nrColaboradores: '> 500',
+            site: fakerPT_BR.internet.url(),
+            telComercial: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
+            cargo: fakerPT_BR.person.jobTitle(),
+            area: fakerPT_BR.person.jobArea(),
+            observacao: fakerPT_BR.lorem.words(5),
+            novaSenha: senha,
+            confirmacaoSenha: senha
+        }
+
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
+        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, 'Cancelados')
+
+		// READ-UPDATE
+		cy.log('## READ-UPDATE ##')
+
+        cy.abaCancelados()
+		cy.editarParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+
+        dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
+		cy.validarDadosParticipante(dadosUpdate)
+
+        // DELETE
+		cy.log('## DELETE ##')
+
+        cy.acessarPgUsuarios()
+		cy.excluirUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+    })
 })

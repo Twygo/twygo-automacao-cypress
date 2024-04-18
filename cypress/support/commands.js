@@ -2654,8 +2654,6 @@ Cypress.Commands.add('ativarUsuario', function(nomeUsuario) {
     })
 })
 
-//TODO: Comandos para criar participante a partir daqui
-
 /** DOCUMENTAÇÃO:
  * @name addParticipanteConteudo
  * 
@@ -2826,7 +2824,24 @@ Cypress.Commands.add('salvarNovoParticipante', (nomeParticipante) => {
  * @version 1.0.0
  * @since 1.0.0
  */
-Cypress.Commands.add('salvarEdicaoParticipante', (nomeParticipante) => {
+// Cypress.Commands.add('salvarEdicaoParticipante', (nomeParticipante) => {
+//   const TIMEOUT_PADRAO = 5000
+//   const formulario = new formParticipantes()
+//   const labels = Cypress.env('labels')
+//   const { msgSucessoEdicao } = labels.participantes
+
+//   // Salva o usuário
+//   formulario.salvar()
+
+//   // Confirma a mensagem de sucesso
+//   cy.contains('.flash.notice', msgSucessoEdicao, { timeout: TIMEOUT_PADRAO })
+//     .should('be.visible')
+
+//   // Verifica se o usuário foi criado com sucesso
+//   cy.contains('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
+//     .should('be.visible')
+// })
+Cypress.Commands.add('salvarEdicaoParticipante', (nomeParticipante, abaEsperada = 'Confirmados') => {
   const TIMEOUT_PADRAO = 5000
   const formulario = new formParticipantes()
   const labels = Cypress.env('labels')
@@ -2839,8 +2854,16 @@ Cypress.Commands.add('salvarEdicaoParticipante', (nomeParticipante) => {
   cy.contains('.flash.notice', msgSucessoEdicao, { timeout: TIMEOUT_PADRAO })
     .should('be.visible')
 
-  // Verifica se o usuário foi criado com sucesso
-  cy.contains('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
+  // Mapeia a aba esperada para o seletor correspondente
+  const abaSeletor = {
+    'Confirmados': '#confirmed',
+    'Pendentes': '#pending',
+    'Cancelados': '#canceled'
+  }
+  // TODO: Ajustar para acessar a aba correta antes de validar  
+  // Verifica se o usuário foi editado com sucesso na aba esperada
+  cy.get(abaSeletor[abaEsperada])
+    .contains('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
     .should('be.visible')
 })
 
@@ -2921,5 +2944,292 @@ Cypress.Commands.add('addParticipante', () => {
     .should('be.visible')
 
   cy.contains('.detail_title', tituloPgAdicionar, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+})
+
+// Cypress.Commands.add('confirmarParticipante', function(nomeParticipantes) {
+//   const TIMEOUT_PADRAO = 5000
+//   const labels = Cypress.env('labels')
+//   const { msgAlteraConfirmado, msgSucessoAlteraStatus } = labels.participantes
+
+//   // Seleciona o(s) participante(s)
+//   nomeParticipantes.forEach(nomeParticipante => {
+//     cy.contains('td', nomeParticipante) 
+//       .parent('tr') 
+//       .within(() => {
+//         cy.get('.participant_check') 
+//           .find('input[type="checkbox"]') 
+//           .click()
+//     })
+//   })
+
+//   // Clica no botão de 'Confirmar'
+//   cy.get('.link-confirm')
+//     .click()
+
+//   // Valida as mensagens
+//   cy.contains('.flash.success', msgAlteraConfirmado, { timeout: TIMEOUT_PADRAO })
+//     .should('be.visible')
+
+//   cy.contains('.flash.success', msgSucessoAlteraStatus, { timeout: TIMEOUT_PADRAO })
+//     .should('be.visible')
+
+//   // Medida de contorno para atualizar a página e validar se o participante está pendente
+//   cy.addParticipante()
+//   cy.cancelarFormularioParticipante()
+//   cy.abaConfirmados()
+
+//   nomeParticipantes.forEach(nomeParticipante => {
+//     cy.get('#canceled')
+//       .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
+//       .should('not.exist')
+
+//     cy.get('#pending')
+//       .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
+//       .should('not.exist')
+
+//     cy.get('#confirmed')
+//       .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
+//       .should('be.visible')
+//   })
+
+// })
+
+// Cypress.Commands.add('pendenteParticipante', function(nomeParticipantes) {
+//   const TIMEOUT_PADRAO = 5000
+//   const labels = Cypress.env('labels')
+//   const { msgAlteraPendente, msgSucessoAlteraStatus } = labels.participantes
+
+//   // Verifica se nomeParticipantes é uma string ou um array
+//   const participantes = Array.isArray(nomeParticipantes) ? nomeParticipantes : [nomeParticipantes]
+
+//   // Seleciona o(s) participante(s)
+//   participantes.forEach(nomeParticipante => {
+//     cy.contains('td', nomeParticipante) 
+//       .parent('tr') 
+//       .within(() => {
+//         cy.get('.participant_check') 
+//           .find('input[type="checkbox"]') 
+//           .click()
+//     })
+//   })
+
+//   // Clica no botão de 'Pendente'
+//   cy.get('.pending_participant')
+//     .click()
+
+//   // Valida as mensagens
+//   cy.contains('.flash.success', msgAlteraPendente, { timeout: TIMEOUT_PADRAO })
+//     .should('be.visible')
+
+//   cy.contains('.flash.success', msgSucessoAlteraStatus, { timeout: TIMEOUT_PADRAO })
+//     .should('be.visible')
+
+//   // Medida de contorno para atualizar a página e validar se o participante está pendente
+//   cy.addParticipante()
+//   cy.cancelarFormularioParticipante()
+//   cy.abaPendentes()
+
+//   participantes.forEach(nomeParticipante => {
+//     cy.get('#canceled')
+//       .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
+//       .should('not.exist')
+
+//     cy.get('#pending')
+//       .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
+//       .should('be.visible')
+
+//     cy.get('#confirmed')
+//       .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
+//       .should('not.exist')
+//   })
+// })
+
+// Cypress.Commands.add('cancelarParticipante', function(nomeParticipantes) {
+//   const TIMEOUT_PADRAO = 5000
+//   const labels = Cypress.env('labels')
+//   const { msgAlteraCancelado, msgSucessoAlteraStatus } = labels.participantes
+
+//   // Seleciona o(s) participante(s)
+//   nomeParticipantes.forEach(nomeParticipante => {
+//     cy.contains('td', nomeParticipante) 
+//       .parent('tr') 
+//       .within(() => {
+//         cy.get('.participant_check') 
+//           .find('input[type="checkbox"]') 
+//           .click()
+//     })
+//   })
+
+//   // Clica no botão de 'Cancelar'
+//   cy.get('.cancel_participant')
+//     .click()
+
+//   // Insere motivo de cancelamento e confirma
+//   cy.get('#reject_message')
+//     .type('Motivo de cancelamento: Teste Cypress')
+  
+//   cy.get('#simplemodal-data')
+//     .find('p button.green_btn.confirmations')
+//     .click()
+
+//   // Valida as mensagens
+//   cy.contains('.flash.success', msgAlteraCancelado, { timeout: TIMEOUT_PADRAO })
+//     .should('be.visible')
+
+//   cy.contains('.flash.success', msgSucessoAlteraStatus, { timeout: TIMEOUT_PADRAO })
+//     .should('be.visible')
+
+//   // Medida de contorno para atualizar a página e validar se o participante está pendente
+//   cy.addParticipante()
+//   cy.cancelarFormularioParticipante()
+//   cy.abaCancelados()
+
+//   nomeParticipantes.forEach(nomeParticipante => {
+//     cy.get('#canceled')
+//       .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
+//       .should('be.visible')
+
+//     cy.get('#pending')
+//       .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
+//       .should('not.exist')
+
+//     cy.get('#confirmed')
+//       .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
+//       .should('not.exist')
+//   })
+  
+// })
+
+Cypress.Commands.add('alteraStatus', function(nomeParticipantes, status) {
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { msgAlteraConfirmado, msgAlteraPendente, msgAlteraCancelado, msgSucessoAlteraStatus } = labels.participantes
+
+  // Verifica se nomeParticipantes é uma string ou um array
+  const participantes = Array.isArray(nomeParticipantes) ? nomeParticipantes : [nomeParticipantes]
+
+  // Seleciona o(s) participante(s)
+  participantes.forEach(nomeParticipante => {
+    cy.contains('td', nomeParticipante)
+      .parent('tr')
+      .within(() => {
+        cy.get('.participant_check')
+          .find('input[type="checkbox"]')
+          .click()
+      })
+  })
+
+  // Clica no botão correspondente ao status desejado
+  switch (status) {
+    case 'Confirmado':
+      cy.get('.link-confirm').click()
+      break
+    case 'Pendente':
+      cy.get('.pending_participant').click()
+      break
+    case 'Cancelado':
+      cy.get('.link-danger.cancel_participant').click()
+      // Insere motivo de cancelamento e confirma
+      cy.get('#reject_message').type('Motivo de cancelamento: Teste Cypress')
+      cy.get('#simplemodal-data').find('p button.green_btn.confirmations').click()
+      break
+    default:
+      throw new Error(`Status inválido: ${status}`)
+  }
+
+  // Valida as mensagens
+  switch (status) {
+    case 'Confirmado':
+      cy.contains('.flash.success', msgAlteraConfirmado, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+      break
+    case 'Pendente':
+      cy.contains('.flash.success', msgAlteraPendente, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+      break
+    case 'Cancelado':
+      cy.contains('.flash.success', msgAlteraCancelado, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+      break
+  }
+  cy.contains('.flash.success', msgSucessoAlteraStatus, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+
+  // Medida de contorno para atualizar a página e validar o status do(s) participante(s)
+  cy.addParticipante()
+  cy.cancelarFormularioParticipante()
+
+  // Navega para a aba correspondente ao status
+  switch (status) {
+    case 'Confirmado':
+      cy.abaConfirmados()
+      break
+    case 'Pendente':
+      cy.abaPendentes()
+      break
+    case 'Cancelado':
+      cy.abaCancelados()
+      break
+  }
+
+  // Valida o status do(s) participante(s)
+  participantes.forEach(nomeParticipante => {
+    let statusSeletor = {
+      'Confirmado': 'confirmed',
+      'Pendente': 'pending',
+      'Cancelado': 'canceled'
+    }
+
+    cy.get(`#${statusSeletor[status]}`)
+      .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
+      .should('be.visible')
+  })
+})
+
+Cypress.Commands.add('abaConfirmados', function() {
+  cy.contains('.tab_selector', 'Confirmados')
+    .click()
+})
+
+Cypress.Commands.add('abaPendentes', function() {
+  cy.contains('.tab_selector', 'Pendentes')
+    .click()
+})
+
+Cypress.Commands.add('abaCancelados', function() {
+  cy.contains('.tab_selector', 'Cancelados')
+    .click()
+})
+
+/** DOCUMENTAÇÃO: //TODO: Atualizar a documentação
+ * @name cancelarFormularioParticipante
+ * 
+ * @description
+ * Comando personalizado para cancelar o formulário de participante e validar o redirecionamento correto da página.
+ * 
+ * @actions
+ * 1. Clica no botão 'Cancelar' para cancelar a criação/edição de determinado conteúdo.
+ * 2. Valida a exibição da página correta após o cancelamento.
+ * 
+ * @param {String} tipoConteudo - O tipo do conteúdo que está sendo criado (e.g., 'trilha', 'curso', 'catalogo'). Este parâmetro influencia no breadcrumb esperado para a página de redirecionamento.
+ * 
+ * @example
+ * cy.cancelarFormularioConteudo('tipoConteudo')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('cancelarFormularioParticipante', function() {
+  const labels = Cypress.env('labels')
+  const { breadcrumb, tituloPg } = labels.participantes
+
+  // Cancelar
+  cy.contains('a.btn.btn-cancel', 'Cancelar')
+    .should('be.visible')
+    .click()
+
+  // Validar redirecionamento
+  cy.contains('#page-breadcrumb', breadcrumb)
+    .should('be.visible')
+
+  cy.contains('.detail_title', tituloPg)
     .should('be.visible')
 })

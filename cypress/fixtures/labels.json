@@ -121,6 +121,10 @@
         "tituloPgAdicionar": "Adicionar",
         "breadcrumbEdicao": "Detalhes do evento",
         "tituloPgEdicao": "Edição de Participante",
-        "msgSucessoEdicao": "Participante atualizado com sucesso."
+        "msgSucessoEdicao": "Participante atualizado com sucesso.",
+        "msgAlteraConfirmado": "Confirmação dos Participantes em progresso.",
+        "msgAlteraCancelado": "Cancelamento dos Participantes em progresso.",
+        "msgAlteraPendente": "Pendência dos Participantes em progresso.",
+        "msgSucessoAlteraStatus": "Alteração de status dos Participantes foi concluída com sucesso, acesse novamente para visualizar."
     }
 }
