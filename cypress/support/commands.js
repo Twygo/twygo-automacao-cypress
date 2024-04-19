@@ -6,6 +6,7 @@ import formQuestionarios from "./pageObjects/formQuestionarios"
 import formPerguntas from "./pageObjects/formPerguntas"
 import formUsuarios from "./pageObjects/formUsuarios"
 import formParticipantes from "./pageObjects/formParticipantes"
+import { fakerPT_BR } from "@faker-js/faker"
 
 /** DOCUMENTAÇÃO:
  * @name loginTwygoAutomacao
@@ -1269,7 +1270,7 @@ Cypress.Commands.add("criarCursoViaApi", (body, attempt = 1) => {
   }).then((response) => {
     if (response.status !== 201 && attempt < 3) {
       cy.log(`Tentativa ${attempt}: Falha na requisição. Tentando novamente`)
-      cy.criarCatalogoViaApi(body, attempt + 1)
+      cy.criarCursoViaApi(body, attempt + 1)
     } else if (response.status !== 201) {
       cy.log(`Tentativa ${attempt}: Falha na requisição. Não foi possível criar o catálogo`)
       throw new Error(`Erro na criação do catálogo: ${response}`)
@@ -2216,7 +2217,8 @@ Cypress.Commands.add('excluirUsuario', (nomeUsuario) => {
     .should('be.visible')
 
   // Verifica se o usuário foi excluído e não é exibido na listagem
-  cy.contains('tr.professional-row', nomeUsuario, { timeout: TIMEOUT_PADRAO })
+  cy.get('tr.professional-row')
+    .contains(nomeUsuario, { timeout: TIMEOUT_PADRAO })
     .should('not.exist')
 })
 
@@ -2808,40 +2810,24 @@ Cypress.Commands.add('salvarNovoParticipante', (nomeParticipante) => {
  * @name salvarEdicaoParticipante
  * 
  * @description
- * Comando personalizado para salvar a edição de um participante, validar a mensagem de sucesso e verificar se o participante foi salvo.
+ * Comando personalizado para salvar a edição de um participante, validar a mensagem de sucesso e 
+ * verificar se o participante foi salvo de acordo com o status informado.
  * 
  * @actions
  * 1. Salva a edição de um participante.
- * 2. Confirma a mensagem de sucesso na atualização após o salvamento.
- * 3. Verifica se o participante foi salvo.
+ * 2. Confirma a mensagem de sucesso na atualização após o salvamento conforme o status informado.
+ * 3. Verifica se o participante foi salvo no status informado.
  * 
  * @param {String} nomeUsuario - O nome do participante a ser salvo.
  * 
  * @example
- * cy.salvarEdicaoParticipante('Nome do Participante')
+ * cy.salvarEdicaoParticipante('Nome do Participante', 'Confirmados')
  * 
  * @author Karla Daiany
- * @version 1.0.0
+ * @version 1.1.0
  * @since 1.0.0
  */
-// Cypress.Commands.add('salvarEdicaoParticipante', (nomeParticipante) => {
-//   const TIMEOUT_PADRAO = 5000
-//   const formulario = new formParticipantes()
-//   const labels = Cypress.env('labels')
-//   const { msgSucessoEdicao } = labels.participantes
-
-//   // Salva o usuário
-//   formulario.salvar()
-
-//   // Confirma a mensagem de sucesso
-//   cy.contains('.flash.notice', msgSucessoEdicao, { timeout: TIMEOUT_PADRAO })
-//     .should('be.visible')
-
-//   // Verifica se o usuário foi criado com sucesso
-//   cy.contains('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
-//     .should('be.visible')
-// })
-Cypress.Commands.add('salvarEdicaoParticipante', (nomeParticipante, abaEsperada = 'Confirmados') => {
+Cypress.Commands.add('salvarEdicaoParticipante', (nomeParticipante, status = 'Confirmados') => {
   const TIMEOUT_PADRAO = 5000
   const formulario = new formParticipantes()
   const labels = Cypress.env('labels')
@@ -2860,9 +2846,22 @@ Cypress.Commands.add('salvarEdicaoParticipante', (nomeParticipante, abaEsperada 
     'Pendentes': '#pending',
     'Cancelados': '#canceled'
   }
-  // TODO: Ajustar para acessar a aba correta antes de validar  
+
+  // Clica na aba correspondente em que o participante foi editado
+  switch (status) {
+    case 'Confirmados':
+      cy.abaConfirmados()
+      break
+    case 'Pendentes':
+      cy.abaPendentes()
+      break
+    case 'Cancelados':
+      cy.abaCancelados()
+      break
+  }  
+
   // Verifica se o usuário foi editado com sucesso na aba esperada
-  cy.get(abaSeletor[abaEsperada])
+  cy.get(abaSeletor[status])
     .contains('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
     .should('be.visible')
 })
@@ -2947,160 +2946,36 @@ Cypress.Commands.add('addParticipante', () => {
     .should('be.visible')
 })
 
-// Cypress.Commands.add('confirmarParticipante', function(nomeParticipantes) {
-//   const TIMEOUT_PADRAO = 5000
-//   const labels = Cypress.env('labels')
-//   const { msgAlteraConfirmado, msgSucessoAlteraStatus } = labels.participantes
-
-//   // Seleciona o(s) participante(s)
-//   nomeParticipantes.forEach(nomeParticipante => {
-//     cy.contains('td', nomeParticipante) 
-//       .parent('tr') 
-//       .within(() => {
-//         cy.get('.participant_check') 
-//           .find('input[type="checkbox"]') 
-//           .click()
-//     })
-//   })
-
-//   // Clica no botão de 'Confirmar'
-//   cy.get('.link-confirm')
-//     .click()
-
-//   // Valida as mensagens
-//   cy.contains('.flash.success', msgAlteraConfirmado, { timeout: TIMEOUT_PADRAO })
-//     .should('be.visible')
-
-//   cy.contains('.flash.success', msgSucessoAlteraStatus, { timeout: TIMEOUT_PADRAO })
-//     .should('be.visible')
-
-//   // Medida de contorno para atualizar a página e validar se o participante está pendente
-//   cy.addParticipante()
-//   cy.cancelarFormularioParticipante()
-//   cy.abaConfirmados()
-
-//   nomeParticipantes.forEach(nomeParticipante => {
-//     cy.get('#canceled')
-//       .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
-//       .should('not.exist')
-
-//     cy.get('#pending')
-//       .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
-//       .should('not.exist')
-
-//     cy.get('#confirmed')
-//       .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
-//       .should('be.visible')
-//   })
-
-// })
-
-// Cypress.Commands.add('pendenteParticipante', function(nomeParticipantes) {
-//   const TIMEOUT_PADRAO = 5000
-//   const labels = Cypress.env('labels')
-//   const { msgAlteraPendente, msgSucessoAlteraStatus } = labels.participantes
-
-//   // Verifica se nomeParticipantes é uma string ou um array
-//   const participantes = Array.isArray(nomeParticipantes) ? nomeParticipantes : [nomeParticipantes]
-
-//   // Seleciona o(s) participante(s)
-//   participantes.forEach(nomeParticipante => {
-//     cy.contains('td', nomeParticipante) 
-//       .parent('tr') 
-//       .within(() => {
-//         cy.get('.participant_check') 
-//           .find('input[type="checkbox"]') 
-//           .click()
-//     })
-//   })
-
-//   // Clica no botão de 'Pendente'
-//   cy.get('.pending_participant')
-//     .click()
-
-//   // Valida as mensagens
-//   cy.contains('.flash.success', msgAlteraPendente, { timeout: TIMEOUT_PADRAO })
-//     .should('be.visible')
-
-//   cy.contains('.flash.success', msgSucessoAlteraStatus, { timeout: TIMEOUT_PADRAO })
-//     .should('be.visible')
-
-//   // Medida de contorno para atualizar a página e validar se o participante está pendente
-//   cy.addParticipante()
-//   cy.cancelarFormularioParticipante()
-//   cy.abaPendentes()
-
-//   participantes.forEach(nomeParticipante => {
-//     cy.get('#canceled')
-//       .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
-//       .should('not.exist')
-
-//     cy.get('#pending')
-//       .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
-//       .should('be.visible')
-
-//     cy.get('#confirmed')
-//       .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
-//       .should('not.exist')
-//   })
-// })
-
-// Cypress.Commands.add('cancelarParticipante', function(nomeParticipantes) {
-//   const TIMEOUT_PADRAO = 5000
-//   const labels = Cypress.env('labels')
-//   const { msgAlteraCancelado, msgSucessoAlteraStatus } = labels.participantes
-
-//   // Seleciona o(s) participante(s)
-//   nomeParticipantes.forEach(nomeParticipante => {
-//     cy.contains('td', nomeParticipante) 
-//       .parent('tr') 
-//       .within(() => {
-//         cy.get('.participant_check') 
-//           .find('input[type="checkbox"]') 
-//           .click()
-//     })
-//   })
-
-//   // Clica no botão de 'Cancelar'
-//   cy.get('.cancel_participant')
-//     .click()
-
-//   // Insere motivo de cancelamento e confirma
-//   cy.get('#reject_message')
-//     .type('Motivo de cancelamento: Teste Cypress')
-  
-//   cy.get('#simplemodal-data')
-//     .find('p button.green_btn.confirmations')
-//     .click()
-
-//   // Valida as mensagens
-//   cy.contains('.flash.success', msgAlteraCancelado, { timeout: TIMEOUT_PADRAO })
-//     .should('be.visible')
-
-//   cy.contains('.flash.success', msgSucessoAlteraStatus, { timeout: TIMEOUT_PADRAO })
-//     .should('be.visible')
-
-//   // Medida de contorno para atualizar a página e validar se o participante está pendente
-//   cy.addParticipante()
-//   cy.cancelarFormularioParticipante()
-//   cy.abaCancelados()
-
-//   nomeParticipantes.forEach(nomeParticipante => {
-//     cy.get('#canceled')
-//       .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
-//       .should('be.visible')
-
-//     cy.get('#pending')
-//       .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
-//       .should('not.exist')
-
-//     cy.get('#confirmed')
-//       .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
-//       .should('not.exist')
-//   })
-  
-// })
-
+/** DOCUMENTAÇÃO:
+ * @name alteraStatus
+ * 
+ * @description
+ * Comando personalizado para alterar o status de um ou mais participantes com base no status informado
+ * e validar a alteração do status.
+ * 
+ * @actions
+ * 1. Seleciona o(s) participante(s) desejado(s), marcando a caixa de seleção.
+ * 2. Clica no botão correspondente ao status desejado.
+ * 3. Insere o motivo de cancelamento, se o status for 'Cancelado'.
+ * 4. Confirma a alteração do status.
+ * 5. Valida a mensagem de sucesso após a alteração do status.
+ * 6. Navega para a aba correspondente ao status.
+ * 7. Valida o status do(s) participante(s).
+ * 
+ * @param {String|Array} nomeParticipantes - O nome do(s) participante(s) a ter o status alterado.
+ * @param {String} status - O status a ser alterado (e.g., 'Confirmado', 'Pendente', 'Cancelado').
+ * 
+ * @example
+ * cy.alteraStatus('Nome do Participante', 'Confirmado')
+ * ou
+ * cy.alteraStatus(['Nome do Participante 1', 'Nome do Participante 2'], 'Pendente')
+ * 
+ * @throws {Error} - Se o status informado não for válido.
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('alteraStatus', function(nomeParticipantes, status) {
   const TIMEOUT_PADRAO = 5000
   const labels = Cypress.env('labels')
@@ -3114,22 +2989,33 @@ Cypress.Commands.add('alteraStatus', function(nomeParticipantes, status) {
     cy.contains('td', nomeParticipante)
       .parent('tr')
       .within(() => {
-        cy.get('.participant_check')
-          .find('input[type="checkbox"]')
-          .click()
+        cy.get('.participant_check input[type="checkbox"]')
+        .check({ force: true })
       })
   })
 
   // Clica no botão correspondente ao status desejado
   switch (status) {
     case 'Confirmado':
-      cy.get('.link-confirm').click()
+      cy.get('.link-confirm')
+        .first()
+        .should('be.visible')
+        .and('not.be.disabled')
+        .click()
       break
     case 'Pendente':
-      cy.get('.pending_participant').click()
+      cy.get('.pending_participant')
+        .first()
+        .should('be.visible')
+        .and('not.be.disabled')
+        .click()
       break
     case 'Cancelado':
-      cy.get('.link-danger.cancel_participant').click()
+      cy.get('.link-danger.cancel_participant')
+        .first()
+        .should('be.visible')
+        .and('not.be.disabled')
+        .click()
       // Insere motivo de cancelamento e confirma
       cy.get('#reject_message').type('Motivo de cancelamento: Teste Cypress')
       cy.get('#simplemodal-data').find('p button.green_btn.confirmations').click()
@@ -3137,7 +3023,6 @@ Cypress.Commands.add('alteraStatus', function(nomeParticipantes, status) {
     default:
       throw new Error(`Status inválido: ${status}`)
   }
-
   // Valida as mensagens
   switch (status) {
     case 'Confirmado':
@@ -3183,35 +3068,90 @@ Cypress.Commands.add('alteraStatus', function(nomeParticipantes, status) {
   })
 })
 
+/** DOCUMENTAÇÃO:
+ * @name abaConfirmados
+ * 
+ * @description
+ * Comando personalizado para clicar na aba 'Confirmados'.
+ * 
+ * @actions
+ * 1. Clica na aba 'Confirmados'.
+ * 
+ * @example
+ * cy.abaConfirmados()
+ * 
+ * @obs
+ * Este comando é utilizado para navegar entre as abas de status dos participantes.
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('abaConfirmados', function() {
   cy.contains('.tab_selector', 'Confirmados')
     .click()
 })
 
+/** DOCUMENTAÇÃO:
+ * @name abaPendentes
+ * 
+ * @description
+ * Comando personalizado para clicar na aba 'Pendentes'.
+ * 
+ * @actions
+ * 1. Clica na aba 'Pendentes'.
+ * 
+ * @example
+ * cy.abaPendentes()
+ * 
+ * @obs
+ * Este comando é utilizado para navegar entre as abas de status dos participantes.
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('abaPendentes', function() {
   cy.contains('.tab_selector', 'Pendentes')
     .click()
 })
 
+/** DOCUMENTAÇÃO:
+ * @name abaCancelados
+ * 
+ * @description
+ * Comando personalizado para clicar na aba 'Cancelados'.
+ * 
+ * @actions
+ * 1. Clica na aba 'Cancelados'.
+ * 
+ * @example
+ * cy.abaCancelados()
+ * 
+ * @obs
+ * Este comando é utilizado para navegar entre as abas de status dos participantes.
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('abaCancelados', function() {
   cy.contains('.tab_selector', 'Cancelados')
     .click()
 })
 
-/** DOCUMENTAÇÃO: //TODO: Atualizar a documentação
+/** DOCUMENTAÇÃO:
  * @name cancelarFormularioParticipante
  * 
  * @description
  * Comando personalizado para cancelar o formulário de participante e validar o redirecionamento correto da página.
  * 
  * @actions
- * 1. Clica no botão 'Cancelar' para cancelar a criação/edição de determinado conteúdo.
+ * 1. Clica no botão 'Cancelar' para cancelar a criação/edição de determinado participante.
  * 2. Valida a exibição da página correta após o cancelamento.
  * 
- * @param {String} tipoConteudo - O tipo do conteúdo que está sendo criado (e.g., 'trilha', 'curso', 'catalogo'). Este parâmetro influencia no breadcrumb esperado para a página de redirecionamento.
- * 
  * @example
- * cy.cancelarFormularioConteudo('tipoConteudo')
+ * cy.cancelarFormularioParticipante()
  * 
  * @author Karla Daiany
  * @version 1.0.0
@@ -3232,4 +3172,249 @@ Cypress.Commands.add('cancelarFormularioParticipante', function() {
 
   cy.contains('.detail_title', tituloPg)
     .should('be.visible')
+})
+
+/** DOCUMENTAÇÃO:
+ * @name criarUsuarioViaApi
+ * 
+ * @description
+ * Comando personalizado para criar um usuário via API com base nos dados fornecidos (body).
+ * 
+ * @actions
+ * 1. Cria um usuário via API com base nos dados fornecidos.
+ * 2. Valida se o status da requisição é 201.
+ * 
+ * @param {Object} body - Os dados a serem enviados na requisição.
+ * @param {Number} attempt - A tentativa de criação do usuário.
+ * 
+ * @example
+ * cy.criarUsuarioViaApi({ nome: 'Nome do Usuário', email: 'Email do Usuário' })
+ * 
+ * @throws {Error} - Se a requisição falhar após 3 tentativas.
+ * 
+ * @obs
+ * O comando tentará criar o usuário até 3 vezes. Caso a requisição falhe após 3 tentativas, uma mensagem 
+ * de erro será exibida.
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('criarUsuarioViaApi', function(body) {
+  const url = `/api/v1/o/${Cypress.env('orgId')}/students`
+
+  cy.request({
+    method: 'POST',
+    url: url,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${Cypress.env('token')}`
+    },
+    body: body,
+    failOnStatusCode: false
+  }).then((response) => {
+    if (response.status !== 201 && attempt < 3) {
+      cy.log(`Tentativa ${attempt}: Falha na requisição. Tentando novamente`)
+      cy.criarUsuarioViaApi(body, attempt + 1)
+    } else if (response.status !== 201) {
+      cy.log(`Tentativa ${attempt}: Falha na requisição. Não foi possível criar o catálogo`)
+      throw new Error(`Erro na criação do catálogo: ${response}`)
+    } else {
+      expect(response.status).to.eq(201)
+    }
+  })
+})
+
+/** DOCUMENTAÇÃO:
+ * @name associarParticipante
+ * 
+ * @description
+ * Comando personalizado para associar um participante a um conteúdo (via cadastro de participante).
+ * 
+ * @actions
+ * 1. Insere o e-mail do participante.
+ * 2. Seleciona o participante correspondente clicando em 'Associar'.
+ * 3. Salva a associação do participante.
+ * 4. Valida a mensagem de sucesso após a associação.
+ * 
+ * @param {String} emailParticipante - O e-mail do participante a ser associado.
+ * @param {String} nomeParticipante - O nome do participante a ser associado (nome e sobrenome).
+ * 
+ * @example
+ * cy.associarParticipante('joaquim@gmail.com', 'Joaquim Silva')
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('associarParticipante', function(emailParticipante, nomeParticipante) {
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { msgSucesso } = labels.participantes
+
+  // Insere o e-mail e seleciona o participante correspondente clicando em 'Associar'
+  cy.get('#event_participant_email')
+    .type(emailParticipante)
+    .then(() => {
+      cy.get('#email-list')
+        .should('be.visible')
+        .contains('.participantName', nomeParticipante)
+        .parents('li')
+        .find('a[id^="undefined"]')
+        .contains('Associar')
+        .click()
+    })
+
+  // Salva a associação do participante
+  cy.salvarNovoParticipante(nomeParticipante)
+
+  // Valida a mensagem de sucesso
+  cy.contains('.flash.notice', msgSucesso, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+})
+
+/** DOCUMENTAÇÃO:
+ * @name alterarStatusTodosParticipantes
+ * 
+ * @description
+ * Comando personalizado para alterar o status de todos os participantes com base no status atual 
+ * e no novo status informado. Validando se os participantes foram alterados com sucesso.
+ * 
+ * @actions
+ * 1. Clica na aba correspondente ao status atual.
+ * 2. Seleciona todos os participantes conforme a aba do status atual.
+ * 3. Clica no botão correspondente ao status desejado.
+ * 4. Insere o motivo de cancelamento, se o status for 'Cancelado'.
+ * 5. Confirma a alteração do status.
+ * 6. Valida a mensagem de sucesso após a alteração do status.
+ * 7. Navega para a aba correspondente ao novo status.
+ * 8. Valida o novo status do(s) participante(s).
+ * 
+ * @param {String} status - O status atual dos participantes (e.g., 'Confirmado', 'Pendente', 'Cancelado').
+ * @param {String} novoStatus - O novo status dos participantes (e.g., 'Confirmado', 'Pendente', 'Cancelado').
+ * @param {Array} listaParticipantes - A lista de participantes a ter o status alterado.
+ * 
+ * @example
+ * cy.alterarStatusTodosParticipantes('Confirmado', 'Pendente', ['Nome do Participante 1', 'Nome do Participante 2'])
+ * 
+ * @throws {Error} - Se o status informado não for válido.
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('alterarStatusTodosParticipantes', function(status, novoStatus, listaParticipantes) {
+  const TIMEOUT_PADRAO = 10000
+  const labels = Cypress.env('labels')
+  const { msgAlteraConfirmado, msgAlteraPendente, msgAlteraCancelado, msgSucessoAlteraStatus } = labels.participantes
+
+  // Clica na aba correspondente ao status atual
+  switch(status) {
+    case 'Confirmado':
+      cy.get('#confirmed')
+        .click()
+      break
+    case 'Pendente':
+      cy.get('#pending')
+        .click()
+      break
+    case 'Cancelado':
+      cy.get('#canceled')
+        .click()
+      break
+    default:
+      throw new Error(`Status inválido: ${status}`)
+  }
+
+  // Seleciona todos os participantes conforme a aba do status atual
+  switch(status) {
+    case 'Confirmado':
+      cy.get('#confirmed_top_all_participants')
+        .click()
+      break
+    case 'Pendente':
+      cy.get('#pending_top_all_participants')
+        .click()
+      break
+    case 'Cancelado':
+      cy.get('#canceled_top_all_participants')
+        .click()
+      break
+    default:
+      throw new Error(`Status inválido: ${status}`)
+  }  
+
+  // Clica no botão correspondente ao status desejado
+  switch (novoStatus) {
+    case 'Confirmado':
+      cy.get('.link-confirm')
+        .first()
+        .should('be.visible')
+        .and('not.be.disabled')
+        .click()
+      break
+    case 'Pendente':
+      cy.get('.pending_participant')
+        .first()
+        .should('be.visible')
+        .and('not.be.disabled')
+        .click()
+      break
+    case 'Cancelado':
+      cy.get('.link-danger.cancel_participant')
+        .first()
+        .should('be.visible')
+        .and('not.be.disabled')
+        .click()
+      // Insere motivo de cancelamento e confirma
+      cy.get('#reject_message').type('Motivo de cancelamento: Teste Cypress')
+      cy.get('#simplemodal-data').find('p button.green_btn.confirmations').click()
+      break
+    default:
+      throw new Error(`Status inválido: ${novoStatus}`)
+  }
+
+  // Valida as mensagens
+  switch (novoStatus) {
+    case 'Confirmado':
+      cy.contains('.flash.success', msgAlteraConfirmado, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+      break
+    case 'Pendente':
+      cy.contains('.flash.success', msgAlteraPendente, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+      break
+    case 'Cancelado':
+      cy.contains('.flash.success', msgAlteraCancelado, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+      break
+  }
+  cy.contains('.flash.success', msgSucessoAlteraStatus, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+
+  // Medida de contorno para atualizar a página e validar o status do(s) participante(s)
+  cy.addParticipante()
+  cy.cancelarFormularioParticipante()
+
+  // Navega para a aba correspondente ao novo status
+  switch (novoStatus) {
+    case 'Confirmado':
+      cy.abaConfirmados()
+      break
+    case 'Pendente':
+      cy.abaPendentes()
+      break
+    case 'Cancelado':
+      cy.abaCancelados()
+      break
+  }
+
+  // Valida o novo status do(s) participante(s)
+  listaParticipantes.forEach(nomeParticipante => {
+    let statusSeletor = {
+      'Confirmado': 'confirmed',
+      'Pendente': 'pending',
+      'Cancelado': 'canceled'
+    }
+
+    cy.get(`#${statusSeletor[novoStatus]}`)
+      .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
+      .should('be.visible')
+  })
 })

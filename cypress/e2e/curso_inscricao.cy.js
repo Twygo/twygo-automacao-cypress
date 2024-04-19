@@ -858,10 +858,46 @@ describe('Participante', () => {
 		cy.excluirUsuario(`${dados.nome} ${dados.sobrenome}`)
     })
 
-    // TODO: Inserir usuário via API e associar a um curso via tela de criação de participante
-
-    // TODO: Alterar status do participante e atualizar dados em status diferente de 'Confirmado'
-    it.only('8. Altera status participante default', () => {
+    /** DOCUMENTAÇÃO:
+     * @name
+     * 8. Altera status de um participante default e atualiza os dados em situação "Cancelado"
+     * 
+     * @description
+     * Valida a alteração de status de um participante default e atualiza os dados em situação "Cancelado".
+     * 
+     * @steps
+     * 1. Cria um participante preenchendo os dados mínimos obrigatórios (nome, sobrenome e e-mail)
+     * 2. Confirma os dados do participante criado
+     * 3. Altera o status do participante para 'Pendente'
+     * 4. Altera o status do participante para 'Confirmado'
+     * 5. Altera o status do participante para 'Cancelado'
+     * 6. Atualiza os dados do participante em situação 'Cancelado'
+     * 7. Confirma os dados do participante atualizado
+     * 8. Exclui o participante
+     * 
+     * @expected
+     * Espera-se que o participante seja criado, atualizado e excluído com sucesso, mesmo que esteja na
+     * situação 'Cancelado'.
+     * 
+     * @priority
+     * Alta
+     * 
+     * @type
+     * Regressão - CRUD - E2E
+     * 
+     * @time
+     * 1m
+     * 
+     * @tags
+     * Participante, CRUD, Alterar status
+     * 
+     * @testCase
+     * à confirmar
+     * 
+     * @author Karla Daiany
+     * @version 1.0.0
+     */
+    it.only('8. Altera status de um participante default e atualiza os dados em situação "Cancelado"', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
         let sobrenome = fakerPT_BR.person.lastName()
@@ -939,7 +975,6 @@ describe('Participante', () => {
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
 
-        cy.abaCancelados()
 		cy.editarParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
 
         dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
@@ -950,5 +985,228 @@ describe('Participante', () => {
 
         cy.acessarPgUsuarios()
 		cy.excluirUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+    })
+
+    /** DOCUMENTAÇÃO:
+     * @name
+     * 9. Altera status de um participante default e atualiza os dados em situação "Pendente"
+     * 
+     * @description
+     * Valida a alteração de status de um participante default e atualiza os dados em situação "Pendente".
+     * 
+     * @steps
+     * 1. Cria um participante preenchendo os dados mínimos obrigatórios (nome, sobrenome e e-mail)
+     * 2. Confirma os dados do participante criado
+     * 3. Altera o status do participante para 'Cancelado'
+     * 4. Altera o status do participante para 'Confirmado'
+     * 5. Altera o status do participante para 'Pendente'
+     * 6. Atualiza os dados do participante em situação 'Pendente'
+     * 7. Confirma os dados do participante atualizado
+     * 8. Exclui o participante
+     * 
+     * @expected
+     * Espera-se que o participante seja criado, atualizado e excluído com sucesso, mesmo que esteja na
+     * situação 'Pendente'.
+     * 
+     * @priority
+     * Alta
+     * 
+     * @type
+     * Regressão - CRUD - E2E
+     * 
+     * @time
+     * 1m
+     * 
+     * @tags
+     * Participante, CRUD, Alterar status
+     * 
+     * @testCase
+     * à confirmar
+     * 
+     * @author Karla Daiany
+     * @version 1.0.0
+     */
+    it('9. Altera status de um participante default e atualiza os dados em situação "Pendente"', () => {
+        // Massa de dados
+        let nome = fakerPT_BR.person.firstName()
+        let sobrenome = fakerPT_BR.person.lastName()
+        let email = fakerPT_BR.internet.email({ firstName: nome, lastName: sobrenome}).toLowerCase()
+
+        const dados = {
+            email: email,
+            nome: nome,
+            sobrenome: sobrenome
+        }
+        
+        // CREATE
+		cy.log('## CREATE ##')
+
+		cy.loginTwygoAutomacao()
+		cy.alterarPerfil('administrador')
+        cy.addParticipanteConteudo(nomeCurso)
+        cy.addParticipante()
+        cy.preencherDadosParticipante(dados, { limpar: true })
+        cy.salvarNovoParticipante(`${dados.nome} ${dados.sobrenome}`)
+
+        // READ
+        cy.log('## READ ##')
+
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
+
+        let dadosParaValidar = { ...formDefault, ...dados }
+        cy.validarDadosParticipante(dadosParaValidar)
+        cy.cancelarFormularioParticipante()
+
+        // Altera status para 'Cancelado'
+        cy.alteraStatus(`${dados.nome} ${dados.sobrenome}`, 'Cancelado')
+
+        // Altera status para 'Confirmado'
+        cy.alteraStatus(`${dados.nome} ${dados.sobrenome}`, 'Confirmado')
+
+        // Altera status para 'Pendente'
+        cy.alteraStatus(`${dados.nome} ${dados.sobrenome}`, 'Pendente')
+
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        const senha = fakerPT_BR.internet.password()
+        const dadosUpdate = {
+            nome: fakerPT_BR.person.firstName(),
+            sobrenome: fakerPT_BR.person.lastName(),
+            rg: fakerPT_BR.number.int({ min: 100000, max: 999999999 }),
+            telPessoal: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
+            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
+            dataExpiracao: gerarData(0, 1, 0),
+            cep: fakerPT_BR.string.numeric(8),
+            endereco: fakerPT_BR.location.streetAddress(),
+            numero: fakerPT_BR.number.int( { min: 1, max: 9999 } ),
+            complemento: `Andar: ${fakerPT_BR.number.int( { min: 1, max: 20 } )}, Sala: ${fakerPT_BR.number.int( { min: 1, max: 20 } )}`,
+            bairro: fakerPT_BR.lorem.words(1),
+            cidade: fakerPT_BR.location.city(),
+            estado: 'Minas Gerais',
+            pais: 'Bahamas',
+            empresa: fakerPT_BR.company.name(),
+            ramo: fakerPT_BR.lorem.words(1),
+            nrColaboradores: '> 500',
+            site: fakerPT_BR.internet.url(),
+            telComercial: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
+            cargo: fakerPT_BR.person.jobTitle(),
+            area: fakerPT_BR.person.jobArea(),
+            observacao: fakerPT_BR.lorem.words(5),
+            novaSenha: senha,
+            confirmacaoSenha: senha
+        }
+
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
+        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, 'Pendentes')
+
+		// READ-UPDATE
+		cy.log('## READ-UPDATE ##')
+
+		cy.editarParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+
+        dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
+		cy.validarDadosParticipante(dadosUpdate)
+
+        // DELETE
+		cy.log('## DELETE ##')
+
+        cy.acessarPgUsuarios()
+		cy.excluirUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+    })
+
+    /** DOCUMENTAÇÃO:
+     * @name
+     * 10. Associa 5 participantes em curso que não exige confirmação e altera status individualmente
+     * e depois de todos da página atual
+     * 
+     * @description
+     * Valida a associação de 5 participantes em um curso que não exige confirmação e altera o status 
+     * de cada um individualmente, após altera o status de todos da página atual.
+     * 
+     * @steps
+     * 1. Cria um curso que não exige confirmação (via API)
+     * 2. Cria 5 usuários (via API)
+     * 3. Associa os 5 usuários ao curso
+     * 4. Altera o status de 2 participantes para 'Pendente'
+     * 5. Altera o status de 2 participantes para 'Cancelado'
+     * 6. Altera o status de 2 participantes para 'Confirmado'
+     * 7. Altera o status dos outros 2 participantes para 'Confirmado'
+     * 8. Altera o status de todos os participantes para 'Pendente'
+     * 9. Altera o status de todos os participantes para 'Cancelado'
+     * 10. Altera o status de todos os participantes para 'Confirmado'
+     * 
+     * @expected
+     * Espera-se que os participantes sejam associados ao curso e que o status seja alterado com sucesso.
+     * 
+     * @priority
+     * Alta
+     * 
+     * @type
+     * Regressão - CRUD - E2E
+     * 
+     * @time
+     * 1m
+     * 
+     * @tags
+     * Participante, CRUD, Alterar status
+     * 
+     * @testCase
+     * à confirmar
+     * 
+     * @author Karla Daiany
+     * @version 1.0.0
+     */
+    it('10. Associa 5 participantes em curso que não exige confirmação e altera status individualmente e depois de todos', () => {
+        let participantesAssociados = []
+        let participantesPendentes = []
+        let participantesCancelados = []
+
+        cy.loginTwygoAutomacao()
+        cy.alterarPerfil('administrador')
+
+        cy.log('## CREATE ##')
+        
+        cy.addParticipanteConteudo(nomeCurso)
+
+        for (let i = 0; i < 5; i++) {
+            const body = {
+                first_name: fakerPT_BR.person.firstName(),
+                last_name: fakerPT_BR.person.lastName(),
+                email: fakerPT_BR.internet.email()
+            }
+        
+            cy.criarUsuarioViaApi(body).then((response) => {
+                const participante = response.body
+        
+                cy.addParticipante()
+                cy.associarParticipante(body.email, `${body.first_name} ${body.last_name}`)
+        
+                participantesAssociados.push(`${body.first_name} ${body.last_name}`)
+            })
+        }
+        
+        cy.then(() => {
+            participantesPendentes = participantesAssociados.slice(0, 2)
+            cy.log(`Array de participantes pendentes: ${participantesPendentes}`)
+        
+            participantesCancelados = participantesAssociados.slice(2, 4)
+            cy.log(`Array de participantes cancelados: ${participantesCancelados}`)
+        
+            cy.alteraStatus(participantesPendentes, 'Pendente')
+        
+            cy.abaConfirmados()
+            cy.alteraStatus(participantesCancelados, 'Cancelado')
+
+            cy.abaPendentes()
+            cy.alteraStatus(participantesPendentes, 'Confirmado')
+
+            cy.abaCancelados()
+            cy.alteraStatus(participantesCancelados, 'Confirmado')
+            cy.alterarStatusTodosParticipantes('Confirmado', 'Pendente', participantesAssociados)
+            cy.alterarStatusTodosParticipantes('Pendente', 'Cancelado', participantesAssociados)
+            cy.alterarStatusTodosParticipantes('Cancelado', 'Confirmado', participantesAssociados)
+        })
     })
 })
