@@ -3456,19 +3456,16 @@ Cypress.Commands.add('preencherDadosInstrutor', (dados, opcoes = { limpar: false
  * @name validarDadosInstrutor
  * 
  * @description
- * Comando personalizado para validar os dados do formulário de um conteúdo específico.
+ * Comando personalizado para validar os dados do formulário de instrutor.
  * 
  * @actions
  * 1. Valida cada campo do formulário de acordo com os dados informados.
  * 
- * @param {Object} conteudo - O conteúdo a ser validado. Este objeto deve conter os campos e valores a serem validados.
- * @param {Object} categoria - As categorias do conteúdo a ser validado. Este objeto deve conter a listagem final de categorias a serem validadas.
- * 
  * @example
  * cy.validarDadosConteudo(conteudo, categoria)
  * 
- * @throws {Error} - Se o campo informado não for encontrado no formulário. Validação realizada pelo método 'validarCampo' da classe 'formConteudos'.
- * @see formConteudos
+ * @throws {Error} - Se o campo nome do Instrutor não for preenchido.
+ * @see formInstrutor
  * 
  * @author Karla Daiany
  * @version 1.0.0
@@ -3487,6 +3484,27 @@ Cypress.Commands.add('validarDadosInstrutor', (dados) => {
   })
 })
 
+/** DOCUMENTAÇÃO:
+ * @name vincularInstrutor
+ * 
+ * @description
+ * Comando personalizado para vincular um instrutor em um conteúdo
+ * 
+ * @actions
+ * 1. Pesquisa pelo nome do Instrutor.
+ * 2. Clica para buscar.
+ * 3. Clica no botão de associar.
+ * 4. Valida a associação.
+ * 
+ * @example
+ * cy.vincularInstrutor(nomeInstrutor)
+ * 
+ * @see formInstrutor
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0 
+ */
 Cypress.Commands.add('vincularInstrutor', (nomeInstrutor) => {
   const formulario = new formInstrutor()
 
@@ -3497,16 +3515,58 @@ Cypress.Commands.add('vincularInstrutor', (nomeInstrutor) => {
     .should('be.visible')
 })
 
+/** DOCUMENTAÇÃO:
+ * @name excluirInstrutor
+ * 
+ * @description
+ * Comando personalizado para remover a associação do instrutor em um conteúdo
+ * 
+ * @actions
+ * 1. Pesquisa pelo nome do Instrutor.
+ * 2. Clica para remover.
+ * 3. Valida a remoção.
+ * 
+ * @example
+ * cy.excluirInstrutor(nomeInstrutor)
+ * 
+ * 
+ * @author Jadson
+ * @version 1.0.0
+ * @since 1.0.0 
+ */
 Cypress.Commands.add('excluirInstrutor', (nomeInstrutor) => {
+  //Encontra o instrutor e clica para remover 
   cy.contains('.speaker_name', nomeInstrutor)
     .parents('div')
     .parents('div')
     .parents('tr')
     .find('a.name')
     .click()
-
+  //Validar se o instrutor foi removido corretamente 
   cy.contains('.speaker_name', nomeInstrutor).should('not.exist')
 })
+
+/** DOCUMENTAÇÃO:
+ * @name criarInstrutor
+ * 
+ * @description
+ * Comando personalizado para criar um usuário instrutor via front.
+ * 
+ * @actions
+ * 1. Loga na aplicação.
+ * 2. Altera o perfil para administrador.
+ * 3. Acessa a página de usuários.
+ * 4. Clica para adicionar um novo usuário.
+ * 5. Preenche os dados para criar um usuário Instrutor.
+ * 6. Salva o formulário.
+ * 
+ * @example
+ * cy.criarInstrutor(nomeInstrutor, sobrenomeInstrutor)
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('criarInstrutor', (nomeInstrutor, sobrenomeInstrutor) => {
   // Massa de dados
   let nome = nomeInstrutor
@@ -3528,6 +3588,25 @@ Cypress.Commands.add('criarInstrutor', (nomeInstrutor, sobrenomeInstrutor) => {
   cy.salvarUsuario(`${dados.nome} ${dados.sobrenome}`)
 })
 
+
+/** DOCUMENTAÇÃO:
+ * @name criarSegundoInstrutor
+ * 
+ * @description
+ * Comando personalizado para criar um segundo usuário instrutor via front, já estando na tela de Usuários.
+ * 
+ * @actions
+ * 1. Clica para criar novo usuário
+ * 2. Preenche os dados para criar um novo usuário Instrutor
+ * 3. Salva o formulário
+ * 
+ * @example
+ * cy.criarInstrutor(nomeInstrutor, sobrenomeInstrutor)
+ * 
+ * @author Jadson
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 Cypress.Commands.add('criarSegundoInstrutor', (nomeInstrutor, sobrenomeInstrutor) => {
   // Massa de dados
   let nome = nomeInstrutor
@@ -3550,11 +3629,11 @@ Cypress.Commands.add('criarSegundoInstrutor', (nomeInstrutor, sobrenomeInstrutor
  * @name instrutorConteudo
  * 
  * @description
- * Comando personalizado para editar um conteúdo específico e validar o redirecionamento correto da página.
+ * Comando personalizado para acessar a página de instrutor um conteúdo específico e validar o redirecionamento correto da página.
  * 
  * @actions
  * 1. Define um timeout padrão de 5 segundos.
- * 2. Acessa a opção de 'Editar' conforme cada tipo de conteúdo para iniciar o processo de edição do conteúdo.
+ * 2. Acessa a opção de 'Instrutor' conforme cada tipo de conteúdo para iniciar o processo adição/remoção de instrutor.
  * 3. Valida a exibição da página de edição do conteúdo.
  * 
  * @param {String} nomeConteudo - O nome do conteúdo a ser editado. Este nome é utilizado para encontrar o conteúdo na listagem e clicar no botão de edição.
@@ -3565,9 +3644,9 @@ Cypress.Commands.add('criarSegundoInstrutor', (nomeInstrutor, sobrenomeInstrutor
  * cy.editarConteudo('Nome do Conteúdo', 'tipoConteudo')
  * 
  * @observations
- * Este comando não realiza a edição dos campos do conteúdo. Para isso, @see preencherDadosConteudo
+ * Este comando não realiza a adição ou remoção de instrutores no conteúdo. Para isso, @see vincularInstrutor e @see excluirInstrutor 
  * 
- * @throws {Error} - Se o tipo de conteúdo informado não for 'trilha', 'curso' ou 'catalogo'.
+ * @throws {Error} - Se o tipo de conteúdo informado não for 'trilha', 'curso'.
  * 
  * @author Karla Daiany
  * @version 1.0.0
@@ -3611,14 +3690,8 @@ Cypress.Commands.add('instrutorConteudo', (nomeConteudo) => {
  * @actions
  * 1. Localiza o botão voltar.
  * 2. Clica no botão voltar
- * 3. Valida a exibição da página de edição do conteúdo.
  * 
- * @example
- * cy.editarConteudo('Nome do Conteúdo', 'tipoConteudo')
- * 
- * @throws {Error} - Se o tipo de conteúdo informado não for 'trilha', 'curso' ou 'catalogo'.
- * 
- * @author Karla Daiany
+ * @author Jadson
  * @version 1.0.0
  * @since 1.0.0
  */

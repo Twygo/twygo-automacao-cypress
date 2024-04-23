@@ -5,7 +5,7 @@ let faker = require('faker-br')
 
 describe('Instrutor', () => {
 
-    let nomeConteudo 
+    let nomeConteudo, nomeInstrutor1, nomeInstrutor2, sobrenomeInstrutor1, sobrenomeInstrutor2 
 
     before(() => {
         // Carrega os labels do arquivo JSON
@@ -29,10 +29,16 @@ describe('Instrutor', () => {
             name: nomeConteudo,
             description: fakerPT_BR.lorem.sentence(5)
         }
+
         
-    
         // Obtém o token de autenticação
         getAuthToken()
+
+        // Gerar nomes aleatórios para os instrutores
+        nomeInstrutor1 = fakerPT_BR.person.firstName()
+        sobrenomeInstrutor1 = fakerPT_BR.person.lastName()
+        nomeInstrutor2 = fakerPT_BR.person.firstName()
+        sobrenomeInstrutor2 = fakerPT_BR.person.lastName()
  
         // Exclui todos os cursos antes de iniciar o teste
         cy.excluirCursoViaApi()
@@ -41,13 +47,13 @@ describe('Instrutor', () => {
         cy.excluirUsuarioViaApi()
 
         // Cria um instrutor
-        cy.criarInstrutor("Instrutor", "do Conteúdo 1")
+        cy.criarInstrutor(nomeInstrutor1, sobrenomeInstrutor1)
 
         // Cria um instrutor
-        cy.criarSegundoInstrutor("Instructor", "do Conteúdo 2")
+        cy.criarSegundoInstrutor(nomeInstrutor2, sobrenomeInstrutor2)
 
         // Criar um curso via API
-        cy.criarCursoViaApi(body)
+        cy.criarCursoViaApi(body)       
     })
 
     afterEach(() => {
@@ -55,14 +61,21 @@ describe('Instrutor', () => {
         Cypress.removeAllListeners('uncaught:exception')
     })
 
-    it('vincular instrutor em curso liberado', () => {
+    it('1. CRUD - Vincular instrutor em curso liberado', () => {
+        // CREATE
         cy.acessarPgListaConteudos()
         cy.instrutorConteudo(nomeConteudo)
-        cy.vincularInstrutor("Instrutor")
+
+        //READ
+        cy.vincularInstrutor(nomeInstrutor1)
+
+        // UPDATE
         cy.voltar()
         cy.instrutorConteudo(nomeConteudo)
-        cy.vincularInstrutor("Instructor")
-        cy.excluirInstrutor("Instructor")
+        cy.vincularInstrutor(nomeInstrutor2)
+
+        // DELETE
+        cy.excluirInstrutor(nomeInstrutor2)
     })
 
 

@@ -19,6 +19,26 @@ class formInstrutor{
         }
     }
 
+    /** DOCUMENTAÇÃO:
+     * @name associarInstrutor
+     * 
+     * @description
+     * Método para associar um instrutor em um conteúdo
+     * 
+     * @actions
+     * 1. Pesquisa pelo nome do instrutor
+     * 2. Clica para buscar
+     * 3. Clica para associar
+     * 
+     * @param {string} nomeInstrutor - Nome do instrutor a ser vinculado
+     * 
+     * @example
+     * associarInstrutor('nome')
+     * 
+     * @author Karla Daiany
+     * @version 1.0.0
+     * @since 1.0.0
+     */
     associarInstrutor(nomeInstrutor) {
         cy.get(this.elementos.nomeInstrutor.seletor)
             .type(nomeInstrutor)
@@ -34,7 +54,6 @@ class formInstrutor{
         
     }
 
-    
     /** DOCUMENTAÇÃO:
      * @name preencherCampo
      * 
