@@ -126,5 +126,9 @@
         "msgAlteraCancelado": "Cancelamento dos Participantes em progresso.",
         "msgAlteraPendente": "Pendência dos Participantes em progresso.",
         "msgSucessoAlteraStatus": "Alteração de status dos Participantes foi concluída com sucesso, acesse novamente para visualizar."
+    },
+    "instrutores": {
+        "breadcrumb": "Detalhes do evento",
+        "tituloPg": "Lista de Instrutores"
     }
 }

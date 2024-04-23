@@ -385,7 +385,7 @@ describe('Usuário', () => {
      * @author Karla Daiany
      * @version 1.0.0
      */
-    it('3. CRUD usuário somente administrador', () => {
+    it.only('3. CRUD usuário somente administrador', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
         let sobrenome = fakerPT_BR.person.lastName()

@@ -6,7 +6,9 @@ import formQuestionarios from "./pageObjects/formQuestionarios"
 import formPerguntas from "./pageObjects/formPerguntas"
 import formUsuarios from "./pageObjects/formUsuarios"
 import formParticipantes from "./pageObjects/formParticipantes"
+import formInstrutor from "./pageObjects/formInstrutor"
 import { fakerPT_BR } from "@faker-js/faker"
+
 
 /** DOCUMENTAÇÃO:
  * @name loginTwygoAutomacao
@@ -3417,4 +3419,214 @@ Cypress.Commands.add('alterarStatusTodosParticipantes', function(status, novoSta
       .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
       .should('be.visible')
   })
+})
+
+/** DOCUMENTAÇÃO:
+ * @name preencherDadosConteudo
+ * 
+ * @description
+ * Comando personalizado para preencher os campos do formulário de um conteúdo específico.
+ * 
+ * @actions
+ * 1. Preenche cada campo do formulário de acordo com os dados informados.
+ * 
+ * @param {Object} conteudo - O conteúdo a ser preenchido. Este objeto deve conter os campos e valores a serem preenchidos.
+ * @param {Object} opcoes - As opções para preenchimento do conteúdo. Este objeto pode conter a opção de limpar os campos antes de preencher.
+ * 
+ * @example
+ * cy.preencherDadosConteudo(conteudo, opcoes)
+ * 
+ * @throws {Error} - Se o campo informado não for encontrado no formulário. Validação realizada pelo método 'preencherCampo' da classe 'formConteudos'.
+ * @see formConteudos
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('preencherDadosInstrutor', (dados, opcoes = { limpar: false }) => {
+  const formulario = new formInstrutor()
+  
+  Object.keys(dados).forEach(nomeCampo => {
+      const valor = dados[nomeCampo]
+      formulario.preencherCampo(nomeCampo, valor, opcoes)
+  })
+}) 
+
+/** DOCUMENTAÇÃO:
+ * @name validarDadosInstrutor
+ * 
+ * @description
+ * Comando personalizado para validar os dados do formulário de um conteúdo específico.
+ * 
+ * @actions
+ * 1. Valida cada campo do formulário de acordo com os dados informados.
+ * 
+ * @param {Object} conteudo - O conteúdo a ser validado. Este objeto deve conter os campos e valores a serem validados.
+ * @param {Object} categoria - As categorias do conteúdo a ser validado. Este objeto deve conter a listagem final de categorias a serem validadas.
+ * 
+ * @example
+ * cy.validarDadosConteudo(conteudo, categoria)
+ * 
+ * @throws {Error} - Se o campo informado não for encontrado no formulário. Validação realizada pelo método 'validarCampo' da classe 'formConteudos'.
+ * @see formConteudos
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0 
+ */
+Cypress.Commands.add('validarDadosInstrutor', (dados) => {
+  if (!dados) {
+    throw new Error('O parâmetro "nome do Instrutor" é obrigatório.')
+  }
+
+  const formulario = new formInstrutor()
+
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+    formulario.validarCampo(nomeCampo, valor)
+  })
+})
+
+Cypress.Commands.add('vincularInstrutor', (nomeInstrutor) => {
+  const formulario = new formInstrutor()
+
+  formulario.associarInstrutor(nomeInstrutor)
+
+  //Validar se o instrutor foi vinculado corretamente
+  cy.contains('.speaker_name', nomeInstrutor)
+    .should('be.visible')
+})
+
+Cypress.Commands.add('excluirInstrutor', (nomeInstrutor) => {
+  cy.contains('.speaker_name', nomeInstrutor)
+    .parents('div')
+    .parents('div')
+    .parents('tr')
+    .find('a.name')
+    .click()
+
+  cy.contains('.speaker_name', nomeInstrutor).should('not.exist')
+})
+Cypress.Commands.add('criarInstrutor', (nomeInstrutor, sobrenomeInstrutor) => {
+  // Massa de dados
+  let nome = nomeInstrutor
+  let sobrenome = sobrenomeInstrutor
+  let email = fakerPT_BR.internet.email({ firstName: nome, lastName: sobrenome}).toLowerCase()
+
+  const dados = {
+      email: email,
+      nome: nome,
+      sobrenome: sobrenome,
+      perfilInstrutor: true
+  }
+
+  cy.loginTwygoAutomacao()
+  cy.alterarPerfil('administrador')
+  cy.acessarPgUsuarios()
+  cy.addUsuario()
+  cy.preencherDadosUsuario(dados, { limpar: true })
+  cy.salvarUsuario(`${dados.nome} ${dados.sobrenome}`)
+})
+
+Cypress.Commands.add('criarSegundoInstrutor', (nomeInstrutor, sobrenomeInstrutor) => {
+  // Massa de dados
+  let nome = nomeInstrutor
+  let sobrenome = sobrenomeInstrutor
+  let email = fakerPT_BR.internet.email({ firstName: nome, lastName: sobrenome}).toLowerCase()
+
+  const dados = {
+      email: email,
+      nome: nome,
+      sobrenome: sobrenome,
+      perfilInstrutor: true
+  }
+
+  cy.addUsuario()
+  cy.preencherDadosUsuario(dados, { limpar: true })
+  cy.salvarUsuario(`${dados.nome} ${dados.sobrenome}`)
+})
+
+/** DOCUMENTAÇÃO:
+ * @name instrutorConteudo
+ * 
+ * @description
+ * Comando personalizado para editar um conteúdo específico e validar o redirecionamento correto da página.
+ * 
+ * @actions
+ * 1. Define um timeout padrão de 5 segundos.
+ * 2. Acessa a opção de 'Editar' conforme cada tipo de conteúdo para iniciar o processo de edição do conteúdo.
+ * 3. Valida a exibição da página de edição do conteúdo.
+ * 
+ * @param {String} nomeConteudo - O nome do conteúdo a ser editado. Este nome é utilizado para encontrar o conteúdo na listagem e clicar no botão de edição.
+ * @param {String} tipoConteudo - O tipo do conteúdo a ser editado (e.g., 'trilha', 'curso', 'catalogo'). Este parâmetro influencia no seletor utilizado para 
+ * encontrar o conteúdo na listagem e na página carregada para edição do conteúdo.
+ * 
+ * @example
+ * cy.editarConteudo('Nome do Conteúdo', 'tipoConteudo')
+ * 
+ * @observations
+ * Este comando não realiza a edição dos campos do conteúdo. Para isso, @see preencherDadosConteudo
+ * 
+ * @throws {Error} - Se o tipo de conteúdo informado não for 'trilha', 'curso' ou 'catalogo'.
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('instrutorConteudo', (nomeConteudo) => {
+  // Define o timeout padrão para validação das páginas
+  const TIMEOUT_PADRAO = 5000
+
+  // Acessa o arquivo de labels
+  const labels = Cypress.env('labels')
+  const { breadcrumb, tituloPg } = labels.instrutores
+
+  // Define o seletor para encontrar o conteúdo na listagem
+  let seletor = ''
+  
+  seletor = `tr[tag-name='${nomeConteudo}']`    
+  // Clica em 'Opções' e 'Instrutor'
+  cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+    .find('svg[aria-label="Options"]')
+    .click()
+
+  cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+    .contains('button', 'Instrutor')
+    .click({force: true})
+  
+  // Valida se a página foi carregada corretamente conforme o tipo de conteúdo
+  cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO})
+    .should('be.visible')
+
+  cy.contains('.detail_title', tituloPg, { timeout: TIMEOUT_PADRAO})
+    .should('be.visible')
+})
+
+/** DOCUMENTAÇÃO:
+ * @name voltar
+ * 
+ * @description
+ * Comando personalizado para clicar no botão de voltar existente em várias páginas.
+ * 
+ * @actions
+ * 1. Localiza o botão voltar.
+ * 2. Clica no botão voltar
+ * 3. Valida a exibição da página de edição do conteúdo.
+ * 
+ * @example
+ * cy.editarConteudo('Nome do Conteúdo', 'tipoConteudo')
+ * 
+ * @throws {Error} - Se o tipo de conteúdo informado não for 'trilha', 'curso' ou 'catalogo'.
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('voltar', function() {
+  // Define o timeout padrão para validação das páginas
+  const TIMEOUT_PADRAO = 5000
+
+  // Localiza o e clica no botão de voltar
+  cy.contains('.btn.btn-default.btn-back.waves-effect', 'Voltar')
+    .click()  
 })
