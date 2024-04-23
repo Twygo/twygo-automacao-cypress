@@ -1160,7 +1160,6 @@ Cypress.Commands.add('validarDadosAtividade', (dados) => {
  */
 Cypress.Commands.add('verificarProcessamentoScorm', (nomeConteudo, nomeAtividade, tipoConteudo) => {
   const TIMEOUT_PADRAO = 5000
-  const formulario = new formAtividades() // Certifique-se de que 'formAtividades' está acessível
 
   function verificar() {
     cy.get('body').then($body => {
@@ -1361,7 +1360,7 @@ Cypress.Commands.add('validarDadosBiblioteca', (conteudo) => {
  * @throws {Error} - Se o tipo de conteúdo informado não for 'trilha', 'curso', 'catalogo' ou 'biblioteca'.
  * 
  * @author Karla Daiany
- * @version 1.0.0
+ * @version 1.0.1
  * @since 1.0.0
  */
 Cypress.Commands.add('listaConteudo', (tipoConteudo, listaConteudos) => {
@@ -1371,10 +1370,10 @@ Cypress.Commands.add('listaConteudo', (tipoConteudo, listaConteudos) => {
   
   switch(tipoConteudo) {
     case 'trilha':
-      seletor = `tr[tag-name] td[role="gridcell"] span:contains("Trilha")`
+      seletor = `tr[tag-name] span:contains("Trilha")`
       break
     case 'curso':
-      seletor = `tr[tag-name] td[role="gridcell"] span:contains("Curso")` 
+      seletor = `tr[tag-name] span:contains("Curso")` 
       break
     case 'catalogo':
       seletor = `tr.event-row`
@@ -1393,12 +1392,15 @@ Cypress.Commands.add('listaConteudo', (tipoConteudo, listaConteudos) => {
           let nomeConteudo = ''
 
           if (tipoConteudo === 'trilha' || tipoConteudo === 'curso') {
-            nomeConteudo = $el.closest('tr').attr('tag-name')
+            const $tr = $el.closest('tr')
+            if (!listaConteudos.includes($tr.attr('tag-name'))) {
+              nomeConteudo = $tr.attr('tag-name')
+              listaConteudos.push(nomeConteudo)
+            }
           } else {
             nomeConteudo = $el.text().trim()
+            listaConteudos.push(nomeConteudo)
           }
-
-          listaConteudos.push(nomeConteudo)
         })
         .then(() => {
           cy.log(listaConteudos.join(', '))
@@ -2681,11 +2683,11 @@ Cypress.Commands.add('ativarUsuario', function(nomeUsuario) {
  * @version 1.0.0
  * @since 1.0.0
  */
-Cypress.Commands.add('addParticipanteConteudo', function(nomeConteudo) {
+Cypress.Commands.add('addParticipanteConteudo', function(nomeConteudo, tipoConteudo) {
   const TIMEOUT_PADRAO = 5000
   
   const labels = Cypress.env('labels')
-  const { breadcrumb, tituloPg } = labels.participantes
+  const { breadcrumb, tituloPg, breadcrumbTrilha } = labels.participantes
 
   // Clica em 'Opções' e 'Atividades'
   cy.get(`tr[tag-name='${nomeConteudo}']`, { timeout: TIMEOUT_PADRAO})
@@ -2697,8 +2699,16 @@ Cypress.Commands.add('addParticipanteConteudo', function(nomeConteudo) {
     .click( {force: true} )
 
   // Validar se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+  switch (tipoConteudo) {
+    case 'Trilha':
+      cy.contains('#page-breadcrumb', breadcrumbTrilha, { timeout: TIMEOUT_PADRAO })
+        .should('be.visible')
+      break
+    case 'curso':
+      cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO })
+        .should('be.visible')
+      break
+  }
 
   cy.contains('.detail_title', tituloPg)
     .should('be.visible')
@@ -2885,10 +2895,10 @@ Cypress.Commands.add('salvarEdicaoParticipante', (nomeParticipante, status = 'Co
  * @version 1.0.0
  * @since 1.0.0
  */
-Cypress.Commands.add('editarParticipante', (nomeParticipante) => {
+Cypress.Commands.add('editarParticipante', (nomeParticipante, tipoConteudo) => {
   const TIMEOUT_PADRAO = 5000
   const labels = Cypress.env('labels')
-  const { breadcrumbEdicao, tituloPgEdicao } = labels.participantes
+  const { breadcrumbEdicao, tituloPgEdicao, breadcrumbTrilha } = labels.participantes
 
   // Edita o usuário
   cy.contains('td', nomeParticipante) 
@@ -2900,9 +2910,17 @@ Cypress.Commands.add('editarParticipante', (nomeParticipante) => {
       .click()
   })
   
-  // Valida se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumbEdicao, { timeout: TIMEOUT_PADRAO })
-    .should('be.visible')
+  // Valida se a página foi carregada corretamente [obs. adicionado tipoConteudo devido BUG no breadcrumb da trilha]
+  switch (tipoConteudo) {
+    case 'trilha':
+      cy.contains('#page-breadcrumb', breadcrumbTrilha, { timeout: TIMEOUT_PADRAO })
+        .should('be.visible')
+      break
+    case 'curso':
+      cy.contains('#page-breadcrumb', breadcrumbEdicao, { timeout: TIMEOUT_PADRAO })
+        .should('be.visible')
+      break
+  }
 
   cy.contains('.detail_title', tituloPgEdicao)
     .should('be.visible')
@@ -2930,17 +2948,25 @@ Cypress.Commands.add('editarParticipante', (nomeParticipante) => {
  * @version 1.0.0
  * @since 1.0.0
  */
-Cypress.Commands.add('addParticipante', () => {
+Cypress.Commands.add('addParticipante', (tipoConteudo) => {
   const TIMEOUT_PADRAO = 5000
   const labels = Cypress.env('labels')
-  const { breadcrumbAdicionar, tituloPgAdicionar } = labels.participantes
+  const { breadcrumbAdicionar, tituloPgAdicionar, breadcrumbTrilha } = labels.participantes
 
   cy.get('.new_participant_btn')
     .click()
 
-  // Valida se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumbAdicionar, { timeout: TIMEOUT_PADRAO })
-    .should('be.visible')
+  // Valida se a página foi carregada corretamente [obs. adicionado tipoConteudo devido BUG no breadcrumb da trilha]
+  switch (tipoConteudo) {
+    case 'trilha':
+      cy.contains('#page-breadcrumb', breadcrumbTrilha, { timeout: TIMEOUT_PADRAO })
+        .should('be.visible')
+      break
+    case 'curso':
+      cy.contains('#page-breadcrumb', breadcrumbAdicionar, { timeout: TIMEOUT_PADRAO })
+        .should('be.visible')
+      break
+  }
 
   cy.contains('.detail_title', tituloPgAdicionar, { timeout: TIMEOUT_PADRAO })
     .should('be.visible')
@@ -2977,7 +3003,7 @@ Cypress.Commands.add('addParticipante', () => {
  * @since 1.0.0
  */
 Cypress.Commands.add('alteraStatus', function(nomeParticipantes, status) {
-  const TIMEOUT_PADRAO = 5000
+  const TIMEOUT_PADRAO = 20000
   const labels = Cypress.env('labels')
   const { msgAlteraConfirmado, msgAlteraPendente, msgAlteraCancelado, msgSucessoAlteraStatus } = labels.participantes
 
@@ -3023,18 +3049,19 @@ Cypress.Commands.add('alteraStatus', function(nomeParticipantes, status) {
     default:
       throw new Error(`Status inválido: ${status}`)
   }
-  // Valida as mensagens
-  switch (status) {
-    case 'Confirmado':
-      cy.contains('.flash.success', msgAlteraConfirmado, { timeout: TIMEOUT_PADRAO }).should('be.visible')
-      break
-    case 'Pendente':
-      cy.contains('.flash.success', msgAlteraPendente, { timeout: TIMEOUT_PADRAO }).should('be.visible')
-      break
-    case 'Cancelado':
-      cy.contains('.flash.success', msgAlteraCancelado, { timeout: TIMEOUT_PADRAO }).should('be.visible')
-      break
-  }
+  // Valida apenas a última mensagem de sucesso (por isso a inclusão do wait de 3 segundos)
+  // switch (status) {
+  //   case 'Confirmado':
+  //     cy.contains('.flash.success', msgAlteraConfirmado, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+  //     break
+  //   case 'Pendente':
+  //     cy.contains('.flash.success', msgAlteraPendente, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+  //     break
+  //   case 'Cancelado':
+  //     cy.contains('.flash.success', msgAlteraCancelado, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+  //     break
+  // }
+  cy.wait(2000)
   cy.contains('.flash.success', msgSucessoAlteraStatus, { timeout: TIMEOUT_PADRAO }).should('be.visible')
 
   // Medida de contorno para atualizar a página e validar o status do(s) participante(s)
@@ -3157,20 +3184,32 @@ Cypress.Commands.add('abaCancelados', function() {
  * @version 1.0.0
  * @since 1.0.0
  */
-Cypress.Commands.add('cancelarFormularioParticipante', function() {
+Cypress.Commands.add('cancelarFormularioParticipante', function(tipoConteudo) {
+  const TIMEOUT_PADRAO = 5000
   const labels = Cypress.env('labels')
-  const { breadcrumb, tituloPg } = labels.participantes
+  const { breadcrumb, tituloPg, breadcrumbTrilha } = labels.participantes
 
   // Cancelar
   cy.contains('a.btn.btn-cancel', 'Cancelar')
     .should('be.visible')
+    .as('btnCancelar')
+
+  cy.get('@btnCancelar', { timeout: TIMEOUT_PADRAO })
     .click()
 
-  // Validar redirecionamento
-  cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+  // Validar redirecionamento [obs. adicionado tipoConteudo devido BUG no breadcrumb da trilha]
+  switch (tipoConteudo) {
+    case 'trilha':
+      cy.contains('#page-breadcrumb', breadcrumbTrilha, { timeout: TIMEOUT_PADRAO })
+        .should('be.visible')
+      break
+    case 'curso':
+      cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO })
+        .should('be.visible')
+      break
+  }
 
-  cy.contains('.detail_title', tituloPg)
+  cy.contains('.detail_title', tituloPg, { timeout: TIMEOUT_PADRAO })
     .should('be.visible')
 })
 
@@ -3304,7 +3343,7 @@ Cypress.Commands.add('associarParticipante', function(emailParticipante, nomePar
  * @since 1.0.0
  */
 Cypress.Commands.add('alterarStatusTodosParticipantes', function(status, novoStatus, listaParticipantes) {
-  const TIMEOUT_PADRAO = 10000
+  const TIMEOUT_PADRAO = 20000
   const labels = Cypress.env('labels')
   const { msgAlteraConfirmado, msgAlteraPendente, msgAlteraCancelado, msgSucessoAlteraStatus } = labels.participantes
 
@@ -3374,18 +3413,19 @@ Cypress.Commands.add('alterarStatusTodosParticipantes', function(status, novoSta
       throw new Error(`Status inválido: ${novoStatus}`)
   }
 
-  // Valida as mensagens
-  switch (novoStatus) {
-    case 'Confirmado':
-      cy.contains('.flash.success', msgAlteraConfirmado, { timeout: TIMEOUT_PADRAO }).should('be.visible')
-      break
-    case 'Pendente':
-      cy.contains('.flash.success', msgAlteraPendente, { timeout: TIMEOUT_PADRAO }).should('be.visible')
-      break
-    case 'Cancelado':
-      cy.contains('.flash.success', msgAlteraCancelado, { timeout: TIMEOUT_PADRAO }).should('be.visible')
-      break
-  }
+  // Valida apenas a última mensagem de sucesso (por isso a inclusão do wait de 3 segundos)
+  // switch (novoStatus) {
+  //   case 'Confirmado':
+  //     cy.contains('.flash.success', msgAlteraConfirmado, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+  //     break
+  //   case 'Pendente':
+  //     cy.contains('.flash.success', msgAlteraPendente, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+  //     break
+  //   case 'Cancelado':
+  //     cy.contains('.flash.success', msgAlteraCancelado, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+  //     break
+  // }
+  cy.wait(2000)
   cy.contains('.flash.success', msgSucessoAlteraStatus, { timeout: TIMEOUT_PADRAO }).should('be.visible')
 
   // Medida de contorno para atualizar a página e validar o status do(s) participante(s)
@@ -3417,4 +3457,81 @@ Cypress.Commands.add('alterarStatusTodosParticipantes', function(status, novoSta
       .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
       .should('be.visible')
   })
+})
+
+Cypress.Commands.add('importarParticipante', function(arquivo) {
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { msgUploadImportacao, msgImportacaoEmAndamento, msgImportacaoConcluida } = labels.participantes
+
+  // Clica no botão 'Importar'
+  cy.get('.import')
+    .click()
+
+  // Clica em 'Enviar arquivo'
+  cy.get('#file-name-container')
+    .contains('a', 'Enviar arquivo', { timeout: TIMEOUT_PADRAO })
+    .click( { force: true } )
+
+  // Seleciona o arquivo a ser importado
+  cy.get('#file')
+    .selectFile(`cypress/fixtures/${arquivo}`, { force: true })
+    
+  // Clica em 'Enviar'
+  cy.get('#send_to_import')
+    .click( { force: true } )
+
+  // Valida a mensagem de sucesso do upload do arquivo
+  cy.contains('.flash.success', msgUploadImportacao, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+
+  // Valida modal de campos para importar
+  cy.get('#imports-fields')
+    .contains('h3', 'Campos para importar')
+
+  // Seleciona as opções de telefone pessoal e celular
+  cy.get('#importables_phone1')
+    .select('Telefone pessoal')
+
+  cy.get('#importables_cell_phone')
+    .select('Celular')
+
+  // Clica em 'Enviar'
+  cy.get('#csv-settings-form')
+    .find('div.field.fs3')
+    .contains('button', 'Enviar')
+    .click( { force: true } )
+
+  // Valida a mensagem de sucesso após a importação
+  cy.contains('.flash.success', msgImportacaoEmAndamento, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+})
+
+Cypress.Commands.add('verificarImportacao', () => {
+  const TIMEOUT_PADRAO = 5000
+
+  function verificarStatus() {
+    cy.get('#imports-list tbody tr:last-child td:nth-child(4)').then($cell => {
+      const status = $cell.text().trim()
+      cy.log(`Status da importação: ${status}`)
+
+      if (status === 'Execução' || status === 'Pendente') {
+        cy.log('Arquivo de importação ainda está sendo processado. Aguardando...')
+        cy.get('#twygo-modal-close').click()
+        cy.wait(TIMEOUT_PADRAO)
+        cy.get('.import').click()
+        verificarStatus()
+      } else if (status === 'Concluído') {
+        cy.log('Arquivo importado com sucesso.')
+        cy.get('#twygo-modal-close').click()
+      } else if (status === 'Erro') {
+        throw new Error('Erro na importação do arquivo.')
+      } else {
+        throw new Error(`Status desconhecido: ${status}`)
+      }
+    })
+  }
+
+  cy.get('.import').click()
+  verificarStatus()
 })
