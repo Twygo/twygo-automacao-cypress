@@ -35,8 +35,7 @@ describe('Participante', () => {
         confirmacaoSenha: ''
     }
 
-    let nomeCurso, descricaoCurso = ''
-    let body = {}
+    let nomeTrilha, tipoConteudo, listaConteudos, nome = ''
     
     before(() => {
 		// Carrega os labels do arquivo JSON
@@ -51,21 +50,34 @@ describe('Participante', () => {
             return false
         })
 
+        // Define o tipo de conteúdo
+		tipoConteudo = 'trilha'
+
         // Obtém token autenticação, lista e exclui os usuários e cursos
         getAuthToken()
         cy.excluirUsuarioViaApi()
         cy.excluirCursoViaApi()
 
-        // Cria um curso via API para execução dos testes de inscrição de participantes
-        nomeCurso = fakerPT_BR.commerce.productName()
-        descricaoCurso = fakerPT_BR.lorem.sentence(5)
+        // Exclui todos os conteúdos do tipo trilha antes de iniciar o teste
+		cy.loginTwygoAutomacao()
+		cy.alterarPerfil('administrador')
+		
+		listaConteudos = []
+		cy.listaConteudo(tipoConteudo, listaConteudos)
+		cy.excluirConteudo(null, tipoConteudo, listaConteudos)	
 
-        body = {
-            name: nomeCurso,
-            description: descricaoCurso
+		// Gera um nome aleatório para o conteúdo
+		nomeTrilha = fakerPT_BR.commerce.productName()
+
+        // Cria uma trilha para execução dos testes de inscrição de participantes
+        const conteudo = {
+            nome: nomeTrilha,
+            descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${nome}`,
         }
-        
-        cy.criarCursoViaApi(body)
+
+        cy.addConteudo(tipoConteudo)
+        cy.preencherDadosConteudo(conteudo, { limpar: true })
+        cy.salvarConteudo(conteudo.nome, tipoConteudo)        
     })
 
     afterEach(() => {
@@ -122,19 +134,17 @@ describe('Participante', () => {
         }
         
         // CREATE
-		cy.log('## CREATE ##')
+        cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
-        cy.addParticipanteConteudo(nomeCurso)
-        cy.addParticipante()
+        cy.addParticipanteConteudo(nomeTrilha, tipoConteudo)
+        cy.addParticipante(tipoConteudo)
         cy.preencherDadosParticipante(dados, { limpar: true })
         cy.salvarNovoParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         // READ
         cy.log('## READ ##')
 
-        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`, tipoConteudo)
 
         let dadosParaValidar = { ...formDefault, ...dados }
         cy.validarDadosParticipante(dadosParaValidar)
@@ -175,7 +185,7 @@ describe('Participante', () => {
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
 
-		cy.editarParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+		cy.editarParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, tipoConteudo)
 
         dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
 		cy.validarDadosParticipante(dadosUpdate)
@@ -262,17 +272,15 @@ describe('Participante', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
-        cy.addParticipanteConteudo(nomeCurso)
-        cy.addParticipante()
+        cy.addParticipanteConteudo(nomeTrilha, tipoConteudo)
+        cy.addParticipante(tipoConteudo)
         cy.preencherDadosParticipante(dados, { limpar: true })
         cy.salvarNovoParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         // READ
         cy.log('## READ ##')
 
-        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`, tipoConteudo)
 
         let dadosParaValidar = { ...formDefault, ...dados }
         cy.validarDadosParticipante(dadosParaValidar)
@@ -314,7 +322,7 @@ describe('Participante', () => {
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
 
-		cy.editarParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+		cy.editarParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, tipoConteudo)
 
         dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
 		cy.validarDadosParticipante(dadosParaValidar)
@@ -396,17 +404,15 @@ describe('Participante', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
-        cy.addParticipanteConteudo(nomeCurso)
-        cy.addParticipante()
+        cy.addParticipanteConteudo(nomeTrilha, tipoConteudo)
+        cy.addParticipante(tipoConteudo)
         cy.preencherDadosParticipante(dados, { limpar: true })
         cy.salvarNovoParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         // READ
         cy.log('## READ ##')
 
-        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`, tipoConteudo)
 
         let dadosParaValidar = { ...formDefault, ...dados }
         cy.validarDadosParticipante(dadosParaValidar)
@@ -429,7 +435,7 @@ describe('Participante', () => {
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
 
-		cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
+		cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`, tipoConteudo)
 
         dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
 		cy.validarDadosParticipante(dadosParaValidar)
@@ -498,17 +504,15 @@ describe('Participante', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
-        cy.addParticipanteConteudo(nomeCurso)
-        cy.addParticipante()
+        cy.addParticipanteConteudo(nomeTrilha, tipoConteudo)
+        cy.addParticipante(tipoConteudo)
         cy.preencherDadosParticipante(dados, { limpar: true })
         cy.salvarNovoParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         // READ
         cy.log('## READ ##')
 
-        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`, tipoConteudo)
 
         let dadosParaValidar = { ...formDefault, ...dados }
         cy.validarDadosParticipante(dadosParaValidar)
@@ -530,7 +534,7 @@ describe('Participante', () => {
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
 
-		cy.editarParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+		cy.editarParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, tipoConteudo)
 
         dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
 		cy.validarDadosParticipante(dadosParaValidar)
@@ -594,17 +598,15 @@ describe('Participante', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
-        cy.addParticipanteConteudo(nomeCurso)
-        cy.addParticipante()
+        cy.addParticipanteConteudo(nomeTrilha, tipoConteudo)
+        cy.addParticipante(tipoConteudo)
         cy.preencherDadosParticipante(dados, { limpar: true })
         cy.salvarNovoParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         // READ
         cy.log('## READ ##')
 
-        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`, tipoConteudo)
 
         let dadosParaValidar = { ...formDefault, ...dados }
         cy.validarDadosParticipante(dadosParaValidar)
@@ -626,7 +628,7 @@ describe('Participante', () => {
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
 
-		cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
+		cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`, tipoConteudo)
 
         dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
 		cy.validarDadosParticipante(dadosParaValidar)
@@ -693,17 +695,15 @@ describe('Participante', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
-        cy.addParticipanteConteudo(nomeCurso)
-        cy.addParticipante()
+        cy.addParticipanteConteudo(nomeTrilha, tipoConteudo)
+        cy.addParticipante(tipoConteudo)
         cy.preencherDadosParticipante(dados, { limpar: true })
         cy.salvarNovoParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         // READ
         cy.log('## READ ##')
 
-        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`, tipoConteudo)
 
         let dadosParaValidar = { ...formDefault, ...dados }
         cy.validarDadosParticipante(dadosParaValidar)
@@ -734,7 +734,7 @@ describe('Participante', () => {
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
 
-		cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
+		cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`, tipoConteudo)
 
         dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
 		cy.validarDadosParticipante(dadosParaValidar)
@@ -800,17 +800,15 @@ describe('Participante', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
-        cy.addParticipanteConteudo(nomeCurso)
-        cy.addParticipante()
+        cy.addParticipanteConteudo(nomeTrilha, tipoConteudo)
+        cy.addParticipante(tipoConteudo)
         cy.preencherDadosParticipante(dados, { limpar: true })
         cy.salvarNovoParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         // READ
         cy.log('## READ ##')
 
-        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`, tipoConteudo)
 
         let dadosParaValidar = { ...formDefault, ...dados }
         cy.validarDadosParticipante(dadosParaValidar)
@@ -846,7 +844,7 @@ describe('Participante', () => {
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
 
-		cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
+		cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`, tipoConteudo)
 
         dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
 		cy.validarDadosParticipante(dadosParaValidar)
@@ -912,17 +910,15 @@ describe('Participante', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
-        cy.addParticipanteConteudo(nomeCurso)
-        cy.addParticipante()
+        cy.addParticipanteConteudo(nomeTrilha, tipoConteudo)
+        cy.addParticipante(tipoConteudo)
         cy.preencherDadosParticipante(dados, { limpar: true })
         cy.salvarNovoParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         // READ
         cy.log('## READ ##')
 
-        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`, tipoConteudo)
 
         let dadosParaValidar = { ...formDefault, ...dados }
         cy.validarDadosParticipante(dadosParaValidar)
@@ -968,14 +964,14 @@ describe('Participante', () => {
             confirmacaoSenha: senha
         }
 
-        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`, tipoConteudo)
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
         cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, 'Cancelados')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
 
-		cy.editarParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+		cy.editarParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, tipoConteudo)
 
         dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
 		cy.validarDadosParticipante(dadosUpdate)
@@ -1041,17 +1037,15 @@ describe('Participante', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
-        cy.addParticipanteConteudo(nomeCurso)
-        cy.addParticipante()
+        cy.addParticipanteConteudo(nomeTrilha, tipoConteudo)
+        cy.addParticipante(tipoConteudo)
         cy.preencherDadosParticipante(dados, { limpar: true })
         cy.salvarNovoParticipante(`${dados.nome} ${dados.sobrenome}`)
 
         // READ
         cy.log('## READ ##')
 
-        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`, tipoConteudo)
 
         let dadosParaValidar = { ...formDefault, ...dados }
         cy.validarDadosParticipante(dadosParaValidar)
@@ -1097,14 +1091,14 @@ describe('Participante', () => {
             confirmacaoSenha: senha
         }
 
-        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.editarParticipante(`${dados.nome} ${dados.sobrenome}`, tipoConteudo)
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
         cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, 'Pendentes')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
 
-		cy.editarParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+		cy.editarParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, tipoConteudo)
 
         dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
 		cy.validarDadosParticipante(dadosUpdate)
@@ -1166,7 +1160,7 @@ describe('Participante', () => {
         // CREATE
         cy.log('## CREATE ##')
         
-        cy.addParticipanteConteudo(nomeCurso)
+        cy.addParticipanteConteudo(nomeTrilha, tipoConteudo)
 
         for (let i = 0; i < 5; i++) {
             const body = {
@@ -1178,7 +1172,7 @@ describe('Participante', () => {
             cy.criarUsuarioViaApi(body).then((response) => {
                 const participante = response.body
         
-                cy.addParticipante()
+                cy.addParticipante(tipoConteudo)
                 cy.associarParticipante(body.email, `${body.first_name} ${body.last_name}`)
         
                 participantesAssociados.push(`${body.first_name} ${body.last_name}`)
@@ -1206,192 +1200,5 @@ describe('Participante', () => {
             cy.alterarStatusTodosParticipantes('Pendente', 'Cancelado', participantesAssociados)
             cy.alterarStatusTodosParticipantes('Cancelado', 'Confirmado', participantesAssociados)
         })
-    })
-
-    it('11. CRUD via criação de participante por importação de arquivo CSV', () => {
-        const participante1 = {
-            nome: 'Carlos Lucas',
-            sobrenome: 'Moura',
-            rg: '38.882.858-4',
-            cep: '85814365',
-            endereco: 'Rua Grahm Bell',
-            numero: '948',
-            bairro: 'Interlagos',
-            cidade: 'Cascavel',
-            estado: 'Paraná',
-            telPessoal: '(45) 38234-176',
-            celular: '(45) 99674-2216',
-            email: 'teste1@teste.com',
-            cpf: '97407843058',
-            empresa: 'Henry e Anderson Telecom Ltda',
-            area: 'Telefonia',
-            nrColaboradores: '10',
-            cargo: 'Gerente Suporte',
-            complemento: 'N/A',
-            pais: 'Brasil'
-        }
-
-        const participante2 = {
-            nome: 'Lorena Jennifer',
-            sobrenome: 'Novaes',
-            rg: '46.011.112-7',
-            cep: '85807660',
-            endereco: 'Rua Jacarandá',
-            numero: '337',
-            bairro: 'Parque Verde',
-            cidade: 'Cascavel',
-            estado: 'Paraná',
-            telPessoal: '(45) 26810-124',
-            celular: '(45) 99660-7757',
-            email: 'teste2@teste.com',
-            cpf: '71959631012',
-            empresa: 'Cecília e Bruna Esportes ME',
-            area: 'Comércio',
-            nrColaboradores: '15',
-            cargo: 'Gerente de Vendas',
-            complemento: 'Bloco C',
-            pais: 'Brasil'
-        }
-
-        const participante3 = {
-            nome: 'Nelson Gael',
-            sobrenome: 'Castro',
-            rg: '40.365.897-4',
-            cep: '85816120',
-            endereco: 'Rua Prestes Maia',
-            numero: '646',
-            bairro: 'São Cristóvão',
-            cidade: 'Cascavel',
-            estado: 'Paraná',
-            telPessoal: '(45) 39197-428',
-            celular: '(45) 98117-6785',
-            email: 'teste3@teste.com',
-            cpf: '79595642053',
-            empresa: 'Giovanni e Sandra Doces & Salgados Ltda',
-            area: 'Alimentício',
-            nrColaboradores: '20',
-            cargo: 'Chefe de cozinha',
-            complemento: 'Apto 101',
-            pais: 'Brasil'        
-        }
-
-        const participante4 = {
-            nome: 'Diogo Iago',
-            sobrenome: 'Drumond',
-            rg: '49.966.104-7',
-            cep: '85817834',
-            endereco: 'Rua Ayrton Gerson de Camargo',
-            numero: '899',
-            bairro: 'Morumbi',
-            cidade: 'Cascavel',
-            estado: 'Paraná',
-            telPessoal: '(45) 27194-494',
-            celular: '(45) 99702-7372',
-            email: 'teste4@teste.com',
-            cpf: '50421771089',
-            empresa: 'Fabiana e Cláudia Alimentos ME',
-            area: 'Alimentício',
-            nrColaboradores: '25',
-            cargo: 'Vendedor',
-            complemento: 'N/A',
-            pais: 'Brasil'        
-        }
-
-        // CREATE
-		cy.log('## CREATE ##')
-
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
-        cy.addParticipanteConteudo(nomeCurso)
-
-        cy.importarParticipante('participantes.csv')
-
-        cy.verificarImportacao()
-
-        // READ
-        cy.log('## READ ##')
-
-        // Medida de contorno para atualizar a página e validar o status do(s) participante(s)
-        cy.addParticipante()
-        cy.cancelarFormularioParticipante()
-        cy.abaConfirmados()
-
-        cy.editarParticipante(`${participante1.nome} ${participante1.sobrenome}`)
-        let dadosParaValidar1 = { ...formDefault, ...participante1 }
-        cy.validarDadosParticipante(dadosParaValidar1)
-        cy.cancelarFormularioParticipante()
-
-        cy.editarParticipante(`${participante2.nome} ${participante2.sobrenome}`)
-        let dadosParaValidar2 = { ...formDefault, ...participante2 }
-        cy.validarDadosParticipante(dadosParaValidar2)
-        cy.cancelarFormularioParticipante()
-
-        cy.alteraStatus(`${participante3.nome} ${participante3.sobrenome}`, 'Pendente')
-        cy.abaPendentes()
-        cy.editarParticipante(`${participante3.nome} ${participante3.sobrenome}`)
-        let dadosParaValidar3 = { ...formDefault, ...participante3 }
-        cy.validarDadosParticipante(dadosParaValidar3)
-        cy.cancelarFormularioParticipante()
-
-        cy.abaConfirmados()
-        cy.alteraStatus(`${participante4.nome} ${participante4.sobrenome}`, 'Cancelado')
-        cy.abaCancelados()
-        cy.editarParticipante(`${participante4.nome} ${participante4.sobrenome}`)
-        let dadosParaValidar4 = { ...formDefault, ...participante4 }
-        cy.validarDadosParticipante(dadosParaValidar4)
-        cy.cancelarFormularioParticipante()
-
-        // UPDATE
-        cy.log('## UPDATE ##')
-
-        const senha = fakerPT_BR.internet.password()
-        const dadosUpdate = {
-            nome: fakerPT_BR.person.firstName(),
-            sobrenome: fakerPT_BR.person.lastName(),
-            rg: fakerPT_BR.number.int({ min: 100000, max: 999999999 }),
-            telPessoal: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
-            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
-            dataExpiracao: gerarData(15, 2, 0),
-            cep: fakerPT_BR.string.numeric(8),
-            endereco: fakerPT_BR.location.streetAddress(),
-            numero: fakerPT_BR.number.int( { min: 1, max: 9999 } ),
-            complemento: `Andar: ${fakerPT_BR.number.int( { min: 1, max: 20 } )}, Sala: ${fakerPT_BR.number.int( { min: 1, max: 20 } )}`,
-            bairro: fakerPT_BR.lorem.words(1),
-            cidade: fakerPT_BR.location.city(),
-            estado: 'Santa Catarina',
-            pais: 'Bósnia-Herzegovina',
-            empresa: fakerPT_BR.company.name(),
-            ramo: fakerPT_BR.lorem.words(1),
-            nrColaboradores: '31 - 100',
-            site: fakerPT_BR.internet.url(),
-            telComercial: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
-            cargo: fakerPT_BR.person.jobTitle(),
-            area: fakerPT_BR.person.jobArea(),
-            observacao: fakerPT_BR.lorem.words(5),
-            novaSenha: senha,
-            confirmacaoSenha: senha
-        }
-
-        cy.abaConfirmados()
-        cy.editarParticipante(`${participante2.nome} ${participante2.sobrenome}`)
-        cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
-
-		// READ-UPDATE
-		cy.log('## READ-UPDATE ##')
-
-		cy.editarParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
-
-        let dadosParaValidar = { ...dadosParaValidar2, ...dadosUpdate }
-		cy.validarDadosParticipante(dadosParaValidar)
-
-		// DELETE
-		cy.log('## DELETE ##')
-
-        cy.acessarPgUsuarios()
-		cy.excluirUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
-        cy.excluirUsuario(`${participante1.nome} ${participante1.sobrenome}`)
-        cy.excluirUsuario(`${participante3.nome} ${participante3.sobrenome}`)
-        cy.excluirUsuario(`${participante4.nome} ${participante4.sobrenome}`)        
     })
 })

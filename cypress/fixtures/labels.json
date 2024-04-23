@@ -125,7 +125,11 @@
         "msgAlteraConfirmado": "Confirmação dos Participantes em progresso.",
         "msgAlteraCancelado": "Cancelamento dos Participantes em progresso.",
         "msgAlteraPendente": "Pendência dos Participantes em progresso.",
-        "msgSucessoAlteraStatus": "Alteração de status dos Participantes foi concluída com sucesso, acesse novamente para visualizar."
+        "msgSucessoAlteraStatus": "Alteração de status dos Participantes foi concluída com sucesso, acesse novamente para visualizar.",
+        "breadcrumbTrilha": "Lista de conteúdos",
+        "msgUploadImportacao": "Arquivo enviado com sucesso",
+        "msgImportacaoEmAndamento": "Importação será executada em instantes.",
+        "msgImportacaoConcluida": "Importação concluída com sucesso."
     },
     "instrutores": {
         "breadcrumb": "Detalhes do evento",
