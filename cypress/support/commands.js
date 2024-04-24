@@ -47,7 +47,7 @@ Cypress.Commands.add('loginTwygoAutomacao', function() {
   cy.contains('#page-breadcrumb', 'Dashboard')
     .should('be.visible')
 
-  cy.contains('.name', 'Twygo Automação')
+  cy.contains('.name', Cypress.env('username'))
     .should('be.visible')
 
   cy.contains('#btn-profile', 'Aluno')
@@ -3539,69 +3539,6 @@ Cypress.Commands.add('verificarImportacao', () => {
 })
 
 /** DOCUMENTAÇÃO:
- * @name preencherDadosConteudo
- * 
- * @description
- * Comando personalizado para preencher os campos do formulário de um conteúdo específico.
- * 
- * @actions
- * 1. Preenche cada campo do formulário de acordo com os dados informados.
- * 
- * @param {Object} conteudo - O conteúdo a ser preenchido. Este objeto deve conter os campos e valores a serem preenchidos.
- * @param {Object} opcoes - As opções para preenchimento do conteúdo. Este objeto pode conter a opção de limpar os campos antes de preencher.
- * 
- * @example
- * cy.preencherDadosConteudo(conteudo, opcoes)
- * 
- * @throws {Error} - Se o campo informado não for encontrado no formulário. Validação realizada pelo método 'preencherCampo' da classe 'formConteudos'.
- * @see formConteudos
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
-Cypress.Commands.add('preencherDadosInstrutor', (dados, opcoes = { limpar: false }) => {
-  const formulario = new formInstrutor()
-  
-  Object.keys(dados).forEach(nomeCampo => {
-      const valor = dados[nomeCampo]
-      formulario.preencherCampo(nomeCampo, valor, opcoes)
-  })
-}) 
-
-/** DOCUMENTAÇÃO:
- * @name validarDadosInstrutor
- * 
- * @description
- * Comando personalizado para validar os dados do formulário de instrutor.
- * 
- * @actions
- * 1. Valida cada campo do formulário de acordo com os dados informados.
- * 
- * @example
- * cy.validarDadosConteudo(conteudo, categoria)
- * 
- * @throws {Error} - Se o campo nome do Instrutor não for preenchido.
- * @see formInstrutor
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0 
- */
-Cypress.Commands.add('validarDadosInstrutor', (dados) => {
-  if (!dados) {
-    throw new Error('O parâmetro "nome do Instrutor" é obrigatório.')
-  }
-
-  const formulario = new formInstrutor()
-
-  Object.keys(dados).forEach(nomeCampo => {
-    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
-    formulario.validarCampo(nomeCampo, valor)
-  })
-})
-
-/** DOCUMENTAÇÃO:
  * @name vincularInstrutor
  * 
  * @description
@@ -3612,6 +3549,8 @@ Cypress.Commands.add('validarDadosInstrutor', (dados) => {
  * 2. Clica para buscar.
  * 3. Clica no botão de associar.
  * 4. Valida a associação.
+ * 
+ * @param {String} nomeInstrutor - Nome do instrutor a ser vinculado
  * 
  * @example
  * cy.vincularInstrutor(nomeInstrutor)
@@ -3642,6 +3581,8 @@ Cypress.Commands.add('vincularInstrutor', (nomeInstrutor) => {
  * 1. Pesquisa pelo nome do Instrutor.
  * 2. Clica para remover.
  * 3. Valida a remoção.
+ * 
+ * @param {String} nomeInstrutor - Nome do instrutor a ser excluído
  * 
  * @example
  * cy.excluirInstrutor(nomeInstrutor)
@@ -3677,6 +3618,9 @@ Cypress.Commands.add('excluirInstrutor', (nomeInstrutor) => {
  * 5. Preenche os dados para criar um usuário Instrutor.
  * 6. Salva o formulário.
  * 
+ * @param {String} nomeInstrutor - Nome do instrutor a ser criado
+ * @param {String} sobrenomeInstrutor - Sobrenome do instrutor a ser criado
+ * 
  * @example
  * cy.criarInstrutor(nomeInstrutor, sobrenomeInstrutor)
  * 
@@ -3697,46 +3641,7 @@ Cypress.Commands.add('criarInstrutor', (nomeInstrutor, sobrenomeInstrutor) => {
       perfilInstrutor: true
   }
 
-  cy.loginTwygoAutomacao()
-  cy.alterarPerfil('administrador')
   cy.acessarPgUsuarios()
-  cy.addUsuario()
-  cy.preencherDadosUsuario(dados, { limpar: true })
-  cy.salvarUsuario(`${dados.nome} ${dados.sobrenome}`)
-})
-
-
-/** DOCUMENTAÇÃO:
- * @name criarSegundoInstrutor
- * 
- * @description
- * Comando personalizado para criar um segundo usuário instrutor via front, já estando na tela de Usuários.
- * 
- * @actions
- * 1. Clica para criar novo usuário
- * 2. Preenche os dados para criar um novo usuário Instrutor
- * 3. Salva o formulário
- * 
- * @example
- * cy.criarInstrutor(nomeInstrutor, sobrenomeInstrutor)
- * 
- * @author Jadson
- * @version 1.0.0
- * @since 1.0.0
- */
-Cypress.Commands.add('criarSegundoInstrutor', (nomeInstrutor, sobrenomeInstrutor) => {
-  // Massa de dados
-  let nome = nomeInstrutor
-  let sobrenome = sobrenomeInstrutor
-  let email = fakerPT_BR.internet.email({ firstName: nome, lastName: sobrenome}).toLowerCase()
-
-  const dados = {
-      email: email,
-      nome: nome,
-      sobrenome: sobrenome,
-      perfilInstrutor: true
-  }
-
   cy.addUsuario()
   cy.preencherDadosUsuario(dados, { limpar: true })
   cy.salvarUsuario(`${dados.nome} ${dados.sobrenome}`)

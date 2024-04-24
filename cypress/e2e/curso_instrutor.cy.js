@@ -24,12 +24,6 @@ describe('Instrutor', () => {
         // Gera um nome aleatório para o conteúdo e para a atividade
         nomeConteudo = fakerPT_BR.commerce.productName()
 
-        //Massa de dados
-        const body = {
-            name: nomeConteudo,
-            description: fakerPT_BR.lorem.sentence(5)
-        }
-
         
         // Obtém o token de autenticação
         getAuthToken()
@@ -46,14 +40,12 @@ describe('Instrutor', () => {
         // Exclui todos os usuários antes de iniciar o teste
         cy.excluirUsuarioViaApi()
 
-        // Cria um instrutor
+        cy.loginTwygoAutomacao()
+        cy.alterarPerfil('administrador')
+        // Cria os instrutores
         cy.criarInstrutor(nomeInstrutor1, sobrenomeInstrutor1)
-
-        // Cria um instrutor
-        cy.criarSegundoInstrutor(nomeInstrutor2, sobrenomeInstrutor2)
-
-        // Criar um curso via API
-        cy.criarCursoViaApi(body)       
+        cy.criarInstrutor(nomeInstrutor2, sobrenomeInstrutor2)
+  
     })
 
     afterEach(() => {
@@ -63,6 +55,16 @@ describe('Instrutor', () => {
 
     it('1. CRUD - Vincular instrutor em curso liberado', () => {
         // CREATE
+        //Massa de dados
+        const body = {
+            name: nomeConteudo,
+            description: fakerPT_BR.lorem.sentence(5),
+            situation: 1
+        }
+
+        // Criar um curso via API
+        cy.criarCursoViaApi(body) 
+        // Criar instrutor
         cy.acessarPgListaConteudos()
         cy.instrutorConteudo(nomeConteudo)
 
@@ -77,6 +79,62 @@ describe('Instrutor', () => {
         // DELETE
         cy.excluirInstrutor(nomeInstrutor2)
     })
+
+    it('2. CRUD - Vincular instrutor em curso em desenvolvimento', () => {
+        // CREATE
+        //Massa de dados
+        const body = {
+            name: nomeConteudo,
+            description: fakerPT_BR.lorem.sentence(5),
+            situation: 0
+        }
+
+        // Criar um curso via API
+        cy.criarCursoViaApi(body) 
+        // Criar instrutor
+        cy.acessarPgListaConteudos()
+        cy.instrutorConteudo(nomeConteudo)
+
+        //READ
+        cy.vincularInstrutor(nomeInstrutor1)
+
+        // UPDATE
+        cy.voltar()
+        cy.instrutorConteudo(nomeConteudo)
+        cy.vincularInstrutor(nomeInstrutor2)
+
+        // DELETE
+        cy.excluirInstrutor(nomeInstrutor2)
+    })
+
+    it('3. CRUD - Vincular instrutor em curso suspenso', () => {
+        // CREATE
+        //Massa de dados
+        const body = {
+            name: nomeConteudo,
+            description: fakerPT_BR.lorem.sentence(5),
+            situation: 2
+        }
+
+        // Criar um curso via API
+        cy.criarCursoViaApi(body) 
+        // Criar instrutor
+        cy.acessarPgListaConteudos()
+        cy.instrutorConteudo(nomeConteudo)
+
+        //READ
+        cy.vincularInstrutor(nomeInstrutor1)
+
+        // UPDATE
+        cy.voltar()
+        cy.instrutorConteudo(nomeConteudo)
+        cy.vincularInstrutor(nomeInstrutor2)
+
+        // DELETE
+        cy.excluirInstrutor(nomeInstrutor2)
+    })
+
+
 
 
 })
