@@ -6,6 +6,12 @@ let faker = require('faker-br')
 describe('Configuração de Usuário', () => {
     let email, senha, username
 
+    before(() => {
+        cy.fixture('labels.json').then((labels) => {
+            Cypress.env('labels', labels)
+        })
+    })
+
     beforeEach(() => {
         // Ativa o tratamento de exceção não capturada especificamente para este teste
 		Cypress.on('uncaught:exception', (err, runnable) => {
@@ -15,7 +21,7 @@ describe('Configuração de Usuário', () => {
         // Gerar dados aleatórios para o usuário
         let first_name = fakerPT_BR.person.firstName()
         let last_name = fakerPT_BR.person.lastName()
-        email = fakerPT_BR.internet.email()
+        email = fakerPT_BR.internet.email({ firstName: first_name, lastName: last_name}).toLowerCase()
         senha = fakerPT_BR.internet.password()
         username = `${first_name} ${last_name}`
         
@@ -36,7 +42,7 @@ describe('Configuração de Usuário', () => {
 		Cypress.removeAllListeners('uncaught:exception')
 	})
 
-    it('Deve ser possível alterar o nome do usuário', () => {
+    it('1. CRUD alterar os dados de usuário aluno', () => {
         // Massa de dados
         const dados = {
             nome: fakerPT_BR.person.firstName(),
@@ -60,13 +66,23 @@ describe('Configuração de Usuário', () => {
             cargo: fakerPT_BR.person.jobTitle(),
             nrColaboradores: '> 500',
             ramo: fakerPT_BR.lorem.words(1)
-        }
+        }     
 
-        // CREATE
-		cy.log('## CREATE ##')
+        // TODO: Trazer para cá a criação do usuário (via FRONT mesmo), atualizar pela página de configuração, validar os dados, acessar via tela de usuários
+        // TODO: validar os dados e inativar o usuário (não é possível excluir pois já terá acesso na plataforma)
+
+        // UPDATE
+		cy.log('## UPDATE ##')
 
 		cy.login(email, senha, username)
         cy.configUsuario()
-        cy.preencherDadosConfigUsuario(dados)
+        cy.preencherDadosConfigUsuario(dados, { limpar: true } )
+        cy.salvarConfigUsuario()
+
+        // READ-UPDATE
+        cy.log('## READ-UPDATE ##')
+
+        cy.configUsuario()
+        cy.validarDadosConfigUsuario(dados)
     })
 })

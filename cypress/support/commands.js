@@ -6,6 +6,7 @@ import formQuestionarios from "./pageObjects/formQuestionarios"
 import formPerguntas from "./pageObjects/formPerguntas"
 import formUsuarios from "./pageObjects/formUsuarios"
 import formParticipantes from "./pageObjects/formParticipantes"
+import formConfigUsuario from "./pageObjects/formConfigUsuario"
 import { fakerPT_BR } from "@faker-js/faker"
 
 /** DOCUMENTAÇÃO:
@@ -3256,8 +3257,8 @@ Cypress.Commands.add('criarUsuarioViaApi', function(body) {
       cy.log(`Tentativa ${attempt}: Falha na requisição. Tentando novamente`)
       cy.criarUsuarioViaApi(body, attempt + 1)
     } else if (response.status !== 201) {
-      cy.log(`Tentativa ${attempt}: Falha na requisição. Não foi possível criar o catálogo`)
-      throw new Error(`Erro na criação do catálogo: ${response}`)
+      cy.log(`Tentativa ${attempt}: Falha na requisição. Não foi possível criar o usuário`)
+      throw new Error(`Erro na criação do usuário: ${response.body}`)
     } else {
       expect(response.status).to.eq(201)
     }
@@ -3537,11 +3538,23 @@ Cypress.Commands.add('verificarImportacao', () => {
 })
 
 Cypress.Commands.add('configUsuario', () => {
+  const TIMEOUT_PADRAO = 5000
+  
+  const labels = Cypress.env('labels')
+  const { breadcrumb, tituloPg } = labels.configUsuario
+  
   cy.get('#btn-profile')
     .click()
 
   cy.get('#config-profile')
     .click()
+
+  // Valida se a página foi carregada corretamente
+  cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+
+  cy.contains('.detail_title', tituloPg, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
 })
 
  /** DOCUMENTAÇÃO:
@@ -3569,7 +3582,7 @@ Cypress.Commands.add('configUsuario', () => {
  * @since 1.0.0
  */
 Cypress.Commands.add('preencherDadosConfigUsuario', (dados, opcoes = { limpar: false }) => {
-  const formulario = new formUsuarios()
+  const formulario = new formConfigUsuario()
   
   Object.keys(dados).forEach(nomeCampo => {
       const valor = dados[nomeCampo]
@@ -3600,7 +3613,7 @@ Cypress.Commands.add('preencherDadosConfigUsuario', (dados, opcoes = { limpar: f
  * @since 1.0.0
  */
 Cypress.Commands.add('validarDadosConfigUsuario', (dados) => {
-  const formulario = new formUsuarios()
+  const formulario = new formConfigUsuario()
 
   Object.keys(dados).forEach(nomeCampo => {
     const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
@@ -3656,5 +3669,25 @@ Cypress.Commands.add('login', function(login, password, username) {
     .should('be.visible')
 
   cy.contains('#btn-profile', 'Aluno')
+    .should('be.visible')
+})
+
+Cypress.Commands.add('salvarConfigUsuario', function() {
+  const TIMEOUT_PADRAO = 5000
+  
+  const labels = Cypress.env('labels')
+  const { msgSucesso } = labels.configUsuario
+  const { pgInicialAluno } = labels.perfil
+
+  cy.contains('button', 'Salvar')
+  .should('be.visible')
+  .click()  
+
+  // Valida a mensagem
+  cy.contains('.flash.notice', msgSucesso, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+
+  // Valida o redirecionamento
+  cy.contains('#page-breadcrumb', pgInicialAluno, { timeout: TIMEOUT_PADRAO })
     .should('be.visible')
 })

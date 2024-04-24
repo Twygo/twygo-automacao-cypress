@@ -130,5 +130,10 @@
         "msgUploadImportacao": "Arquivo enviado com sucesso",
         "msgImportacaoEmAndamento": "Importação será executada em instantes.",
         "msgImportacaoConcluida": "Importação concluída com sucesso."
+    },
+    "configUsuario": {
+        "breadcrumb": "Configurações",
+        "tituloPg": "Editar meus Dados",
+        "msgSucesso": "A sua conta foi atualizada com sucesso."
     }
 }
