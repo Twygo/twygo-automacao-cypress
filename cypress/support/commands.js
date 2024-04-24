@@ -26,10 +26,13 @@ import { fakerPT_BR } from "@faker-js/faker"
  * cy.loginTwygoAutomacao()
  * 
  * @author Karla Daiany
- * @version 1.0.0
+ * @version 1.1.0
  * @since 1.0.0
  */
-Cypress.Commands.add('loginTwygoAutomacao', function() {
+Cypress.Commands.add('loginTwygoAutomacao', (idioma = 'pt') => {
+  const labels = Cypress.env('labels')[idioma]
+  const { pgInicialAluno, btnProfile } = labels.configUsuario
+
   cy.visit('/users/login')
 
   cy.get('#user_email')
@@ -43,13 +46,30 @@ Cypress.Commands.add('loginTwygoAutomacao', function() {
     .click()
 
   // Verificar se o login foi realizado com sucesso
-  cy.contains('#page-breadcrumb', 'Dashboard')
+  cy.contains('#page-breadcrumb', pgInicialAluno)
     .should('be.visible')
 
-  cy.contains('.name', 'Twygo Automação')
-    .should('be.visible')
+    switch (idioma) {
+      case 'pt':
+      case 'es':
+        cy.contains('.name', Cypress.env('username'))
+          .should('be.visible')
+        break
+      case 'en':
+        const nomeCompleto = Cypress.env('username')
+        const palavras = nomeCompleto.split(' ')
 
-  cy.contains('#btn-profile', 'Aluno')
+        const nome = palavras[0]
+        const sobrenome = palavras.slice(1).join(' ')
+
+        cy.contains('.name', `${sobrenome}, ${nome}`)
+          .should('be.visible')
+        break
+      default:
+        throw new Error(`Idioma inválido: ${idioma}. Utilize 'pt', 'en' ou 'es'`)
+    }
+
+  cy.contains('#btn-profile', btnProfile)
     .should('be.visible')
 })
 
@@ -3537,10 +3557,17 @@ Cypress.Commands.add('verificarImportacao', () => {
   verificarStatus()
 })
 
-Cypress.Commands.add('configUsuario', () => {
+Cypress.Commands.add('criarUsuario', function(dados) {
+  cy.acessarPgUsuarios()
+  cy.addUsuario()
+  cy.preencherDadosUsuario(dados, { limpar: true })
+  cy.salvarUsuario(`${dados.nome} ${dados.sobrenome}`) 
+})
+
+Cypress.Commands.add('configUsuario', (idioma = 'pt') => {
   const TIMEOUT_PADRAO = 5000
   
-  const labels = Cypress.env('labels')
+  const labels = Cypress.env('labels')[idioma]
   const { breadcrumb, tituloPg } = labels.configUsuario
   
   cy.get('#btn-profile')
@@ -3621,6 +3648,24 @@ Cypress.Commands.add('validarDadosConfigUsuario', (dados) => {
   })
 })
 
+Cypress.Commands.add('logout', (idioma = 'pt') => {
+  // obs.: a msgLogout só é alterada após logout, ou seja em uma mudança de idioma, a msgLogout será a do idioma anterior
+  const TIMEOUT_PADRAO = 5000
+  
+  const labels = Cypress.env('labels')[idioma]
+  const { msgLogout } = labels.configUsuario
+  
+  cy.get('#btn-profile')
+    .click()
+
+  cy.get('#link_logout')
+    .click( { force: true } )
+
+  // Validar mensagem de sucesso do logout
+  cy.contains('.flash.notice', msgLogout, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+})
+
 /** DOCUMENTAÇÃO:
  * @name login
  * 
@@ -3641,7 +3686,10 @@ Cypress.Commands.add('validarDadosConfigUsuario', (dados) => {
  * @version 1.0.0
  * @since 1.0.0
  */
-Cypress.Commands.add('login', function(login, password, username) {
+Cypress.Commands.add('login', function(login, password, username, idioma = 'pt') {
+  const labels = Cypress.env('labels')[idioma]
+  const { pgInicialAluno, btnProfile } = labels.configUsuario
+  
   cy.visit('/users/login')
 
   cy.get('#user_email')
@@ -3662,24 +3710,41 @@ Cypress.Commands.add('login', function(login, password, username) {
     .click()
 
   // Verificar se o login foi realizado com sucesso
-  cy.contains('#page-breadcrumb', 'Dashboard')
+  cy.contains('#page-breadcrumb', pgInicialAluno)
     .should('be.visible')
 
-  cy.contains('.name', username)
-    .should('be.visible')
+    switch (idioma) {
+      case 'pt':
+      case 'es':
+        cy.contains('.name', username)
+          .should('be.visible')
+        break
+      case 'en':
+        const nomeCompleto = username
+        const palavras = nomeCompleto.split(' ')
 
-  cy.contains('#btn-profile', 'Aluno')
+        const nome = palavras[0]
+        const sobrenome = palavras.slice(1).join(' ')
+
+        cy.contains('.name', `${sobrenome}, ${nome}`)
+          .should('be.visible')
+        break
+      default:
+        throw new Error(`Idioma inválido: ${idioma}. Utilize 'pt', 'en' ou 'es'`)
+    }
+
+  cy.contains('#btn-profile', btnProfile)
     .should('be.visible')
 })
 
-Cypress.Commands.add('salvarConfigUsuario', function() {
+Cypress.Commands.add('salvarConfigUsuario', (idioma = 'pt') => {
+  // obs.: a msgSucesso só é alterada após salvar, ou seja em uma mudança de idioma, a msgSucesso será a do idioma anterior
   const TIMEOUT_PADRAO = 5000
   
-  const labels = Cypress.env('labels')
-  const { msgSucesso } = labels.configUsuario
-  const { pgInicialAluno } = labels.perfil
+  const labels = Cypress.env('labels')[idioma]
+  const { msgSucesso, pgInicialAluno, btnSalvar } = labels.configUsuario
 
-  cy.contains('button', 'Salvar')
+  cy.contains('button', btnSalvar)
   .should('be.visible')
   .click()  
 
