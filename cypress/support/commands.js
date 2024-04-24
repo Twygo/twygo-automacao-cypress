@@ -3557,7 +3557,7 @@ Cypress.Commands.add('verificarImportacao', () => {
  * 
  * @see formInstrutor
  * 
- * @author Karla Daiany
+ * @author Jadson
  * @version 1.0.0
  * @since 1.0.0 
  */
@@ -3566,13 +3566,34 @@ Cypress.Commands.add('vincularInstrutor', (nomeInstrutor) => {
 
   formulario.associarInstrutor(nomeInstrutor)
 
-  //Validar se o instrutor foi vinculado corretamente
-  cy.contains('.speaker_name', nomeInstrutor)
-    .should('be.visible')
 })
 
 /** DOCUMENTAÇÃO:
- * @name excluirInstrutor
+ * @name validarVinculoInstrutor
+ * 
+ * @description
+ * Comando personalizado para validar se um instrutor foi vinculado corretamente ao conteúdo.
+ * 
+ * @actions
+ * 1. Pesquisa pelo nome do Instrutor.
+ * 2. Verifica se o nome está sendo exibido na tela.
+ * 
+ * @param {String} nomeInstrutor - Nome do instrutor a ser vinculado
+ * 
+ * @example
+ * cy.validarVinculoInstrutor(nomeInstrutor)
+ * 
+ * @author Jadson
+ * @version 1.0.0
+ * @since 1.0.0 
+ */
+Cypress.Commands.add('validarVinculoInstrutor', (nomeInstrutor) => {
+  cy.contains('.speaker_name', nomeInstrutor)
+  .should('be.visible')
+})
+
+/** DOCUMENTAÇÃO:
+ * @name removerVinculoInstrutor
  * 
  * @description
  * Comando personalizado para remover a associação do instrutor em um conteúdo
@@ -3592,7 +3613,7 @@ Cypress.Commands.add('vincularInstrutor', (nomeInstrutor) => {
  * @version 1.0.0
  * @since 1.0.0 
  */
-Cypress.Commands.add('excluirInstrutor', (nomeInstrutor) => {
+Cypress.Commands.add('removerVinculoInstrutor', (nomeInstrutor) => {
   //Encontra o instrutor e clica para remover 
   cy.contains('.speaker_name', nomeInstrutor)
     .parents('div')
@@ -3600,7 +3621,28 @@ Cypress.Commands.add('excluirInstrutor', (nomeInstrutor) => {
     .parents('tr')
     .find('a.name')
     .click()
-  //Validar se o instrutor foi removido corretamente 
+})
+
+/** DOCUMENTAÇÃO:
+ * @name validarRemocaoVinculoInstrutor
+ * 
+ * @description
+ * Comando personalizado para validar se um instrutor foi removido corretamente do conteúdo
+ * 
+ * @actions
+ * 1. Pesquisa pelo nome do Instrutor.
+ * 2. Verifica se o nome não está sendo exibido na tela.
+ * 
+ * @param {String} nomeInstrutor - Nome do instrutor a ser vinculado
+ * 
+ * @example
+ * cy.validarRemocaoInstrutor(nomeInstrutor)
+ * 
+ * @author Jadson
+ * @version 1.0.0
+ * @since 1.0.0 
+ */
+Cypress.Commands.add('validarRemocaoVinculoInstrutor', (nomeInstrutor) => {
   cy.contains('.speaker_name', nomeInstrutor).should('not.exist')
 })
 
@@ -3676,7 +3718,6 @@ Cypress.Commands.add('criarInstrutor', (nomeInstrutor, sobrenomeInstrutor) => {
  */
 Cypress.Commands.add('instrutorConteudo', (nomeConteudo) => {
   // Define o timeout padrão para validação das páginas
-  const TIMEOUT_PADRAO = 5000
 
   // Acessa o arquivo de labels
   const labels = Cypress.env('labels')
@@ -3687,19 +3728,19 @@ Cypress.Commands.add('instrutorConteudo', (nomeConteudo) => {
   
   seletor = `tr[tag-name='${nomeConteudo}']`    
   // Clica em 'Opções' e 'Instrutor'
-  cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+  cy.get(seletor)
     .find('svg[aria-label="Options"]')
     .click()
 
-  cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+  cy.get(seletor)
     .contains('button', 'Instrutor')
     .click({force: true})
   
   // Valida se a página foi carregada corretamente conforme o tipo de conteúdo
-  cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO})
+  cy.contains('#page-breadcrumb', breadcrumb)
     .should('be.visible')
 
-  cy.contains('.detail_title', tituloPg, { timeout: TIMEOUT_PADRAO})
+  cy.contains('.detail_title', tituloPg)
     .should('be.visible')
 })
 
@@ -3718,9 +3759,6 @@ Cypress.Commands.add('instrutorConteudo', (nomeConteudo) => {
  * @since 1.0.0
  */
 Cypress.Commands.add('voltar', function() {
-  // Define o timeout padrão para validação das páginas
-  const TIMEOUT_PADRAO = 5000
-
   // Localiza o e clica no botão de voltar
   cy.contains('.btn.btn-default.btn-back.waves-effect', 'Voltar')
     .click()  

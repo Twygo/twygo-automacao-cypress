@@ -23,7 +23,6 @@ describe('Instrutor', () => {
 
         // Gera um nome aleatório para o conteúdo e para a atividade
         nomeConteudo = fakerPT_BR.commerce.productName()
-
         
         // Obtém o token de autenticação
         getAuthToken()
@@ -45,7 +44,6 @@ describe('Instrutor', () => {
         // Cria os instrutores
         cy.criarInstrutor(nomeInstrutor1, sobrenomeInstrutor1)
         cy.criarInstrutor(nomeInstrutor2, sobrenomeInstrutor2)
-  
     })
 
     afterEach(() => {
@@ -64,12 +62,16 @@ describe('Instrutor', () => {
 
         // Criar um curso via API
         cy.criarCursoViaApi(body) 
-        // Criar instrutor
+        // Acessa a Lista de conteúdos
         cy.acessarPgListaConteudos()
+        //Acessa Opções > Instrutor
         cy.instrutorConteudo(nomeConteudo)
 
         //READ
         cy.vincularInstrutor(nomeInstrutor1)
+        cy.voltar()
+        cy.instrutorConteudo(nomeConteudo)
+        cy.validarVinculoInstrutor(nomeInstrutor1)
 
         // UPDATE
         cy.voltar()
@@ -77,7 +79,10 @@ describe('Instrutor', () => {
         cy.vincularInstrutor(nomeInstrutor2)
 
         // DELETE
-        cy.excluirInstrutor(nomeInstrutor2)
+        cy.removerVinculoInstrutor(nomeInstrutor2)
+        cy.voltar()
+        cy.instrutorConteudo(nomeConteudo)
+        cy.validarRemocaoVinculoInstrutor(nomeInstrutor2)
     })
 
     it('2. CRUD - Vincular instrutor em curso em desenvolvimento', () => {
@@ -89,22 +94,29 @@ describe('Instrutor', () => {
             situation: 0
         }
 
-        // Criar um curso via API
-        cy.criarCursoViaApi(body) 
-        // Criar instrutor
-        cy.acessarPgListaConteudos()
-        cy.instrutorConteudo(nomeConteudo)
-
-        //READ
-        cy.vincularInstrutor(nomeInstrutor1)
-
-        // UPDATE
-        cy.voltar()
-        cy.instrutorConteudo(nomeConteudo)
-        cy.vincularInstrutor(nomeInstrutor2)
-
-        // DELETE
-        cy.excluirInstrutor(nomeInstrutor2)
+            // Criar um curso via API
+            cy.criarCursoViaApi(body) 
+            // Acessa a Lista de conteúdos
+            cy.acessarPgListaConteudos()
+            //Acessa Opções > Instrutor
+            cy.instrutorConteudo(nomeConteudo)
+    
+            //READ
+            cy.vincularInstrutor(nomeInstrutor1)
+            cy.voltar()
+            cy.instrutorConteudo(nomeConteudo)
+            cy.validarVinculoInstrutor(nomeInstrutor1)
+        
+            // UPDATE
+            cy.voltar()
+            cy.instrutorConteudo(nomeConteudo)
+            cy.vincularInstrutor(nomeInstrutor2)
+    
+            // DELETE
+            cy.removerVinculoInstrutor(nomeInstrutor2)
+            cy.voltar()
+            cy.instrutorConteudo(nomeConteudo)
+            cy.validarRemocaoVinculoInstrutor(nomeInstrutor2)
     })
 
     it('3. CRUD - Vincular instrutor em curso suspenso', () => {
@@ -116,25 +128,28 @@ describe('Instrutor', () => {
             situation: 2
         }
 
-        // Criar um curso via API
-        cy.criarCursoViaApi(body) 
-        // Criar instrutor
-        cy.acessarPgListaConteudos()
-        cy.instrutorConteudo(nomeConteudo)
-
-        //READ
-        cy.vincularInstrutor(nomeInstrutor1)
-
-        // UPDATE
-        cy.voltar()
-        cy.instrutorConteudo(nomeConteudo)
-        cy.vincularInstrutor(nomeInstrutor2)
-
-        // DELETE
-        cy.excluirInstrutor(nomeInstrutor2)
+         // Criar um curso via API
+         cy.criarCursoViaApi(body) 
+         // Acessa a Lista de conteúdos
+         cy.acessarPgListaConteudos()
+         //Acessa Opções > Instrutor
+         cy.instrutorConteudo(nomeConteudo)
+ 
+         //READ
+         cy.vincularInstrutor(nomeInstrutor1)
+         cy.voltar()
+         cy.instrutorConteudo(nomeConteudo)
+         cy.validarVinculoInstrutor(nomeInstrutor1)
+  
+         // UPDATE
+         cy.voltar()
+         cy.instrutorConteudo(nomeConteudo)
+         cy.vincularInstrutor(nomeInstrutor2)
+ 
+         // DELETE
+         cy.removerVinculoInstrutor(nomeInstrutor2)
+         cy.voltar()
+         cy.instrutorConteudo(nomeConteudo)
+         cy.validarRemocaoVinculoInstrutor(nomeInstrutor2)
     })
-
-
-
-
 })

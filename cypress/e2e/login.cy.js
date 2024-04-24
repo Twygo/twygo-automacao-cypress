@@ -13,7 +13,7 @@ describe('login', () => {
 
         cy.contains('button', 'Entrar')
             .should('be.visible')
-             .click()
+            .click()
 
     	cy.contains('#page-breadcrumb', 'Dashboard')
       		.should('be.visible')

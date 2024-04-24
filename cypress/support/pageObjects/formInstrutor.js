@@ -35,7 +35,10 @@ class formInstrutor{
      * @example
      * associarInstrutor('nome')
      * 
-     * @author Karla Daiany
+     * @observations
+     * Não é possível buscar pelo nome completo do instrutor devido a um bug antigo da plataforma
+     * 
+     * @author Jadson
      * @version 1.0.0
      * @since 1.0.0
      */
@@ -50,8 +53,7 @@ class formInstrutor{
         cy.contains('.speakerList .speakerName', nomeInstrutor)
             .parents('li')
             .find(this.elementos.associar.seletor)
-            .click()       
-        
+            .click()             
     }
 
     /** DOCUMENTAÇÃO:
@@ -76,12 +78,12 @@ class formInstrutor{
      * @throws {Error} - Caso o tipo do campo não seja suportado
      * @throws {Error} - Caso o campo não possa ser preenchido com o valor informado
      * 
-     * @author Karla Daiany
+     * @author Jadson
      * @version 1.0.0
      * @since 1.0.0
      */
     preencherCampo(nomeCampo, valor, opcoes = { limpar: false }) {
-		const campo = this.elementos[nomeCampo]
+	    const campo = this.elementos[nomeCampo]
 
 		if (!campo) {
 			throw new Error(`Campo ${nomeCampo} não encontrado`)
@@ -108,13 +110,6 @@ class formInstrutor{
                     cy.get(seletor)
                         .type(valorFinal)
                     break
-                // case 'search':
-                //     cy.get(seletor)
-                //         .type(valorFinal)
-                //     cy.contains('.manager-grid', valorFinal)
-                //         .find('a.btn-add')
-                //         .click()
-                //     break
                 case 'button':
                     cy.get(seletor)
                         .click()
@@ -146,7 +141,7 @@ class formInstrutor{
      * @throws {Error} - Caso o campo não seja encontrado
      * @throws {Error} - Caso o tipo do campo não seja suportado
      * 
-     * @author Karla Daiany
+     * @author Jadson
      * @version 1.0.0
      * @since 1.0.0
      */
