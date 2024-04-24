@@ -2054,7 +2054,7 @@ Cypress.Commands.add('salvarEdicaoPergunta', (oldDescPergunta, newDescPergunta) 
  * 1. Preenche os campos do usuário com base nos dados fornecidos.
  * 2. Limpa os campos antes de preencher, se a opção 'limpar' for verdadeira.
  * 
- * @param {Object} conteudo - Os dados a serem preenchidos nos campos do usuário.
+ * @param {Object} dados - Os dados a serem preenchidos nos campos do usuário.
  * @param {Object} opcoes - Habilita ou não a limpeza dos campos antes do seu preenchimento.
  * 
  * @example
@@ -2068,11 +2068,11 @@ Cypress.Commands.add('salvarEdicaoPergunta', (oldDescPergunta, newDescPergunta) 
  * @version 1.0.0
  * @since 1.0.0
  */
-Cypress.Commands.add('preencherDadosUsuario', (conteudo, opcoes = { limpar: false }) => {
+Cypress.Commands.add('preencherDadosUsuario', (dados, opcoes = { limpar: false }) => {
   const formulario = new formUsuarios()
   
-  Object.keys(conteudo).forEach(nomeCampo => {
-      const valor = conteudo[nomeCampo]
+  Object.keys(dados).forEach(nomeCampo => {
+      const valor = dados[nomeCampo]
       formulario.preencherCampo(nomeCampo, valor, opcoes)
   })
 }) 
@@ -2086,7 +2086,7 @@ Cypress.Commands.add('preencherDadosUsuario', (conteudo, opcoes = { limpar: fals
  * @actions
  * 1. Valida os campos do usuário com base nos dados fornecidos.
  * 
- * @param {Object} conteudo - Os dados a serem validados nos campos do usuário.
+ * @param {Object} dados - Os dados a serem validados nos campos do usuário.
  * 
  * @example
  * cy.validarDadosUsuario({ nome: 'Nome do Usuário', email: 'Email do Usuário' })
@@ -2099,11 +2099,11 @@ Cypress.Commands.add('preencherDadosUsuario', (conteudo, opcoes = { limpar: fals
  * @version 1.0.0
  * @since 1.0.0
  */
-Cypress.Commands.add('validarDadosUsuario', (conteudo) => {
+Cypress.Commands.add('validarDadosUsuario', (dados) => {
   const formulario = new formUsuarios()
 
-  Object.keys(conteudo).forEach(nomeCampo => {
-    const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
     formulario.validarCampo(nomeCampo, valor)
   })
 })
@@ -3534,4 +3534,127 @@ Cypress.Commands.add('verificarImportacao', () => {
 
   cy.get('.import').click()
   verificarStatus()
+})
+
+Cypress.Commands.add('configUsuario', () => {
+  cy.get('#btn-profile')
+    .click()
+
+  cy.get('#config-profile')
+    .click()
+})
+
+ /** DOCUMENTAÇÃO:
+ * @name preencherDadosConfigUsuario
+ * 
+ * @description
+ * Comando personalizado para preencher os campos de um usuário.
+ * 
+ * @actions
+ * 1. Preenche os campos do usuário com base nos dados fornecidos.
+ * 2. Limpa os campos antes de preencher, se a opção 'limpar' for verdadeira.
+ * 
+ * @param {Object} conteudo - Os dados a serem preenchidos nos campos do usuário.
+ * @param {Object} opcoes - Habilita ou não a limpeza dos campos antes do seu preenchimento.
+ * 
+ * @example
+ * cy.preencherDadosUsuario({ nome: 'Nome do Usuário', email: 'Email do Usuário' }, { limpar: true })
+ * ou
+ * cy.preencherDadosUsuario(dados, { limpar: false })
+ * 
+ * @throws {Error} - Se o campo informado não for válido. // Existente no método 'preencherCampo' da classe 'formUsuarios'
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('preencherDadosConfigUsuario', (dados, opcoes = { limpar: false }) => {
+  const formulario = new formUsuarios()
+  
+  Object.keys(dados).forEach(nomeCampo => {
+      const valor = dados[nomeCampo]
+      formulario.preencherCampo(nomeCampo, valor, opcoes)
+  })
+})
+
+/** DOCUMENTAÇÃO:
+ * @name validarDadosConfigUsuario
+ * 
+ * @description
+ * Comando personalizado para validar os dados de um usuário.
+ * 
+ * @actions
+ * 1. Valida os campos do usuário com base nos dados fornecidos.
+ * 
+ * @param {Object} dados - Os dados a serem validados nos campos do usuário.
+ * 
+ * @example
+ * cy.validarDadosUsuario({ nome: 'Nome do Usuário', email: 'Email do Usuário' })
+ * ou
+ * cy.validarDadosUsuario(dados)
+ * 
+ * @throws {Error} - Se o campo informado não for válido. // Existente no método 'validarCampo' da classe 'formUsuarios'
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('validarDadosConfigUsuario', (dados) => {
+  const formulario = new formUsuarios()
+
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+    formulario.validarCampo(nomeCampo, valor)
+  })
+})
+
+/** DOCUMENTAÇÃO:
+ * @name login
+ * 
+ * @description
+ * Comando personalizado para realizar o login com usuário Twygo Automação.
+ * 
+ * @actions
+ * 1. Acessa a página de login.
+ * 2. Preenche o campo de e-mail com o login do usuário Twygo Automação.
+ * 3. Preenche o campo de senha com a senha do usuário Twygo Automação.
+ * 4. Clica no botão 'Entrar'.
+ * 5. Verifica se o login foi realizado com sucesso.
+ * 
+ * @example
+ * cy.loginTwygoAutomacao()
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('login', function(login, password, username) {
+  cy.visit('/users/login')
+
+  cy.get('#user_email')
+    .type(login)
+  
+  cy.get('#user_password')
+    .type(password)
+
+  cy.contains('button', 'Entrar')
+    .should('be.visible')  
+    .click()
+
+  // Aceite dos termos de uso
+  cy.get('#agree_check')
+    .click()
+
+  cy.get('#next')
+    .click()
+
+  // Verificar se o login foi realizado com sucesso
+  cy.contains('#page-breadcrumb', 'Dashboard')
+    .should('be.visible')
+
+  cy.contains('.name', username)
+    .should('be.visible')
+
+  cy.contains('#btn-profile', 'Aluno')
+    .should('be.visible')
 })
