@@ -130,5 +130,9 @@
         "msgUploadImportacao": "Arquivo enviado com sucesso",
         "msgImportacaoEmAndamento": "Importação será executada em instantes.",
         "msgImportacaoConcluida": "Importação concluída com sucesso."
+    },
+    "instrutores": {
+        "breadcrumb": "Detalhes do evento",
+        "tituloPg": "Lista de Instrutores"
     }
 }
