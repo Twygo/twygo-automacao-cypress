@@ -1,0 +1,134 @@
+{
+    "conteudo": {
+        "curso": {
+            "breadcrumb": "Lista de conteúdos",
+            "msgSucesso": "Conteúdo salvo com sucesso.",
+            "breadcrumbAdicionar": "Lista de conteúdos > Adicionar",
+            "tituloPgAdicionar": "Novo Curso",
+            "breadcrumbEdicao": "Detalhes do evento",
+            "tituloPgEdicao": "Editar Cursos",
+            "tituloModalExclusao": "Excluir curso",
+            "texto1ModalExclusao": "Você tem certeza que deseja excluir este curso?",
+            "texto2ModalExclusao": "Esta ação não poderá ser desfeita.",
+            "msgSucessoExclusao": "Conteúdo excluído com sucesso"
+        },
+        "criarCurso": {
+            "breadcrumb": "Catálogo de cursos",
+            "msgSucesso": "Conteúdo salvo com sucesso.",
+            "breadcrumbAdicionar": "Lista de conteúdos > Adicionar",
+            "tituloPgAdicionar": "Novo Curso",
+            "breadcrumbEdicao": "Detalhes do evento",
+            "tituloPgEdicao": "Editar Cursos",
+            "tituloModalExclusao": "Excluir curso",
+            "texto1ModalExclusao": "Você tem certeza que deseja excluir este curso?",
+            "texto2ModalExclusao": "Esta ação não poderá ser desfeita.",
+            "msgSucessoExclusao": "Conteúdo excluído com sucesso"
+        },
+        "catalogo": {
+            "breadcrumb": "Catálogo de cursos",
+            "msgSucesso": "Item do Catálogo de Cursos salvo com sucesso.",
+            "breadcrumbAdicionar": "Catálogo de Cursos > Adicionar Novo",
+            "tituloPgAdicionar": "Novo Catálogo de Cursos",
+            "breadcrumbEdicao": "Detalhes do Item de Portfólio",
+            "tituloPgEdicao": "Edição de Catálogo de Cursos",
+            "tituloModalExclusao": "Excluir Catálogo de Cursos",
+            "texto1ModalExclusao": "Você tem certeza que deseja excluir este item de portfólio?",
+            "texto2ModalExclusao": "Esta ação não poderá ser desfeita.",
+            "msgSucessoExclusao": "Item do Catálogo de Cursos excluído com sucesso."
+        },
+        "trilha": {
+            "breadcrumb": "Lista de conteúdos",
+            "msgSucesso": "Conteúdo salvo com sucesso.",
+            "breadcrumbAdicionar": "Lista de conteúdos > Adicionar",
+            "tituloPgAdicionar": "Nova trilha",
+            "breadcrumbEdicao": "Lista de conteúdos",
+            "tituloPgEdicao": "Editar trilhas",
+            "tituloModalExclusao": "Excluir conteúdo",
+            "texto1ModalExclusao": "Ao excluir a trilha você não excluirá os conteúdos dentro dela, apenas o agrupamento. Tem certeza que deseja prosseguir?",
+            "msgSucessoExclusao": "Conteúdo excluído com sucesso"
+        },
+        "biblioteca": {
+            "breadcrumb": "Biblioteca",
+            "msgSucesso": "Biblioteca salva com sucesso.",
+            "breadcrumbAdicionar": "Biblioteca > Adicionar Nova",
+            "tituloPgAdicionar": "Nova Biblioteca",
+            "breadcrumbEdicao": "Detalhes da Biblioteca",
+            "tituloPgEdicao": "Editar trilhas",
+            "tituloModalExclusao": "Excluir Biblioteca",
+            "texto1ModalExclusao": "Você tem certeza que deseja excluir esta biblioteca?",
+            "texto2ModalExclusao": "Esta ação não poderá ser desfeita.",
+            "msgSucessoExclusao": "Biblioteca excluída com sucesso.",
+            "msgNenhumResultado": "Nenhuma biblioteca registrada."
+        }
+    },
+    "perfil": {
+        "administrador": "Administrador",
+        "instrutor": "Instrutor",
+        "gestor": "Gestor de turma",
+        "aluno": "Aluno",
+        "pgInicial": "Lista de conteúdos",
+        "pgInicialAluno": "Dashboard"
+    },
+    "atividades": {
+        "breadcrumb": "Atividades",
+        "tituloPg": "Estrutura de atividades",
+        "msgSucesso": "Atividades atualizadas com sucesso",
+        "tituloPgEdicao": "Edição de Espaço"
+    },
+    "questionario": {
+        "breadcrumb": "Questionários",
+        "tituloPg": "Novo Questionário",
+        "msgSucesso": "Questionário salvo com sucesso.",
+        "tituloPgEdicao": "Edição de Questionário",
+        "tituloModalExclusao": "Remover Questionário",
+        "textoModalExclusao": "Você tem certeza que deseja remover este questionário?",
+        "msgSucessoExclusao": "Questionário excluído com sucesso."
+    },
+    "perguntas": {
+        "breadcrumb": "Questionários",
+        "msgSucesso": "Questão atualizada com sucesso",
+        "tituloPg": "Perguntas"
+    },
+    "usuarios": {
+        "breadcrumb": "Usuários",
+        "msgSucesso": "Usuário salvo com sucesso.",
+        "breadcrumbAdicionar": "Usuários",
+        "tituloPgAdicionar": "Novo Usuário",
+        "breadcrumbEdicao": "Usuários",
+        "tituloPgEdicao": "Edição de Usuário",
+        "tituloModalExclusao": "Exclusão de usuário",
+        "texto1ModalExclusao": "Ao remover este usuário, todos os vínculos com os cursos desta organização serão removidos, caso sua organização seja a Gerenciadora, a exclusão ocorrerá nas parceiras também. Você tem certeza que deseja excluir este usuário?",
+        "texto2ModalExclusao": "Você pode restringir o acesso do usuário clicando no botão Inativar.",
+        "btnConfirmar": "Sim, excluir mesmo assim",
+        "msgSucessoExclusao": "Usuário excluído com sucesso.",
+        "tituloAlterarSenha": "Alterar Senha",
+        "aguardandoSenha": "Aguardando a senha",
+        "senhasDiferentes": "As senhas não são iguais",
+        "senhasIguais": "As senhas são iguais",
+        "msgSucessoSenha": "Senha alterada com sucesso.",
+        "tituloModalInativar": "Inativar o usuário",
+        "textoModalInativar": "Você tem certeza que deseja realizar a inativação do usuário?",
+        "msgSucessoInativar": "Foi realizado a inativação do usuário.",
+        "tituloModalAtivar": "Ativar o usuário",
+        "textoModalAtivar": "Você tem certeza que deseja realizar a ativação do usuário?",
+        "msgSucessoAtivar": "Foi realizado a ativação do usuário."
+    },
+    "participantes": {
+        "breadcrumb": "Detalhes do evento",
+        "tituloPg": "Lista de Participantes",
+        "msgSucesso": "Participante criado com sucesso.",
+        "breadcrumbAdicionar": "Detalhes do evento",
+        "tituloPgAdicionar": "Adicionar",
+        "breadcrumbEdicao": "Detalhes do evento",
+        "tituloPgEdicao": "Edição de Participante",
+        "msgSucessoEdicao": "Participante atualizado com sucesso.",
+        "msgAlteraConfirmado": "Confirmação dos Participantes em progresso.",
+        "msgAlteraCancelado": "Cancelamento dos Participantes em progresso.",
+        "msgAlteraPendente": "Pendência dos Participantes em progresso.",
+        "msgSucessoAlteraStatus": "Alteração de status dos Participantes foi concluída com sucesso, acesse novamente para visualizar.",
+        "breadcrumbTrilha": "Lista de conteúdos",
+        "msgUploadImportacao": "Arquivo enviado com sucesso",
+        "msgImportacaoEmAndamento": "Importação será executada em instantes.",
+        "msgImportacaoConcluida": "Importação concluída com sucesso."
+    }
+}
