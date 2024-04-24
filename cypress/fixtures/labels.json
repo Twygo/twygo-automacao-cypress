@@ -163,5 +163,9 @@
             "msgLogout": "La sesión se ha cerrado con éxito.",
             "btnSalvar": "Guardar"
         }
+    },
+    "instrutores": {
+        "breadcrumb": "Detalhes do evento",
+        "tituloPg": "Lista de Instrutores"
     }
 }
