@@ -6,6 +6,7 @@ import formQuestionarios from "./pageObjects/formQuestionarios"
 import formPerguntas from "./pageObjects/formPerguntas"
 import formUsuarios from "./pageObjects/formUsuarios"
 import formParticipantes from "./pageObjects/formParticipantes"
+import formConfigUsuario from "./pageObjects/formConfigUsuario"
 import formInstrutor from "./pageObjects/formInstrutor"
 import { fakerPT_BR } from "@faker-js/faker"
 
@@ -27,10 +28,13 @@ import { fakerPT_BR } from "@faker-js/faker"
  * cy.loginTwygoAutomacao()
  * 
  * @author Karla Daiany
- * @version 1.0.0
+ * @version 1.1.0
  * @since 1.0.0
  */
-Cypress.Commands.add('loginTwygoAutomacao', function() {
+Cypress.Commands.add('loginTwygoAutomacao', (idioma = 'pt') => {
+  const labels = Cypress.env('labels')[idioma]
+  const { pgInicialAluno, btnProfile } = labels.configUsuario
+
   cy.visit('/users/login')
 
   cy.get('#user_email')
@@ -44,13 +48,30 @@ Cypress.Commands.add('loginTwygoAutomacao', function() {
     .click()
 
   // Verificar se o login foi realizado com sucesso
-  cy.contains('#page-breadcrumb', 'Dashboard')
+  cy.contains('#page-breadcrumb', pgInicialAluno)
     .should('be.visible')
 
-  cy.contains('.name', Cypress.env('username'))
-    .should('be.visible')
+    switch (idioma) {
+      case 'pt':
+      case 'es':
+        cy.contains('.name', Cypress.env('username'))
+          .should('be.visible')
+        break
+      case 'en':
+        const nomeCompleto = Cypress.env('username')
+        const palavras = nomeCompleto.split(' ')
 
-  cy.contains('#btn-profile', 'Aluno')
+        const nome = palavras[0]
+        const sobrenome = palavras.slice(1).join(' ')
+
+        cy.contains('.name', `${sobrenome}, ${nome}`)
+          .should('be.visible')
+        break
+      default:
+        throw new Error(`Idioma inválido: ${idioma}. Utilize 'pt', 'en' ou 'es'`)
+    }
+
+  cy.contains('#btn-profile', btnProfile)
     .should('be.visible')
 })
 
@@ -2056,7 +2077,7 @@ Cypress.Commands.add('salvarEdicaoPergunta', (oldDescPergunta, newDescPergunta) 
  * 1. Preenche os campos do usuário com base nos dados fornecidos.
  * 2. Limpa os campos antes de preencher, se a opção 'limpar' for verdadeira.
  * 
- * @param {Object} conteudo - Os dados a serem preenchidos nos campos do usuário.
+ * @param {Object} dados - Os dados a serem preenchidos nos campos do usuário.
  * @param {Object} opcoes - Habilita ou não a limpeza dos campos antes do seu preenchimento.
  * 
  * @example
@@ -2070,11 +2091,11 @@ Cypress.Commands.add('salvarEdicaoPergunta', (oldDescPergunta, newDescPergunta) 
  * @version 1.0.0
  * @since 1.0.0
  */
-Cypress.Commands.add('preencherDadosUsuario', (conteudo, opcoes = { limpar: false }) => {
+Cypress.Commands.add('preencherDadosUsuario', (dados, opcoes = { limpar: false }) => {
   const formulario = new formUsuarios()
   
-  Object.keys(conteudo).forEach(nomeCampo => {
-      const valor = conteudo[nomeCampo]
+  Object.keys(dados).forEach(nomeCampo => {
+      const valor = dados[nomeCampo]
       formulario.preencherCampo(nomeCampo, valor, opcoes)
   })
 }) 
@@ -2088,7 +2109,7 @@ Cypress.Commands.add('preencherDadosUsuario', (conteudo, opcoes = { limpar: fals
  * @actions
  * 1. Valida os campos do usuário com base nos dados fornecidos.
  * 
- * @param {Object} conteudo - Os dados a serem validados nos campos do usuário.
+ * @param {Object} dados - Os dados a serem validados nos campos do usuário.
  * 
  * @example
  * cy.validarDadosUsuario({ nome: 'Nome do Usuário', email: 'Email do Usuário' })
@@ -2101,11 +2122,11 @@ Cypress.Commands.add('preencherDadosUsuario', (conteudo, opcoes = { limpar: fals
  * @version 1.0.0
  * @since 1.0.0
  */
-Cypress.Commands.add('validarDadosUsuario', (conteudo) => {
+Cypress.Commands.add('validarDadosUsuario', (dados) => {
   const formulario = new formUsuarios()
 
-  Object.keys(conteudo).forEach(nomeCampo => {
-    const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
     formulario.validarCampo(nomeCampo, valor)
   })
 })
@@ -3258,8 +3279,8 @@ Cypress.Commands.add('criarUsuarioViaApi', function(body) {
       cy.log(`Tentativa ${attempt}: Falha na requisição. Tentando novamente`)
       cy.criarUsuarioViaApi(body, attempt + 1)
     } else if (response.status !== 201) {
-      cy.log(`Tentativa ${attempt}: Falha na requisição. Não foi possível criar o catálogo`)
-      throw new Error(`Erro na criação do catálogo: ${response}`)
+      cy.log(`Tentativa ${attempt}: Falha na requisição. Não foi possível criar o usuário`)
+      throw new Error(`Erro na criação do usuário: ${response.body}`)
     } else {
       expect(response.status).to.eq(201)
     }
@@ -3538,6 +3559,83 @@ Cypress.Commands.add('verificarImportacao', () => {
   verificarStatus()
 })
 
+Cypress.Commands.add('criarUsuario', function(dados) {
+  cy.acessarPgUsuarios()
+  cy.addUsuario()
+  cy.preencherDadosUsuario(dados, { limpar: true })
+  cy.salvarUsuario(`${dados.nome} ${dados.sobrenome}`) 
+})
+
+Cypress.Commands.add('configUsuario', (idioma = 'pt') => {
+  const TIMEOUT_PADRAO = 5000
+  
+  const labels = Cypress.env('labels')[idioma]
+  const { breadcrumb, tituloPg } = labels.configUsuario
+  
+  cy.get('#btn-profile')
+    .click()
+
+  cy.get('#config-profile')
+    .click()
+
+  // Valida se a página foi carregada corretamente
+  cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+
+  cy.contains('.detail_title', tituloPg, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+})
+
+ /** DOCUMENTAÇÃO:
+ * @name preencherDadosConfigUsuario
+ * 
+ * @description
+ * Comando personalizado para preencher os campos de um usuário.
+ * 
+ * @actions
+ * 1. Preenche os campos do usuário com base nos dados fornecidos.
+ * 2. Limpa os campos antes de preencher, se a opção 'limpar' for verdadeira.
+ * 
+ * @param {Object} conteudo - Os dados a serem preenchidos nos campos do usuário.
+ * @param {Object} opcoes - Habilita ou não a limpeza dos campos antes do seu preenchimento.
+ * 
+ * @example
+ * cy.preencherDadosUsuario({ nome: 'Nome do Usuário', email: 'Email do Usuário' }, { limpar: true })
+ * ou
+ * cy.preencherDadosUsuario(dados, { limpar: false })
+ * 
+ * @throws {Error} - Se o campo informado não for válido. // Existente no método 'preencherCampo' da classe 'formUsuarios'
+ * 
+ * @author Karla Daiany
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('preencherDadosConfigUsuario', (dados, opcoes = { limpar: false }) => {
+  const formulario = new formConfigUsuario()
+  
+  Object.keys(dados).forEach(nomeCampo => {
+      const valor = dados[nomeCampo]
+      formulario.preencherCampo(nomeCampo, valor, opcoes)
+  })
+})
+
+/** DOCUMENTAÇÃO:
+ * @name validarDadosConfigUsuario
+ * 
+ * @description
+ * Comando personalizado para validar os dados de um usuário.
+ * 
+ * @actions
+ * 1. Valida os campos do usuário com base nos dados fornecidos.
+ * 
+ * @param {Object} dados - Os dados a serem validados nos campos do usuário.
+ * 
+ * @example
+ * cy.validarDadosUsuario({ nome: 'Nome do Usuário', email: 'Email do Usuário' })
+ * ou
+ * cy.validarDadosUsuario(dados)
+ * 
+ * @throws {Error} - Se o campo informado não for válido. // Existente no método 'validarCampo' da classe 'formUsuarios'
 /** DOCUMENTAÇÃO:
  * @name vincularInstrutor
  * 
@@ -3716,6 +3814,33 @@ Cypress.Commands.add('criarInstrutor', (nomeInstrutor, sobrenomeInstrutor) => {
  * @version 1.0.0
  * @since 1.0.0
  */
+Cypress.Commands.add('validarDadosConfigUsuario', (dados) => {
+  const formulario = new formConfigUsuario()
+
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+    formulario.validarCampo(nomeCampo, valor)
+  })
+})
+
+Cypress.Commands.add('logout', (idioma = 'pt') => {
+  // obs.: a msgLogout só é alterada após logout, ou seja em uma mudança de idioma, a msgLogout será a do idioma anterior
+  const TIMEOUT_PADRAO = 5000
+  
+  const labels = Cypress.env('labels')[idioma]
+  const { msgLogout } = labels.configUsuario
+  
+  cy.get('#btn-profile')
+    .click()
+
+  cy.get('#link_logout')
+    .click( { force: true } )
+
+  // Validar mensagem de sucesso do logout
+  cy.contains('.flash.notice', msgLogout, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+})
+
 Cypress.Commands.add('instrutorConteudo', (nomeConteudo) => {
   // Define o timeout padrão para validação das páginas
 
@@ -3745,20 +3870,97 @@ Cypress.Commands.add('instrutorConteudo', (nomeConteudo) => {
 })
 
 /** DOCUMENTAÇÃO:
- * @name voltar
+ * @name login
  * 
  * @description
- * Comando personalizado para clicar no botão de voltar existente em várias páginas.
+ * Comando personalizado para realizar o login com usuário Twygo Automação.
  * 
  * @actions
- * 1. Localiza o botão voltar.
- * 2. Clica no botão voltar
+ * 1. Acessa a página de login.
+ * 2. Preenche o campo de e-mail com o login do usuário Twygo Automação.
+ * 3. Preenche o campo de senha com a senha do usuário Twygo Automação.
+ * 4. Clica no botão 'Entrar'.
+ * 5. Verifica se o login foi realizado com sucesso.
  * 
- * @author Jadson
+ * @example
+ * cy.loginTwygoAutomacao()
+ * 
+ * @author Karla Daiany
  * @version 1.0.0
  * @since 1.0.0
  */
-Cypress.Commands.add('voltar', function() {
+Cypress.Commands.add('login', function(login, password, username, idioma = 'pt') {
+  const labels = Cypress.env('labels')[idioma]
+  const { pgInicialAluno, btnProfile } = labels.configUsuario
+  
+  cy.visit('/users/login')
+
+  cy.get('#user_email')
+    .type(login)
+  
+  cy.get('#user_password')
+    .type(password)
+
+  cy.contains('button', 'Entrar')
+    .should('be.visible')  
+    .click()
+
+  // Aceite dos termos de uso
+  cy.get('#agree_check')
+    .click()
+
+  cy.get('#next')
+    .click()
+
+  // Verificar se o login foi realizado com sucesso
+  cy.contains('#page-breadcrumb', pgInicialAluno)
+    .should('be.visible')
+
+    switch (idioma) {
+      case 'pt':
+      case 'es':
+        cy.contains('.name', username)
+          .should('be.visible')
+        break
+      case 'en':
+        const nomeCompleto = username
+        const palavras = nomeCompleto.split(' ')
+
+        const nome = palavras[0]
+        const sobrenome = palavras.slice(1).join(' ')
+
+        cy.contains('.name', `${sobrenome}, ${nome}`)
+          .should('be.visible')
+        break
+      default:
+        throw new Error(`Idioma inválido: ${idioma}. Utilize 'pt', 'en' ou 'es'`)
+    }
+
+  cy.contains('#btn-profile', btnProfile)
+    .should('be.visible')
+})
+
+Cypress.Commands.add('salvarConfigUsuario', (idioma = 'pt') => {
+  // obs.: a msgSucesso só é alterada após salvar, ou seja em uma mudança de idioma, a msgSucesso será a do idioma anterior
+  const TIMEOUT_PADRAO = 5000
+  
+  const labels = Cypress.env('labels')[idioma]
+  const { msgSucesso, pgInicialAluno, btnSalvar } = labels.configUsuario
+
+  cy.contains('button', btnSalvar)
+  .should('be.visible')
+  .click()  
+
+  // Valida a mensagem
+  cy.contains('.flash.notice', msgSucesso, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+
+  // Valida o redirecionamento
+  cy.contains('#page-breadcrumb', pgInicialAluno, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+})
+
+Cypress.Commands.add('voltar', () => {
   // Localiza o e clica no botão de voltar
   cy.contains('.btn.btn-default.btn-back.waves-effect', 'Voltar')
     .click()  

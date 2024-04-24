@@ -131,6 +131,39 @@
         "msgImportacaoEmAndamento": "Importação será executada em instantes.",
         "msgImportacaoConcluida": "Importação concluída com sucesso."
     },
+    "pt": {
+        "configUsuario": {
+            "breadcrumb": "Configurações",
+            "tituloPg": "Editar meus Dados",
+            "msgSucesso": "A sua conta foi atualizada com sucesso.",
+            "pgInicialAluno": "Dashboard",
+            "btnProfile": "Aluno",
+            "msgLogout": "Logout efetuado com sucesso.",
+            "btnSalvar": "Salvar"
+        }
+    },
+    "en": {
+        "configUsuario": {
+            "breadcrumb": "Settings",
+            "tituloPg": "Edit my Data",
+            "msgSucesso": "Your account has been updated successfully.",
+            "pgInicialAluno": "Dashboard",
+            "btnProfile": "Student",
+            "msgLogout": "Signed out successfully.",
+            "btnSalvar": "Save"
+        }
+    },
+    "es": {
+        "configUsuario": {
+            "breadcrumb": "Configuraciones",
+            "tituloPg": "Editar mis Datos",
+            "msgSucesso": "Su cuenta fue actualizada con éxito.",
+            "pgInicialAluno": "Dashboard",
+            "btnProfile": "Alummno",
+            "msgLogout": "La sesión se ha cerrado con éxito.",
+            "btnSalvar": "Guardar"
+        }
+    },
     "instrutores": {
         "breadcrumb": "Detalhes do evento",
         "tituloPg": "Lista de Instrutores"
