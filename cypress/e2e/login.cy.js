@@ -17,7 +17,7 @@ describe('login', () => {
     	cy.contains('#page-breadcrumb', 'Dashboard')
       		.should('be.visible')
 
-    	cy.contains('.name', 'Twygo Automação')
+    	cy.contains('.name', Cypress.env('username'))
       		.should('be.visible')
 
     	cy.contains('#btn-profile', 'Aluno')
