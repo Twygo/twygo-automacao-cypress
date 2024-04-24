@@ -60,29 +60,29 @@ describe('Instrutor', () => {
             situation: 1
         }
 
-        // Criar um curso via API
-        cy.criarCursoViaApi(body) 
-        // Acessa a Lista de conteúdos
-        cy.acessarPgListaConteudos()
-        //Acessa Opções > Instrutor
-        cy.instrutorConteudo(nomeConteudo)
-
-        //READ
-        cy.vincularInstrutor(nomeInstrutor1)
-        cy.voltar()
-        cy.instrutorConteudo(nomeConteudo)
-        cy.validarVinculoInstrutor(nomeInstrutor1)
-
-        // UPDATE
-        cy.voltar()
-        cy.instrutorConteudo(nomeConteudo)
-        cy.vincularInstrutor(nomeInstrutor2)
-
-        // DELETE
-        cy.removerVinculoInstrutor(nomeInstrutor2)
-        cy.voltar()
-        cy.instrutorConteudo(nomeConteudo)
-        cy.validarRemocaoVinculoInstrutor(nomeInstrutor2)
+            // Criar um curso via API
+            cy.criarCursoViaApi(body) 
+            // Acessa a Lista de conteúdos
+            cy.acessarPgListaConteudos()
+            //Acessa Opções > Instrutor
+            cy.instrutorConteudo(nomeConteudo)
+            cy.vincularInstrutor(nomeInstrutor1)
+            cy.voltar()
+            cy.instrutorConteudo(nomeConteudo)
+            
+            //READ            
+            cy.validarVinculoInstrutor(nomeInstrutor1)
+        
+            // UPDATE
+            cy.voltar()
+            cy.instrutorConteudo(nomeConteudo)
+            cy.vincularInstrutor(nomeInstrutor2)
+    
+            // DELETE
+            cy.removerVinculoInstrutor(nomeInstrutor2)
+            cy.voltar()
+            cy.instrutorConteudo(nomeConteudo)
+            cy.validarRemocaoVinculoInstrutor(nomeInstrutor2)
     })
 
     it('2. CRUD - Vincular instrutor em curso em desenvolvimento', () => {
@@ -100,11 +100,11 @@ describe('Instrutor', () => {
             cy.acessarPgListaConteudos()
             //Acessa Opções > Instrutor
             cy.instrutorConteudo(nomeConteudo)
-    
-            //READ
             cy.vincularInstrutor(nomeInstrutor1)
             cy.voltar()
             cy.instrutorConteudo(nomeConteudo)
+            
+            //READ            
             cy.validarVinculoInstrutor(nomeInstrutor1)
         
             // UPDATE
@@ -128,28 +128,28 @@ describe('Instrutor', () => {
             situation: 2
         }
 
-         // Criar um curso via API
-         cy.criarCursoViaApi(body) 
-         // Acessa a Lista de conteúdos
-         cy.acessarPgListaConteudos()
-         //Acessa Opções > Instrutor
-         cy.instrutorConteudo(nomeConteudo)
- 
-         //READ
-         cy.vincularInstrutor(nomeInstrutor1)
-         cy.voltar()
-         cy.instrutorConteudo(nomeConteudo)
-         cy.validarVinculoInstrutor(nomeInstrutor1)
-  
-         // UPDATE
-         cy.voltar()
-         cy.instrutorConteudo(nomeConteudo)
-         cy.vincularInstrutor(nomeInstrutor2)
- 
-         // DELETE
-         cy.removerVinculoInstrutor(nomeInstrutor2)
-         cy.voltar()
-         cy.instrutorConteudo(nomeConteudo)
-         cy.validarRemocaoVinculoInstrutor(nomeInstrutor2)
+        // Criar um curso via API
+        cy.criarCursoViaApi(body) 
+        // Acessa a Lista de conteúdos
+        cy.acessarPgListaConteudos()
+        //Acessa Opções > Instrutor
+        cy.instrutorConteudo(nomeConteudo)
+        cy.vincularInstrutor(nomeInstrutor1)
+        cy.voltar()
+        cy.instrutorConteudo(nomeConteudo)
+        
+        //READ            
+        cy.validarVinculoInstrutor(nomeInstrutor1)
+    
+        // UPDATE
+        cy.voltar()
+        cy.instrutorConteudo(nomeConteudo)
+        cy.vincularInstrutor(nomeInstrutor2)
+
+        // DELETE
+        cy.removerVinculoInstrutor(nomeInstrutor2)
+        cy.voltar()
+        cy.instrutorConteudo(nomeConteudo)
+        cy.validarRemocaoVinculoInstrutor(nomeInstrutor2)
     })
 })
