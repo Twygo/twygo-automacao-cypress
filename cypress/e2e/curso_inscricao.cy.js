@@ -73,42 +73,6 @@ describe('Participante', () => {
 		Cypress.removeAllListeners('uncaught:exception')
 	})
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 1. CRUD participante default
-     * 
-     * @description
-     * Valida a criação, leitura, atualização e exclusão de um participante com os dados padrões obrigatórios (nome, sobrenome e email). 
-     * A atualização consiste em alterar todos os campos do participante, exceto o email e configurar a senha do participante.
-     * 
-     * @steps
-     * 1. Cria um participante com os dados padrões obrigatórios (nome, sobrenome e email)
-     * 2. Confirma os dados do participante criado
-     * 3. Atualiza os dados do participante, exceto o email, configurando inclusive a senha
-     * 4. Confirma os dados do participante atualizado
-     * 5. Exclui o participante
-     * 
-     * @expected
-     * Espera-se que o participante seja criado, atualizado, tenha a senha configura e que seja excluído com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Participante, Default, CRUD, Configurar senha
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('1. CRUD participante default', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
@@ -187,42 +151,6 @@ describe('Participante', () => {
 		cy.excluirUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 2. CRUD participante com todos os campos preenchidos
-     * 
-     * @description
-     * Valida a criação, leitura, atualização e exclusão de um participante criado com todos os campos preenchidos, inclusive com 
-     * a configuração de senha. Na edição são alterados todos os campos do participante, exceto o email. Neste cenário também é alterada a senha.
-     * 
-     * @steps
-     * 1. Cria um participante com todos os campos preenchidos, incluindo a configuração de senha
-     * 2. Confirma os dados do participante criado
-     * 3. Atualiza os dados do participante, exceto o email, alterando inclusive a senha
-     * 4. Confirma os dados do participante atualizado
-     * 5. Exclui o participante
-     * 
-     * @expected
-     * Espera-se que o participante seja criado, atualizado e excluído com sucesso. Assim como a senha alterada.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Participante, CRUD, Configurar senha
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('2. CRUD participante com todos os campos preenchidos', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
@@ -326,42 +254,6 @@ describe('Participante', () => {
 		cy.excluirUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 3. CRUD participante com todos os campos preenchidos sem configurar senha
-     * 
-     * @description
-     * Valida a criação, leitura, atualização e exclusão de um participante criado com todos os campos sendo preenchidos, com exceção da senha.
-     * Na alteração são alterados alguns campos e configurada a senha.
-     * 
-     * @steps
-     * 1. Cria um participante preenchendo todos os campos, exceto a senha
-     * 2. Confirma os dados do participante criado
-     * 3. Altera alguns dados do participante e configura a senha
-     * 4. Confirma os dados do participante atualizado
-     * 5. Exclui o participante
-     * 
-     * @expected
-     * Espera-se que o participante seja criado, atualizado e excluído com sucesso. Assim como a senha alterada.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Participante, CRUD, Alterar senha
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('3. CRUD participante com todos os campos preenchidos sem configurar senha', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
@@ -441,41 +333,6 @@ describe('Participante', () => {
 		cy.excluirUsuario(`${dados.nome} ${dados.sobrenome}`)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 4. CRUD participante com apenas alguns campos preenchidos sem configurar senha
-     * 
-     * @description
-     * Valida a criação, leitura, atualização e exclusão de um participante que não esteja com todos os campos preenchidos e nem configurado a senha.
-     * 
-     * @steps
-     * 1. Cria um participante sem preencher todos os campos obrigatórios e sem configurar a senha
-     * 2. Confirma os dados do participante criado
-     * 3. Atualiza alguns dados do participante, sem configurar senha
-     * 4. Confirma os dados do participante atualizado
-     * 5. Exclui o participante
-     * 
-     * @expected
-     * Espera-se que o participante seja criado, atualizado e excluído com sucesso, mesmo que a senha não tenha sido configurada.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Participante, CRUD
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('4. CRUD participante com apenas alguns campos preenchidos sem configurar senha', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
@@ -542,42 +399,6 @@ describe('Participante', () => {
 		cy.excluirUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 5. CRUD participante com alguns campos preenchidos sem configurar senha
-     * 
-     * @description
-     * Valida a criação, leitura, atualização e exclusão de um participante que não esteja com todos os campos preenchidos e nem configurado a senha.
-     * Na alteração são adicionados alguns dados e removida a observação.
-     * 
-     * @steps
-     * 1. Cria um participante sem preencher todos os campos obrigatórios e sem configurar a senha
-     * 2. Confirma os dados do participante criado
-     * 3. Atualiza alguns dados do participante, sem configurar senha
-     * 4. Confirma os dados do participante atualizado
-     * 5. Exclui o participante
-     * 
-     * @expected
-     * Espera-se que o participante seja criado, atualizado e excluído com sucesso, mesmo que a senha não tenha sido configurada.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Participante, CRUD
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('5. CRUD participante somente instrutor', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
@@ -638,42 +459,6 @@ describe('Participante', () => {
 		cy.excluirUsuario(`${dados.nome} ${dados.sobrenome}`)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 6. CRUD participante com e-mail, nome, sobrenome, data de expiração e senha
-     * 
-     * @description
-     * Valida a criação, leitura, atualização e exclusão de um participante preenchendo apenas e-mail, nome, sobrenome, data de expiração e senha.
-     * Na alteração são adicionados novos dados e removida a data de expiração. 
-     * 
-     * @steps
-     * 1. Cria um participante apenas com e-mail, nome, sobrenome, data de expiração e senha
-     * 2. Confirma os dados do participante criado
-     * 3. Atualiza os dados do participante, adicionando novos dados
-     * 4. Confirma os dados do participante atualizado
-     * 5. Exclui o participante
-     * 
-     * @expected
-     * Espera-se que o participante seja criado, atualizado e excluído com sucesso. Assim como a senha configurada.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Participante, CRUD, Configurar senha
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('6. CRUD participante com e-mail, nome, sobrenome, data de expiração e senha', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
@@ -746,42 +531,6 @@ describe('Participante', () => {
 		cy.excluirUsuario(`${dados.nome} ${dados.sobrenome}`)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 7. CRUD participante com e-mail, nome, sobrenome e senha
-     * 
-     * @description
-     * Valida a criação, leitura, atualização e exclusão de um participante criado apenas com e-mail, nome, sobrenome e senha. 
-     * Na alteração são adicionados novos dados, sem alterar a senha.
-     * 
-     * @steps
-     * 1. Cria um participante com e-mail, nome, sobrenome e senha
-     * 2. Confirma os dados do participante criado
-     * 3. Atualiza os dados do participante, adicionando novos dados
-     * 4. Confirma os dados do participante atualizado
-     * 5. Exclui o participante
-     * 
-     * @expected
-     * Espera-se que o participante seja criado, atualizado e excluído com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Participante, CRUD, Configurar senha
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('7. CRUD participante com e-mail, nome, sobrenome e senha', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
@@ -858,45 +607,6 @@ describe('Participante', () => {
 		cy.excluirUsuario(`${dados.nome} ${dados.sobrenome}`)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 8. Altera status de um participante default e atualiza os dados em situação "Cancelado"
-     * 
-     * @description
-     * Valida a alteração de status de um participante default e atualiza os dados em situação "Cancelado".
-     * 
-     * @steps
-     * 1. Cria um participante preenchendo os dados mínimos obrigatórios (nome, sobrenome e e-mail)
-     * 2. Confirma os dados do participante criado
-     * 3. Altera o status do participante para 'Pendente'
-     * 4. Altera o status do participante para 'Confirmado'
-     * 5. Altera o status do participante para 'Cancelado'
-     * 6. Atualiza os dados do participante em situação 'Cancelado'
-     * 7. Confirma os dados do participante atualizado
-     * 8. Exclui o participante
-     * 
-     * @expected
-     * Espera-se que o participante seja criado, atualizado e excluído com sucesso, mesmo que esteja na
-     * situação 'Cancelado'.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Participante, CRUD, Alterar status
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('8. Altera status de um participante default e atualiza os dados em situação "Cancelado"', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
@@ -987,45 +697,6 @@ describe('Participante', () => {
 		cy.excluirUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 9. Altera status de um participante default e atualiza os dados em situação "Pendente"
-     * 
-     * @description
-     * Valida a alteração de status de um participante default e atualiza os dados em situação "Pendente".
-     * 
-     * @steps
-     * 1. Cria um participante preenchendo os dados mínimos obrigatórios (nome, sobrenome e e-mail)
-     * 2. Confirma os dados do participante criado
-     * 3. Altera o status do participante para 'Cancelado'
-     * 4. Altera o status do participante para 'Confirmado'
-     * 5. Altera o status do participante para 'Pendente'
-     * 6. Atualiza os dados do participante em situação 'Pendente'
-     * 7. Confirma os dados do participante atualizado
-     * 8. Exclui o participante
-     * 
-     * @expected
-     * Espera-se que o participante seja criado, atualizado e excluído com sucesso, mesmo que esteja na
-     * situação 'Pendente'.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Participante, CRUD, Alterar status
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('9. Altera status de um participante default e atualiza os dados em situação "Pendente"', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
@@ -1116,48 +787,6 @@ describe('Participante', () => {
 		cy.excluirUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 10. Associa 5 participantes em curso que não exige confirmação e altera status individualmente
-     * e depois de todos da página atual
-     * 
-     * @description
-     * Valida a associação de 5 participantes em um curso que não exige confirmação e altera o status 
-     * de cada um individualmente, após altera o status de todos da página atual.
-     * 
-     * @steps
-     * 1. Cria um curso que não exige confirmação (via API)
-     * 2. Cria 5 usuários (via API)
-     * 3. Associa os 5 usuários ao curso
-     * 4. Altera o status de 2 participantes para 'Pendente'
-     * 5. Altera o status de 2 participantes para 'Cancelado'
-     * 6. Altera o status de 2 participantes para 'Confirmado'
-     * 7. Altera o status dos outros 2 participantes para 'Confirmado'
-     * 8. Altera o status de todos os participantes para 'Pendente'
-     * 9. Altera o status de todos os participantes para 'Cancelado'
-     * 10. Altera o status de todos os participantes para 'Confirmado'
-     * 
-     * @expected
-     * Espera-se que os participantes sejam associados ao curso e que o status seja alterado com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Participante, CRUD, Alterar status
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('10. Associa 5 participantes em curso que não exige confirmação e altera status individualmente e depois de todos', () => {
         let participantesAssociados = []
         let participantesPendentes = []

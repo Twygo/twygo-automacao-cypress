@@ -1,7 +1,6 @@
 /// reference types="cypress" />
 import { fakerPT_BR } from '@faker-js/faker'
 import { getAuthToken } from '../support/auth_helper'
-let faker = require('faker-br')
 
 describe('Instrutor', () => {
 

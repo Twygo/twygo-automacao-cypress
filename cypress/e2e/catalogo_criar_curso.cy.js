@@ -109,43 +109,6 @@ describe('criar curso via catálogo', () => {
 		Cypress.removeAllListeners('uncaught:exception')
 	})
 
-    /** DOCUMENTAÇÃO:
-	 * @name
-	 * 1. CRUD deve criar um curso via catálogo com visualização para inscritos
-	 * 
-	 * @description
-	 * Testa o fluxo de criar um curso utilizando um catálogo, criado via API, com visualização para inscritos.
-	 * 
-	 * @steps
-	 * 1. Cria um catálogo com a situação liberado e com a visualização para inscritos (via API).
-	 * 2. Realiza login como administrador e acessa a página de catálogo.
-	 * 3. Clica em "Criar Curso" do catálogo e salva o curso com os mesmos dados do catálogo.
-	 * 4. Valida os dados do curso criado.
-	 * 5. Edita o curso criado para alterar alguns dados, a visualização para "Público" e a situação para "Liberado".
-	 * 6. Salva o curso editado e valida seus dados.
-	 * 7. Exclui o curso criado.
-	 * 
-	 * @expected
-	 * Deve ser possível criar um curso com visualização para inscritos e editá-lo para visualização para público.
-	 * 
-	 * @priority
-	 * Alta
-	 * 
-	 * @type
-	 * Regressão - CRUD - E2E
-	 * 
-	 * @time
-	 * 1m
-	 * 
-	 * @tags
-	 * CRUD, Catalogo, Curso, Criar curso via catálogo
-	 * 
-	 * @testCase
-	 * à confirmar
-	 * 
-	 * @author Karla Daiany
-	 * @version 1.0.0
-	 */
 	it('1. CRUD deve criar um curso via catálogo com visualização para inscritos', () => {    
         // Massa de dados para criar um curso via catálogo
 		const catalogo = {
@@ -274,43 +237,6 @@ describe('criar curso via catálogo', () => {
 		cy.excluirConteudo(conteudoEdit.nome, tipoConteudo)
 	})
 
-    /** DOCUMENTAÇÃO:
-	 * @name
-	 * 2. CRUD deve criar um curso via catálogo com visualização para colaborador
-	 * 
-	 * @description
-	 * Testa o fluxo de criar um curso utilizando um catálogo, criado via API, com visualização para colaborador.
-	 * 
-	 * @steps
-	 * 1. Cria um catálogo com a situação liberado e com a visualização para colaborador (via API).
-	 * 2. Realiza login como administrador e acessa a página de catálogo.
-	 * 3. Clica em "Criar Curso" do catálogo e salva o curso com os mesmos dados do catálogo.
-	 * 4. Valida os dados do curso criado.
-	 * 5. Edita o curso criado para alterar alguns dados, a visualização para "Colaborador" e a situação para "Em desenvolvimento".
-	 * 6. Salva o curso editado e valida seus dados.
-	 * 7. Exclui o curso criado.
-	 * 
-	 * @expected
-	 * Deve ser possível criar um curso com visualização para colaborador e editá-lo para visualização para público.
-	 * 
-	 * @priority
-	 * Alta
-	 * 
-	 * @type
-	 * Regressão - CRUD - E2E
-	 * 
-	 * @time
-	 * 1m
-	 * 
-	 * @tags
-	 * CRUD, Catalogo, Curso, Criar curso via catálogo
-	 * 
-	 * @testCase
-	 * à confirmar
-	 * 
-	 * @author Karla Daiany
-	 * @version 1.0.0 
-	 */
 	it('2. CRUD deve criar um curso via catálogo com visualização para colaborador', () => {
 		// Massa de dados para criar um curso via catálogo
 		const catalogo = {
@@ -429,43 +355,6 @@ describe('criar curso via catálogo', () => {
 		cy.excluirConteudo(conteudoEdit.nome, tipoConteudo)
 	})
 
-    /** DOCUMENTAÇÃO:
-	 * @name
-	 * 3. CRUD deve criar um curso via catálogo com visualização para usuários
-	 * 
-	 * @description
-	 * Testa o fluxo de criar um curso utilizando um catálogo, criado via API, com visualização para usuários.
-	 * 
-	 * @steps
-	 * 1. Cria um catálogo com a situação liberado e com a visualização para usuários (via API).
-	 * 2. Realiza login como administrador e acessa a página de catálogo.
-	 * 3. Clica em "Criar Curso" do catálogo e salva o curso com os mesmos dados do catálogo.
-	 * 4. Valida os dados do curso criado.
-	 * 5. Edita o curso criado para alterar alguns dados, a visualização para "Público" e a situação para "Suspenso".
-	 * 6. Salva o curso editado e valida seus dados.
-	 * 7. Exclui o curso criado.
-	 * 
-	 * @expected
-	 * Deve ser possível criar um curso com visualização para usuários e editá-lo para visualização para público.
-	 * 
-	 * @priority
-	 * Alta
-	 * 
-	 * @type
-	 * Regressão - CRUD - E2E
-	 * 
-	 * @time
-	 * 1m
-	 * 
-	 * @tags
-	 * CRUD, Catalogo, Curso, Criar curso via catálogo
-	 * 
-	 * @testCase
-	 * à confirmar
-	 * 
-	 * @author Karla Daiany
-	 * @version 1.0.0
-	 */
 	it('3. CRUD deve criar um curso via catálogo com visualização para usuários', () => {
 		// Massa de dados para criar um curso via catálogo
         const catalogo = {
@@ -557,43 +446,6 @@ describe('criar curso via catálogo', () => {
 		cy.excluirConteudo(catalogo.nome, tipoConteudo)
 	})
 
-	/** DOCUMENTAÇÃO:
-	 * @name
-	 * 4. CRUD deve criar um curso via catálogo com visualização para público
-	 * 
-	 * @description
-	 * Testa o fluxo de criar um curso utilizando um catálogo, criado via API, com visualização para público.
-	 * 
-	 * @steps
-	 * 1. Cria um catálogo com a situação liberado e com a visualização para público (via API).
-	 * 2. Realiza login como administrador e acessa a página de catálogo.
-	 * 3. Clica em "Criar Curso" do catálogo e salva o curso com os mesmos dados do catálogo.
-	 * 4. Valida os dados do curso criado.
-	 * 5. Edita o curso criado para alterar a visualização para "Usuários" e a situação para "Liberado".
-	 * 6. Salva o curso editado e valida seus dados.
-	 * 7. Exclui o curso criado.
-	 * 
-	 * @expected
-	 * Deve ser possível criar um curso com visualização para público e editá-lo para visualização para usuários.
-	 * 
-	 * @priority
-	 * Alta
-	 * 
-	 * @type
-	 * Regressão - CRUD - E2E
-	 * 
-	 * @time
-	 * 1m
-	 * 
-	 * @tags
-	 * CRUD, Catalogo, Curso, Criar curso via catálogo
-	 * 
-	 * @testCase
-	 * à confirmar
-	 * 
-	 * @author Karla Daiany
-	 * @version 1.0.0 
-	 */
 	it('4. CRUD deve criar um curso via catálogo com visualização para público', () => {
 		// Massa de dados para criar um curso via catálogo
         const catalogo = {
@@ -678,44 +530,6 @@ describe('criar curso via catálogo', () => {
 		cy.excluirConteudo(catalogo.nome, tipoConteudo)
 	})
 	
-	/** DOCUMENTAÇÃO:
-	 * @name
-	 * 5. CRUD deve criar um curso via catálogo que estava em desenvolvimento editado para liberado
-	 * 
-	 * @description
-	 * Testa o fluxo de criar um curso utilizando um catálogo que estava em desenvolvimento e que foi editado para liberado.
-	 * 
-	 * @steps
-	 * 1. Cria um catálogo com situação "Em desenvolvimento" e visualização "Público" (via API).
-	 * 2. Realiza login como administrador e acessa a página de catálogo.
-	 * 3. Verifica se o botão "Criar Curso" não está disponível para o catálogo criado.
-	 * 4. Edita o catálogo para situação "Liberado" e clica em "Criar Curso" do catálogo.
-	 * 5. Preenche os dados do curso com novos valores, salva e valida os dados.
-	 * 6. Edita o curso criado para alterar o nome, visualização para "Colaborador" e situação para "Suspenso".
-	 * 7. Salva o curso editado e valida seus dados.
-	 * 8. Exclui o curso criado.
-	 * 
-	 * @expected
-	 * Deve ser possível criar um curso após editar um catálogo que estava em desenvolvimento para liberado.
-	 * 
-	 * @priority
-	 * Alta
-	 * 
-	 * @type
-	 * Regressão - CRUD - E2E
-	 * 
-	 * @time
-	 * 1m
-	 * 
-	 * @tags
-	 * CRUD, Catalogo, Curso, Criar curso via catálogo
-	 * 
-	 * @testCase
-	 * à confirmar
-	 * 
-	 * @author Karla Daiany
-	 * @version 1.0.0
-	 */	
 	it('5. CRUD deve criar um curso via catálogo que estava em desenvolvimento editado para liberado', () => {
 		// Massa de dados para criar um curso via catálogo
 		const catalogo = {
@@ -854,48 +668,6 @@ describe('criar curso via catálogo', () => {
 		cy.excluirConteudo(conteudoEdit3.nome, tipoConteudo)
 	})
 
-	/** DOCUMENTAÇÃO:
-	 * @name
-	 * 6. CRUD deve criar um curso via catálogo que estava suspenso editado para liberado
-	 * 
-	 * @description
-	 * Testa o fluxo de criar um curso utilizando um catálogo que estava suspenso e que foi editado para liberado.
-	 * Após a criação do curso, o catálogo base é excluído para novas validações e edição do curso criado.
-	 * 
-	 * @steps
-	 * 1. Cria um catálogo com situação "Suspenso" e visualização "Público" (via API).
-	 * 2. Realiza login como administrador e acessa a página de catálogo.
-	 * 3. Verifica se o botão "Criar Curso" não está disponível para o catálogo criado.
-	 * 4. Edita o catálogo para situação "Liberado" e clica em "Criar Curso" do catálogo.
-	 * 5. Preenche os dados do curso com novos valores, salva e valida os dados.
-	 * 6. Edita o curso criado para alterar o nome, visualização para "Usuários" e situação para "Em desenvolvimento".
-	 * 7. Salva o curso editado e valida seus dados.
-	 * 8. Exclui o catálogo base.
-	 * 9. Edita novamente o curso, alterando alguns campos, salva e valida os dados.
-	 * 10. Exclui o curso criado.
-	 * 
-	 * @expected
-	 * Deve ser possível criar um curso após editar um catálogo que estava suspenso para liberado, assim como editar e excluir o 
-	 * curso criado após seu catálogo base ser excluído.
-	 * 
-	 * @priority
-	 * Alta
-	 * 
-	 * @type
-	 * Regressão - CRUD - E2E
-	 * 
-	 * @time
-	 * 2m
-	 * 
-	 * @tags 
-	 * CRUD, Catalogo, Curso, Criar curso via catálogo
-	 * 
-	 * @testCase
-	 * à confirmar
-	 * 
-	 * @author Karla Daiany
-	 * @version 1.0.0
-	 */
 	it('6. CRUD deve criar um curso via catálogo que estava suspenso editado para liberado', () => {
 		// Massa de dados para criar um curso via catálogo
 		const catalogo = {
@@ -1115,44 +887,6 @@ describe('criar curso via catálogo', () => {
 		cy.excluirConteudo(conteudoEdit4.nome, tipoConteudo)
 	})
 
-	/** DOCUMENTAÇÃO:
-	 * @name
-	 * 7. CRUD deve criar um curso via catálogo com todos os campos preenchidos
-	 * 
-	 * @description
-	 * Testa o fluxo de criação, leitura, edição e exclusão de um curso criado via catálogo
-	 * onde todos os campos estavam preenchidos.
-	 * 
-	 * @steps
-	 * 1. Realiza login como administrador e acessa a página de catálogo.
-	 * 2. Cria um catálogo preenchendo todos os campos do formulário.
-	 * 3. Cria um curso com base neste catálogo.
-	 * 4. Realiza a leitura dos dados do curso e valida se os dados estão corretos.
-	 * 5. Edita o curso, alterando alguns campos e validando se os dados foram alterados corretamente.
-	 * 6. Exclui o curso.
-	 * 
-	 * @expected
-	 * Deve ser possível criar um curso via catálogo com todos os campos preenchidos, validar os dados
-	 * e realizar a edição e exclusão do curso.
-	 * 
-	 * @priority
-	 * Alta
-	 * 
-	 * @type
-	 * Regressão - CRUD - E2E
-	 * 
-	 * @time
-	 * 5m
-	 * 
-	 * @tags
-	 * CRUD, Catalogo, Curso, Criar curso via catálogo
-	 * 
-	 * @testCase
-	 * à confirmar
-	 * 
-	 * @author Karla Daiany
-	 * @version 1.0.0
-	 */
 	it('7. CRUD deve criar um curso via catálogo com todos os campos preenchidos', () => {
 		// Massa de dados para criação do catálogo
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]

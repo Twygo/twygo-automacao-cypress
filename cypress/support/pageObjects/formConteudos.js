@@ -210,35 +210,6 @@ class formConteudos {
 		}
 	}
 			
-		/** DOCUMENTAÇÃO:
-	 * @name preencherCampo
-	 * 
-	 * @description 
-	 * Preenche os campo de um formulário com base no nome, tipo e valor informado.
-	 * 
-	 * @actions
-	 * 1. Busca o campo na lista de elementos com base no nome informado
-	 * 2. Verifica se o campo foi encontrado
-	 * 3. Verifica se o campo deve ser limpo antes de preencher
-	 * 4. Localiza o tipo de campo na lista de ações suportadas
-	 * 5. Executa a ação de preenchimento do campo
-	 * 
-	 * 
-	 * @param {string} nomeCampo - Nome do campo a ser preenchido
-	 * @param {string} valor - Valor a ser preenchido no campo
-	 * @param {boolean} opcoes.limpar - Determina se o campo deve ser limpo antes de preencher
-	 * 
-	 * @example
-	 * preencherCampo('nome', 'Nome do Evento')
-	 * 
-	 * @throws {Error} Campo {nomeCampo} não encontrado
-	 * @throws {Error} Tipo de campo {tipo} não suportado
-	 * @throws {Error} Campo {nomeCampo} não pode ser preenchido com valor {valorFinal}
-	 * 
-	 * @author Karla Daiany
-	 * @version 1.0.0
-	 * @since 1.0.0
-	 */
 	preencherCampo(nomeCampo, valor, opcoes = { limpar: false }) {
 		const campo = this.elementos[nomeCampo]
 		
@@ -346,32 +317,6 @@ class formConteudos {
 	}
 	}
 
-	/** DOCUMENTAÇÃO:
-	 * @name validarCampo
-	 * 
-	 * @description
-	 * Valida o campo de um formulário com base no nome e valor informado, assim como as categorias adicionadas/removidas.
-	 * 
-	 * @actions
-	 * 1. Busca o campo na lista de elementos com base no nome informado
-	 * 2. Verifica se o campo foi encontrado
-	 * 3. Localiza o tipo de campo na lista de ações suportadas
-	 * 4. Executa a ação de validação do campo e das categorias
-	 * 
-	 * @param {string} nomeCampo - Nome do campo a ser validado
-	 * @param {string} valor - Valor a ser validado no campo
-	 * @param {string} categoria - Categorias a serem validadas
-	 * 
-	 * @example
-	 * validarCampo('nome', 'Nome do Evento', ['Categoria 1', 'Categoria 2'])
-	 * 
-	 * @throws {Error} Campo {nomeCampo} não encontrado
-	 * @throws {Error} Tipo de campo {tipo} não suportado
-	 * 
-	 * @author Karla Daiany
-	 * @version 1.0.0
-	 * @since 1.0.0
-	 */
 	validarCampo(nomeCampo, valor, categoria) {
 		
 		const campo = this.elementos[nomeCampo]

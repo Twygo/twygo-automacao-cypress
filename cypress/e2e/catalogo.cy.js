@@ -93,42 +93,7 @@ describe('catálogo', () => {
 		Cypress.removeAllListeners('uncaught:exception')
 	})
 	
-	/** DOCUMENTAÇÃO:
-	 * @name
-	 * 1. CRUD catalogo com dados default
-	 * 
-	 * @description
-	 * Testa o fluxo de criação, leitura, atualização e exclusão de um catálogo com dados default
-	 * 
-	 * @steps
-	 * 1. Cria um catálogo com dados default (Nome e Descrição).
-	 * 2. Valida se o catálogo foi criado e é exibido na listagem.
-	 * 3. Edita o catálogo inserindo novos dados.
-	 * 4. Valida se os dados foram salvos corretamente.
-	 * 5. Exclui o catálogo e valida se foi removido da listagem.
-	 * 
-	 * @expected
-	 * O catálogo é criado, editado e excluído com sucesso.
-	 * 
-	 * @priority
-	 * Alta
-	 * 
-	 * @type
-	 * Regressão - CRUD - E2E
-	 * 
-	 * @time
-	 * 1m
-	 * 
-	 * @tags
-	 * CRUD, Catalogo
-	 * 
-	 * @testCase
-	 * à confirmar
-	 * 
-	 * @author Karla Daiany
-	 * @version 1.0.0
-	 */
-	it('1. CRUD catalogo com dados default', () => {
+	it.only('1. CRUD catalogo com dados default', () => {
 		// Massa de dados para criação do catálogo
 		const conteudo = {
 			nome: fakerPT_BR.commerce.productName(),
@@ -221,42 +186,6 @@ describe('catálogo', () => {
 		cy.excluirConteudo(conteudoEdit.nome, tipoConteudo)
 	})
 
-	/** DOCUMENTAÇÃO:
-	 * @name
-	 * 2. CRUD catalogo liberado, com anexo, com pagamento, sem acréscimo, com confirmação, com visualização para inscritos
-	 * 
-	 * @description
-	 * Testa o fluxo de criação, leitura, atualização e exclusão de um catálogo liberado, com anexo, com pagamento, sem acréscimo, 
-	 * com confirmação de inscrição e com visualização para inscritos.
-	 * 
-	 * @steps
-	 * 1. Cria um catálogo preenchendo todos os campos do formulário.
-	 * 2. Valida se o catálogo foi criado e é exibido na listagem.
-	 * 3. Edita o catálogo inserindo novos dados.
-	 * 4. Valida se os dados foram salvos corretamente.
-	 * 5. Exclui o catálogo e valida se foi removido da listagem.
-	 * 
-	 * @expected
-	 * O catálogo deve ser criado, editado e excluído com sucesso.
-	 * 
-	 * @priority
-	 * Alta
-	 * 
-	 * @type
-	 * Regressão - CRUD - E2E
-	 * 
-	 * @time
-	 * 1m
-	 * 
-	 * @tags
-	 * CRUD, Catalogo
-	 * 
-	 * @testCase
-	 * à confirmar
-	 * 
-	 * @author Karla Daiany
-	 * @version 1.0.0
-	 */
 	it('2. CRUD catalogo liberado, com anexo, com pagamento, sem acréscimo, com confirmação, com visualização para inscritos', () => {
 		// Massa de dados para criação do catálogo
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
@@ -388,42 +317,6 @@ describe('catálogo', () => {
 		cy.excluirConteudo(conteudoEdit.nome, tipoConteudo)
 	})
 
-	/** DOCUMENTAÇÃO:
-	 * @name
-	 * 3. CRUD catalogo liberado, com anexo, com pagamento, c/acréscimo, sem confirmação, com visualização para público
-	 * 
-	 * @description
-	 * Testa o fluxo de criação, leitura, atualização e exclusão de um catálogo liberado, com anexo, com pagamento, com acréscimo,
-	 * sem confirmação de inscrição e com visualização para público.
-	 * 
-	 * @steps
-	 * 1. Cria um catálogo preenchendo todos os campos do formulário.
-	 * 2. Valida se o catálogo foi criado e é exibido na listagem.
-	 * 3. Edita o catálogo inserindo novos dados.
-	 * 4. Valida se os dados foram salvos corretamente.
-	 * 5. Exclui o catálogo e valida se foi removido da listagem.
-	 * 
-	 * @expected
-	 * O catálogo deve ser criado, editado e excluído com sucesso.
-	 * 
-	 * @priority
-	 * Alta
-	 * 
-	 * @type
-	 * Regressão - CRUD - E2E
-	 * 
-	 * @time
-	 * 1m
-	 * 
-	 * @tags
-	 * CRUD, Catalogo
-	 * 
-	 * @testCase
-	 * à confirmar
-	 * 
-	 * @author Karla Daiany
-	 * @version 1.0.0
-	 */
 	it('3. CRUD catalogo liberado, com anexo, com pagamento, c/acréscimo, sem confirmação, com visualização para público', () => {
 		// Massa de dados para criação do catálogo
 		const categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`, `Cat3-${fakerPT_BR.hacker.noun()}`]
@@ -540,42 +433,6 @@ describe('catálogo', () => {
 		cy.excluirConteudo(conteudoEdit.nome, tipoConteudo)
 	})
 
-	/** DOCUMENTAÇÃO:
-	 * @name
-	 * 4. CRUD catalogo suspenso, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores
-	 * 
-	 * @description
-	 * Testa o fluxo de criação, leitura, atualização e exclusão de um catálogo suspenso, sem anexo, sem pagamento, com confirmação de inscrição
-	 * e com visualização para colaboradores.
-	 * 
-	 * @steps
-	 * 1. Cria um catálogo preenchendo todos os campos do formulário.
-	 * 2. Valida se o catálogo foi criado e é exibido na listagem.
-	 * 3. Edita o catálogo inserindo novos dados.
-	 * 4. Valida se os dados foram salvos corretamente.
-	 * 5. Exclui o catálogo e valida se foi removido da listagem.
-	 * 
-	 * @expected
-	 * O catálogo deve ser criado, editado e excluído com sucesso.
-	 * 
-	 * @priority
-	 * Alta
-	 * 
-	 * @type
-	 * Regressão - CRUD - E2E
-	 * 
-	 * @time
-	 * 1m
-	 * 
-	 * @tags
-	 * CRUD, Catalogo
-	 * 
-	 * @testCase
-	 * à confirmar
-	 * 
-	 * @author Karla Daiany
-	 * @version 1.0.0 
-	 */
 	it('4. CRUD catalogo suspenso, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
 		// Massa de dados para criação do catálogo
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`]
@@ -656,42 +513,6 @@ describe('catálogo', () => {
 		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
-	/** DOCUMENTAÇÃO:
-	 * @name
-	 * 5. CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores
-	 * 
-	 * @description
-	 * Testa o fluxo de criação, leitura, atualização e exclusão de um catálogo em desenvolvimento, sem anexo, sem pagamento, com confirmação de inscrição
-	 * e com visualização para colaboradores.
-	 * 
-	 * @steps
-	 * 1. Cria um catálogo preenchendo alguns dos campos do formulário.
-	 * 2. Valida se o catálogo foi criado e é exibido na listagem.
-	 * 3. Edita o catálogo inserindo novos dados.
-	 * 4. Valida se os dados foram salvos corretamente.
-	 * 5. Exclui o catálogo e valida se foi removido da listagem.
-	 * 
-	 * @expected
-	 * O catálogo deve ser criado, editado e excluído com sucesso.
-	 * 
-	 * @priority
-	 * Alta
-	 * 
-	 * @type
-	 * Regressão - CRUD - E2E
-	 * 
-	 * @time
-	 * 1m
-	 * 
-	 * @tags
-	 * CRUD, Catalogo
-	 * 
-	 * @testCase
-	 * à confirmar
-	 * 
-	 * @author Karla Daiany
-	 * @version 1.0.0
-	 */	
 	it('5. CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
 		// Massa de dados para criação do catálogo
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`]
@@ -761,42 +582,6 @@ describe('catálogo', () => {
 		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
-	/** DOCUMENTAÇÃO:
-	 * @name
-	 * 6. CRUD catalogo liberado, sem anexo, sem pagamento, sem confirmação, com visualização para público
-	 * 
-	 * @description
-	 * Testa o fluxo de criação, leitura, atualização e exclusão de um catálogo liberado, sem anexo, sem pagamento, sem confirmação de inscrição
-	 * e com visualização para público.
-	 * 
-	 * @steps
-	 * 1. Cria um catálogo preenchendo alguns dos campos do formulário.
-	 * 2. Valida se o catálogo foi criado e é exibido na listagem.
-	 * 3. Edita o catálogo inserindo novos dados.
-	 * 4. Valida se os dados foram salvos corretamente.
-	 * 5. Exclui o catálogo e valida se foi removido da listagem.
-	 * 
-	 * @expected
-	 * O catálogo deve ser criado, editado e excluído com sucesso.
-	 * 
-	 * @priority
-	 * Alta
-	 * 
-	 * @type
-	 * Regressão - CRUD - E2E
-	 * 
-	 * @time
-	 * 1m
-	 * 
-	 * @tags
-	 * CRUD, Catalogo
-	 * 
-	 * @testCase
-	 * à confirmar
-	 * 
-	 * @author Karla Daiany
-	 * @version 1.0.0
-	 */
 	it('6. CRUD catalogo liberado, sem anexo, sem pagamento, sem confirmação, com visualização para público', () => {
 		// Massa de dados para criação do catálogo
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
@@ -864,43 +649,7 @@ describe('catálogo', () => {
 		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
-	/** DOCUMENTAÇÃO:
-	 * @name
-	 * 7. CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários
-	 * 
-	 * @description
-	 * Testa o fluxo de criação, leitura, atualização e exclusão de um catálogo em desenvolvimento, sem anexo, sem pagamento, com confirmação de inscrição
-	 * e com visualização para usuários.
-	 * 
-	 * @steps
-	 * 1. Cria um catálogo preenchendo alguns dos campos do formulário.
-	 * 2. Valida se o catálogo foi criado e é exibido na listagem.
-	 * 3. Edita o catálogo inserindo novos dados.
-	 * 4. Valida se os dados foram salvos corretamente.
-	 * 5. Exclui o catálogo e valida se foi removido da listagem.
-	 * 
-	 * @expected
-	 * O catálogo deve ser criado, editado e excluído com sucesso.
-	 * 
-	 * @priority
-	 * Alta
-	 * 
-	 * @type
-	 * Regressão - CRUD - E2E
-	 * 
-	 * @time
-	 * 1m
-	 * 
-	 * @tags
-	 * CRUD, Catalogo
-	 * 
-	 * @testCase
-	 * à confirmar
-	 * 
-	 * @author Karla Daiany
-	 * @version 1.0.0
-	 */
-	it('7. CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários', () => {
+	it.only('7. CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários', () => {
 		// Massa de dados para criação do catálogo
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {

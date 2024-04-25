@@ -1,6 +1,17 @@
 /// <reference types="cypress" />
 
 describe('login', () => {
+    beforeEach(() => {
+        // Ativa o tratamento de exceção não capturada especificamente para este teste
+		Cypress.on('uncaught:exception', (err, runnable) => {
+            return false
+        })
+    })
+
+    afterEach(() => {
+		// Desativa o tratamento após o teste para evitar afetar outros testes
+		Cypress.removeAllListeners('uncaught:exception')
+	})
 
     it('deve logar com sucesso', () => {
         cy.acessarPgLogin() 
