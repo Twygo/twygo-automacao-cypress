@@ -935,7 +935,7 @@ describe('Participante', () => {
 
         cy.importarParticipante('participantes.csv')
 
-        cy.verificarImportacao()
+        cy.validarStatusImportacao('participantes')
 
         // READ
         cy.log('## READ ##')
