@@ -187,32 +187,6 @@ class formParticipantes {
             .click()
     }
 
-    /** DOCUMENTAÇÃO:
-     * @name preencherCampo
-     * 
-     * @description
-     * Método para preencher campos de um formulário
-     * 
-     * @actions
-     * 1. Verifica se o campo existe
-     * 2. Verifica se o campo deve ser limpo antes de preencher
-     * 3. Preenche o campo de acordo com o tipo
-     * 
-     * @param {string} nomeCampo - Nome do campo a ser preenchido
-     * @param {string} valor - Valor a ser preenchido no campo
-     * @param {object} opcoes - Opções para definir se o campo deve ser limpo antes de preencher
-     * 
-     * @example
-     * preencherCampo('nome', 'Nome do Evento')
-     * 
-     * @throws {Error} - Caso o campo não seja encontrado
-     * @throws {Error} - Caso o tipo do campo não seja suportado
-     * @throws {Error} - Caso o campo não possa ser preenchido com o valor informado
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     * @since 1.0.0
-     */
     preencherCampo(nomeCampo, valor, opcoes = { limpar: false }) {
 		const campo = this.elementos[nomeCampo]
 
@@ -275,29 +249,6 @@ class formParticipantes {
 		}
 	}
 
-    /** DOCUMENTAÇÃO:
-     * @name validarCampo
-     * 
-     * @description
-     * Método para validar campos de um formulário
-     * 
-     * @actions
-     * 1. Verifica se o campo existe
-     * 2. Valida o campo de acordo com o tipo
-     * 
-     * @param {string} nomeCampo - Nome do campo a ser validado
-     * @param {string} valor - Valor a ser validado no campo
-     * 
-     * @example
-     * validarCampo('nome', 'Nome do Evento')
-     * 
-     * @throws {Error} - Caso o campo não seja encontrado
-     * @throws {Error} - Caso o tipo do campo não seja suportado
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     * @since 1.0.0
-     */
     validarCampo(nomeCampo, valor) {
 		const campo = this.elementos[nomeCampo]
 

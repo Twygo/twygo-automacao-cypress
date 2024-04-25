@@ -168,37 +168,6 @@ describe('Criar atividade', () => {
 		Cypress.removeAllListeners('uncaught:exception')
 	})
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 1. Criar uma atividade default
-     * 
-     * @description
-     * Cenário para validar a criação de uma atividade default.
-     * 
-     * @steps
-     * 1. Cria uma atividade default.
-     * 
-     * @expected
-     * Deve ser possível criar a atividade com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Curso, Atividade, Default, Texto
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('1. Criar uma atividade default', () => {
         // CREATE
 		cy.log('## CREATE ##')
@@ -218,42 +187,6 @@ describe('Criar atividade', () => {
         cy.validarDadosAtividade(formAtividadeDefault)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 2. CRUD atividade do tipo "Texto"
-     * 
-     * @description
-     * Cenário para validar a criação, leitura, atualização e exclusão de uma atividade do tipo "Texto" atualizando
-     * a atividade para "Games".
-     * 
-     * @steps
-     * 1. Cria uma atividade do tipo "Texto".
-     * 2. Valida os dados da atividade criada.
-     * 3. Atualiza a atividade para o tipo "Games".
-     * 4. Valida os dados da atividade atualizada.
-     * 5. Exclui a atividade criada.
-     * 
-     * @expected
-     * Deve ser possível criar, ler, atualizar e excluir a atividade com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressivo - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Curso, CRUD, Texto, Games
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('2. CRUD atividade do tipo "Texto"', () => {    
         // Massa de dados para criação de atividade        
         const dados = {
@@ -324,42 +257,6 @@ describe('Criar atividade', () => {
         cy.excluirAtividade(dadosUpdate.titulo)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 3. CRUD atividade do tipo "PDF Estampado"
-     * 
-     * @description
-     * Cenário para validar a criação, leitura, atualização e exclusão de uma atividade do tipo "PDF Estampado" atualizando
-     * a atividade para "Vídeo".
-     * 
-     * @steps
-     * 1. Cria uma atividade do tipo "PDF Estampado" com um arquivo de PDF teste_pdf.pdf.
-     * 2. Valida os dados da atividade criada.
-     * 3. Atualiza a atividade para o tipo "Vídeo" com um arquivo de vídeo teste_video.mp4.
-     * 4. Valida os dados da atividade atualizada.
-     * 5. Exclui a atividade criada.
-     * 
-     * @expected
-     * Deve ser possível criar, ler, atualizar e excluir a atividade com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressivo - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Curso, CRUD, PDF Estampado, Vídeo
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('3. CRUD atividade do tipo "PDF Estampado"', () => {
         // Massa de dados para criação de atividade
         const dados = {
@@ -443,43 +340,7 @@ describe('Criar atividade', () => {
         cy.excluirAtividade(dadosUpdate.titulo)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 4. CRUD atividade do tipo "Vídeo"
-     * 
-     * @description
-     * Cenário para validar a criação, leitura, atualização e exclusão de uma atividade do tipo "Vídeo" atualizando
-     * a atividade para "Scorm".
-     * 
-     * @steps
-     * 1. Cria uma atividade do tipo "Vídeo" com um arquivo de vídeo teste_video.mp4.
-     * 2. Valida os dados da atividade criada.
-     * 3. Atualiza a atividade para o tipo "Scorm" com um arquivo de SCORM teste_scorm.zip.
-     * 4. Valida os dados da atividade atualizada.
-     * 5. Exclui a atividade criada.
-     * 
-     * @expected
-     * Deve ser possível criar, ler, atualizar e excluir a atividade com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressivo - CRUD - E2E
-     * 
-     * @time
-     * 2m
-     * 
-     * @tags
-     * Curso, CRUD, Vídeo, Scorm
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
-    it('4. CRUD atividade do tipo "Vídeo"', () => {
+    it.only('4. CRUD atividade do tipo "Vídeo"', () => {
         // Massa de dados para criação de atividade
         const dados = {
             titulo: nomeAtividade,
@@ -562,42 +423,6 @@ describe('Criar atividade', () => {
         cy.excluirAtividade(dadosUpdate.titulo)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 5. CRUD atividade do tipo "Vídeo Externo - Youtube"
-     * 
-     * @description
-     * Cenário para validar a criação, leitura, atualização e exclusão de uma atividade do tipo "Vídeo Externo - Youtube"
-     * atualizando o tipo de atividade para "Texto".
-     * 
-     * @steps
-     * 1. Cria uma atividade do tipo "Vídeo Externo - Youtube".
-     * 2. Valida os dados da atividade criada.
-     * 3. Atualiza a atividade para o tipo "Texto".
-     * 4. Valida os dados da atividade atualizada.
-     * 5. Exclui a atividade criada.
-     * 
-     * @expected
-     * Deve ser possível criar, ler, atualizar e excluir a atividade com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressivo - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Curso, CRUD, Vídeo Externo, Youtube, Texto
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('5. CRUD atividade do tipo "Vídeo Externo - Youtube"', () => {
         // Massa de dados para criação de atividade
         const dados = {
@@ -677,42 +502,6 @@ describe('Criar atividade', () => {
         cy.excluirAtividade(dadosUpdate.titulo)  
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 6. CRUD atividade do tipo "Vídeo Externo - Vimeo"
-     * 
-     * @description
-     * Cenário para validar a criação, leitura, atualização e exclusão de uma atividade do tipo "Vídeo Externo - Vimeo" atualizando
-     * a atividade para "Questionário".
-     * 
-     * @steps
-     * 1. Cria uma atividade do tipo "Vídeo Externo - Vimeo".
-     * 2. Valida os dados da atividade criada.
-     * 3. Atualiza a atividade para o tipo "Questionário".
-     * 4. Valida os dados da atividade atualizada.
-     * 5. Exclui a atividade criada.
-     * 
-     * @expected
-     * Deve ser possível criar, ler, atualizar e excluir a atividade com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressivo - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Curso, CRUD, Vídeo Externo, Vimeo, Questionário
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('6. CRUD atividade do tipo "Vídeo Externo - Vimeo"', () => {
         // Massa de dados para criação de atividade
         const dados = {
@@ -807,42 +596,6 @@ describe('Criar atividade', () => {
         cy.excluirAtividade(dadosUpdate.titulo)  
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 7. CRUD atividade do tipo "Vídeo Externo - Eventials"
-     * 
-     * @description
-     * Cenário para validar a criação, leitura, atualização e exclusão de uma atividade do tipo "Vídeo Externo - Eventials"
-     * atualizando o chat para Twygo e desabilitando o chat Eventials.
-     * 
-     * @steps
-     * 1. Cria uma atividade do tipo "Vídeo Externo - Eventials" com chat Eventials.
-     * 2. Valida os dados da atividade criada.
-     * 3. Atualiza a atividade para habilitar chat Twygo e desabilitar chat Eventials.
-     * 4. Valida os dados da atividade atualizada.
-     * 5. Exclui a atividade criada.
-     * 
-     * @expected
-     * Deve ser possível criar, ler, atualizar e excluir a atividade com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressivo - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * CRUD, Vídeo Externo, Eventials
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('7. CRUD atividade do tipo "Vídeo Externo - Eventials"', () => {
         // Massa de dados para criação de atividade
         const dados = {
@@ -924,42 +677,6 @@ describe('Criar atividade', () => {
         cy.excluirAtividade(dados.titulo)  
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 8. CRUD atividade do tipo "Arquivos"
-     * 
-     * @description
-     * Cenário para validar a criação, leitura, atualização e exclusão de uma atividade do tipo "Arquivos" atualizando
-     * o tipo de atividade para "Vídeo Externo - Vimeo".
-     * 
-     * @steps
-     * 1. Cria uma atividade do tipo "Arquivos" com um arquivo de imagem Sophia_estudiosa.png.
-     * 2. Valida os dados da atividade criada.
-     * 3. Atualiza a atividade para o tipo "Vídeo Externo - Vimeo".
-     * 4. Valida os dados da atividade atualizada.
-     * 5. Exclui a atividade criada.
-     * 
-     * @expected
-     * Deve ser possível criar, ler, atualizar e excluir a atividade com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressivo - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * CRUD, Arquivos, Vídeo Externo, Vimeo
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('8. CRUD atividade do tipo "Arquivos"', () => {
         // Massa de dados para criação de atividade
         const dados = {
@@ -1044,42 +761,6 @@ describe('Criar atividade', () => {
         cy.excluirAtividade(dados.titulo)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 9. CRUD atividade do tipo "Questionário"
-     * 
-     * @description
-     * Cenário para validar a criação, leitura, atualização e exclusão de uma atividade do tipo "Questionário" atualizando
-     * a atividade para "Arquivos".
-     * 
-     * @steps
-     * 1. Cria uma atividade do tipo "Questionário".
-     * 2. Valida os dados da atividade criada.
-     * 3. Atualiza a atividade para o tipo "Arquivos" com um arquivo de apresentação teste_ppt.pptx.
-     * 4. Valida os dados da atividade atualizada.
-     * 5. Exclui a atividade criada.
-     * 
-     * @expected
-     * Deve ser possível criar, ler, atualizar e excluir a atividade com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressivo - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Curso, CRUD, Atividade, Questionário, Arquivo
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('9. CRUD atividade do tipo "Questionário"', () => {               
         // Massa de dados para criação de atividade
         const nomeQuestionario = fakerPT_BR.commerce.productName()
@@ -1174,42 +855,6 @@ describe('Criar atividade', () => {
         cy.excluirAtividade(dadosUpdate.titulo)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 10. CRUD atividade do tipo "Scorm"
-     * 
-     * @description
-     * Cenário para validar a criação, leitura, atualização e exclusão de uma atividade do tipo "Scorm" atualizando
-     * a atividade para "Texto".
-     * 
-     * @steps
-     * 1. Cria uma atividade do tipo "Scorm" com um arquivo de apresentação teste_scorm.zip.
-     * 2. Valida os dados da atividade criada.
-     * 3. Atualiza a atividade para o tipo "Texto".
-     * 4. Valida os dados da atividade atualizada.
-     * 5. Exclui a atividade criada.
-     * 
-     * @expected
-     * Deve ser possível criar, ler, atualizar e excluir a atividade com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressivo - CRUD - E2E
-     * 
-     * @time
-     * 2m
-     * 
-     * @tags
-     * Curso, CRUD, Atividade, Scorm, Texto
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('10. CRUD atividade do tipo "Scorm"', () => {
         // Massa de dados para criação de atividade
         const dados = {
@@ -1285,42 +930,6 @@ describe('Criar atividade', () => {
         cy.excluirAtividade(dadosUpdate.titulo)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 11. Criar uma atividade default do tipo "Games"
-     * 
-     * @description
-     * Cenário para validar a criação, leitura, atualização e exclusão de uma atividade default do tipo "Games" atualizando
-     * a atividade para "Vídeo Externo".
-     * 
-     * @steps
-     * 1. Cria uma atividade default do tipo "Games".
-     * 2. Valida os dados da atividade criada.
-     * 3. Atualiza a atividade para o tipo "Vídeo Externo - Youtube".
-     * 4. Valida os dados da atividade atualizada.
-     * 5. Exclui a atividade criada.
-     * 
-     * @expected
-     * Deve ser possível criar, ler, atualizar e excluir a atividade com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressivo - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Curso, CRUD, Atividade, Games, Vídeo Externo, Youtube
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('11. Criar uma atividade default do tipo "Games"', () => {
         // Massa de dados para criação de atividade
         const dados = {

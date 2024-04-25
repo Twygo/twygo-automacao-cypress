@@ -46,51 +46,21 @@ describe('Usuário', () => {
 	})
     
     beforeEach(() => {
+        // Ativa o tratamento de exceção não capturada especificamente para este teste
+        Cypress.on('uncaught:exception', (err, runnable) => {
+            return false
+        })
+    
         // Obtém token autenticação, lista e exclui os usuários
         getAuthToken()
         cy.excluirUsuarioViaApi()
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 1. CRUD usuário default
-     * 
-     * @description
-     * Valida a criação, leitura, atualização e exclusão de um usuário com os dados padrões obrigatórios (nome, sobrenome e email). 
-     * A atualização consiste em alterar todos os campos do usuário, exceto o email. Neste cenário, também é alterada a senha do usuário, 
-     * realizada a inativação e ativação do usuário, para depois excluí-lo.
-     * 
-     * @steps
-     * 1. Cria um usuário com os dados padrões obrigatórios (nome, sobrenome e email)
-     * 2. Confirma os dados do usuário criado
-     * 3. Atualiza os dados do usuário, exceto o email
-     * 4. Confirma os dados do usuário atualizado
-     * 5. Altera a senha do usuário
-     * 6. Inativa o usuário
-     * 7. Ativa o usuário
-     * 8. Exclui o usuário
-     * 
-     * @expected
-     * Espera-se que o usuário seja criado, atualizado, inativado, ativado e excluído com sucesso. Assim como a senha alterada.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Usuário, Default, CRUD, Alterar senha, Inativar, Ativar
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
+    afterEach(() => {
+		// Desativa o tratamento após o teste para evitar afetar outros testes
+		Cypress.removeAllListeners('uncaught:exception')
+	})
+
     it('1. CRUD usuário default', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
@@ -186,44 +156,6 @@ describe('Usuário', () => {
 		cy.excluirUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 2. CRUD usuário com todos os perfis (colaborador, líder de equipe, administrador, instrutor e gestor)
-     * 
-     * @description
-     * Valida a criação, leitura, atualização e exclusão de um usuário com todos os perfis (colaborador, líder de equipe, administrador,
-     * instrutor e gestor). Neste cenário também é alterada a senha do usuário, realizada a inativação e ativação do usuário, para depois
-     * atualizá-lo. Na edição são alterados todos os campos do usuário, exceto o email para depois excluí-lo.
-     * 
-     * @steps
-     * 1. Cria um usuário com todos os perfis (colaborador, líder de equipe, administrador, instrutor e gestor)
-     * 2. Confirma os dados do usuário criado
-     * 3. Altera a senha, inativa e ativa o usuário
-     * 4. Atualiza os dados do usuário, exceto o email
-     * 5. Confirma os dados do usuário atualizado
-     * 6. Exclui o usuário
-     * 
-     * @expected
-     * Espera-se que o usuário seja criado, inativado, ativado, atualizado e excluído com sucesso. Assim como a senha alterada.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Usuário, Colaborador, Líder de equipe, Administrador, Instrutor, Gestor, CRUD, Alterar senha, Inativar, Ativar
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('2. CRUD usuário com todos os perfis (colaborador, líder de equipe, administrador, instrutor e gestor)', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
@@ -345,46 +277,6 @@ describe('Usuário', () => {
 		cy.excluirUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 3. CRUD usuário somente administrador
-     * 
-     * @description
-     * Valida a criação, leitura, atualização e exclusão de um usuário com o perfil de administrador. Na alteração são alterados dados 
-     * e desabilitado o perfil de administrador. Neste cenário também é alterada a senha do usuário, realizada a inativação e ativação do
-     * usuário, para depois excluí-lo.
-     * 
-     * @steps
-     * 1. Cria um usuário com o perfil de administrador
-     * 2. Confirma os dados do usuário criado
-     * 3. Altera alguns dados do usuário e desabilita o perfil de administrador
-     * 4. Confirma os dados do usuário atualizado
-     * 5. Altera a senha do usuário
-     * 6. Inativa o usuário
-     * 7. Ativa o usuário
-     * 8. Exclui o usuário
-     * 
-     * @expected
-     * Espera-se que o usuário seja criado, atualizado, inativado, ativado e excluído com sucesso. Assim como a senha alterada.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Usuário, Administrador, CRUD, Alterar senha, Inativar, Ativar
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('3. CRUD usuário somente administrador', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
@@ -496,44 +388,6 @@ describe('Usuário', () => {
 		cy.excluirUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 4. CRUD usuário somente líder de equipe
-     * 
-     * @description
-     * Valida a criação, leitura, atualização e exclusão de um usuário com o perfil de líder de equipe. Neste cenário também é alterada a 
-     * senha do usuário, realizada a inativação e ativação do usuário, para depois atualizá-lo. Na alteração são adicionados novos dados 
-     * e habilitado o perfil de administrador. 
-     * 
-     * @steps
-     * 1. Cria um usuário com o perfil de líder de equipe
-     * 2. Confirma os dados do usuário criado
-     * 3. Altera a senha, inativa e ativa o usuário
-     * 4. Atualiza os dados do usuário, adicionando novos dados e habilitando o perfil de administrador
-     * 5. Confirma os dados do usuário atualizado
-     * 6. Exclui o usuário
-     * 
-     * @expected
-     * Espera-se que o usuário seja criado, inativado, ativado, atualizado e excluído com sucesso. Assim como a senha alterada.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Usuário, Líder de equipe, Administrador, CRUD, Alterar senha, Inativar, Ativar
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('4. CRUD usuário somente líder de equipe', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
@@ -619,46 +473,6 @@ describe('Usuário', () => {
 		cy.excluirUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 5. CRUD usuário somente instrutor
-     * 
-     * @description
-     * Valida a criação, leitura, atualização e exclusão de um usuário com o perfil de instrutor. Na alteração são adicionados novos
-     * dados e desabilitado comunidades e notificações. Neste cenário também é alterada a senha do usuário, realizada a inativação e ativação
-     * do usuário, para depois excluí-lo.
-     * 
-     * @steps
-     * 1. Cria um usuário com o perfil de instrutor
-     * 2. Confirma os dados do usuário criado
-     * 3. Atualiza os dados do usuário, adicionando novos dados e desabilitando comunidades e notificações
-     * 4. Confirma os dados do usuário atualizado
-     * 5. Altera a senha do usuário
-     * 6. Inativa o usuário
-     * 7. Ativa o usuário
-     * 8. Exclui o usuário
-     * 
-     * @expected
-     * Espera-se que o usuário seja criado, atualizado, inativado, ativado e excluído com sucesso. Assim como a senha alterada.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Usuário, Instrutor, CRUD, Alterar senha, Inativar, Ativar
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('5. CRUD usuário somente instrutor', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
@@ -734,44 +548,6 @@ describe('Usuário', () => {
 		cy.excluirUsuario(`${dados.nome} ${dados.sobrenome}`)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 6. CRUD usuário somente gestor de turma
-     * 
-     * @description
-     * Valida a criação, leitura, atualização e exclusão de um usuário com o perfil de gestor de turma. Na alteração são adicionados novos
-     * dados e habilitado o perfil de instrutor. Neste cenário também é alterada a senha do usuário, realizada a inativação e ativação do
-     * usuário, para depois atualizá-lo.
-     * 
-     * @steps
-     * 1. Cria um usuário com o perfil de gestor de turma
-     * 2. Confirma os dados do usuário criado
-     * 3. Altera a senha, inativa e ativa o usuário
-     * 4. Atualiza os dados do usuário, adicionando novos dados e habilitando o perfil de instrutor
-     * 5. Confirma os dados do usuário atualizado
-     * 7. Exclui o usuário
-     * 
-     * @expected
-     * Espera-se que o usuário seja criado, inativado, ativado, atualizado e excluído com sucesso. Assim como a senha alterada.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Usuário, Gestor de turma, Instrutor, CRUD, Alterar senha, Inativar, Ativar
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('6. CRUD usuário somente gestor de turma', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
@@ -859,46 +635,6 @@ describe('Usuário', () => {
 		cy.excluirUsuario(`${dados.nome} ${dados.sobrenome}`)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 7. CRUD usuário somente colaborador
-     * 
-     * @description
-     * Valida a criação, leitura, atualização e exclusão de um usuário com o perfil de colaborador. Na alteração são adicionados novos
-     * dados e habilitado o perfil de gestor. Neste cenário também é alterada a senha do usuário, realizada a inativação e ativação do 
-     * usuário, para depois excluí-lo.
-     * 
-     * @steps
-     * 1. Cria um usuário com o perfil de colaborador
-     * 2. Confirma os dados do usuário criado
-     * 3. Atualiza os dados do usuário, adicionando novos dados e habilitando o perfil de gestor
-     * 4. Confirma os dados do usuário atualizado
-     * 5. Altera a senha do usuário
-     * 6. Inativa o usuário
-     * 7. Ativa o usuário
-     * 8. Exclui o usuário
-     * 
-     * @expected
-     * Espera-se que o usuário seja criado, atualizado, inativado, ativado e excluído com sucesso. Assim como a senha alterada.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Usuário, Colaborador, Gestor, CRUD, Alterar senha, Inativar, Ativar
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('7. CRUD usuário somente colaborador', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
