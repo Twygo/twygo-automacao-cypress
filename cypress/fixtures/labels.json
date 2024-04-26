@@ -114,7 +114,8 @@
         "msgSucessoAtivar": "Foi realizado a ativação do usuário.",
         "msgUploadImportacao": "Arquivo enviado com sucesso",
         "msgImportacaoEmAndamento": "Importação será executada em instantes.",
-        "msgImportacaoConcluida": "Importação concluída com successo."
+        "msgImportacaoConcluida": "Importação concluída com successo.",
+        "msgImportacaoCancelada": "Erro na importação. Verifique o log e tente novamente."
     },
     "participantes": {
         "breadcrumb": "Detalhes do evento",

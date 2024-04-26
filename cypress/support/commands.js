@@ -2006,10 +2006,16 @@ Cypress.Commands.add('importarParticipante', function(arquivo) {
     .should('be.visible')
 })
 
-Cypress.Commands.add('validarStatusImportacao', (tipo) => {
+Cypress.Commands.add('validarStatusImportacao', (tipo, statusEsperado) => {
   const TIMEOUT_PADRAO = 5000
+  const TIMEOUT_IMPORTACAO = 180000
+
+  const labels = Cypress.env('labels')
+  const { msgImportacaoConcluida, msgImportacaoCancelada } = labels.usuarios
 
   let seletor = ''
+
+  cy.log(`Status de importação esperado: ${statusEsperado}`)
 
   switch (tipo) {
     case 'usuários':
@@ -2022,10 +2028,25 @@ Cypress.Commands.add('validarStatusImportacao', (tipo) => {
       throw new Error(`Tipo de importação inválido: ${tipo}`)
   }
 
+  // Validar a mensagem da importação com espera de até 3 minutos com base na opção
+  switch(statusEsperado) {
+    case 'Concluído':
+      cy.contains('.flash.success', msgImportacaoConcluida, { timeout: TIMEOUT_IMPORTACAO })
+        .should('be.visible')
+      break
+    case 'Cancelado':
+      cy.contains('.flash.error', msgImportacaoCancelada, { timeout: TIMEOUT_IMPORTACAO })
+        .should('be.visible')
+      break
+  }  
+
+  // Acessar novamente a tela de usuários para validar o status da importaçãos
+  cy.acessarPgUsuarios()
+
   function verificarStatus() {
     // Seleciona a primeira linha de dados da tabela, ignorando explicitamente o cabeçalho
     // Usamos o seletor 'tr:has(td)' para garantir que estamos selecionando apenas linhas que contêm células de dados
-    cy.get('#imports-list tbody tr:has(td)').first().find('td:nth-child(4)').then($cell => {
+    cy.get('#imports-list').find('tr:nth-child(2)').find('td:nth-child(4)').then($cell => {
       const status = $cell.text().trim()
       cy.log(`Status da importação: ${status}`)
 
@@ -2035,13 +2056,11 @@ Cypress.Commands.add('validarStatusImportacao', (tipo) => {
         cy.wait(TIMEOUT_PADRAO)
         cy.get(seletor).click()
         verificarStatus()
-      } else if (status === 'Concluído') {
-        cy.log('Arquivo importado com sucesso.')
+      } else if (status === statusEsperado) {
+        cy.log(`Status da importação está conforme o esperado: ${statusEsperado}`)
         cy.get('#twygo-modal-close').click()
-      } else if (status === 'Erro') {
-        throw new Error('Erro na importação do arquivo.')
-      } else {
-        throw new Error(`Status desconhecido: ${status}`)
+      } else if (status !== statusEsperado) {
+        throw new Error(`Status: ${status}`)
       }
     })
   }
@@ -2266,7 +2285,7 @@ Cypress.Commands.add('voltar', () => {
 Cypress.Commands.add('importarUsuarios', function(arquivo, opcao = 'Cancelar') {
   const TIMEOUT_PADRAO = 5000
   const labels = Cypress.env('labels')
-  const { msgUploadImportacao, msgImportacaoEmAndamento, msgImportacaoConcluida } = labels.usuarios
+  const { msgUploadImportacao, msgImportacaoEmAndamento } = labels.usuarios
 
   // Clica no botão 'Importar'
   cy.get('#import_users')
@@ -2313,12 +2332,8 @@ Cypress.Commands.add('importarUsuarios', function(arquivo, opcao = 'Cancelar') {
     .contains('button', 'Enviar')
     .click( { force: true } )
 
-  // Valida a mensagem de sucesso após a importação
+  // Valida a mensagem de sucesso após o upload do arquivo
   cy.contains('.flash.success', msgImportacaoEmAndamento, { timeout: TIMEOUT_PADRAO })
-    .should('be.visible')
-
-  // Validar a mensagem de sucesso da importação com espera de até 2 minutos
-  cy.contains('.flash.success', msgImportacaoConcluida, { timeout: 120000 })
     .should('be.visible')
 })
 
