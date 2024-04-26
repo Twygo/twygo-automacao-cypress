@@ -2297,9 +2297,12 @@ Cypress.Commands.add('importarUsuarios', function(arquivo, opcao = 'Cancelar') {
   cy.get('#imports-fields')
     .contains('h3', 'Campos para importar')
 
-  // Seleciona as opções de telefone pessoal e celular
+  // Seleciona as opções de telefone pessoal, comercial e celular
   cy.get('#importables_phone1')
     .select('Telefone pessoal')
+
+  cy.get('#importables_phone2')
+    .select('Telefone comercial')
 
   cy.get('#importables_cell_phone')
     .select('Celular')

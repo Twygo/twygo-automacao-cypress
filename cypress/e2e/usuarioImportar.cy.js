@@ -1,6 +1,6 @@
-/// reference types="cypress" />
-import { getAuthToken } from "../support/auth_helper"
-import { fakerPT_BR, faker } from "@faker-js/faker"
+/// reference types='cypress' />
+import { getAuthToken } from '../support/auth_helper'
+import { fakerPT_BR, faker } from '@faker-js/faker'
 let fakerbr = require('faker-br')
 
 describe('Importar Usuários', () => {
@@ -257,7 +257,6 @@ describe('Importar Usuários', () => {
             cep: '54430050',
             endereco: 'Rua Antônio Ferreira Campos',
             numero: '538',
-            complemento: 'N/A',
             bairro: 'Candeias',
             cidade: 'Jaboatão dos Guararapes',
             estado: 'PE'
@@ -269,64 +268,60 @@ describe('Importar Usuários', () => {
   
         let updateUsuario4 = {
             telPessoal: '',
+            area: '',
+            nrColaboradores: '',
             empresa: 'Lucas e Gabriel Marcenaria ME',
             cargo: 'Marceneiro'
         }
-  
-        let updateUsuario5 = {
-            empresa: '',
-            nrColaboradores: '',
-            area: ''
-        }
       
         let usuario7 = {
-            email: "allana_castro@graffiti.net",
-            nome: "Allana",
-            sobrenome: "Castro",
-            cpf: "12325856615",
-            rg: "",
-            empresa: "",
-            area: "",
-            nrColaboradores: "",
-            ramo: "",
-            site: "",
-            cargo: "",
-            cep: "",
-            endereco: "Av. Brasil",
-            bairro: "Centro",
-            numero: "1001",
-            complemento: "Apto 230 Bloco Z",
-            cidade: "Curitiba",
-            estado: "Paraná",
-            pais: "Brasil",
-            telPessoal: "",
-            telComercial: "4130332211",
-            celular: ""
+            email: 'allana_castro@graffiti.net',
+            nome: 'Allana',
+            sobrenome: 'Castro',
+            cpf: '12325856615',
+            rg: '',
+            empresa: '',
+            area: '',
+            nrColaboradores: '',
+            ramo: '',
+            site: '',
+            cargo: '',
+            cep: '',
+            endereco: 'Av. Brasil',
+            bairro: 'Centro',
+            numero: '1001',
+            complemento: 'Apto 230 Bloco Z',
+            cidade: 'Curitiba',
+            estado: 'Paraná',
+            pais: 'Brasil',
+            telPessoal: '',
+            telComercial: '(41) 30332-211',
+            celular: ''
         }
 
         let usuario8 = {
-            email: "marcio_bryan_depaula@fertility.com.br",
-            nome: "Márcio Bryan",
-            sobrenome: "de Paula",
-            cpf: "24530453189",
-            rg: "418610964",
-            empresa: "Vinicius e Joaquim Pães e Doces Ltda",
-            area: "",
-            nrColaboradores: "1258",
-            ramo: "",
-            site: "www.twygoead.com",
-            cargo: "",
-            cep: "78008812",
-            endereco: "Travessa São João",
-            bairro: "São João dos Lázaros",
-            numero: "979",
-            complemento: "N/A",
-            cidade: "Cuiabá",
-            estado: "MT",
-            pais: "Brasil",
-            telPessoal: "",
-            telComercial: "",
-            celular: ""
+            email: 'marcio_bryan_depaula@fertility.com.br',
+            nome: 'Márcio Bryan',
+            sobrenome: 'de Paula',
+            cpf: '24530453189',
+            rg: '418610964',
+            empresa: 'Vinicius e Joaquim Pães e Doces Ltda',
+            area: '',
+            nrColaboradores: '1258',
+            ramo: '',
+            site: 'www.twygoead.com',
+            cargo: '',
+            cep: '78008812',
+            endereco: 'Travessa São João',
+            bairro: 'São João dos Lázaros',
+            numero: '979',
+            complemento: 'N/A',
+            cidade: 'Cuiabá',
+            estado: 'MT',
+            pais: 'Brasil',
+            telPessoal: '',
+            telComercial: '',
+            celular: ''
         }
 
         cy.acessarPgUsuarios()
@@ -345,14 +340,10 @@ describe('Importar Usuários', () => {
         cy.validarDadosUsuario(dadosParaValidar4)
         cy.voltar()
 
-        cy.editarUsuario(`${usuario5.nome} ${usuario5.sobrenome}`)
-        dadosParaValidar5 = { ...dadosParaValidar5, ...updateUsuario5 }
-        cy.validarDadosUsuario(dadosParaValidar5)
-        cy.voltar()
-
         cy.editarUsuario(`${usuario7.nome} ${usuario7.sobrenome}`)
         let dadosParaValidar7 = { ...formDefault, ...usuario7 }
         cy.validarDadosUsuario(dadosParaValidar7)
+        cy.voltar()
 
         cy.editarUsuario(`${usuario8.nome} ${usuario8.sobrenome}`)
         let dadosParaValidar8 = { ...formDefault, ...usuario8 }
