@@ -4,6 +4,39 @@ import { fakerPT_BR, faker } from "@faker-js/faker"
 let fakerbr = require('faker-br')
 
 describe('Importar Usuários', () => {
+    // Formulário default
+    let formDefault = {
+        email: '',
+        nome: '',
+        sobrenome: '',
+        cpf: '',
+        rg: '',
+        telPessoal: '',
+        celular: '',
+        cep: '',
+        endereco: '',
+        numero: '',
+        complemento: '',
+        bairro: '',
+        cidade: '',
+        estado: '',
+        pais: 'Brasil',
+        empresa: '',
+        ramo: '',
+        nrColaboradores: '',
+        site: '',
+        telComercial: '',
+        cargo: '',
+        area: '',
+        perfilColaborador: false,
+        perfilAdministrador: false,
+        perfilInstrutor: false,
+        perfilGestor: false,
+        perfilLiderEquipe: false,
+        comunidades: true,
+        notificacoes: true
+    }
+    
     // Massa de dados do arquivo CSV
     let usuario1 = {
           email: 'sueli.aline.castro@iesa.com.br',
@@ -45,7 +78,7 @@ describe('Importar Usuários', () => {
           bairro: '',
           cidade: '',
           estado: '',
-          pais: 'Brasil',
+          pais: 'Escolha seu País', // quando não preenche o campo no CSV
           empresa: '',
           ramo: '',
           nrColaboradores: '',
@@ -119,8 +152,8 @@ describe('Importar Usuários', () => {
           complemento: '',
           bairro: 'Fazendinha',
           cidade: 'Macapá',
-          estado: '',
-          pais: '',
+          estado: 'AP',
+          pais: 'Brasil', // ao informar a sigla BR no arquivo CSV deve ser selecionada a opção de nome corretamente
           empresa: 'Melissa e Tânia Comercio de Bebidas Ltda',
           ramo: '',
           nrColaboradores: '22',
@@ -139,7 +172,7 @@ describe('Importar Usuários', () => {
           telPessoal: '(48) 39779-125',
           celular: '',
           cep: '88901088',
-          endereco: 'Rua Severino JosÃ© de Souza',
+          endereco: 'Rua Severino João de Souza',
           numero: '266',
           complemento: '',
           bairro: 'Cidade Alta',
@@ -181,26 +214,161 @@ describe('Importar Usuários', () => {
 
         cy.acessarPgUsuarios()
         cy.editarUsuario(`${usuario1.nome} ${usuario1.sobrenome}`)
-        cy.validarDadosUsuario(usuario1)
+        let dadosParaValidar1 = { ...formDefault, ...usuario1 }
+        cy.validarDadosUsuario(dadosParaValidar1)
         cy.voltar()
 
         cy.editarUsuario(`${usuario2.nome} ${usuario2.sobrenome}`)
-        cy.validarDadosUsuario(usuario2)
+        let dadosParaValidar2 = { ...formDefault, ...usuario2 }
+        cy.validarDadosUsuario(dadosParaValidar2)
         cy.voltar()
 
         cy.editarUsuario(`${usuario3.nome} ${usuario3.sobrenome}`)
-        cy.validarDadosUsuario(usuario3)
+        let dadosParaValidar3 = { ...formDefault, ...usuario3 }
+        cy.validarDadosUsuario(dadosParaValidar3)
         cy.voltar()
 
         cy.editarUsuario(`${usuario4.nome} ${usuario4.sobrenome}`)
-        cy.validarDadosUsuario(usuario4)
+        let dadosParaValidar4 = { ...formDefault, ...usuario4 }
+        cy.validarDadosUsuario(dadosParaValidar4)
         cy.voltar()
 
         cy.editarUsuario(`${usuario5.nome} ${usuario5.sobrenome}`)
-        cy.validarDadosUsuario(usuario5)
+        let dadosParaValidar5 = { ...formDefault, ...usuario5 }
+        cy.validarDadosUsuario(dadosParaValidar5)
         cy.voltar()
 
         cy.editarUsuario(`${usuario6.nome} ${usuario6.sobrenome}`)
-        cy.validarDadosUsuario(usuario6)
+        let dadosParaValidar6 = { ...formDefault, ...usuario6 }
+        cy.validarDadosUsuario(dadosParaValidar6)
+        cy.voltar()
+
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        cy.importarUsuarios('usuariosUpdate.csv', 'Atualizar')
+        cy.validarStatusImportacao('usuários')
+
+        // READ-UPDATE
+        cy.log('## READ-UPDATE ##')
+
+        // Massa de dados atualizada
+        let updateUsuario1 = {
+            cep: '54430050',
+            endereco: 'Rua Antônio Ferreira Campos',
+            numero: '538',
+            complemento: 'N/A',
+            bairro: 'Candeias',
+            cidade: 'Jaboatão dos Guararapes',
+            estado: 'PE'
+        }
+      
+        let updateUsuario3 = {
+            celular: '(81) 98393-9467'
+        }
+  
+        let updateUsuario4 = {
+            telPessoal: '',
+            empresa: 'Lucas e Gabriel Marcenaria ME',
+            cargo: 'Marceneiro'
+        }
+  
+        let updateUsuario5 = {
+            empresa: '',
+            nrColaboradores: '',
+            area: ''
+        }
+      
+        let usuario7 = {
+            email: "allana_castro@graffiti.net",
+            nome: "Allana",
+            sobrenome: "Castro",
+            cpf: "12325856615",
+            rg: "",
+            empresa: "",
+            area: "",
+            nrColaboradores: "",
+            ramo: "",
+            site: "",
+            cargo: "",
+            cep: "",
+            endereco: "Av. Brasil",
+            bairro: "Centro",
+            numero: "1001",
+            complemento: "Apto 230 Bloco Z",
+            cidade: "Curitiba",
+            estado: "Paraná",
+            pais: "Brasil",
+            telPessoal: "",
+            telComercial: "4130332211",
+            celular: ""
+        }
+
+        let usuario8 = {
+            email: "marcio_bryan_depaula@fertility.com.br",
+            nome: "Márcio Bryan",
+            sobrenome: "de Paula",
+            cpf: "24530453189",
+            rg: "418610964",
+            empresa: "Vinicius e Joaquim Pães e Doces Ltda",
+            area: "",
+            nrColaboradores: "1258",
+            ramo: "",
+            site: "www.twygoead.com",
+            cargo: "",
+            cep: "78008812",
+            endereco: "Travessa São João",
+            bairro: "São João dos Lázaros",
+            numero: "979",
+            complemento: "N/A",
+            cidade: "Cuiabá",
+            estado: "MT",
+            pais: "Brasil",
+            telPessoal: "",
+            telComercial: "",
+            celular: ""
+        }
+
+        cy.acessarPgUsuarios()
+        cy.editarUsuario(`${usuario1.nome} ${usuario1.sobrenome}`)
+        dadosParaValidar1 = { ...dadosParaValidar1, ...updateUsuario1 }
+        cy.validarDadosUsuario(dadosParaValidar1)
+        cy.voltar()
+
+        cy.editarUsuario(`${usuario3.nome} ${usuario3.sobrenome}`)
+        dadosParaValidar3 = { ...dadosParaValidar3, ...updateUsuario3 }
+        cy.validarDadosUsuario(dadosParaValidar3)
+        cy.voltar()
+
+        cy.editarUsuario(`${usuario4.nome} ${usuario4.sobrenome}`)
+        dadosParaValidar4 = { ...dadosParaValidar4, ...updateUsuario4 }
+        cy.validarDadosUsuario(dadosParaValidar4)
+        cy.voltar()
+
+        cy.editarUsuario(`${usuario5.nome} ${usuario5.sobrenome}`)
+        dadosParaValidar5 = { ...dadosParaValidar5, ...updateUsuario5 }
+        cy.validarDadosUsuario(dadosParaValidar5)
+        cy.voltar()
+
+        cy.editarUsuario(`${usuario7.nome} ${usuario7.sobrenome}`)
+        let dadosParaValidar7 = { ...formDefault, ...usuario7 }
+        cy.validarDadosUsuario(dadosParaValidar7)
+
+        cy.editarUsuario(`${usuario8.nome} ${usuario8.sobrenome}`)
+        let dadosParaValidar8 = { ...formDefault, ...usuario8 }
+        cy.validarDadosUsuario(dadosParaValidar8)
+        cy.voltar()
+
+        // DELETE
+        cy.log('## DELETE ##')
+
+        cy.excluirUsuario(`${usuario1.nome} ${usuario1.sobrenome}`)
+        cy.excluirUsuario(`${usuario2.nome} ${usuario2.sobrenome}`)
+        cy.excluirUsuario(`${usuario3.nome} ${usuario3.sobrenome}`)
+        cy.excluirUsuario(`${usuario4.nome} ${usuario4.sobrenome}`)
+        cy.excluirUsuario(`${usuario5.nome} ${usuario5.sobrenome}`)
+        cy.excluirUsuario(`${usuario6.nome} ${usuario6.sobrenome}`)
+        cy.excluirUsuario(`${usuario7.nome} ${usuario7.sobrenome}`)
+        cy.excluirUsuario(`${usuario8.nome} ${usuario8.sobrenome}`)
     })
 })
