@@ -1,8 +1,8 @@
 /// reference types="cypress" />
 import 'cypress-real-events/support'
 import { fakerPT_BR } from '@faker-js/faker'
-import { getAuthToken } from '../support/auth_helper'
-import { gerarData } from '../support/utils_helper'
+import { getAuthToken } from '../support/authHelper'
+import { gerarData } from '../support/utilsHelper'
 
 describe('trilha', () => {
 	let nome, tipoConteudo, categorias, novasCategorias, delCategorias, listaConteudos
@@ -10,17 +10,17 @@ describe('trilha', () => {
 	// Campos e dados default do formulário de trilha
 	let formularioConteudo = {
 		nome: '',
-		data_inicio: '',
-		hora_inicio: '',
-		data_fim: '',
-		hora_fim: '',
+		dataInicio: '',
+		horaInicio: '',
+		dataFim: '',
+		horaFim: '',
 		descricao: '',
 		tipo: 'Treinamento',
 		modalidade: 'Online',
 		sincronismo: 'Gravado',
-		carga_horaria: '0',
+		cargaHoraria: '0',
 		vigencia: '0',
-		atualizar_inscritos: false,
+		atualizarInscritos: false,
 		local: '',
 		cep: '',
 		endereco: '',
@@ -28,13 +28,13 @@ describe('trilha', () => {
 		cidade: '',
 		estado: '',
 		pais: '',
-		email_responsavel: Cypress.env('login'),
-		notificar_responsavel: false,
+		emailResponsavel: Cypress.env('login'),
+		notificarResponsavel: false,
 		addCategoria: '',
 		removerCategoria: '',
-		remover_banner: false,
+		removerBanner: false,
 		situacao: 'Em desenvolvimento',
-		exige_confirmacao: 'Habilitado'
+		exigeConfirmacao: 'Habilitado'
 	}
 
 	before(() => {
@@ -108,17 +108,17 @@ describe('trilha', () => {
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudoEdit = {
 			nome: novoNome,
-			data_inicio: '29/03/2024',
-			hora_inicio: '12:00',
-			data_fim: '29/04/2024',
-			hora_fim: '22:00',
+			dataInicio: '29/03/2024',
+			horaInicio: '12:00',
+			dataFim: '29/04/2024',
+			horaFim: '22:00',
 			descricao: `${fakerPT_BR.commerce.productDescription()} editado do evento ${novoNome}`,
 			tipo: 'Congresso',
 			modalidade: 'Presencial',
 			sincronismo: 'Ao vivo',
-			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			atualizar_inscritos: true,
+			atualizarInscritos: true,
 			local: 'Centro de Eventos',
 			cep: '85803-760',
 			endereco: 'Rua das Petúnias',
@@ -126,12 +126,12 @@ describe('trilha', () => {
 			cidade: 'Cascavel',
 			estado: 'PR',
 			pais: 'Brasil',
-			email_responsavel: fakerPT_BR.internet.email(),
-			notificar_responsavel: true,
+			emailResponsavel: fakerPT_BR.internet.email(),
+			notificarResponsavel: true,
 			addCategoria: categorias,
-			remover_banner: true,
+			removerBanner: true,
 			situacao: 'Liberado',
-			exige_confirmacao: 'Desabilitado'
+			exigeConfirmacao: 'Desabilitado'
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
@@ -158,15 +158,15 @@ describe('trilha', () => {
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
-			data_inicio: '29/03/2024',
-			hora_inicio: '01:00',
-			data_fim: '29/04/2024',
-			hora_fim: '23:00',
+			dataInicio: '29/03/2024',
+			horaInicio: '01:00',
+			dataFim: '29/04/2024',
+			horaFim: '23:00',
 			descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${nome}`,
 			tipo: 'Congresso',
 			modalidade: 'Presencial',
 			sincronismo: 'Ao vivo',
-			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			local: 'Centro de Eventos',
 			cep: '85804-455',
@@ -175,11 +175,11 @@ describe('trilha', () => {
 			cidade: 'Joinville',
 			estado: 'SC',
 			pais: 'Brasil',
-			email_responsavel: fakerPT_BR.internet.email(),
-			notificar_responsavel: true,
+			emailResponsavel: fakerPT_BR.internet.email(),
+			notificarResponsavel: true,
 			addCategoria: categorias,
 			situacao: 'Liberado',
-			exige_confirmacao: 'Habilitado'
+			exigeConfirmacao: 'Habilitado'
 		}
 
 		// CREATE
@@ -204,24 +204,24 @@ describe('trilha', () => {
 		novasCategorias = [`Cat3-${fakerPT_BR.hacker.noun()}`, `Cat4-${fakerPT_BR.hacker.noun()}`]
 		const conteudoEdit = {
 			nome: novoNome,
-			data_inicio: '01/01/2023',
-			hora_inicio: '00:01',
-			data_fim: '31/01/2025',
-			hora_fim: '23:59',
+			dataInicio: '01/01/2023',
+			horaInicio: '00:01',
+			dataFim: '31/01/2025',
+			horaFim: '23:59',
 			descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${novoNome}`,
 			tipo: 'Feira',
 			modalidade: 'Online',
 			sincronismo: 'Gravado',
-			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			atualizar_inscritos: true,
+			atualizarInscritos: true,
 			local: 'T&D Connect',
-			email_responsavel: fakerPT_BR.internet.email(),
-			notificar_responsavel: false,
+			emailResponsavel: fakerPT_BR.internet.email(),
+			notificarResponsavel: false,
 			addCategoria: novasCategorias,
-			remover_banner: true,
+			removerBanner: true,
 			situacao: 'Suspenso',
-			exige_confirmacao: 'Desabilitado',
+			exigeConfirmacao: 'Desabilitado',
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
@@ -256,22 +256,22 @@ describe('trilha', () => {
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`, `Cat3-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
-			data_inicio: '29/01/2023',
-			hora_inicio: '11:20',
-			data_fim: '29/01/2024',
-			hora_fim: '22:02',
+			dataInicio: '29/01/2023',
+			horaInicio: '11:20',
+			dataFim: '29/01/2024',
+			horaFim: '22:02',
 			descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${nome}`,
 			tipo: 'Feira',
 			modalidade: 'Online',
 			sincronismo: 'Gravado',
-			carga_horaria: fakerPT_BR.number.int({ min: 10, max: 99 }),
+			cargaHoraria: fakerPT_BR.number.int({ min: 10, max: 99 }),
 			vigencia: fakerPT_BR.number.int({ min: 10, max: 99 }),
 			local: 'Youtube',
-			email_responsavel: fakerPT_BR.internet.email(),
-			notificar_responsavel: false,
+			emailResponsavel: fakerPT_BR.internet.email(),
+			notificarResponsavel: false,
 			addCategoria: categorias,
 			situacao: 'Liberado',
-			exige_confirmacao: 'Desabilitado'
+			exigeConfirmacao: 'Desabilitado'
 		}
 
 		// CREATE
@@ -296,19 +296,19 @@ describe('trilha', () => {
 		novasCategorias = [`Cat4-${fakerPT_BR.hacker.noun()}`, `Cat5-${fakerPT_BR.hacker.noun()}`]		
 		const conteudoEdit = {
 			nome: novoNome,
-			data_inicio: '10/03/2000',
-			hora_inicio: '00:00',
-			data_fim: '31/12/2050',
-			hora_fim: '03:40',
+			dataInicio: '10/03/2000',
+			horaInicio: '00:00',
+			dataFim: '31/12/2050',
+			horaFim: '03:40',
 			descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${novoNome}`,
 			tipo: 'Webinar',
 			modalidade: 'Presencial',
 			sincronismo: 'Ao vivo',
-			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			atualizar_inscritos: true,
-			email_responsavel: fakerPT_BR.internet.email(),
-			notificar_responsavel: true,
+			atualizarInscritos: true,
+			emailResponsavel: fakerPT_BR.internet.email(),
+			notificarResponsavel: true,
 			addCategoria: novasCategorias,
 			situacao: 'Em desenvolvimento'
 		}
@@ -337,22 +337,22 @@ describe('trilha', () => {
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
-			data_inicio: gerarData(),
-			hora_inicio: '01:00',
-			data_fim: gerarData(),
-			hora_fim: '23:00',
+			dataInicio: gerarData(),
+			horaInicio: '01:00',
+			dataFim: gerarData(),
+			horaFim: '23:00',
 			descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${nome}`,
 			tipo: 'Outros',
 			modalidade: 'Online',
 			sincronismo: 'Gravado',
-			carga_horaria: fakerPT_BR.number.int({ min: 100, max: 999 }),
+			cargaHoraria: fakerPT_BR.number.int({ min: 100, max: 999 }),
 			vigencia: fakerPT_BR.number.int({ min: 100, max: 999 }),
 			local: 'Youtube',
-			email_responsavel: fakerPT_BR.internet.email(),
-			notificar_responsavel: false,
+			emailResponsavel: fakerPT_BR.internet.email(),
+			notificarResponsavel: false,
 			addCategoria: categorias,
 			situacao: 'Suspenso',
-			exige_confirmacao: 'Habilitado'
+			exigeConfirmacao: 'Habilitado'
 		}
 
 		// CREATE
@@ -375,12 +375,12 @@ describe('trilha', () => {
 
 		novasCategorias = [`Cat2-${fakerPT_BR.hacker.noun()}`, `Cat3-${fakerPT_BR.hacker.noun()}`]
 		const conteudoEdit = {
-			data_inicio: '01/01/2000',
-			data_fim: '28/02/2030',
+			dataInicio: '01/01/2000',
+			dataFim: '28/02/2030',
 			tipo: 'Treinamento',
 			addCategoria: novasCategorias,
 			situacao: 'Em desenvolvimento',
-			exige_confirmacao: 'Desabilitado'
+			exigeConfirmacao: 'Desabilitado'
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
@@ -411,13 +411,13 @@ describe('trilha', () => {
 			tipo: 'Palestra',
 			modalidade: 'Online',
 			sincronismo: 'Gravado',
-			carga_horaria: fakerPT_BR.number.int({ min: 1000, max: 9999 }),
+			cargaHoraria: fakerPT_BR.number.int({ min: 1000, max: 9999 }),
 			vigencia: fakerPT_BR.number.int({ min: 1000, max: 9999 }),
 			local: 'Twygo',
-			email_responsavel: fakerPT_BR.internet.email(),
+			emailResponsavel: fakerPT_BR.internet.email(),
 			addCategoria: categorias,
 			situacao: 'Suspenso',
-			exige_confirmacao: 'Desabilitado'
+			exigeConfirmacao: 'Desabilitado'
 		}
 
 		// CREATE
@@ -469,14 +469,14 @@ describe('trilha', () => {
 			tipo: 'Webinar',
 			modalidade: 'Online',
 			sincronismo: 'Gravado',
-			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 99 }),
+			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 99 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 99 }),
 			local: 'Zoom',
-			email_responsavel: fakerPT_BR.internet.email(),
-			notificar_responsavel: false,
+			emailResponsavel: fakerPT_BR.internet.email(),
+			notificarResponsavel: false,
 			addCategoria: categorias,
 			situacao: 'Em desenvolvimento',
-			exige_confirmacao: 'Desabilitado'
+			exigeConfirmacao: 'Desabilitado'
 		}
 
 		// CREATE
@@ -559,9 +559,9 @@ describe('trilha', () => {
 		delCategorias = categorias[0]
 		const conteudoEdit = {
 			vigencia: '0',
-			atualizar_inscritos: true,
+			atualizarInscritos: true,
 			removerCategoria: delCategorias,
-			remover_banner: true
+			removerBanner: true
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })

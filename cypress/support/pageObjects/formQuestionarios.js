@@ -10,7 +10,7 @@ class formQuestionarios {
         },
         nome: {
             seletor: '#question_list_name',
-            tipo: 'input_title'
+            tipo: 'inputTitle'
         },
         tipoProva: {
             seletor: '#question_list_kind_exam',
@@ -38,12 +38,12 @@ class formQuestionarios {
         },
         addCategoria1: {
             seletor: '#add_categories1',
-            tipo: 'input_add',
+            tipo: 'inputAdd',
 			seletorValor: '#categories1_'
         },
         addCategoria2: {
             seletor: '#add_categories2',
-            tipo: 'input_add',
+            tipo: 'inputAdd',
 			seletorValor: '#categories2_'
         },
 		editarCategoria: {
@@ -53,7 +53,7 @@ class formQuestionarios {
 		},
 		edicaoCategoria: {
 			seletor: '',
-			tipo: 'input_category_edit'
+			tipo: 'inputCategoryEdit'
 		},
 		excluirCategoria: {
 			seletor: '.remove_category',
@@ -114,7 +114,7 @@ class formQuestionarios {
 
 		let valorFinal = valor !== undefined ? valor : valorDefault
 
-		if (opcoes.limpar && tipo === 'input' || tipo === 'input_title') {
+		if (opcoes.limpar && tipo === 'input' || tipo === 'inputTitle') {
 			cy.get(seletor)
 				.clear()
 			if (valorFinal === '') {
@@ -127,7 +127,7 @@ class formQuestionarios {
 				.clear()
 		} else if (valorFinal !== undefined) {
 			switch (tipo) {
-				case 'input_title':
+				case 'inputTitle':
 					cy.get(seletor)
 						.type(valorFinal)
 						.wait(2000)
@@ -144,7 +144,7 @@ class formQuestionarios {
 						}
 					})
 					break
-				case 'input_add':
+				case 'inputAdd':
 					if (Array.isArray(valorFinal)) {
 						valorFinal.forEach((valor) => {
 						cy.get(seletor)
@@ -192,7 +192,7 @@ class formQuestionarios {
 						throw new Error(`O valor de ${nomeCampo} está undefined`)
 					}
 					break				
-				case 'input_category_edit':
+				case 'inputCategoryEdit':
 					cy.focused().clear().type(valorFinal)
 					break
 				default:
@@ -216,11 +216,11 @@ class formQuestionarios {
 
 		switch (tipo) {
 			case 'input':
-			case 'input_title':
+			case 'inputTitle':
 				cy.get(seletor)
 					.should('have.value', valor)
 				break
-			case 'input_add':
+			case 'inputAdd':
 				if (Array.isArray(valor)) {
 					cy.get(seletorValor)
 						.each(($input, index) => {
@@ -243,7 +243,7 @@ class formQuestionarios {
 				break
 			case 'buttonEdit':
 			case 'buttonDelete':
-			case 'input_category_edit':
+			case 'inputCategoryEdit':
 				// Não é necessário validar
 				break
 			default:

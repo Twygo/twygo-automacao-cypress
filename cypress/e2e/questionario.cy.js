@@ -3,7 +3,7 @@ import { fakerPT_BR } from '@faker-js/faker'
 import formQuestionarios from '../support/pageObjects/formQuestionarios'
 
 describe('Questionário', () => {
-    const TIMEOUT_PADRAO = 5000
+    const timeoutPadrao = 5000
     const formulario = new formQuestionarios()
 
     let nomeQuestionario, nomeCategoria1, nomeCategoria2, addCategoria1, addCategoria2, categoriasAtualizadas, listaQuestionarios

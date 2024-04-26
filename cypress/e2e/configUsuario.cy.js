@@ -1,6 +1,6 @@
 ///reference types="cypress" />
 import { fakerPT_BR, faker } from "@faker-js/faker"
-import { getAuthToken } from '../support/auth_helper'
+import { getAuthToken } from '../support/authHelper'
 let fakerbr = require('faker-br')
 
 describe('Configuração de Usuário', () => {

@@ -171,5 +171,9 @@
     "instrutores": {
         "breadcrumb": "Detalhes do evento",
         "tituloPg": "Lista de Instrutores"
+    },
+    "menuSophia": {
+        "exclusaoEmAndamento": "A exclusão está sendo realizada, aguarde alguns instantes.",
+        "exclusaoConcluida": "Todos os dados solicitados foram excluídos, atualize a página."
     }
 }
