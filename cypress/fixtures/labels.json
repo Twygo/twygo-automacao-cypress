@@ -111,7 +111,11 @@
         "msgSucessoInativar": "Foi realizado a inativação do usuário.",
         "tituloModalAtivar": "Ativar o usuário",
         "textoModalAtivar": "Você tem certeza que deseja realizar a ativação do usuário?",
-        "msgSucessoAtivar": "Foi realizado a ativação do usuário."
+        "msgSucessoAtivar": "Foi realizado a ativação do usuário.",
+        "msgUploadImportacao": "Arquivo enviado com sucesso",
+        "msgImportacaoEmAndamento": "Importação será executada em instantes.",
+        "msgImportacaoConcluida": "Importação concluída com successo.",
+        "msgImportacaoCancelada": "Erro na importação. Verifique o log e tente novamente."
     },
     "participantes": {
         "breadcrumb": "Detalhes do evento",
@@ -129,7 +133,7 @@
         "breadcrumbTrilha": "Lista de conteúdos",
         "msgUploadImportacao": "Arquivo enviado com sucesso",
         "msgImportacaoEmAndamento": "Importação será executada em instantes.",
-        "msgImportacaoConcluida": "Importação concluída com sucesso."
+        "msgImportacaoConcluida": "Importação concluída com successo."
     },
     "pt": {
         "configUsuario": {

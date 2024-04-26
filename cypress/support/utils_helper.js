@@ -79,3 +79,21 @@ export function converterDataEHoraParaISO(data, hora) {
     let dataISO = `${ano}-${mes}-${dia}T${hora}:00.000Z`
     return dataISO
 }
+
+export function gerarDataEHoraAtual() {
+    // Captura a data e hora atuais
+    let agora = new Date();
+
+    // Formata a data e hora para corresponder ao formato DD/MM/AAAA HH:MM (ex: '25/04/2024 18:25')
+    // Ajusta os parâmetros de acordo com a necessidade de formatação
+    let dataFormatada = agora.toLocaleString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    }).replace(/\//g, '-').replace(/ /g, ' ')
+
+    return dataFormatada
+}
