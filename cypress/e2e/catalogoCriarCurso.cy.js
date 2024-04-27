@@ -1,8 +1,8 @@
 /// reference types="cypress" />
 import 'cypress-real-events/support'
 import { fakerPT_BR } from '@faker-js/faker'
-import { getAuthToken } from '../support/auth_helper'
-import { converterDataEHoraParaISO } from '../support/utils_helper'
+import { getAuthToken } from '../support/authHelper'
+import { converterDataEHoraParaISO } from '../support/utilsHelper'
 import formConteudos from "../support/pageObjects/formConteudos"
 
 describe('criar curso via catálogo', () => {
@@ -12,21 +12,21 @@ describe('criar curso via catálogo', () => {
 
 	// Campos e dados default do formulário de criar curso via catálogo
 	let formularioConteudo = {
-		nome_portfolio: '',
+		nomePortfolio: '',
 		nome: '',
-		data_inicio: '',
-		hora_inicio: '',
-		data_fim: '',
-		hora_fim: '',
+		dataInicio: '',
+		horaInicio: '',
+		dataFim: '',
+		horaFim: '',
 		descricao: '',
 		tipo: 'Treinamento',
 		modalidade: 'Online',
 		sincronismo: 'Gravado',
 		canal: '',
-		carga_horaria: '0',
-		numero_turma: '',
+		cargaHoraria: '0',
+		numeroTurma: '',
 		vigencia: '0',
-		atualizar_inscritos: false,
+		atualizarInscritos: false,
 		local: '',
 		cep: '',
 		endereco: '',
@@ -34,29 +34,29 @@ describe('criar curso via catálogo', () => {
 		cidade: '',
 		estado: '',
 		pais: '',
-		email_responsavel: Cypress.env('login'),
+		emailResponsavel: Cypress.env('login'),
 		site: '',
-		notificar_responsavel: false,
-		rotulo_contato: '',
+		notificarResponsavel: false,
+		rotuloContato: '',
 		hashtag: '',
 		addCategoria: '',
 		removerCategoria: '',
-		remover_banner: false,
-		permite_anexo: 'Desabilitado',
-		mensagem_anexo: '',
-		status_iframe_anexo: false,
+		removerBanner: false,
+		permiteAnexo: 'Desabilitado',
+		mensagemAnexo: '',
+		statusIframeAnexo: false,
 		visualizacao: 'Inscritos',
 		situacao: 'Em desenvolvimento',
-		notificar_concluir_primeira_aula: 'Não',
-		notificar_usuarios: 'Não',
-		dias_teste: '0',
-		habilitar_dias_teste: false,
-		exige_confirmacao: 'Habilitado',
-		valor_inscricao: '0,00',
-		habilitar_pagamento: false,
-		nr_parcelas: '1',
-		valor_acrescimo: '0.0',
-		habilitar_chat: false
+		notificarConcluirPrimeiraAula: 'Não',
+		notificarUsuarios: 'Não',
+		diasTeste: '0',
+		habilitarDiasTeste: false,
+		exigeConfirmacao: 'Habilitado',
+		valorInscricao: '0,00',
+		habilitarPagamento: false,
+		nrParcelas: '1',
+		valorAcrescimo: '0.0',
+		habilitarChat: false
 	}
 
 	let visualizacaoTexto = {
@@ -113,23 +113,23 @@ describe('criar curso via catálogo', () => {
         // Massa de dados para criar um curso via catálogo
 		const catalogo = {
 			nome: nome,
-			data_inicio: '10/02/2024',
-			hora_inicio: '01:00',
-			data_fim: '15/12/2028',
-			hora_fim: '12:00',
+			dataInicio: '10/02/2024',
+			horaInicio: '01:00',
+			dataFim: '15/12/2028',
+			horaFim: '12:00',
 			descricao: `Descrição do catálogo: ${nome}`,
-			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 99 }),
+			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 99 }),
 			visualizacao: 'Inscritos',
 			situacao: 'Liberado'
 		}
 		
-		const { nome: name, descricao: description, data_inicio, hora_inicio, data_fim, hora_fim, carga_horaria: workload, situacao, visualizacao } = catalogo
+		const { nome: name, descricao: description, dataInicio, horaInicio, dataFim, horaFim, cargaHoraria: workload, situacao, visualizacao } = catalogo
 
 		const body = {
 			name,
 			description,
-			date_time_start: converterDataEHoraParaISO(data_inicio, hora_inicio),
-			date_time_end: converterDataEHoraParaISO(data_fim, hora_fim),
+			date_time_start: converterDataEHoraParaISO(dataInicio, horaInicio),
+			date_time_end: converterDataEHoraParaISO(dataFim, horaFim),
 			workload,
 			situation: situacaoTexto[situacao], 
 			inscription_access: visualizacaoTexto[visualizacao]
@@ -156,8 +156,8 @@ describe('criar curso via catálogo', () => {
 		 * que não seguem o preenchimento realizado no cadastro do catálogo.
 		 */		
 		let dadosEspecificos = {
-			nome_portfolio: catalogo.nome,
-			email_responsavel: '',
+			nomePortfolio: catalogo.nome,
+			emailResponsavel: '',
 			situacao: 'Em desenvolvimento'
 		}
 
@@ -171,19 +171,19 @@ describe('criar curso via catálogo', () => {
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudoEdit = {
 			nome: novoNome,
-			data_inicio: '29/03/2024',
-			hora_inicio: '12:00',
-			data_fim: '29/04/2024',
-			hora_fim: '22:00',
+			dataInicio: '29/03/2024',
+			horaInicio: '12:00',
+			dataFim: '29/04/2024',
+			horaFim: '22:00',
 			descricao: `Descrição editada do curso nome: ${novoNome}`,
 			tipo: 'Congresso',
 			modalidade: 'Presencial',
 			sincronismo: 'Ao vivo',
 			canal: 'Outros',
-			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			numero_turma: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			numeroTurma: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			atualizar_inscritos: true,
+			atualizarInscritos: true,
 			local: 'Centro de Eventos',
 			cep: '85803-760',
 			endereco: 'Rua das Petúnias',
@@ -191,28 +191,28 @@ describe('criar curso via catálogo', () => {
 			cidade: 'Cascavel',
 			estado: 'PR',
 			pais: 'Brasil',
-			email_responsavel: fakerPT_BR.internet.email(),
+			emailResponsavel: fakerPT_BR.internet.email(),
 			site: fakerPT_BR.internet.url(),
-			notificar_responsavel: true,
-			rotulo_contato: 'Contato',
+			notificarResponsavel: true,
+			rotuloContato: 'Contato',
 			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
-			remover_banner: true,
-			permite_anexo: 'Habilitado',
-			status_iframe_anexo: true,
-			mensagem_anexo: `Insira o anexo do Curso: ${novoNome}`,
+			removerBanner: true,
+			permiteAnexo: 'Habilitado',
+			statusIframeAnexo: true,
+			mensagemAnexo: `Insira o anexo do Curso: ${novoNome}`,
 			visualizacao: 'Público',
 			situacao: 'Liberado',
-			notificar_concluir_primeira_aula: 'Sim',
-			notificar_usuarios: 'Sim',
-			dias_teste: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			habilitar_dias_teste: true,
-			exige_confirmacao: 'Desabilitado',
-			valor_inscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
-			habilitar_pagamento: true,
-			nr_parcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			valor_acrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 }),
-			habilitar_chat: true
+			notificarConcluirPrimeiraAula: 'Sim',
+			notificarUsuarios: 'Sim',
+			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			habilitarDiasTeste: true,
+			exigeConfirmacao: 'Desabilitado',
+			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			habilitarPagamento: true,
+			nrParcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			valorAcrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 }),
+			habilitarChat: true
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
@@ -241,23 +241,23 @@ describe('criar curso via catálogo', () => {
 		// Massa de dados para criar um curso via catálogo
 		const catalogo = {
 			nome: nome,
-			data_inicio: '01/01/2024',
-			hora_inicio: '00:01',
-        	data_fim: '31/12/2024',
-        	hora_fim: '23:59',
+			dataInicio: '01/01/2024',
+			horaInicio: '00:01',
+			dataFim: '31/12/2024',
+			horaFim: '23:59',
 			descricao: `Descrição do catálogo: ${nome}`,
-			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 99 }),
+			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 99 }),
 			visualizacao: 'Colaborador',
 			situacao: 'Liberado'
 		}
 
-		const { nome: name, descricao: description, data_inicio, hora_inicio, data_fim, hora_fim, carga_horaria: workload, situacao, visualizacao } = catalogo
+		const { nome: name, descricao: description, dataInicio, horaInicio, dataFim, horaFim, cargaHoraria: workload, situacao, visualizacao } = catalogo
 
 		const body = {
 			name,
 			description,
-			date_time_start: converterDataEHoraParaISO(data_inicio, hora_inicio),
-			date_time_end: converterDataEHoraParaISO(data_fim, hora_fim),
+			date_time_start: converterDataEHoraParaISO(dataInicio, horaInicio),
+			date_time_end: converterDataEHoraParaISO(dataFim, horaFim),
 			workload,
 			situation: situacaoTexto[situacao], 
 			inscription_access: visualizacaoTexto[visualizacao]
@@ -284,8 +284,8 @@ describe('criar curso via catálogo', () => {
 		 * que não seguem o preenchimento realizado no cadastro do catálogo.
 		 */		
 		let dadosEspecificos = {
-			nome_portfolio: catalogo.nome,
-			email_responsavel: '',
+			nomePortfolio: catalogo.nome,
+			emailResponsavel: '',
 			situacao: 'Em desenvolvimento'
 		}
 
@@ -299,38 +299,38 @@ describe('criar curso via catálogo', () => {
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudoEdit = {
 			nome: novoNome,
-			data_inicio: '10/03/2000',
-			hora_inicio: '00:00',
-			data_fim: '31/12/2050',
-			hora_fim: '03:40',
+			dataInicio: '10/03/2000',
+			horaInicio: '00:00',
+			dataFim: '31/12/2050',
+			horaFim: '03:40',
 			descricao: `Descrição editada do conteúdo: ${novoNome}`,
 			tipo: 'Webinar',
 			modalidade: 'Presencial',
 			sincronismo: 'Ao vivo',
 			canal: 'Aberto',
-			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			numero_turma: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			numeroTurma: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			atualizar_inscritos: true,
-			email_responsavel: fakerPT_BR.internet.email(),
+			atualizarInscritos: true,
+			emailResponsavel: fakerPT_BR.internet.email(),
 			site: fakerPT_BR.internet.url(),
-			notificar_responsavel: true,
-			rotulo_contato: 'Mande-nos um e-mail',
+			notificarResponsavel: true,
+			rotuloContato: 'Mande-nos um e-mail',
 			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
-			remover_banner: true,
-			permite_anexo: 'Habilitado',
-			status_iframe_anexo: true,
-			mensagem_anexo: `${fakerPT_BR.lorem.sentence()} anexo do curso ${novoNome}`,
+			removerBanner: true,
+			permiteAnexo: 'Habilitado',
+			statusIframeAnexo: true,
+			mensagemAnexo: `${fakerPT_BR.lorem.sentence()} anexo do curso ${novoNome}`,
 			visualizacao: 'Colaborador',
 			situacao: 'Em desenvolvimento',
-			notificar_concluir_primeira_aula: 'Não',
-			dias_teste: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			habilitar_dias_teste: true,
-			exige_confirmacao: 'Desabilitado',
-			valor_inscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
-			habilitar_pagamento: true,
-			habilitar_chat: true
+			notificarConcluirPrimeiraAula: 'Não',
+			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			habilitarDiasTeste: true,
+			exigeConfirmacao: 'Desabilitado',
+			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			habilitarPagamento: true,
+			habilitarChat: true
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
@@ -359,22 +359,22 @@ describe('criar curso via catálogo', () => {
 		// Massa de dados para criar um curso via catálogo
         const catalogo = {
 			nome: nome,
-			data_inicio: '19/12/2024',
-        	hora_inicio: '11:09',
-			data_fim: '31/01/2025',
-			hora_fim: '22:20',
+			dataInicio: '19/12/2024',
+			horaInicio: '11:09',
+			dataFim: '31/01/2025',
+			horaFim: '22:20',
 			descricao: `Descrição do catálogo: ${nome}`,
 			visualizacao: 'Usuários',
 			situacao: 'Liberado'
 		}
 
-		const { nome: name, descricao: description, data_inicio, hora_inicio, data_fim, hora_fim, carga_horaria: workload, situacao, visualizacao } = catalogo
+		const { nome: name, descricao: description, dataInicio, horaInicio, dataFim, horaFim, cargaHoraria: workload, situacao, visualizacao } = catalogo
 
 		const body = {
 			name,
 			description,
-			date_time_start: converterDataEHoraParaISO(data_inicio, hora_inicio),
-			date_time_end: converterDataEHoraParaISO(data_fim, hora_fim),
+			date_time_start: converterDataEHoraParaISO(dataInicio, horaInicio),
+			date_time_end: converterDataEHoraParaISO(dataFim, horaFim),
 			situation: situacaoTexto[situacao], 
 			inscription_access: visualizacaoTexto[visualizacao]
 		}
@@ -400,9 +400,9 @@ describe('criar curso via catálogo', () => {
 		 * que não seguem o preenchimento realizado no cadastro do catálogo.
 		 */		
 		let dadosEspecificos = {
-			nome_portfolio: catalogo.nome,
+			nomePortfolio: catalogo.nome,
 			nome: catalogo.nome,
-			email_responsavel: '',
+			emailResponsavel: '',
 			situacao: 'Em desenvolvimento'
 		}
 
@@ -414,14 +414,14 @@ describe('criar curso via catálogo', () => {
 
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudoEdit = {
-			data_inicio: '01/01/2000',
-			data_fim: '28/02/2030',
+			dataInicio: '01/01/2000',
+			dataFim: '28/02/2030',
 			tipo: 'Feira',
 			canal: 'Em companhia',
 			addCategoria: categorias,
 			visualizacao: 'Público',
 			situacao: 'Suspenso',
-			exige_confirmacao: 'Desabilitado'
+			exigeConfirmacao: 'Desabilitado'
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
@@ -450,22 +450,22 @@ describe('criar curso via catálogo', () => {
 		// Massa de dados para criar um curso via catálogo
         const catalogo = {
 			nome: nome,
-			data_inicio: '01/01/2000',
-			hora_inicio: '00:01',
-			data_fim: '01/01/2050',
-			hora_fim: '01:00',
+			dataInicio: '01/01/2000',
+			horaInicio: '00:01',
+			dataFim: '01/01/2050',
+			horaFim: '01:00',
 			descricao: `Descrição do conteúdo: ${nome}`,
 			visualizacao: 'Público',
 			situacao: 'Liberado'
 		}
 
-		const { nome: name, descricao: description, data_inicio, hora_inicio, data_fim, hora_fim, carga_horaria: workload, situacao, visualizacao } = catalogo
+		const { nome: name, descricao: description, dataInicio, horaInicio, dataFim, horaFim, cargaHoraria: workload, situacao, visualizacao } = catalogo
 
 		const body = {
 			name,
 			description,
-			date_time_start: converterDataEHoraParaISO(data_inicio, hora_inicio),
-			date_time_end: converterDataEHoraParaISO(data_fim, hora_fim),
+			date_time_start: converterDataEHoraParaISO(dataInicio, horaInicio),
+			date_time_end: converterDataEHoraParaISO(dataFim, horaFim),
 			situation: situacaoTexto[situacao], 
 			inscription_access: visualizacaoTexto[visualizacao]
 		}
@@ -491,9 +491,9 @@ describe('criar curso via catálogo', () => {
 		 * que não seguem o preenchimento realizado no cadastro do catálogo.
 		 */		
 		let dadosEspecificos = {
-			nome_portfolio: catalogo.nome,
+			nomePortfolio: catalogo.nome,
 			nome: catalogo.nome,
-			email_responsavel: '',
+			emailResponsavel: '',
 			situacao: 'Em desenvolvimento'
 		}
 
@@ -539,7 +539,7 @@ describe('criar curso via catálogo', () => {
 			situacao: 'Em desenvolvimento'
 		}
 
-		const { nome: name, descricao: description, carga_horaria: workload, situacao, visualizacao } = catalogo
+		const { nome: name, descricao: description, cargaHoraria: workload, situacao, visualizacao } = catalogo
 
 		const body = {
 			name,
@@ -576,17 +576,17 @@ describe('criar curso via catálogo', () => {
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudoEdit2 = {
 			nome: novoNome,
-			data_inicio: '29/03/2024',
-			hora_inicio: '01:00',
-			data_fim: '29/04/2024',
-			hora_fim: '23:00',
+			dataInicio: '29/03/2024',
+			horaInicio: '01:00',
+			dataFim: '29/04/2024',
+			horaFim: '23:00',
 			descricao: `Descrição do conteúdo: ${novoNome}`,
 			tipo: 'Congresso',
 			modalidade: 'Presencial',
 			sincronismo: 'Ao vivo',
 			canal: 'Outros',
-			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			numero_turma: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			numeroTurma: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			local: 'Centro de Eventos',
 			cep: '85804-455',
@@ -595,26 +595,26 @@ describe('criar curso via catálogo', () => {
 			cidade: 'Joinville',
 			estado: 'SC',
 			pais: 'Brasil',
-			email_responsavel: fakerPT_BR.internet.email(),
+			emailResponsavel: fakerPT_BR.internet.email(),
 			site: fakerPT_BR.internet.url(),
-			notificar_responsavel: true,
-			rotulo_contato: 'Fale conosco',
+			notificarResponsavel: true,
+			rotuloContato: 'Fale conosco',
 			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
-			permite_anexo: 'Habilitado',
-			status_iframe_anexo: true,
-			mensagem_anexo: `Insira o anexo do Catálogo do evento: ${novoNome}`,
+			permiteAnexo: 'Habilitado',
+			statusIframeAnexo: true,
+			mensagemAnexo: `Insira o anexo do Catálogo do evento: ${novoNome}`,
 			visualizacao: 'Inscritos',
 			situacao: 'Liberado',
-			notificar_concluir_primeira_aula: 'Sim',
-			dias_teste: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			habilitar_dias_teste: true,
-			exige_confirmacao: 'Habilitado',
-			valor_inscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
-			habilitar_pagamento: true,
-			nr_parcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			valor_acrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 }),
-			habilitar_chat: true
+			notificarConcluirPrimeiraAula: 'Sim',
+			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			habilitarDiasTeste: true,
+			exigeConfirmacao: 'Habilitado',
+			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			habilitarPagamento: true,
+			nrParcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			valorAcrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 }),
+			habilitarChat: true
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit2, { limpar: true })
@@ -630,7 +630,7 @@ describe('criar curso via catálogo', () => {
 		 * Dados do catálogo exibidos no formulário de criar curso via catálogo
 		 */
 		let dadosEspecificos = {
-			nome_portfolio: catalogo.nome		
+			nomePortfolio: catalogo.nome		
 		}
 
 		let dadosParaValidar = { ...formularioConteudo, ...catalogo, ...conteudoEdit1, ...conteudoEdit2, ...dadosEspecificos }
@@ -716,17 +716,17 @@ describe('criar curso via catálogo', () => {
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudoEdit2 = {
 			nome: novoNome,
-			data_inicio: '01/01/2050',
-			hora_inicio: '12:01',
-			data_fim: '01/01/2100',
-			hora_fim: '23:59',
+			dataInicio: '01/01/2050',
+			horaInicio: '12:01',
+			dataFim: '01/01/2100',
+			horaFim: '23:59',
 			descricao: `Descrição do conteúdo: ${novoNome}`,
 			tipo: 'Webinar',
 			modalidade: 'Presencial',
 			sincronismo: 'Gravado',
 			canal: 'Aberto',
-			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			numero_turma: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			numeroTurma: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			local: 'Centro de Eventos',
 			cep: '85804-455',
@@ -735,26 +735,26 @@ describe('criar curso via catálogo', () => {
 			cidade: 'Joinville',
 			estado: 'SC',
 			pais: 'Brasil',
-			email_responsavel: fakerPT_BR.internet.email(),
+			emailResponsavel: fakerPT_BR.internet.email(),
 			site: fakerPT_BR.internet.url(),
-			notificar_responsavel: true,
-			rotulo_contato: 'Envie-nos uma mensagem',
+			notificarResponsavel: true,
+			rotuloContato: 'Envie-nos uma mensagem',
 			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
-			permite_anexo: 'Habilitado',
-			status_iframe_anexo: true,
-			mensagem_anexo: `Insira o anexo do Catálogo do evento: ${novoNome}`,
+			permiteAnexo: 'Habilitado',
+			statusIframeAnexo: true,
+			mensagemAnexo: `Insira o anexo do Catálogo do evento: ${novoNome}`,
 			visualizacao: 'Inscritos',
 			situacao: 'Liberado',
-			notificar_concluir_primeira_aula: 'Sim',
-			dias_teste: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			habilitar_dias_teste: true,
-			exige_confirmacao: 'Desabilitado',
-			valor_inscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
-			habilitar_pagamento: true,
-			nr_parcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			valor_acrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 }),
-			habilitar_chat: true
+			notificarConcluirPrimeiraAula: 'Sim',
+			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			habilitarDiasTeste: true,
+			exigeConfirmacao: 'Desabilitado',
+			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			habilitarPagamento: true,
+			nrParcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			valorAcrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 }),
+			habilitarChat: true
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit2, { limpar: true })
@@ -770,7 +770,7 @@ describe('criar curso via catálogo', () => {
 		 * Dados do catálogo exibidos no formulário de criar curso via catálogo
 		 */
 		let dadosEspecificos = {
-			nome_portfolio: catalogo.nome		
+			nomePortfolio: catalogo.nome		
 		}
 
 		let dadosParaValidar = { ...formularioConteudo, ...catalogo, ...conteudoEdit1, ...conteudoEdit2, ...dadosEspecificos }
@@ -823,39 +823,39 @@ describe('criar curso via catálogo', () => {
 		novasCategorias = [`Cat3-${fakerPT_BR.hacker.noun()}`, `Cat4-${fakerPT_BR.hacker.noun()}`]
 		const conteudoEdit4 = {
 			nome: nomeEdit,
-			data_inicio: '01/01/2023',
-			hora_inicio: '00:01',
-			data_fim: '31/01/2025',
-			hora_fim: '23:59',
+			dataInicio: '01/01/2023',
+			horaInicio: '00:01',
+			dataFim: '31/01/2025',
+			horaFim: '23:59',
 			descricao: `Atualização da descrição do curso ${nomeEdit} após excluir o catálogo: ${catalogo.nome}`,
 			tipo: 'Feira',
 			modalidade: 'Online',
 			sincronismo: 'Gravado',
 			canal: '',
-			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			numero_turma: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			numeroTurma: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			atualizar_inscritos: true,
+			atualizarInscritos: true,
 			local: 'T&D Connect',
-			email_responsavel: fakerPT_BR.internet.email(),
+			emailResponsavel: fakerPT_BR.internet.email(),
 			site: fakerPT_BR.internet.url(),
-			notificar_responsavel: false,
-			rotulo_contato: 'Contato',
+			notificarResponsavel: false,
+			rotuloContato: 'Contato',
 			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: novasCategorias,
-			remover_banner: true,
-			permite_anexo: 'Desabilitado',
-			status_iframe_anexo: false,
+			removerBanner: true,
+			permiteAnexo: 'Desabilitado',
+			statusIframeAnexo: false,
 			visualizacao: 'Público',
 			situacao: 'Suspenso',
-			notificar_concluir_primeira_aula: 'Não',
-			notificar_usuarios: 'Sim',
-			dias_teste: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			habilitar_dias_teste: false,
-			exige_confirmacao: 'Desabilitado',
-			valor_inscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
-			habilitar_pagamento: false,
-			habilitar_chat: false
+			notificarConcluirPrimeiraAula: 'Não',
+			notificarUsuarios: 'Sim',
+			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			habilitarDiasTeste: false,
+			exigeConfirmacao: 'Desabilitado',
+			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			habilitarPagamento: false,
+			habilitarChat: false
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit4, { limpar: true })
@@ -892,17 +892,17 @@ describe('criar curso via catálogo', () => {
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
-			data_inicio: '29/03/2024',
-			hora_inicio: '01:00',
-			data_fim: '29/04/2024',
-			hora_fim: '23:00',
+			dataInicio: '29/03/2024',
+			horaInicio: '01:00',
+			dataFim: '29/04/2024',
+			horaFim: '23:00',
 			descricao: `${fakerPT_BR.commerce.productDescription()} do conteúdo nome: ${nome}`,
 			tipo: 'Congresso',
 			modalidade: 'Presencial',
 			sincronismo: 'Ao vivo',
 			canal: 'Outros',
-			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			numero_turma: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			numeroTurma: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			local: 'Centro de Eventos',
 			cep: '85804-455',
@@ -911,25 +911,25 @@ describe('criar curso via catálogo', () => {
 			cidade: 'Joinville',
 			estado: 'SC',
 			pais: 'Brasil',
-			email_responsavel: fakerPT_BR.internet.email(),
+			emailResponsavel: fakerPT_BR.internet.email(),
 			site: fakerPT_BR.internet.url(),
-			notificar_responsavel: true,
-			rotulo_contato: 'Fale conosco',
+			notificarResponsavel: true,
+			rotuloContato: 'Fale conosco',
 			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
-			permite_anexo: 'Habilitado',
-			status_iframe_anexo: true,
-			mensagem_anexo: `Insira o anexo do Catálogo do evento: ${nome}`,
+			permiteAnexo: 'Habilitado',
+			statusIframeAnexo: true,
+			mensagemAnexo: `Insira o anexo do Catálogo do evento: ${nome}`,
 			visualizacao: 'Inscritos',
 			situacao: 'Liberado',
-			notificar_concluir_primeira_aula: 'Sim',
-			dias_teste: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			habilitar_dias_teste: true,
-			exige_confirmacao: 'Desabilitado',
-			valor_inscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
-			habilitar_pagamento: true,
-			nr_parcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			valor_acrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 })
+			notificarConcluirPrimeiraAula: 'Sim',
+			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			habilitarDiasTeste: true,
+			exigeConfirmacao: 'Desabilitado',
+			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			habilitarPagamento: true,
+			nrParcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			valorAcrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 })
 		}
 		
 		// CREATE
@@ -957,11 +957,11 @@ describe('criar curso via catálogo', () => {
 		 * que não seguem o preenchimento realizado no cadastro do catálogo.
 		 */		
 		let dadosEspecificos = {
-			nome_portfolio: conteudo.nome, 
+			nomePortfolio: conteudo.nome, 
 			situacao: 'Em desenvolvimento',
-			notificar_concluir_primeira_aula: 'Não',
-			habilitar_dias_teste: false, 
-			exige_confirmacao: 'Habilitado'		
+			notificarConcluirPrimeiraAula: 'Não',
+			habilitarDiasTeste: false, 
+			exigeConfirmacao: 'Habilitado'		
 		}
 
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo, ...dadosEspecificos }
@@ -975,16 +975,16 @@ describe('criar curso via catálogo', () => {
 		delCategorias = categorias[0]
 		const conteudoEdit = {
 			nome: novoNome,
-			data_inicio: '05/09/2024',
-			hora_inicio: '11:11',
-			data_fim: '28/09/2040',
-			hora_fim: '23:23',
+			dataInicio: '05/09/2024',
+			horaInicio: '11:11',
+			dataFim: '28/09/2040',
+			horaFim: '23:23',
 			descricao: `Descrição editada do curso nome: ${novoNome}`,
 			tipo: 'Palestra',
 			sincronismo: 'Gravado',
 			canal: 'Aberto',
-			carga_horaria: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			numero_turma: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			numeroTurma: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			local: 'Youtube - Twygo',
 			cep: '85804-455',
@@ -993,23 +993,23 @@ describe('criar curso via catálogo', () => {
 			cidade: 'Joinville',
 			estado: 'SC',
 			pais: 'Brasil',
-			email_responsavel: fakerPT_BR.internet.email(),
+			emailResponsavel: fakerPT_BR.internet.email(),
 			site: fakerPT_BR.internet.url(),
-			rotulo_contato: 'Contato',
+			rotuloContato: 'Contato',
 			hashtag: fakerPT_BR.hacker.adjective(),
 			removerCategoria: delCategorias,
 			addCategoria: novasCategorias,
-			permite_anexo: 'Desabilitado',
-			status_iframe_anexo: false,
+			permiteAnexo: 'Desabilitado',
+			statusIframeAnexo: false,
 			visualizacao: 'Público',
-			notificar_concluir_primeira_aula: 'Não',
-			notificar_usuarios: 'Não',
-			dias_teste: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			exige_confirmacao: 'Desabilitado',
-			valor_inscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
-			nr_parcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			valor_acrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 }),
-			habilitar_chat: true
+			notificarConcluirPrimeiraAula: 'Não',
+			notificarUsuarios: 'Não',
+			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			exigeConfirmacao: 'Desabilitado',
+			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			nrParcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
+			valorAcrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 }),
+			habilitarChat: true
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })

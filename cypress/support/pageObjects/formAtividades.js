@@ -27,7 +27,7 @@ class formAtividades {
 		},
 		resumoAtividade: {
 			seletor: 'div#cke_content_briefing iframe.cke_wysiwyg_frame',
-			tipo: 'iframe_text'
+			tipo: 'iframeText'
 		},
 		tempoMinPermanencia: {
 			seletor: '#enable_minimum_permanence_time',
@@ -53,7 +53,7 @@ class formAtividades {
 		// Texto
 		descricaoTexto: {
 			seletor: 'div#cke_content_description iframe.cke_wysiwyg_frame',
-			tipo: 'iframe_text'
+			tipo: 'iframeText'
 		},
 		// PDF
 		enviarPdf: {
@@ -256,7 +256,7 @@ class formAtividades {
 					cy.contains(seletor, valorFinal)
 						.click()
 					break
-				case 'iframe_text':
+				case 'iframeText':
 					cy.get(seletor, { timeout: 5000 }).then($iframe => {
 						const doc = $iframe.contents()
 						cy.wrap(doc).find('body.cke_editable').click({ force: true }).clear().type(valorFinal, { force: true })
@@ -367,7 +367,7 @@ class formAtividades {
 					.find('option:selected')
 					.should('have.text', valorFinal)
 				break
-			case 'iframe_text':
+			case 'iframeText':
 				cy.get(seletor, { timeout: 5000 }).then($iframe => {
 					const doc = $iframe.contents()
 

@@ -1,7 +1,7 @@
 /// reference types="cypress" />
 import { fakerPT_BR } from '@faker-js/faker'
-import { getAuthToken } from '../support/auth_helper'
-import { gerarData } from '../support/utils_helper'
+import { getAuthToken } from '../support/authHelper'
+import { gerarData } from '../support/utilsHelper'
 let faker = require('faker-br')
 
 describe('Participante', () => {
