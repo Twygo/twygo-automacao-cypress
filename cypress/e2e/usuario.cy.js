@@ -1,7 +1,6 @@
 /// reference types="cypress" />
 import { fakerPT_BR } from '@faker-js/faker'
 import { getAuthToken } from '../support/authHelper'
-import formUsuarios from '../support/pageObjects/formUsuarios'
 let faker = require('faker-br')
 
 describe('Usuário', () => {
@@ -136,9 +135,8 @@ describe('Usuário', () => {
 		cy.validarDadosUsuario(dadosUpdate)
 
         // Alterar senha do usuário
-        const formulario = new formUsuarios()
         const senha = fakerPT_BR.internet.password()
-        formulario.voltar()
+        cy.voltar()
         cy.resetSenhaUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, senha)
 
         // Inativação do usuário
@@ -211,9 +209,8 @@ describe('Usuário', () => {
         cy.validarDadosUsuario(dadosParaValidar)
 
         // Alterar senha do usuário
-        const formulario = new formUsuarios()
         const senha = fakerPT_BR.internet.password()
-        formulario.voltar()
+        cy.voltar()
         cy.resetSenhaUsuario(`${dados.nome} ${dados.sobrenome}`, senha)
 
         // Inativação do usuário
@@ -368,9 +365,8 @@ describe('Usuário', () => {
 		cy.validarDadosUsuario(dadosParaValidar)
         
         // Alterar senha do usuário
-        const formulario = new formUsuarios()
         const senha = fakerPT_BR.internet.password()
-        formulario.voltar()
+        cy.voltar()
         cy.resetSenhaUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, senha)
 
         // Inativação do usuário
@@ -426,9 +422,8 @@ describe('Usuário', () => {
         cy.validarDadosUsuario(dadosParaValidar)
 
         // Alterar senha do usuário
-        const formulario = new formUsuarios()
         const senha = fakerPT_BR.internet.password()
-        formulario.voltar()
+        cy.voltar()
         cy.resetSenhaUsuario(`${dados.nome} ${dados.sobrenome}`, senha)
 
         // Inativação do usuário
@@ -528,9 +523,8 @@ describe('Usuário', () => {
 		cy.validarDadosUsuario(dadosParaValidar)
 
         // Alterar senha do usuário
-        const formulario = new formUsuarios()
         const senha = fakerPT_BR.internet.password()
-        formulario.voltar()
+        cy.voltar()
         cy.resetSenhaUsuario(`${dados.nome} ${dados.sobrenome}`, senha)
 
         // Inativação do usuário
@@ -580,9 +574,8 @@ describe('Usuário', () => {
         cy.validarDadosUsuario(dadosParaValidar)
 
         // Alterar senha do usuário
-        const formulario = new formUsuarios()
         const senha = fakerPT_BR.internet.password()
-        formulario.voltar()
+        cy.voltar()
         cy.resetSenhaUsuario(`${dados.nome} ${dados.sobrenome}`, senha)
 
         // Inativação do usuário
@@ -706,9 +699,8 @@ describe('Usuário', () => {
 		cy.validarDadosUsuario(dadosParaValidar)
 
         // Alterar senha do usuário
-        const formulario = new formUsuarios()
         const senha = fakerPT_BR.internet.password()
-        formulario.voltar()
+        cy.voltar()
         cy.resetSenhaUsuario(`${dados.nome} ${dados.sobrenome}`, senha)
 
         // Inativação do usuário
