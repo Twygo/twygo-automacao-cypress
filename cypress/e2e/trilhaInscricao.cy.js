@@ -45,11 +45,11 @@ describe('Participante', () => {
 	})
     
     beforeEach(() => {
-        // Ativa o tratamento de exceção não capturada especificamente para este teste
-		Cypress.on('uncaught:exception', (err, runnable) => {
-            return false
-        })
-
+        // Ignora mensagens de erro conhecidas
+        cy.ignorarCapturaErros([
+            "Unexpected identifier 'id'"
+        ], { ignoreScriptErrors: true })
+        
         // Define o tipo de conteúdo
 		tipoConteudo = 'trilha'
 
@@ -73,6 +73,7 @@ describe('Participante', () => {
         const conteudo = {
             nome: nomeTrilha,
             descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${nome}`,
+            exigeConfirmacao: true,
         }
 
         cy.addConteudo(tipoConteudo)
@@ -81,9 +82,8 @@ describe('Participante', () => {
     })
 
     afterEach(() => {
-		// Desativa o tratamento após o teste para evitar afetar outros testes
-		Cypress.removeAllListeners('uncaught:exception')
-	})
+        cy.ativarCapturaErros()
+    })
 
     it('1. CRUD participante default', () => {
         // Massa de dados
@@ -144,7 +144,7 @@ describe('Participante', () => {
         }
 
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, 'Confirmados') 
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
@@ -245,7 +245,7 @@ describe('Participante', () => {
         }
 
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, 'Confirmados')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
@@ -322,7 +322,7 @@ describe('Participante', () => {
         }
 
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`, 'Confirmados')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
@@ -386,7 +386,7 @@ describe('Participante', () => {
         }
 
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, 'Confirmados')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
@@ -444,7 +444,7 @@ describe('Participante', () => {
         }
 
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`, 'Confirmados')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
@@ -514,7 +514,7 @@ describe('Participante', () => {
         }
 
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`, 'Confirmados')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
@@ -588,7 +588,7 @@ describe('Participante', () => {
         }
 
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`, 'Confirmados')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')

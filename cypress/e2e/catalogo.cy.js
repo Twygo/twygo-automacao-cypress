@@ -65,11 +65,11 @@ describe('catálogo', () => {
 	})
 
 	beforeEach(() => {
-		// Ativa o tratamento de exceção não capturada especificamente para este teste
-		Cypress.on('uncaught:exception', (err, runnable) => {
-		  	return false
-		})
-		
+		// Ignora mensagens de erro conhecidas
+		cy.ignorarCapturaErros([
+			"Unexpected identifier 'id'",
+		], { ignoreScriptErrors: true })
+				
 		// Define o tipo de conteúdo
 		tipoConteudo = 'catalogo'
 
@@ -87,13 +87,12 @@ describe('catálogo', () => {
 		// Exclui todos os catálogos antes de iniciar o teste
 		cy.excluirCatalogoViaApi()
 	})
-	
+
 	afterEach(() => {
-		// Desativa o tratamento após o teste para evitar afetar outros testes
-		Cypress.removeAllListeners('uncaught:exception')
+		cy.ativarCapturaErros()
 	})
 	
-	it.only('1. CRUD catalogo com dados default', () => {
+	it('1. CRUD catalogo com dados default', () => {
 		// Massa de dados para criação do catálogo
 		const conteudo = {
 			nome: fakerPT_BR.commerce.productName(),
@@ -649,7 +648,7 @@ describe('catálogo', () => {
 		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
-	it.only('7. CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários', () => {
+	it('7. CRUD catalogo em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários', () => {
 		// Massa de dados para criação do catálogo
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {

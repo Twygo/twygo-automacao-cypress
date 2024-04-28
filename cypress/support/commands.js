@@ -9,6 +9,7 @@ import formParticipantes from "./pageObjects/formParticipantes"
 import formConfigUsuario from "./pageObjects/formConfigUsuario"
 import formInstrutor from "./pageObjects/formInstrutor"
 import { fakerPT_BR } from "@faker-js/faker"
+import 'cypress-real-events/support'
 
 Cypress.Commands.add('loginTwygoAutomacao', (idioma = 'pt') => {
   const labels = Cypress.env('labels')[idioma]
@@ -2037,10 +2038,7 @@ Cypress.Commands.add('validarStatusImportacao', (tipo, statusEsperado) => {
       cy.contains('.flash.error', msgImportacaoCancelada, { timeout: TIMEOUT_IMPORTACAO })
         .should('be.visible')
       break
-  }  
-
-  // Acessar novamente a tela de usuários para validar o status da importaçãos
-  cy.acessarPgUsuarios()
+  }
 
   function verificarStatus() {
     // Seleciona a primeira linha de dados da tabela, ignorando explicitamente o cabeçalho
@@ -2062,6 +2060,10 @@ Cypress.Commands.add('validarStatusImportacao', (tipo, statusEsperado) => {
         throw new Error(`Status: ${status}`)
       }
     })
+  }
+  
+  if (tipo === 'usuários'){
+    cy.acessarPgUsuarios()
   }
 
   cy.get(seletor)
@@ -2338,13 +2340,10 @@ Cypress.Commands.add('importarUsuarios', function(arquivo, opcao = 'Cancelar') {
 
 Cypress.Commands.add('limparDadosOrg', function() {
   const timeoutPadrao = 5000
-  const TIMEOUT_EXCLUSAO = 180000
+  const TIMEOUT_EXCLUSAO = 300000
   const labels = Cypress.env('labels')
   const { exclusaoEmAndamento, exclusaoConcluida } = labels.menuSophia
 
-  cy.loginTwygoAutomacao()
-  cy.alterarPerfil('administrador')
-  
   // Acessar menu da Sophia
   cy.get('img[src*="sophia"]')
     .eq(0)
@@ -2370,5 +2369,25 @@ Cypress.Commands.add('limparDadosOrg', function() {
 
   // Aguardar mensagem de confirmação de exclusão	
   cy.contains('.flash.success', exclusaoConcluida, { timeout: TIMEOUT_EXCLUSAO })
-    .should('be.visible')	  
+    .should('be.visible')
+})
+
+Cypress.Commands.add('ignorarCapturaErros', (errorsToIgnore, options = { ignoreScriptErrors: false, ignoreNetworkErrors: false }) => {
+  Cypress.on('uncaught:exception', (err, runnable) => {
+    const shouldIgnoreError = errorsToIgnore.some(errorToIgnore => err.message.includes(errorToIgnore))
+    
+    // Verificações específicas para erros de script de origem cruzada e erros de rede
+    const isCrossOriginError = err.message.includes('Script error.') || err.message.includes('cross-origin')
+    const isNetworkError = err.message.includes('Network Error')
+
+    if (shouldIgnoreError || 
+        (options.ignoreScriptErrors && isCrossOriginError) ||
+        (options.ignoreNetworkErrors && isNetworkError)) {
+      return false // Ignora o erro
+    }
+  })
+})
+
+Cypress.Commands.add('ativarCapturaErros', function() {
+  Cypress.removeAllListeners('uncaught:exception')
 })

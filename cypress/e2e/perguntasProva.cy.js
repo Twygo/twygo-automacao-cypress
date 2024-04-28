@@ -16,11 +16,11 @@ describe('Perguntas', () => {
     })
 
     beforeEach(() => {  
-        // Ativa o tratamento de exceção não capturada especificamente para este teste
-        Cypress.on('uncaught:exception', (err, runnable) => {
-            return false
-        })
-       
+        // Ignora mensagens de erro conhecidas
+        cy.ignorarCapturaErros([
+            "Unexpected identifier 'id'"
+        ])
+        
         // Massa de dados para criar questionário
         nomeQuestionario = fakerPT_BR.commerce.productName()
         categorias1 = ['Atualidades', 'Entretenimento', 'Esportes', 'Tecnologia']
@@ -54,10 +54,8 @@ describe('Perguntas', () => {
     })
 
     afterEach(() => {
-		// Desativa o tratamento após o teste para evitar afetar outros testes
-		Cypress.removeAllListeners('uncaught:exception')
-	})
-
+        cy.ativarCapturaErros()
+    })
 
     it('1. CRUD pergunta do tipo "Texto"', () => {
         // Massa de dados para criar pergunta do tipo "Texto"
