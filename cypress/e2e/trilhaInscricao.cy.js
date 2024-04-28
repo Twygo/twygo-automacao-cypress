@@ -73,6 +73,7 @@ describe('Participante', () => {
         const conteudo = {
             nome: nomeTrilha,
             descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${nome}`,
+            exigeConfirmacao: true,
         }
 
         cy.addConteudo(tipoConteudo)
@@ -143,7 +144,7 @@ describe('Participante', () => {
         }
 
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, 'Confirmados') 
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
@@ -244,7 +245,7 @@ describe('Participante', () => {
         }
 
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, 'Confirmados')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
@@ -321,7 +322,7 @@ describe('Participante', () => {
         }
 
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`, 'Confirmados')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
@@ -385,7 +386,7 @@ describe('Participante', () => {
         }
 
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, 'Confirmados')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
@@ -443,7 +444,7 @@ describe('Participante', () => {
         }
 
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`, 'Confirmados')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
@@ -513,7 +514,7 @@ describe('Participante', () => {
         }
 
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`, 'Confirmados')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
@@ -587,7 +588,7 @@ describe('Participante', () => {
         }
 
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`, 'Confirmados')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
