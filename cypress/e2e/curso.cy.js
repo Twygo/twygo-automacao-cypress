@@ -63,11 +63,11 @@ describe('curso', () => {
 	})
 
 	beforeEach( () => {
-		// Ativa o tratamento de exceção não capturada especificamente para este teste
-		Cypress.on('uncaught:exception', (err, runnable) => {
-		  	return false
-		})
-
+		// Ignora mensagens de erro conhecidas
+		cy.ignorarCapturaErros([
+			"Unexpected identifier 'id'"
+		], { ignoreScriptErrors: true })
+		
 		// Define o tipo de conteúdo
 		tipoConteudo = 'curso'
 
@@ -85,13 +85,12 @@ describe('curso', () => {
 		// Exclui todos os cursos antes de iniciar o teste
 		cy.excluirCursoViaApi()
 	})
-	
+
 	afterEach(() => {
-		// Desativa o tratamento após o teste para evitar afetar outros testes
-		Cypress.removeAllListeners('uncaught:exception')
+		cy.ativarCapturaErros()
 	})
 	
-	it.only('1. CRUD curso com dados default', () =>{
+	it('1. CRUD curso com dados default', () =>{
 		// Massa de dados para criação do curso
         const conteudo = {
 			nome: nome,
@@ -661,7 +660,7 @@ describe('curso', () => {
 		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
-	it.only('7. CRUD curso em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários', () => {
+	it('7. CRUD curso em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários', () => {
 		// Massa de dados para criação do curso
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {

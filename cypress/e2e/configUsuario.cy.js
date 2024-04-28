@@ -13,11 +13,11 @@ describe('Configuração de Usuário', () => {
     })
 
     beforeEach(() => {
-        // Ativa o tratamento de exceção não capturada especificamente para este teste
-		Cypress.on('uncaught:exception', (err, runnable) => {
-            return false
-        })
-
+        // Ignora mensagens de erro conhecidas
+        cy.ignorarCapturaErros([
+            "Unexpected identifier 'id'"
+        ], { ignoreScriptErrors: true })
+        
         // Gerar dados aleatórios para o usuário
         nome = faker.person.firstName()
         sobrenome = faker.person.lastName()
@@ -30,9 +30,8 @@ describe('Configuração de Usuário', () => {
     })
 
     afterEach(() => {
-		// Desativa o tratamento após o teste para evitar afetar outros testes
-		Cypress.removeAllListeners('uncaught:exception')
-	})
+        cy.ativarCapturaErros()
+    })
 
     it('1. CRUD alterar os dados de usuário aluno e idioma para inglês', () => {
         // Massa de dados para criação do usuário
@@ -112,7 +111,6 @@ describe('Configuração de Usuário', () => {
         cy.alterarPerfil('administrador')
         cy.acessarPgUsuarios()
         cy.inativarUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
-        cy.pause()
     })
 
     it('2. CRUD alterar os dados de usuário instrutor e idioma para espanhol', () => {
@@ -202,7 +200,6 @@ describe('Configuração de Usuário', () => {
         cy.alterarPerfil('administrador')
         cy.acessarPgUsuarios()
         cy.inativarUsuario(`${dados.nome} ${dados.sobrenome}`)
-        cy.pause()
     })
 
     it('3. CRUD alterar os dados de usuário gestor e idioma para inglês e depois português', () => {
@@ -300,7 +297,6 @@ describe('Configuração de Usuário', () => {
         cy.alterarPerfil('administrador')
         cy.acessarPgUsuarios()
         cy.inativarUsuario(`${dados.nome} ${dados.sobrenome}`)
-        cy.pause()
     })
 
     it('4. CRUD alterar os dados de usuário administrador sem alterar idioma', () => {
@@ -385,6 +381,5 @@ describe('Configuração de Usuário', () => {
         cy.alterarPerfil('administrador')
         cy.acessarPgUsuarios()
         cy.inativarUsuario(`${dados.nome} ${dados.sobrenome}`)
-        cy.pause()
     })
 })

@@ -15,10 +15,10 @@ describe('Instrutor', () => {
 
     //Criar um usuário Instrutor e um curso 
     beforeEach(() => {
-        // Ativa o tratamento de exceção não capturada especificamente para este teste
-        Cypress.on('uncaught:exception', (err, runnable) => {
-            return false
-        }) 
+        // Ignora mensagens de erro conhecidas
+        cy.ignorarCapturaErros([
+            "Unexpected identifier 'id'"
+        ])
 
         // Gera um nome aleatório para o conteúdo e para a atividade
         nomeConteudo = fakerPT_BR.commerce.productName()
@@ -46,8 +46,7 @@ describe('Instrutor', () => {
     })
 
     afterEach(() => {
-        // Desativa o tratamento após o teste para evitar afetar outros testes
-        Cypress.removeAllListeners('uncaught:exception')
+        cy.ativarCapturaErros()
     })
 
     it('1. CRUD - Vincular instrutor em curso liberado', () => {

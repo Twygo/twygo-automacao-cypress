@@ -18,11 +18,11 @@ describe('Biblioteca', () => {
         })
     })
 
-    beforeEach(() => {
-        // Ativa o tratamento de exceção não capturada especificamente para este teste
-		Cypress.on('uncaught:exception', (err, runnable) => {
-            return false
-        })
+    beforeEach(() => {      
+        // Ignora mensagens de erro conhecidas
+        cy.ignorarCapturaErros([
+            "Unexpected identifier 'id'",
+        ], { ignoreScriptErrors: true})   
         
         //Define o tipo de conteúdo
         tipoConteudo = 'biblioteca'
@@ -41,9 +41,8 @@ describe('Biblioteca', () => {
     })
 
     afterEach(() => {
-		// Desativa o tratamento após o teste para evitar afetar outros testes
-		Cypress.removeAllListeners('uncaught:exception')
-	})
+        cy.ativarCapturaErros()
+    })
 
     it('1. CRUD biblioteca "Em companhia"', () => {
         // Massa de dados para criação da biblioteca

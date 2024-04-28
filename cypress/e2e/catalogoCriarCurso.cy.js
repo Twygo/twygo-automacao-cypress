@@ -80,11 +80,11 @@ describe('criar curso via catálogo', () => {
 	})
 
 	beforeEach( () => {
-		// Ativa o tratamento de exceção não capturada especificamente para este teste
-		Cypress.on('uncaught:exception', (err, runnable) => {
-		  	return false
-		})
-
+		// Ignora mensagens de erro conhecidas
+		cy.ignorarCapturaErros([
+			"Unexpected identifier 'id'"
+		], { ignoreScriptErrors: true })
+		
 		// Define o tipo de conteúdo
 		tipoConteudo = 'criarCurso'
 
@@ -103,12 +103,11 @@ describe('criar curso via catálogo', () => {
 		cy.excluirCursoViaApi()
 		cy.excluirCatalogoViaApi()
 	})
-	
-	afterEach(() => {
-		// Desativa o tratamento após o teste para evitar afetar outros testes
-		Cypress.removeAllListeners('uncaught:exception')
-	})
 
+	afterEach(() => {
+		cy.ativarCapturaErros()
+	})
+	
 	it('1. CRUD deve criar um curso via catálogo com visualização para inscritos', () => {    
         // Massa de dados para criar um curso via catálogo
 		const catalogo = {

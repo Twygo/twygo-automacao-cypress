@@ -46,11 +46,11 @@ describe('Participante', () => {
 	})
     
     beforeEach(() => {
-        // Ativa o tratamento de exceção não capturada especificamente para este teste
-		Cypress.on('uncaught:exception', (err, runnable) => {
-            return false
-        })
-
+        // Ignora mensagens de erro conhecidas
+        cy.ignorarCapturaErros([
+            "Unexpected identifier 'id'"
+        ], { ignoreScriptErrors: true })
+        
         // Obtém token autenticação, lista e exclui os usuários e cursos
         getAuthToken()
         cy.excluirUsuarioViaApi()
@@ -69,9 +69,8 @@ describe('Participante', () => {
     })
 
     afterEach(() => {
-		// Desativa o tratamento após o teste para evitar afetar outros testes
-		Cypress.removeAllListeners('uncaught:exception')
-	})
+        cy.ativarCapturaErros()
+    })
 
     it('1. CRUD participante default', () => {
         // Massa de dados
@@ -134,7 +133,7 @@ describe('Participante', () => {
         }
 
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, 'Confirmados')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
@@ -237,7 +236,7 @@ describe('Participante', () => {
         }
 
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, 'Confirmados')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
@@ -316,7 +315,7 @@ describe('Participante', () => {
         }
 
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`, 'Confirmados')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
@@ -382,7 +381,7 @@ describe('Participante', () => {
         }
 
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, 'Confirmados')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
@@ -442,7 +441,7 @@ describe('Participante', () => {
         }
 
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`, 'Confirmados')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
@@ -514,7 +513,7 @@ describe('Participante', () => {
         }
 
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`, 'Confirmados')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
@@ -590,7 +589,7 @@ describe('Participante', () => {
         }
 
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dados.nome} ${dados.sobrenome}`, 'Confirmados')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
@@ -795,6 +794,8 @@ describe('Participante', () => {
         // CREATE
         cy.log('## CREATE ##')
         
+        cy.loginTwygoAutomacao()
+		cy.alterarPerfil('administrador')
         cy.addParticipanteConteudo(nomeCurso)
 
         for (let i = 0; i < 5; i++) {
@@ -935,7 +936,7 @@ describe('Participante', () => {
 
         cy.importarParticipante('participantes.csv')
 
-        cy.validarStatusImportacao('participantes')
+        cy.validarStatusImportacao('participantes', 'Concluído')
 
         // READ
         cy.log('## READ ##')
@@ -1004,7 +1005,7 @@ describe('Participante', () => {
         cy.abaConfirmados()
         cy.editarParticipante(`${participante2.nome} ${participante2.sobrenome}`)
         cy.preencherDadosParticipante(dadosUpdate, { limpar: true })
-        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
+        cy.salvarEdicaoParticipante(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`, 'Confirmados')
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')

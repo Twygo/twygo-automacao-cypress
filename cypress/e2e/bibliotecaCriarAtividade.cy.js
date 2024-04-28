@@ -136,11 +136,11 @@ describe('Criar atividade', () => {
     })
 
     beforeEach(() => {
-        // Ativa o tratamento de exceção não capturada especificamente para este teste
-		Cypress.on('uncaught:exception', (err, runnable) => {
-            return false
-        })
-
+        // Ignora mensagens de erro conhecidas
+        cy.ignorarCapturaErros([
+            "Unexpected identifier 'id'",
+        ], { ignoreScriptErrors: true, ignoreNetworkErrors: true})           
+        
         // Define o tipo de conteúdo
         tipoConteudo = 'biblioteca'
 
@@ -162,9 +162,8 @@ describe('Criar atividade', () => {
     })
 
     afterEach(() => {
-		// Desativa o tratamento após o teste para evitar afetar outros testes
-		Cypress.removeAllListeners('uncaught:exception')
-	})
+        cy.ativarCapturaErros()
+    })
 
     it('1. Criar uma atividade default', () => {
         // CREATE
