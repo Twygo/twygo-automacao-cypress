@@ -7,6 +7,7 @@ import formPerguntas from "./pageObjects/formPerguntas"
 import formUsuarios from "./pageObjects/formUsuarios"
 import formParticipantes from "./pageObjects/formParticipantes"
 import formInstrutor from "./pageObjects/formInstrutor"
+import formGestor from "./pageObjects/formGestor"
 import { fakerPT_BR } from "@faker-js/faker"
 
 
@@ -3568,6 +3569,12 @@ Cypress.Commands.add('vincularInstrutor', (nomeInstrutor) => {
 
 })
 
+Cypress.Commands.add('habilitarDesabilitarGestao', (nomeGestor) => {
+  const formulario = new formGestor()
+
+  formulario.alternarStatusGestao(nomeGestor)
+})
+
 /** DOCUMENTAÇÃO:
  * @name validarVinculoInstrutor
  * 
@@ -3590,6 +3597,46 @@ Cypress.Commands.add('vincularInstrutor', (nomeInstrutor) => {
 Cypress.Commands.add('validarVinculoInstrutor', (nomeInstrutor) => {
   cy.contains('.speaker_name', nomeInstrutor)
   .should('be.visible')
+})
+
+Cypress.Commands.add('validarRemocaoVinculoGestor', (nomeGestor) => {
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { msgSucessoRemocao } = labels.gestores
+
+  cy.contains('.flash.success', msgSucessoRemocao, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+  
+  cy.get(`td:contains('${nomeGestor}')`)
+    .parents('tr')
+    .find('.icon-check-circle.off')
+})
+
+Cypress.Commands.add('validarVinculoGestor', (nomeGestor) => {
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { msgSucessoVinculo } = labels.gestores
+
+  cy.contains('.flash.success', msgSucessoVinculo, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+  
+  cy.get(`td:contains('${nomeGestor}')`)
+    .parents('tr')
+    .find('.icon-check-circle.on')
+})
+
+Cypress.Commands.add('validarRemocaoGestor', (nomeGestor) => {
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { msgSucessoRemocao } = labels.gestores
+
+  cy.contains('.flash.success', msgSucessoRemocao, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+  
+  cy.get(`td:contains('${nomeGestor}')`)
+    .parents('tr')
+    .find('.icon-times-circle.off')
+    .should('be.visible')
 })
 
 /** DOCUMENTAÇÃO:
@@ -3734,6 +3781,100 @@ Cypress.Commands.add('instrutorConteudo', (nomeConteudo) => {
 
   cy.get(seletor)
     .contains('button', 'Instrutor')
+    .click({force: true})
+  
+  // Valida se a página foi carregada corretamente conforme o tipo de conteúdo
+  cy.contains('#page-breadcrumb', breadcrumb)
+    .should('be.visible')
+
+  cy.contains('.detail_title', tituloPg)
+    .should('be.visible')
+})
+
+/** DOCUMENTAÇÃO:
+ * @name criarGestor
+ * 
+ * @description
+ * Comando personalizado para criar um usuário gestor via front.
+ * 
+ * @actions
+ * 1. Loga na aplicação.
+ * 2. Altera o perfil para administrador.
+ * 3. Acessa a página de usuários.
+ * 4. Clica para adicionar um novo usuário.
+ * 5. Preenche os dados para criar um usuário Gestor.
+ * 6. Salva o formulário.
+ * 
+ * @param {String} nomeGestor - Nome do gestor a ser criado
+ * @param {String} sobrenomeGestor - Sobrenome do gestor a ser criado
+ * 
+ * @example
+ * cy.criarGestor(nome, sobrenome)
+ * 
+ * @author Jadson
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('criarGestor', (nomeGestor, sobrenomeGestor) => {
+  // Massa de dados
+  let nome = nomeGestor
+  let sobrenome = sobrenomeGestor
+  let email = fakerPT_BR.internet.email({ firstName: nome, lastName: sobrenome}).toLowerCase()
+
+  const dados = {
+      email: email,
+      nome: nome,
+      sobrenome: sobrenome,
+      perfilGestor: true
+  }
+
+  cy.acessarPgUsuarios()
+  cy.addUsuario()
+  cy.preencherDadosUsuario(dados, { limpar: true })
+  cy.salvarUsuario(`${dados.nome} ${dados.sobrenome}`)
+})
+
+/** DOCUMENTAÇÃO:
+ * @name gestorConteudo
+ * 
+ * @description
+ * Comando personalizado para acessar a página de gestor de turma de um conteúdo específico e validar o redirecionamento correto da página.
+ * 
+ * @actions
+ * 1. Acessa a opção de 'Gestores de turma' conforme cada tipo de conteúdo para iniciar o processo de habilitar/desabilitar a gestão de turma.
+ * 2. Valida a exibição da página de edição do conteúdo.
+ * 
+ * @param {String} nomeConteudo - O nome do conteúdo a ser editado. Este nome é utilizado para encontrar o conteúdo na listagem e clicar no botão de edição.
+ * @param {String} tipoConteudo - O tipo do conteúdo a ser editado (e.g., 'trilha', 'curso', 'catalogo'). Este parâmetro influencia no seletor utilizado para 
+ * encontrar o conteúdo na listagem e na página carregada para edição do conteúdo.
+ * 
+ * @example
+ * cy.editarConteudo('Nome do Conteúdo', 'tipoConteudo')
+ * 
+ * @observations
+ * Este comando não realiza a adição ou remoção de gestores no conteúdo. Para isso, @see alternarStatusGestao
+ * @throws {Error} - Se o tipo de conteúdo informado não for 'trilha', 'curso'.
+ * 
+ * @author Jadson
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+Cypress.Commands.add('gestorConteudo', (nomeConteudo) => {
+  // Acessa o arquivo de labels
+  const labels = Cypress.env('labels')
+  const { breadcrumb, tituloPg } = labels.gestores
+
+  // Define o seletor para encontrar o conteúdo na listagem
+  let seletor = ''
+  
+  seletor = `tr[tag-name='${nomeConteudo}']`    
+  // Clica em 'Opções' e 'Gestores de turma'
+  cy.get(seletor)
+    .find('svg[aria-label="Options"]')
+    .click()
+
+  cy.get(seletor)
+    .contains('button', 'Gestores de turma')
     .click({force: true})
   
   // Valida se a página foi carregada corretamente conforme o tipo de conteúdo

@@ -134,5 +134,11 @@
     "instrutores": {
         "breadcrumb": "Detalhes do evento",
         "tituloPg": "Lista de Instrutores"
+    },
+    "gestores": {
+        "breadcrumb": "> Gestores de turma da organização",
+        "tituloPg": "Gestores de turma da organização",
+        "msgSucessoVinculo": "O gestor de turma foi definido para esse conteúdo com sucesso",
+        "msgSucessoRemocao": "O gestor de turma foi removido do conteúdo selecionado com sucesso."
     }
 }
