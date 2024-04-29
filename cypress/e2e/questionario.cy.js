@@ -3,7 +3,7 @@ import { fakerPT_BR } from '@faker-js/faker'
 import formQuestionarios from '../support/pageObjects/formQuestionarios'
 
 describe('Questionário', () => {
-    const TIMEOUT_PADRAO = 5000
+    const timeoutPadrao = 5000
     const formulario = new formQuestionarios()
 
     let nomeQuestionario, nomeCategoria1, nomeCategoria2, addCategoria1, addCategoria2, categoriasAtualizadas, listaQuestionarios
@@ -28,7 +28,12 @@ describe('Questionário', () => {
 		})
 	})
 
-    beforeEach(() => {     
+    beforeEach(() => { 
+        // Ignora mensagens de erro conhecidas
+        cy.ignorarCapturaErros([
+            "Unexpected identifier 'id'"
+        ])
+        
         // Gerar um nome aleatório para o questionário
         nomeQuestionario = fakerPT_BR.commerce.productName()
         nomeCategoria1 = 'Assunto'
@@ -48,44 +53,11 @@ describe('Questionário', () => {
         cy.listaQuestionarios(listaQuestionarios)
         cy.excluirQuestionarios(null, listaQuestionarios)
     })
-    
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 1. CRUD questionário tipo "Prova" com comentário aluno e parecer instrutor
-     * 
-     * @description
-     * Valida o fluxo de criação, leitura, atualização e exclusão de um questionário do tipo "Prova" 
-     * com comentário do aluno, com parecer do instrutor e com categorias. A atualização inclui a
-     * alteração para o tipo "Pesquisa" e a remoção dos comentários do aluno e do instrutor.
-     * 
-     * @steps
-     * 1. Cria um questionário do tipo "Prova" com comentário do aluno, parecer do instrutor e categorias
-     * 2. Valida os dados do questionário criado
-     * 3. Atualiza o questionário para o tipo "Pesquisa" e remove os comentários do aluno e do instrutor
-     * 4. Valida os dados do questionário atualizado
-     * 5. Exclui o questionário
-     * 
-     * @expected
-     * Deve ser possível criar, ler, atualizar e excluir o questionário com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Questionário, CRUD, Prova, Pesquisa, Comentário Aluno, Parecer Instrutor
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
+
+    afterEach(() => {
+        cy.ativarCapturaErros()
+    })
+
     it('1. CRUD questionário tipo "Prova" com comentário aluno e parecer instrutor', () => {
         // Massa de dados para criação de questionário
         const dados = {
@@ -144,43 +116,6 @@ describe('Questionário', () => {
         cy.excluirQuestionarios(dadosUpdate.nome)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 2. CRUD questionário tipo "Pesquisa" com comentário aluno e parecer instrutor
-     * 
-     * @description
-     * Valida o fluxo de criação, leitura, atualização e exclusão de um questionário do tipo "Pesquisa"
-     * com comentário do aluno, com parecer do instrutor e com categorias. A atualização inclui a
-     * alteração para o tipo "Prova" e a remoção dos comentários do aluno e do instrutor.
-     * 
-     * @steps
-     * 1. Cria um questionário do tipo "Pesquisa" com comentário do aluno, parecer do instrutor e categorias
-     * 2. Valida os dados do questionário criado
-     * 3. Atualiza o questionário para o tipo "Prova" e remove os comentários do aluno e do instrutor
-     * 4. Valida os dados do questionário atualizado
-     * 5. Exclui o questionário
-     * 
-     * @expected
-     * Deve ser possível criar, ler, atualizar e excluir o questionário com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Questionário, CRUD, Prova, Pesquisa, Comentário Aluno, Parecer Instrutor
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('2. CRUD questionário tipo "Pesquisa" com comentário aluno e parecer instrutor', () => {
         // Massa de dados para criação de questionário
         const dados = {
@@ -239,43 +174,6 @@ describe('Questionário', () => {
         cy.excluirQuestionarios(dadosUpdate.nome)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 3. CRUD questionário tipo "Prova" com comentário aluno e sem parecer instrutor
-     * 
-     * @description
-     * Valida o fluxo de criação, leitura, atualização e exclusão de um questionário do tipo "Prova"
-     * com comentário do aluno e sem parecer do instrutor. A atualização inclui a alteração para o tipo
-     * "Pesquisa", a remoção do comentário do aluno e habilita o parecer do instrutor.
-     * 
-     * @steps
-     * 1. Cria um questionário do tipo "Prova" com comentário do aluno, sem parecer do instrutor e com categorias
-     * 2. Valida os dados do questionário criado
-     * 3. Atualiza o questionário para o tipo "Pesquisa", remove o comentário do aluno e habilita o parecer do instrutor
-     * 4. Valida os dados do questionário atualizado
-     * 5. Exclui o questionário
-     * 
-     * @expected
-     * Deve ser possível criar, ler, atualizar e excluir o questionário com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Questionário, CRUD, Prova, Pesquisa, Comentário Aluno, Parecer Instrutor
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('3. CRUD questionário tipo "Prova" com comentário aluno e sem parecer instrutor', () => {
         // Massa de dados para criação de questionário
         const dados = {
@@ -334,43 +232,6 @@ describe('Questionário', () => {
         cy.excluirQuestionarios(dadosUpdate.nome)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 4. CRUD questionário tipo "Pesquisa" com comentário aluno e sem parecer instrutor
-     * 
-     * @description
-     * Valida o fluxo de criação, leitura, atualização e exclusão de um questionário do tipo "Pesquisa"
-     * com comentário do aluno, sem parecer do instrutor e com categorias. A atualização inclui a 
-     * alteração para o tipo "Prova", a remoção do comentário do aluno e habilita o parecer do instrutor.
-     * 
-     * @steps
-     * 1. Cria um questionário do tipo "Pesquisa" com comentário do aluno, sem parecer do instrutor e com categorias
-     * 2. Valida os dados do questionário criado
-     * 3. Atualiza o questionário para o tipo "Prova", remove o comentário do aluno e habilita o parecer do instrutor
-     * 4. Valida os dados do questionário atualizado
-     * 5. Exclui o questionário
-     * 
-     * @expected
-     * Deve ser possível criar, ler, atualizar e excluir o questionário com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Questionário, CRUD, Prova, Pesquisa, Comentário Aluno, Parecer Instrutor
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('4. CRUD questionário tipo "Pesquisa" com comentário aluno e sem parecer instrutor', () => {
         // Massa de dados para criação de questionário
         const dados = {
@@ -429,44 +290,6 @@ describe('Questionário', () => {
         cy.excluirQuestionarios(dadosUpdate.nome)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 5. CRUD questionário tipo "Prova" sem comentário aluno e com parecer instrutor
-     * 
-     * @description
-     * Valida o fluxo de criação, leitura, atualização e exclusão de um questionário do tipo "Prova"
-     * sem comentário do aluno, com parecer do instrutor e com categorias. A atualização inclui a 
-     * alteração para o tipo "Pesquisa", a inclusão de novas categorias, a remoção de categorias 
-     * existentes, desabilitar o parecer do instrutor e habilitar o comentário do aluno.
-     * 
-     * @steps
-     * 1. Cria um questionário do tipo "Prova" sem comentário do aluno, com parecer do instrutor e com categorias
-     * 2. Valida os dados do questionário criado
-     * 3. Atualiza o questionário para o tipo "Pesquisa", atualiza categoria, remove categoria, desabilita parecer do instrutor e habilita comentário do aluno
-     * 4. Valida os dados do questionário atualizado
-     * 5. Exclui o questionário
-     * 
-     * @expected
-     * Deve ser possível criar, ler, atualizar e excluir o questionário com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Questionário, CRUD, Prova, Pesquisa, Comentário Aluno, Parecer Instrutor
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('5. CRUD questionário tipo "Prova" sem comentário aluno e com parecer instrutor', () => {
         // Massa de dados para criação de questionário
         const dados = {
@@ -542,44 +365,6 @@ describe('Questionário', () => {
         cy.excluirQuestionarios(dadosUpdate.nome)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 6. CRUD questionário tipo "Pesquisa" sem comentário aluno e com parecer instrutor
-     * 
-     * @description
-     * Valida o fluxo de criação, leitura, atualização e exclusão de um questionário do tipo "Pesquisa"
-     * sem comentário do aluno, com parecer do instrutor e com categorias. A atualização inclui a
-     * alteração para o tipo "Prova", habilita o comentário do aluno, desabilita o parecer do instrutor, 
-     * edita algumas categorias e remove outra.
-     * 
-     * @steps
-     * 1. Cria um questionário do tipo "Pesquisa" sem comentário do aluno, com parecer do instrutor e com categorias
-     * 2. Valida os dados do questionário criado
-     * 3. Atualiza o questionário para o tipo "Prova", habilita o comentário do aluno, desabilita o parecer do instrutor, edita e remove categorias
-     * 4. Valida os dados do questionário atualizado
-     * 5. Exclui o questionário
-     * 
-     * @expected
-     * Deve ser possível criar, ler, atualizar e excluir o questionário com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Questionário, CRUD, Prova, Pesquisa, Comentário Aluno, Parecer Instrutor
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('6. CRUD questionário tipo "Pesquisa" sem comentário aluno e com parecer instrutor', () => {
         // Massa de dados para criação de questionário
         const dados = {
@@ -655,41 +440,6 @@ describe('Questionário', () => {
         cy.excluirQuestionarios(dadosUpdate.nome)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 7. CRUD questionário default ("Prova")
-     * 
-     * @description
-     * Valida o fluxo de criação, leitura, atualização e exclusão de um questionário default ("Prova").
-     * 
-     * @steps
-     * 1. Cria um questionário default ("Prova")
-     * 2. Valida os dados do questionário criado
-     * 3. Atualiza o questionário default ("Prova")
-     * 4. Valida os dados do questionário atualizado
-     * 5. Exclui o questionário default ("Prova")
-     * 
-     * @expected
-     * Deve ser possível criar, ler, atualizar e excluir o questionário com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Questionário, CRUD, Prova, Pesquisa, Comentário Aluno, Parecer Instrutor
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     */
     it('7. CRUD questionário default ("Prova")', () => {
         // Massa de dados para criação de questionário
         const dados = {

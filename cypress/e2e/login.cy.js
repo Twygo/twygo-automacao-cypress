@@ -1,27 +1,24 @@
 /// <reference types="cypress" />
 
 describe('login', () => {
+    before(() => {
+        // Ignora mensagens de erro conhecidas
+        cy.ignorarCapturaErros([
+            "Unexpected identifier 'id'"
+        ])
+        
+        // Carrega os labels do arquivo JSON
+        cy.fixture('labels.json').then((labels) => {
+            Cypress.env('labels', labels)
+        })
+    })
+
+    afterEach(() => {
+        cy.ativarCapturaErros()
+    })
 
     it('deve logar com sucesso', () => {
         cy.acessarPgLogin() 
-
-        cy.get('#user_email')
-            .type(Cypress.env('login'))
-    
-        cy.get('#user_password')
-            .type(Cypress.env('password'))
-
-        cy.contains('button', 'Entrar')
-            .should('be.visible')
-            .click()
-
-    	cy.contains('#page-breadcrumb', 'Dashboard')
-      		.should('be.visible')
-
-    	cy.contains('.name', Cypress.env('username'))
-      		.should('be.visible')
-
-    	cy.contains('#btn-profile', 'Aluno')
-      		.should('be.visible')
+        cy.loginTwygoAutomacao()
 	})
 })

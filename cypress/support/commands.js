@@ -6,32 +6,16 @@ import formQuestionarios from "./pageObjects/formQuestionarios"
 import formPerguntas from "./pageObjects/formPerguntas"
 import formUsuarios from "./pageObjects/formUsuarios"
 import formParticipantes from "./pageObjects/formParticipantes"
+import formConfigUsuario from "./pageObjects/formConfigUsuario"
 import formInstrutor from "./pageObjects/formInstrutor"
 import formGestor from "./pageObjects/formGestor"
 import { fakerPT_BR } from "@faker-js/faker"
+import 'cypress-real-events/support'
 
+Cypress.Commands.add('loginTwygoAutomacao', (idioma = 'pt') => {
+  const labels = Cypress.env('labels')[idioma]
+  const { pgInicialAluno, btnProfile } = labels.configUsuario
 
-/** DOCUMENTAÇÃO:
- * @name loginTwygoAutomacao
- * 
- * @description
- * Comando personalizado para realizar o login com usuário Twygo Automação.
- * 
- * @actions
- * 1. Acessa a página de login.
- * 2. Preenche o campo de e-mail com o login do usuário Twygo Automação.
- * 3. Preenche o campo de senha com a senha do usuário Twygo Automação.
- * 4. Clica no botão 'Entrar'.
- * 5. Verifica se o login foi realizado com sucesso.
- * 
- * @example
- * cy.loginTwygoAutomacao()
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
-Cypress.Commands.add('loginTwygoAutomacao', function() {
   cy.visit('/users/login')
 
   cy.get('#user_email')
@@ -45,38 +29,33 @@ Cypress.Commands.add('loginTwygoAutomacao', function() {
     .click()
 
   // Verificar se o login foi realizado com sucesso
-  cy.contains('#page-breadcrumb', 'Dashboard')
+  cy.contains('#page-breadcrumb', pgInicialAluno)
     .should('be.visible')
 
-  cy.contains('.name', Cypress.env('username'))
-    .should('be.visible')
+    switch (idioma) {
+      case 'pt':
+      case 'es':
+        cy.contains('.name', Cypress.env('username'))
+          .should('be.visible')
+        break
+      case 'en':
+        const nomeCompleto = Cypress.env('username')
+        const palavras = nomeCompleto.split(' ')
 
-  cy.contains('#btn-profile', 'Aluno')
+        const nome = palavras[0]
+        const sobrenome = palavras.slice(1).join(' ')
+
+        cy.contains('.name', `${sobrenome}, ${nome}`)
+          .should('be.visible')
+        break
+      default:
+        throw new Error(`Idioma inválido: ${idioma}. Utilize 'pt', 'en' ou 'es'`)
+    }
+
+  cy.contains('#btn-profile', btnProfile)
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name alterarPerfil
- * 
- * @description
- * Comando personalizado para alterar o perfil do usuário logado.
- * 
- * @actions
- * 1. Clica no botão de perfil.
- * 2. Seleciona o perfil desejado.
- * 3. Verifica se o perfil foi alterado com sucesso.
- * 
- * @param {String} perfil - O perfil a ser alterado (e.g., 'administrador', 'instrutor', 'gestor', 'aluno').
- * 
- * @example
- * cy.alterarPerfil('perfil')
- * 
- * @throws {Error} - Se o perfil informado não for 'administrador', 'instrutor', 'gestor' ou 'aluno'.
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('alterarPerfil', function(perfil) {
   cy.get('#btn-profile')
     .should('be.visible')
@@ -139,22 +118,6 @@ Cypress.Commands.add('alterarPerfil', function(perfil) {
   }
 })
 
-/** DOCUMENTAÇÃO:
- * @name acessarPgCatalogo
- * 
- * @description
- * Comando personalizado para acessar a página de catálogo.
- * 
- * @actions
- * 1. Acessa a página de catálogo.
- * 
- * @example
- * cy.acessarPgCatalogo()
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('acessarPgCatalogo', function() {
   cy.visit(`/o/${Cypress.env('orgId')}/events/?tab=itens-portfolio`)
 
@@ -166,22 +129,6 @@ Cypress.Commands.add('acessarPgCatalogo', function() {
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name acessarPgListaConteudos
- * 
- * @description
- * Comando personalizado para acessar a página de lista de conteúdos.
- * 
- * @actions
- * 1. Acessa a página de lista de conteúdos.
- * 
- * @example
- * cy.acessarPgListaConteudos()
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('acessarPgListaConteudos', function() {
   cy.visit(`/o/${Cypress.env('orgId')}/events?tab=events`)
 
@@ -193,22 +140,6 @@ Cypress.Commands.add('acessarPgListaConteudos', function() {
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name acessarPgBiblioteca
- * 
- * @description
- * Comando personalizado para acessar a página da biblioteca.
- * 
- * @actions
- * 1. Acessa a página da biblioteca.
- * 
- * @example
- * cy.acessarPgBiblioteca()
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('acessarPgBiblioteca', function() {
   cy.visit(`/o/${Cypress.env('orgId')}/events/?tab=libraries`)
 
@@ -220,22 +151,6 @@ Cypress.Commands.add('acessarPgBiblioteca', function() {
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name acessarPgLogin
- * 
- * @description
- * Comando personalizado para acessar a página de login.
- * 
- * @actions
- * 1. Acessa a página de login.
- * 
- * @example
- * cy.acessarPgLogin()
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('acessarPgLogin', function() {
   cy.visit('/users/login')
 
@@ -243,22 +158,6 @@ Cypress.Commands.add('acessarPgLogin', function() {
     .should('eq', `Login - ${Cypress.env('orgName')}`)
 })
 
-/** DOCUMENTAÇÃO:
- * @name acessarPgQuestionarios
- * 
- * @description
- * Comando personalizado para acessar a página de questionários.
- * 
- * @actions
- * 1. Acessa a página de questionários.
- * 
- * @example
- * cy.acessarPgQuestionarios()
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('acessarPgQuestionarios', function() {
   cy.visit(`/o/${Cypress.env('orgId')}/question_lists`)
 
@@ -266,28 +165,6 @@ Cypress.Commands.add('acessarPgQuestionarios', function() {
   const { breadcrumb } = labels.questionario
 })
 
-/** DOCUMENTAÇÃO:
- * @name criarCatalogoViaApi
- * 
- * @description
- * Comando personalizado para criar um catálogo via API.
- * 
- * @actions
- * 1. Realiza uma requisição POST para criar um catálogo.
- * 2. Valida se o status da requisição é 201.
- * 
- * @param {Object} body - O corpo da requisição para criação do catálogo. Este objeto deve conter os campos e valores a serem preenchidos.
- * @param {Number} attempt - A tentativa atual da requisição. Este parâmetro é utilizado para tentativas adicionais em caso de falha.
- * 
- * @example
- * cy.criarCatalogoViaApi(body)
- * 
- * @throws {Error} - Se a requisição não retornar status 201 após 3 tentativas.
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add("criarCatalogoViaApi", (body, attempt = 1) => {
     const url = `/api/v1/o/${Cypress.env('orgId')}/portfolio`
     
@@ -313,26 +190,6 @@ Cypress.Commands.add("criarCatalogoViaApi", (body, attempt = 1) => {
     })
 })
 
-/** DOCUMENTAÇÃO:
- * @name excluirCatalogoViaApi
- * 
- * @description
- * Comando personalizado para excluir todos os catálogos cadastrados via API.
- * 
- * @actions
- * 1. Realiza uma requisição GET para obter a listagem de catálogos cadastrados.
- * 2. Para cada catálogo encontrado, realiza uma requisição DELETE para excluir o catálogo.
- * 
- * @example
- * cy.excluirCatalogoViaApi()
- * 
- * @throws {Error} - Se a requisição GET não retornar status 200.
- * @throws {Error} - Se a requisição DELETE não retornar status 200.
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('excluirCatalogoViaApi', function() {
   cy.request({
     method: 'GET',
@@ -364,26 +221,6 @@ Cypress.Commands.add('excluirCatalogoViaApi', function() {
   })
 })
 
-/** DOCUMENTAÇÃO:
- * @name excluirCursoViaApi
- * 
- * @description
- * Comando personalizado para excluir todos os cursos cadastrados via API.
- * 
- * @actions
- * 1. Realiza uma requisição GET para obter a listagem de cursos cadastrados.
- * 2. Para cada curso encontrado, realiza uma requisição DELETE para excluir o curso.
- * 
- * @example
- * cy.excluirCursoViaApi()
- * 
- * @throws {Error} - Se a requisição GET não retornar status 200.
- * @throws {Error} - Se a requisição DELETE não retornar status 200.
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0 
- */
 Cypress.Commands.add('excluirCursoViaApi', function() {
   cy.request({
     method: 'GET',
@@ -415,28 +252,6 @@ Cypress.Commands.add('excluirCursoViaApi', function() {
   })
 })
 
-/** DOCUMENTAÇÃO:
- * @name preencherDadosConteudo
- * 
- * @description
- * Comando personalizado para preencher os campos do formulário de um conteúdo específico.
- * 
- * @actions
- * 1. Preenche cada campo do formulário de acordo com os dados informados.
- * 
- * @param {Object} conteudo - O conteúdo a ser preenchido. Este objeto deve conter os campos e valores a serem preenchidos.
- * @param {Object} opcoes - As opções para preenchimento do conteúdo. Este objeto pode conter a opção de limpar os campos antes de preencher.
- * 
- * @example
- * cy.preencherDadosConteudo(conteudo, opcoes)
- * 
- * @throws {Error} - Se o campo informado não for encontrado no formulário. Validação realizada pelo método 'preencherCampo' da classe 'formConteudos'.
- * @see formConteudos
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('preencherDadosConteudo', (conteudo, opcoes = { limpar: false }) => {
   const formulario = new formConteudos()
   
@@ -446,28 +261,6 @@ Cypress.Commands.add('preencherDadosConteudo', (conteudo, opcoes = { limpar: fal
   })
 }) 
 
-/** DOCUMENTAÇÃO:
- * @name validarDadosConteudo
- * 
- * @description
- * Comando personalizado para validar os dados do formulário de um conteúdo específico.
- * 
- * @actions
- * 1. Valida cada campo do formulário de acordo com os dados informados.
- * 
- * @param {Object} conteudo - O conteúdo a ser validado. Este objeto deve conter os campos e valores a serem validados.
- * @param {Object} categoria - As categorias do conteúdo a ser validado. Este objeto deve conter a listagem final de categorias a serem validadas.
- * 
- * @example
- * cy.validarDadosConteudo(conteudo, categoria)
- * 
- * @throws {Error} - Se o campo informado não for encontrado no formulário. Validação realizada pelo método 'validarCampo' da classe 'formConteudos'.
- * @see formConteudos
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0 
- */
 Cypress.Commands.add('validarDadosConteudo', (conteudo, categoria) => {
   if (!conteudo) {
     throw new Error('O parâmetro "conteudo" é obrigatório.')
@@ -485,31 +278,6 @@ Cypress.Commands.add('validarDadosConteudo', (conteudo, categoria) => {
   })
 })
 
-/** DOCUMENTAÇÃO:
- * @name addConteudo
- * 
- * @description
- * Comando personalizado para adicionar um conteúdo específico e validar o redirecionamento correto da página.
- * 
- * @actions
- * 1. Acessa a opção de 'Adicionar' conforme cada tipo de conteúdo para iniciar o processo de criação do conteúdo.
- * 2. Valida a exibição da página de criação do conteúdo.
- * 
- * @param {String} tipoConteudo - O tipo do conteúdo a ser adicionado (e.g., 'trilha', 'curso', 'catalogo', 'biblioteca'). Este parâmetro influencia no seletor utilizado para
- * encontrar o botão de adição e na página carregada para criação do conteúdo.
- * 
- * @example
- * cy.addConteudo('tipoConteudo')
- * 
- * @observations
- * Este comando não realiza o preenchimento dos campos do conteúdo. Para isso, @see preencherDadosConteudo
- * 
- * @throws {Error} - Se o tipo de conteúdo informado não for 'trilha', 'curso', 'catalogo' ou 'biblioteca'.
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('addConteudo', function(tipoConteudo) {
   const labels = Cypress.env('labels')
   const { breadcrumbAdicionar, tituloPgAdicionar } = labels.conteudo[tipoConteudo]
@@ -555,36 +323,9 @@ Cypress.Commands.add('addConteudo', function(tipoConteudo) {
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name editarConteudo
- * 
- * @description
- * Comando personalizado para editar um conteúdo específico e validar o redirecionamento correto da página.
- * 
- * @actions
- * 1. Define um timeout padrão de 5 segundos.
- * 2. Acessa a opção de 'Editar' conforme cada tipo de conteúdo para iniciar o processo de edição do conteúdo.
- * 3. Valida a exibição da página de edição do conteúdo.
- * 
- * @param {String} nomeConteudo - O nome do conteúdo a ser editado. Este nome é utilizado para encontrar o conteúdo na listagem e clicar no botão de edição.
- * @param {String} tipoConteudo - O tipo do conteúdo a ser editado (e.g., 'trilha', 'curso', 'catalogo'). Este parâmetro influencia no seletor utilizado para 
- * encontrar o conteúdo na listagem e na página carregada para edição do conteúdo.
- * 
- * @example
- * cy.editarConteudo('Nome do Conteúdo', 'tipoConteudo')
- * 
- * @observations
- * Este comando não realiza a edição dos campos do conteúdo. Para isso, @see preencherDadosConteudo
- * 
- * @throws {Error} - Se o tipo de conteúdo informado não for 'trilha', 'curso' ou 'catalogo'.
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('editarConteudo', function(nomeConteudo, tipoConteudo) {
   // Define o timeout padrão para validação das páginas
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
 
   // Acessa o arquivo de labels
   const labels = Cypress.env('labels')
@@ -598,18 +339,18 @@ Cypress.Commands.add('editarConteudo', function(nomeConteudo, tipoConteudo) {
     case 'curso':        
         seletor = `tr[tag-name='${nomeConteudo}']`    
         // Clica em 'Opções' e 'Editar'
-        cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+        cy.get(seletor, { timeout: timeoutPadrao})
           .find('svg[aria-label="Options"]')
           .click()
 
-        cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+        cy.get(seletor, { timeout: timeoutPadrao})
           .contains('button', 'Editar')
           .click()
       break
     case 'catalogo':
         seletor = `tr.event-row[name='${nomeConteudo}']`
         // Clica em editar
-        cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+        cy.get(seletor, { timeout: timeoutPadrao})
           .find('a[title="Editar"]')
           .click()
       break
@@ -625,41 +366,16 @@ Cypress.Commands.add('editarConteudo', function(nomeConteudo, tipoConteudo) {
   }
   
   // Valida se a página foi carregada corretamente conforme o tipo de conteúdo
-  cy.contains('#page-breadcrumb', breadcrumbEdicao, { timeout: TIMEOUT_PADRAO})
+  cy.contains('#page-breadcrumb', breadcrumbEdicao, { timeout: timeoutPadrao})
     .should('be.visible')
 
-  cy.contains('.detail_title', tituloPgEdicao, { timeout: TIMEOUT_PADRAO})
+  cy.contains('.detail_title', tituloPgEdicao, { timeout: timeoutPadrao})
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name salvarConteudo
- * 
- * @description
- * Comando personalizado para salvar um conteúdo específico e validar a ação.
- * 
- * @actions
- * 1. Define um timeout padrão de 5 segundos.
- * 2. Clica no botão 'Salvar' para iniciar o processo de salvamento do conteúdo.
- * 3. Valida a exibição da mensagem de sucesso após o salvamento.
- * 4. Verifica se o usuário é redirecionado para a página correta, conforme o tipo de conteúdo.
- * 5. Confirma se o conteúdo criado é visível e único na listagem correspondente.
- * 
- * @param {String} nomeConteudo - O nome do conteúdo a ser salvo. Este nome é utilizado para verificar a presença do conteúdo na listagem após o salvamento.
- * @param {String} tipoConteudo - O tipo do conteúdo a ser salvo (e.g., 'trilha', 'curso', 'catalogo'). Este parâmetro influencia na mensagem de sucesso esperada, na página de redirecionamento esperada e no seletor utilizado para encontrar o conteúdo na listagem.
- * 
- * @example
- * cy.salvarConteudo('Nome do Conteúdo', 'tipoConteudo')
- * 
- * @throws {Error} - Se o tipo de conteúdo informado não for 'trilha', 'curso' ou 'catalogo'.
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('salvarConteudo', function(nomeConteudo, tipoConteudo) {
   // Define o timeout para validação das páginas
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
 
   // Acessa o arquivo de labels
   const labels = Cypress.env('labels')
@@ -674,11 +390,11 @@ Cypress.Commands.add('salvarConteudo', function(nomeConteudo, tipoConteudo) {
     .click()  
   
   // Valida a mensagem
-  cy.contains('.flash.notice', msgSucesso, { timeout: TIMEOUT_PADRAO })
+  cy.contains('.flash.notice', msgSucesso, { timeout: timeoutPadrao })
     .should('be.visible')
 
   // Valida o redirecionamento
-  cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO })
+  cy.contains('#page-breadcrumb', breadcrumb, { timeout: timeoutPadrao })
     .should('be.visible')
 
   switch (tipoConteudo) {
@@ -699,31 +415,12 @@ Cypress.Commands.add('salvarConteudo', function(nomeConteudo, tipoConteudo) {
 
   // Verifica se o conteúdo foi criado e é exibido na listagem
   if (seletor) {
-    cy.get(seletor, { timeout: TIMEOUT_PADRAO })
+    cy.get(seletor, { timeout: timeoutPadrao })
       .should('be.visible')
       .should('have.length', 1)
   }
 })
 
-/** DOCUMENTAÇÃO:
- * @name cancelarFormularioConteudo
- * 
- * @description
- * Comando personalizado para cancelar um formulário de conteúdo e validar o redirecionamento correto da página.
- * 
- * @actions
- * 1. Clica no botão 'Cancelar' para cancelar a criação/edição de determinado conteúdo.
- * 2. Valida a exibição da página correta após o cancelamento.
- * 
- * @param {String} tipoConteudo - O tipo do conteúdo que está sendo criado (e.g., 'trilha', 'curso', 'catalogo'). Este parâmetro influencia no breadcrumb esperado para a página de redirecionamento.
- * 
- * @example
- * cy.cancelarFormularioConteudo('tipoConteudo')
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('cancelarFormularioConteudo', function(tipoConteudo) {
   const labels = Cypress.env('labels')
   const { breadcrumb } = labels.conteudo[tipoConteudo]
@@ -738,36 +435,9 @@ Cypress.Commands.add('cancelarFormularioConteudo', function(tipoConteudo) {
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name excluirConteudo
- * 
- * @description
- * Comando personalizado para excluir um conteúdo específico, validar o modal, mensagens e confirmar a ação.
- * 
- * @actions
- * 1. Define um timeout padrão de 5 segundos.
- * 2. Clica na opção para excluir conforme o tipo de conteúdo a ser excluído.
- * 3. Valida a exibição do modal de exclusão do conteúdo e as mensagens exibidas.
- * 4. Confirma a exclusão do conteúdo.
- * 5. Valida a exibição da mensagem de sucesso após a exclusão.
- * 6. Verifica se o conteúdo foi removido da listagem.
- * 
- * @param {String} nomeConteudo - O nome do conteúdo a ser excluído. Este nome é utilizado para encontrar o conteúdo na listagem e clicar no botão de exclusão.
- * @param {String} tipoConteudo - O tipo do conteúdo a ser excluído (e.g., 'trilha', 'curso', 'catalogo'). Este parâmetro influencia no seletor utilizado para 
- * encontrar o conteúdo na listagem.
- * 
- * @example
- * cy.excluirConteudo('Nome do Conteúdo', 'tipoConteudo')
- * 
- * @throws {Error} - Se o tipo de conteúdo informado não for 'trilha', 'curso' ou 'catalogo'.
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo, listaConteudos = []) {
   // Define o timeout para validação das páginas
-  const TIMEOUT_PADRAO = 8000
+  const timeoutPadrao = 8000
 
   // Acessa o arquivo de labels
   const labels = Cypress.env('labels')
@@ -785,17 +455,17 @@ Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo, lis
         seletor = `tr[tag-name='${nomeConteudo}']`  
 
         // Clica em 'Opções' e 'Excluir'
-        cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+        cy.get(seletor, { timeout: timeoutPadrao})
           .find('svg[aria-label="Options"]')
           .click()
 
-        cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+        cy.get(seletor, { timeout: timeoutPadrao})
           .wait(2000)	
           .contains('button', 'Excluir')
           .click({ force: true })
 
         // Valida o modal de exclusão
-        cy.contains('.chakra-modal__header', tituloModalExclusao, { timeout: TIMEOUT_PADRAO })
+        cy.contains('.chakra-modal__header', tituloModalExclusao, { timeout: timeoutPadrao })
           .should('be.visible')
 
         cy.contains('.chakra-text', nomeConteudo)
@@ -808,17 +478,17 @@ Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo, lis
         seletor = `tr[tag-name='${nomeConteudo}']`
 
         // Clica em 'Opções' e 'Excluir'
-        cy.get(seletor, { timeout: TIMEOUT_PADRAO })
+        cy.get(seletor, { timeout: timeoutPadrao })
           .find('svg[aria-label="Options"]')
           .click()
 
-        cy.get(seletor, { timeout: TIMEOUT_PADRAO })
+        cy.get(seletor, { timeout: timeoutPadrao })
           .wait(2000)
           .contains('button', 'Excluir')
           .click({ force: true })
 
         // Valida o modal de exclusão
-        cy.contains('.chakra-modal__header', tituloModalExclusao, { timeout: TIMEOUT_PADRAO })
+        cy.contains('.chakra-modal__header', tituloModalExclusao, { timeout: timeoutPadrao })
           .should('be.visible')
 
         cy.contains('.chakra-heading', nomeConteudo)
@@ -832,7 +502,7 @@ Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo, lis
         break
       case 'catalogo':
         seletor = `tr.event-row[name='${nomeConteudo}']`
-        cy.get(seletor, { timeout: TIMEOUT_PADRAO })
+        cy.get(seletor, { timeout: timeoutPadrao })
           .find('a[title="Excluir"]')
           .click()
 
@@ -887,20 +557,20 @@ Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo, lis
     // Valida a mensagem de sucesso da exclusão
     if (nomeConteudo) {
       if (tipoConteudo === 'catalogo' || tipoConteudo === 'biblioteca') {
-        cy.contains('.flash.notice', msgSucessoExclusao, { timeout: TIMEOUT_PADRAO })
+        cy.contains('.flash.notice', msgSucessoExclusao, { timeout: timeoutPadrao })
           .should('be.visible')
       } else {
-        cy.contains('.chakra-alert__desc', msgSucessoExclusao, { timeout: TIMEOUT_PADRAO })
+        cy.contains('.chakra-alert__desc', msgSucessoExclusao, { timeout: timeoutPadrao })
           .should('be.visible')
       }  
     }
 
     // Verifica se o conteúdo foi excluído e não é exibido na listagem
     if (tipoConteudo === 'biblioteca') {
-      cy.get(`td.event-name[title='${nomeConteudo}']`, { timeout: TIMEOUT_PADRAO })
+      cy.get(`td.event-name[title='${nomeConteudo}']`, { timeout: timeoutPadrao })
         .should('not.exist')
     } else {
-      cy.get(seletor, { timeout: TIMEOUT_PADRAO })
+      cy.get(seletor, { timeout: timeoutPadrao })
         .should('not.exist')
     }
   }
@@ -918,35 +588,8 @@ Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo, lis
   }
 })
 
-/** DOCUMENTAÇÃO:
- * @name addAtividadeConteudo
- * 
- * @description
- * Comando personalizado para adicionar uma atividade em um conteúdo específico e validar o redirecionamento correto da página.
- * 
- * @actions
- * 1. Define um timeout padrão de 5 segundos.
- * 2. Clica no conteúdo específico, conforme o tipo de conteúdo, para adicionar a atividade.
- * 3. Valida a exibição da página de adição de atividades.
- * 
- * @param {String} nomeConteudo - O nome do conteúdo a ser acessado para adicionar a atividade.
- * @param {String} tipoConteudo - O tipo do conteúdo a ser acessado (e.g., 'trilha', 'curso', 'catalogo', 'biblioteca'). 
- * Este parâmetro influencia no seletor utilizado para encontrar o conteúdo na listagem e na página carregada para adição de atividades.
- * 
- * @example
- * cy.addAtividadeConteudo('Nome do Conteúdo', 'tipoConteudo')
- * 
- * @throws {Error} - Se o tipo de conteúdo informado não for 'trilha', 'curso', 'catalogo' ou 'biblioteca'.
- * 
- * @observations
- * Este comando não realiza o preenchimento dos campos da atividade. Para isso, @see preencherDadosAtividade
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('addAtividadeConteudo', function(nomeConteudo, tipoConteudo) {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   
   const labels = Cypress.env('labels')
   const { breadcrumb, tituloPg } = labels.atividades
@@ -958,28 +601,28 @@ Cypress.Commands.add('addAtividadeConteudo', function(nomeConteudo, tipoConteudo
     case 'curso':
       seletor = `tr[tag-name='${nomeConteudo}']`    
       // Clica em 'Opções' e 'Atividades'
-      cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+      cy.get(seletor, { timeout: timeoutPadrao})
         .find('svg[aria-label="Options"]')
         .click()
 
-      cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+      cy.get(seletor, { timeout: timeoutPadrao})
         .contains('button', 'Atividades')
         .click( {force: true} )
       break
     case 'catalogo':
       seletor = `tr.event-row[name='${nomeConteudo}']`
       // Clica para expandir opções
-      cy.get(seletor, { timeout: TIMEOUT_PADRAO})
+      cy.get(seletor, { timeout: timeoutPadrao})
         .find('.div-table-arrow-down')
         .click()
       // Clica em 'Atividades'
-      cy.get('#content-link', { timeout: TIMEOUT_PADRAO})
+      cy.get('#content-link', { timeout: timeoutPadrao})
         .click()
       break
     case 'biblioteca':
       seletor = `tr.event-name[title='${nomeConteudo}']`
       // Clica em 'Atividades'
-      cy.contains('button', 'Atividades', { timeout: TIMEOUT_PADRAO})
+      cy.contains('button', 'Atividades', { timeout: timeoutPadrao})
         .click()
       break
     default:
@@ -997,23 +640,6 @@ Cypress.Commands.add('addAtividadeConteudo', function(nomeConteudo, tipoConteudo
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name salvarAtividades
- * 
- * @description
- * Comando personalizado para salvar uma atividade e validar a mensagem de sucesso.
- * 
- * @actions
- * 1. Salva a atividade.
- * 2. Valida a exibição da mensagem de sucesso após o salvamento.
- * 
- * @example
- * cy.salvarAtividades()
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('salvarAtividades', () => {
   const atividades = new estruturaAtividades()
   const labels = Cypress.env('labels')
@@ -1027,31 +653,8 @@ Cypress.Commands.add('salvarAtividades', () => {
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name editarAtividade
- * 
- * @description
- * Comando personalizado para editar a atividade específica de um conteúdo específico e validar o redirecionamento correto da página.
- * 
- * @actions
- * 1. Define um timeout padrão de 5 segundos.
- * 2. Edita a atividade específica com base no nome do conteúdo e da atividade.
- * 3. Valida a exibição da página de edição da atividade.
- * 
- * @param {String} nomeConteudo - O nome do conteúdo a ser editado. Este nome é utilizado para encontrar o conteúdo na listagem e 
- * clicar no botão de edição da atividade.
- * @param {String} nomeAtividade - O nome da atividade a ser editada. Este nome é utilizado para encontrar a atividade na listagem e 
- * clicar no botão de edição.
- * 
- * @example
- * cy.editarAtividade('Nome do Conteúdo', 'Nome da Atividade')
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('editarAtividade', (nomeConteudo, nomeAtividade) => {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { breadcrumb, tituloPgEdicao } = labels.atividades
 
@@ -1062,7 +665,7 @@ Cypress.Commands.add('editarAtividade', (nomeConteudo, nomeAtividade) => {
     .click( )
 
   // Validar se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO})
+  cy.contains('#page-breadcrumb', breadcrumb, { timeout: timeoutPadrao})
     .should('be.visible')
 
   cy.contains('#breadcrumb', `> ${nomeConteudo}`)
@@ -1072,30 +675,6 @@ Cypress.Commands.add('editarAtividade', (nomeConteudo, nomeAtividade) => {
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name preencherDadosAtividade
- * 
- * @description
- * Comando personalizado para preencher os campos da atividade.
- * 
- * @actions
- * 1. Preenche os campos da atividade com base nos dados fornecidos.
- * 2. Limpa os campos antes de preencher, se a opção 'limpar' for verdadeira.
- * 
- * @param {Object} dados - Os dados a serem preenchidos nos campos da atividade.
- * @param {Object} opcoes - Habilita ou não a limpeza dos campos antes do seu preenchimento.
- * 
- * @example
- * cy.preencherDadosAtividade({ nome: 'Nome da Atividade', descricao: 'Descrição da Atividade' }, { limpar: true })
- * ou
- * cy.preencherDadosAtividade(dados, { limpar: false })
- * 
- * @throws {Error} - Se o campo informado não for válido. // Existente no método 'preencherCampo' da classe 'formAtividades'
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('preencherDadosAtividade', (dados, opcoes = { limpar: false }) => {
   const formulario = new formAtividades()
   
@@ -1105,28 +684,6 @@ Cypress.Commands.add('preencherDadosAtividade', (dados, opcoes = { limpar: false
   })
 })
 
-/** DOCUMENTAÇÃO:
- * @name validarDadosAtividade
- * 
- * @description
- * Comando personalizado para validar os dados de uma atividade.
- * 
- * @actions
- * 1. Valida os campos da atividade com base nos dados fornecidos.
- * 
- * @param {Object} dados - Os dados a serem validados nos campos da atividade.
- * 
- * @example
- * cy.validarDadosAtividade({ nome: 'Nome da Atividade', descricao: 'Descrição da Atividade' })
- * ou
- * cy.validarDadosAtividade(dados)
- * 
- * @throws {Error} - Se o campo informado não for válido. // Existente no método 'validarCampo' da classe 'formAtividades'
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('validarDadosAtividade', (dados) => {
   const formulario = new formAtividades()
 
@@ -1136,40 +693,15 @@ Cypress.Commands.add('validarDadosAtividade', (dados) => {
   })
 })
 
-/** DOCUMENTAÇÃO:
- * @name verificarProcessamentoScorm
- * 
- * @description
- * Comando personalizado para verificar a conclusão do processamento de um arquivo Scorm.
- * 
- * @actions
- * 1. Verifica se o arquivo Scorm ainda está sendo processado.
- * 2. Aguarda um tempo de 5 segundos e verifica novamente.
- * 3. Se o arquivo Scorm ainda estiver sendo processado, recarrega a página e tenta novamente.
- * 4. Caso contrário, exibe a mensagem de sucesso.
- * 
- * @param {String} nomeConteudo - O nome do conteúdo que contém o arquivo Scorm a ser processado.
- * @param {String} nomeAtividade - O nome da atividade que contém o arquivo Scorm a ser processado.
- * @param {String} tipoConteudo - O tipo do conteúdo que contém o arquivo Scorm a ser processado (e.g., 'trilha', 'curso', 'catalogo', 'biblioteca').
- * 
- * @example
- * cy.verificarProcessamentoScorm('Nome do Conteúdo', 'Nome da Atividade', 'tipoConteudo')
- * ou
- * cy.verificarProcessamentoScorm(nomeConteudo, nomeAtividade, tipoConteudo)
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('verificarProcessamentoScorm', (nomeConteudo, nomeAtividade, tipoConteudo) => {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
 
   function verificar() {
     cy.get('body').then($body => {
       if ($body.find('span[style="font-style:italic;opacity:50%;font-size:11px;margin-left:20px;color:black;"]:contains("Processando scorm")').length > 0) {
         cy.log('Arquivo Scorm ainda está sendo processado. Aguardando...')
 
-        cy.wait(TIMEOUT_PADRAO)
+        cy.wait(timeoutPadrao)
 
         if (tipoConteudo === 'trilha' || tipoConteudo === 'curso') {
           cy.acessarPgListaConteudos()
@@ -1193,27 +725,6 @@ Cypress.Commands.add('verificarProcessamentoScorm', (nomeConteudo, nomeAtividade
   verificar()
 })
 
-/** DOCUMENTAÇÃO
- * @name excluirAtividade
- * 
- * @description
- * Comando personalizado para excluir uma atividade específica, confirmae a exclusão e salvar a atualização da estrutura de atividades.
- * 
- * @actions
- * 1. Clica no botão de exclusão da atividade específica.
- * 2. Confirma a exclusão da atividade (arquivo enviado para lixeira).
- * 3. Salva a atualização da estrutura de atividades.
- * 4. Verifica se a atividade foi excluída.
- * 
- * @param {String} nomeAtividade - O nome da atividade a ser excluída.
- * 
- * @example
- * cy.excluirAtividade('Nome da Atividade')
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('excluirAtividade', (nomeAtividade) => {
   cy.contains('li.dd-item', nomeAtividade)
     .find('.dd-delete')
@@ -1234,29 +745,6 @@ Cypress.Commands.add('excluirAtividade', (nomeAtividade) => {
     .should('not.exist')
 })
 
-/** DOCUMENTAÇÃO:
- * @name criarCursoViaApi
- * 
- * @description
- * Comando personalizado para criar um curso via API.
- * 
- * @actions
- * 1. Realiza uma requisição do tipo POST para a criação de um curso.
- * 2. Valida se o status da requisição é 201 (Created).
- * 3. Caso a requisição falhe, tenta novamente até 3 vezes.
- * 
- * @param {Object} body - O corpo da requisição para a criação do curso.
- * @param {Number} attempt - A tentativa atual de criação do curso.
- * 
- * @example
- * cy.criarCursoViaApi(body, attempt)
- * 
- * @throws {Error} - Se a requisição falhar após 3 tentativas.
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add("criarCursoViaApi", (body, attempt = 1) => {
   const url = `/api/v1/o/${Cypress.env('orgId')}/courses`
   
@@ -1282,28 +770,6 @@ Cypress.Commands.add("criarCursoViaApi", (body, attempt = 1) => {
   })
 })
 
-/** DOCUMENTAÇÃO:
- * @name preencherDadosBiblioteca
- * 
- * @description
- * Comando personalizado para preencher os campos de uma biblioteca.
- * 
- * @actions
- * 1. Preenche os campos da biblioteca com base nos dados fornecidos.
- * 
- * @param {Object} conteudo - Os dados a serem preenchidos nos campos da biblioteca.
- * 
- * @example
- * cy.preencherDadosBiblioteca({ nome: 'Nome da Biblioteca', descricao: 'Descrição da Biblioteca' })
- * ou
- * cy.preencherDadosBiblioteca(dados)
- * 
- * @throws {Error} - Se o campo informado não for válido. // Existente no método 'preencherCampo' da classe 'formBiblioteca'
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('preencherDadosBiblioteca', (conteudo, opcoes = { limpar: false }) => {
   const formulario = new formBiblioteca()
   
@@ -1313,28 +779,6 @@ Cypress.Commands.add('preencherDadosBiblioteca', (conteudo, opcoes = { limpar: f
   })
 }) 
 
-/** DOCUMENTAÇÃO:
- * @name validarDadosBiblioteca
- * 
- * @description
- * Comando personalizado para validar os dados de uma biblioteca.
- * 
- * @actions
- * 1. Valida os campos da biblioteca com base nos dados fornecidos.
- * 
- * @param {Object} conteudo - Os dados a serem validados nos campos da biblioteca.
- * 
- * @example
- * cy.validarDadosBiblioteca({ nome: 'Nome da Biblioteca', descricao: 'Descrição da Biblioteca' })
- * ou
- * cy.validarDadosBiblioteca(dados)
- * 
- * @throws {Error} - Se o campo informado não for válido. // Existente no método 'validarCampo' da classe 'formBiblioteca'
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('validarDadosBiblioteca', (conteudo) => {
   const formulario = new formBiblioteca()
 
@@ -1344,28 +788,6 @@ Cypress.Commands.add('validarDadosBiblioteca', (conteudo) => {
   })
 })
 
-/** DOCUMENTAÇÃO:
- * @name listaConteudo
- * 
- * @description
- * Comando personalizado para listar os conteúdos de um tipo específico.
- * 
- * @actions
- * 1. Verifica se existem conteúdos do tipo especificado.
- * 2. Lista os conteúdos encontrados.
- * 
- * @param {String} tipoConteudo - O tipo de conteúdo a ser listado (e.g., 'trilha', 'curso', 'catalogo', 'biblioteca').
- * @param {Array} listaConteudos - A lista de conteúdos encontrados.
- * 
- * @example
- * cy.listaConteudo('trilha', listaConteudos)
- * 
- * @throws {Error} - Se o tipo de conteúdo informado não for 'trilha', 'curso', 'catalogo' ou 'biblioteca'.
- * 
- * @author Karla Daiany
- * @version 1.0.1
- * @since 1.0.0
- */
 Cypress.Commands.add('listaConteudo', (tipoConteudo, listaConteudos) => {
   const labels = Cypress.env('labels')
 
@@ -1414,26 +836,6 @@ Cypress.Commands.add('listaConteudo', (tipoConteudo, listaConteudos) => {
   })
 })
 
-/** DOCUMENTAÇÃO:
- * @name criarBibliotecaDefault
- * 
- * @description
- * Comando personalizado para criar uma biblioteca com dados padrão.
- * 
- * @actions
- * 1. Adiciona um conteúdo do tipo 'biblioteca'.
- * 2. Preenche os campos da biblioteca com os dados padrão.
- * 3. Salva a biblioteca.
- * 
- * @param {String} nomeConteudo - O nome da biblioteca a ser criada.
- * 
- * @example
- * cy.criarBibliotecaDefault('Nome da Biblioteca')
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('criarBibliotecaDefault', (nomeConteudo) => {
   const dados = {
     nome: nomeConteudo,
@@ -1447,26 +849,6 @@ Cypress.Commands.add('criarBibliotecaDefault', (nomeConteudo) => {
   cy.salvarConteudo(dados.nome, tipoConteudo)
 })
 
-/** DOCUMENTAÇÃO:
- * @name criarTrilhaDefault
- * 
- * @description
- * Comando personalizado para criar uma trilha com dados padrão.
- * 
- * @actions
- * 1. Adiciona um conteúdo do tipo 'trilha'.
- * 2. Preenche os campos da trilha com os dados padrão.
- * 3. Salva a trilha.
- * 
- * @param {String} nomeConteudo - O nome da trilha a ser criada.
- * 
- * @example
- * cy.criarTrilhaDefault('Nome da Trilha')
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('criarTrilhaDefault', (nomeConteudo) => {
   const dados = {
     nome: nomeConteudo,
@@ -1480,30 +862,6 @@ Cypress.Commands.add('criarTrilhaDefault', (nomeConteudo) => {
   cy.salvarConteudo(dados.nome, tipoConteudo)
 })
 
-/** DOCUMENTAÇÃO:
- * @name preencherDadosQuestionario
- * 
- * @description
- * Comando personalizado para preencher os campos de um questionário.
- * 
- * @actions
- * 1. Preenche os campos do questionário com base nos dados fornecidos.
- * 2. Limpa os campos antes de preencher, se a opção 'limpar' for verdadeira.
- * 
- * @param {Object} dados - Os dados a serem preenchidos nos campos do questionário.
- * @param {Object} opcoes - Habilita ou não a limpeza dos campos antes do seu preenchimento.
- * 
- * @example
- * cy.preencherDadosQuestionario({ nome: 'Nome do Questionário', descricao: 'Descrição do Questionário' }, { limpar: true })
- * ou
- * cy.preencherDadosQuestionario(dados, { limpar: false })
- * 
- * @throws {Error} - Se o campo informado não for válido. // Existente no método 'preencherCampo' da classe 'formQuestionarios'
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('preencherDadosQuestionario', (dados, opcoes = { limpar: false }) => {
   const formulario = new formQuestionarios()
   
@@ -1513,28 +871,6 @@ Cypress.Commands.add('preencherDadosQuestionario', (dados, opcoes = { limpar: fa
   })
 })
 
-/** DOCUMENTAÇÃO:
- * @name validarDadosQuestionario
- * 
- * @description
- * Comando personalizado para validar os dados de um questionário.
- * 
- * @actions
- * 1. Valida os campos do questionário com base nos dados fornecidos.
- * 
- * @param {Object} dados - Os dados a serem validados nos campos do questionário.
- * 
- * @example
- * cy.validarDadosQuestionario({ nome: 'Nome do Questionário', descricao: 'Descrição do Questionário' })
- * ou
- * cy.validarDadosQuestionario(dados)
- * 
- * @throws {Error} - Se o campo informado não for válido. // Existente no método 'validarCampo' da classe 'formQuestionarios'
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('validarDadosQuestionario', (dados) => {
   const formulario = new formQuestionarios()
 
@@ -1544,25 +880,6 @@ Cypress.Commands.add('validarDadosQuestionario', (dados) => {
   })
 })
 
-/** DOCUMENTAÇÃO:
- * @name listaQuestionarios
- * 
- * @description
- * Comando personalizado para listar os questionários.
- * 
- * @actions
- * 1. Verifica se existem questionários.
- * 2. Lista os questionários encontrados.
- * 
- * @param {Array} listaQuestionarios - A lista de questionários encontrados.
- * 
- * @example
- * cy.listaQuestionarios(listaQuestionarios)
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */ 
 Cypress.Commands.add('listaQuestionarios', (listaQuestionarios) => {
   const seletor = '.question-list-row'
 
@@ -1587,35 +904,9 @@ Cypress.Commands.add('listaQuestionarios', (listaQuestionarios) => {
   })
 })
 
-/** DOCUMENTAÇÃO:
- * @name excluirQuestionarios
- * 
- * @description
- * Comando personalizado para excluir questionários específicos ou uma lista de questionários.
- * 
- * @actions
- * 1. Clica no botão de exclusão do questionário específico ou de cada questionário da lista.
- * 2. Confirma a exclusão do questionário.
- * 3. Valida a mensagem de sucesso após a exclusão.
- * 4. Verifica se o questionário foi excluído.
- * 
- * @param {String} nomeQuestionario - O nome do questionário a ser excluído.
- * @param {Array} listaQuestionario - A lista de questionários a serem excluídos.
- * 
- * @example
- * cy.excluirQuestionarios('Nome do Questionário', listaQuestionario)
- * ou
- * cy.excluirQuestionarios(nomeQuestionario, [])
- * ou
- * cy.excluirQuestionarios('', listaQuestionario)
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('excluirQuestionarios', (nomeQuestionario, listaQuestionario) => {
   // Define o timeout para validação das páginas
-  const TIMEOUT_PADRAO = 8000
+  const timeoutPadrao = 8000
   
   // Acessa o arquivo de labels
   const labels = Cypress.env('labels')
@@ -1630,7 +921,7 @@ Cypress.Commands.add('excluirQuestionarios', (nomeQuestionario, listaQuestionari
     const seletor = `tr[name='${nomeQuestionario}']`
 
     // Clica em 'Excluir'
-    cy.get(seletor, { timeout: TIMEOUT_PADRAO })
+    cy.get(seletor, { timeout: timeoutPadrao })
       .wait(2000)
       .find(formulario.elementos.btnExcluir.seletor, formulario.elementos.btnExcluir.title)
       .click({ force: true })
@@ -1654,11 +945,11 @@ Cypress.Commands.add('excluirQuestionarios', (nomeQuestionario, listaQuestionari
       .click({ force: true })
 
     // Valida a mensagem de sucesso da exclusão
-    cy.contains('.flash.notice', msgSucessoExclusao, { timeout: TIMEOUT_PADRAO })
+    cy.contains('.flash.notice', msgSucessoExclusao, { timeout: timeoutPadrao })
       .should('be.visible')
 
     // Verifica se o questionário foi excluído e não é exibido na listagem
-    cy.get(seletor, { timeout: TIMEOUT_PADRAO })
+    cy.get(seletor, { timeout: timeoutPadrao })
       .should('not.exist')
   }
 
@@ -1675,28 +966,8 @@ Cypress.Commands.add('excluirQuestionarios', (nomeQuestionario, listaQuestionari
   }
 })
 
-/** DOCUMENTAÇÃO:
- * @name salvarQuestionario
- * 
- * @description
- * Comando personalizado para salvar um questionário e validar a mensagem de sucesso.
- * 
- * @actions
- * 1. Salva o questionário.
- * 2. Valida a exibição da mensagem de sucesso após o salvamento.
- * 3. Verifica se o questionário foi salvo.
- * 
- * @param {String} nomeQuestionario - O nome do questionário a ser salvo.
- * 
- * @example
- * cy.salvarQuestionario('Nome do Questionário')
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('salvarQuestionario', (nomeQuestionario) => {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const formulario = new formQuestionarios()
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.questionario
@@ -1709,68 +980,29 @@ Cypress.Commands.add('salvarQuestionario', (nomeQuestionario) => {
     .should('be.visible')
 
   // Verifica se o questionário foi salvo
-  cy.get(`tr[name='${nomeQuestionario}']`, { timeout: TIMEOUT_PADRAO })
+  cy.get(`tr[name='${nomeQuestionario}']`, { timeout: timeoutPadrao })
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name editarQuestionario
- * 
- * @description
- * Comando personalizado para editar um questionário específico e validar o redirecionamento correto da página.
- * 
- * @actions
- * 1. Edita o questionário específico.
- * 2. Valida a exibição da página de edição do questionário.
- * 
- * @param {String} nomeQuestionario - O nome do questionário a ser editado.
- * 
- * @example
- * cy.editarQuestionario('Nome do Questionário')
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('editarQuestionario', (nomeQuestionario) => {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const formulario = new formQuestionarios()
   const labels = Cypress.env('labels')
   const { breadcrumb, tituloPgEdicao } = labels.questionario
 
   // Edita o questionário
-  cy.get(`tr[name='${nomeQuestionario}']`, { timeout: TIMEOUT_PADRAO })
+  cy.get(`tr[name='${nomeQuestionario}']`, { timeout: timeoutPadrao })
     .find(formulario.elementos.btnEditar.seletor, formulario.elementos.btnEditar.title)
     .click()
 
   // Validar se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO })
+  cy.contains('#page-breadcrumb', breadcrumb, { timeout: timeoutPadrao })
     .should('be.visible')
 
   cy.contains('.detail_title', tituloPgEdicao)
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name criarQuestionarioDefault
- * 
- * @description
- * Comando personalizado para criar um questionário com dados padrão.
- * 
- * @actions
- * 1. Acessa a página de questionários.
- * 2. Adiciona um questionário.
- * 3. Preenche com o nome (conforme o parâmetro fornecido) e salva o questionário.
- * 
- * @param {String} nomeQuestionario - O nome do questionário a ser criado.
- * 
- * @example
- * cy.criarQuestionarioDefault('Nome do Questionário')
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('criarQuestionarioDefault', (nomeQuestionario) => {
   const formulario = new formQuestionarios()
   
@@ -1784,71 +1016,28 @@ Cypress.Commands.add('criarQuestionarioDefault', (nomeQuestionario) => {
   cy.salvarQuestionario(dados.nome)
 })
 
-/** DOCUMENTAÇÃO:
- * @name acessarPerguntasQuestionario
- * 
- * @description
- * Comando personalizado para acessar as perguntas de um questionário específico e validar o redirecionamento correto da página.
- * 
- * @actions
- * 1. Acessa as perguntas do questionário específico.
- * 2. Valida a exibição da página de perguntas do questionário.
- * 
- * @param {String} nomeQuestionario - O nome do questionário a ser acessado.
- * 
- * @example
- * cy.acessarPerguntasQuestionario('Nome do Questionário')
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('acessarPerguntasQuestionario', (nomeQuestionario) => {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const form = new formQuestionarios()
   const labels = Cypress.env('labels')
   const { breadcrumb, tituloPg } = labels.perguntas
 
   // Acessa as perguntas do questionário
-  cy.get(`tr[name='${nomeQuestionario}']`, { timeout: TIMEOUT_PADRAO })
+  cy.get(`tr[name='${nomeQuestionario}']`, { timeout: timeoutPadrao })
     .find(form.elementos.btnPerguntas.seletor)
     .click()
 
   // Valida se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO })
+  cy.contains('#page-breadcrumb', breadcrumb, { timeout: timeoutPadrao })
     .should('be.visible')
 
-  cy.contains('#breadcrumb', `> ${nomeQuestionario}`, { timeout: TIMEOUT_PADRAO })
+  cy.contains('#breadcrumb', `> ${nomeQuestionario}`, { timeout: timeoutPadrao })
     .should('be.visible')
 
   cy.contains('.detail_title', tituloPg)
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name preencherDadosPergunta
- * 
- * @description
- * Comando personalizado para preencher os campos de uma pergunta.
- * 
- * @actions
- * 1. Preenche os campos da pergunta com base nos dados fornecidos.
- * 2. Limpa os campos antes de preencher, se a opção 'limpar' for verdadeira.
- * 
- * @param {Object} conteudo - Os dados a serem preenchidos nos campos da pergunta.
- * @param {Object} opcoes - Habilita ou não a limpeza dos campos antes do seu preenchimento.
- * 
- * @example
- * cy.preencherDadosPergunta({ descricao: 'Descrição da Pergunta', tipo: 'Tipo da Pergunta' }, { limpar: true })
- * ou
- * cy.preencherDadosPergunta(dados, { limpar: false })
- * 
- * @throws {Error} - Se o campo informado não for válido. // Existente no método 'preencherCampo' da classe 'formPerguntas'
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('preencherDadosPergunta', (conteudo, opcoes = { limpar: false }) => {
   const formulario = new formPerguntas()
   
@@ -1858,28 +1047,6 @@ Cypress.Commands.add('preencherDadosPergunta', (conteudo, opcoes = { limpar: fal
   })
 }) 
 
-/** DOCUMENTAÇÃO:
- * @name validarDadosPergunta
- * 
- * @description
- * Comando personalizado para validar os dados de uma pergunta.
- * 
- * @actions
- * 1. Valida os campos da pergunta com base nos dados fornecidos.
- * 
- * @param {Object} conteudo - Os dados a serem validados nos campos da pergunta.
- * 
- * @example
- * cy.validarDadosPergunta({ descricao: 'Descrição da Pergunta', tipo: 'Tipo da Pergunta' })
- * ou
- * cy.validarDadosPergunta(dados)
- * 
- * @throws {Error} - Se o campo informado não for válido. // Existente no método 'validarCampo' da classe 'formPerguntas'
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('validarDadosPergunta', (conteudo) => {
   const formulario = new formPerguntas()
 
@@ -1889,35 +1056,14 @@ Cypress.Commands.add('validarDadosPergunta', (conteudo) => {
   })
 })
 
-/** DOCUMENTAÇÃO:
- * @name salvarPergunta
- * 
- * @description
- * Comando personalizado para salvar uma pergunta, validar a mensagem de sucesso e verificar se a pergunta foi salva.
- * 
- * @actions
- * 1. Salva a pergunta.
- * 2. Confirma a mensagem de sucesso após o salvamento.
- * 3. Verifica se a pergunta foi salva.
- * 
- * @param {String} descPergunta - A descrição da pergunta a ser salva.
- * @param {Number} index - O índice da pergunta a ser salva.
- * 
- * @example
- * cy.salvarPergunta('Descrição da Pergunta', 1)
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('salvarPergunta', (descPergunta, index) => {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const formulario = new formPerguntas()
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.perguntas
 
   // Salva a pergunta
-  cy.get(`tr[id='question-new-${index}']`, { timeout: TIMEOUT_PADRAO })
+  cy.get(`tr[id='question-new-${index}']`, { timeout: timeoutPadrao })
     .parent('tbody')
     .within(() => {
       formulario.salvar()
@@ -1928,37 +1074,15 @@ Cypress.Commands.add('salvarPergunta', (descPergunta, index) => {
     .should('be.visible')
 
   // Verifica se a pergunta foi salva
-  cy.get(`tr[title*='${descPergunta.slice(0, 1000)}']`, { timeout: TIMEOUT_PADRAO })
+  cy.get(`tr[title*='${descPergunta.slice(0, 1000)}']`, { timeout: timeoutPadrao })
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name excluirPergunta
- * 
- * @description
- * Comando personalizado para excluir uma pergunta específica, confirmar a exclusão e verificar se a pergunta foi excluída.
- * 
- * @actions
- * 1. Clica no botão de exclusão da pergunta específica.
- * 2. Valida o modal de confirmação da exclusão.
- * 3. Confirma a exclusão da pergunta.
- * 4. Valida a mensagem de sucesso após a exclusão.
- * 5. Verifica se a pergunta foi excluída.
- * 
- * @param {String} descPergunta - A descrição da pergunta a ser excluída.
- * 
- * @example
- * cy.excluirPergunta('Descrição da Pergunta')
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('excluirPergunta', (descPergunta) => {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const formulario = new formPerguntas()
 
-  cy.get(`tr[title*='${descPergunta.slice(0, 30)}']`, { timeout: TIMEOUT_PADRAO })
+  cy.get(`tr[title*='${descPergunta.slice(0, 30)}']`, { timeout: timeoutPadrao })
     .parent('tbody')
     .within(() => {
       formulario.remover()
@@ -1971,68 +1095,29 @@ Cypress.Commands.add('excluirPergunta', (descPergunta) => {
   })
 
   // Verifica se a pergunta foi excluída e não é exibida na listagem
-  cy.get(`tr[title*='${descPergunta.slice(0, 30)}']`, { timeout: TIMEOUT_PADRAO })
+  cy.get(`tr[title*='${descPergunta.slice(0, 30)}']`, { timeout: timeoutPadrao })
     .should('not.exist')
 })
 
-/** DOCUMENTAÇÃO:
- * @name expandirPergunta
- * 
- * @description
- * Comando personalizado para expandir uma pergunta específica.
- * 
- * @actions
- * 1. Clica no botão de expansão da pergunta específica.
- * 
- * @param {String} descPergunta - A descrição da pergunta a ser expandida.
- * 
- * @example
- * cy.expandirPergunta('Descrição da Pergunta')
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('expandirPergunta', (descPergunta) => {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const formulario = new formPerguntas()
 
-  cy.get(`tr[title*='${descPergunta.slice(0, 30)}']`, { timeout: TIMEOUT_PADRAO })
+  cy.get(`tr[title*='${descPergunta.slice(0, 30)}']`, { timeout: timeoutPadrao })
     .parent('tbody')
     .within(() => {
       formulario.expandirPergunta()
     })  
 })
 
-/** DOCUMENTAÇÃO:
- * @name salvarEdicaoPergunta
- * 
- * @description
- * Comando personalizado para salvar a edição de uma pergunta, validar a mensagem de sucesso e verificar se a pergunta foi salva.
- * 
- * @actions
- * 1. Salva a edição da pergunta.
- * 2. Confirma a mensagem de sucesso após o salvamento.
- * 3. Verifica se a pergunta foi salva.
- * 
- * @param {String} oldDescPergunta - A descrição antiga da pergunta a ser editada.
- * @param {String} newDescPergunta - A nova descrição da pergunta a ser salva.
- * 
- * @example
- * cy.salvarEdicaoPergunta('Descrição da Pergunta', 'Nova Descrição da Pergunta')
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('salvarEdicaoPergunta', (oldDescPergunta, newDescPergunta) => {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const formulario = new formPerguntas()
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.perguntas
 
   // Salva a pergunta
-  cy.get(`tr[title*='${oldDescPergunta.slice(0, 30)}']`, { timeout: TIMEOUT_PADRAO })
+  cy.get(`tr[title*='${oldDescPergunta.slice(0, 30)}']`, { timeout: timeoutPadrao })
     .parent('tbody')
     .within(() => {
       formulario.salvar()
@@ -2043,96 +1128,30 @@ Cypress.Commands.add('salvarEdicaoPergunta', (oldDescPergunta, newDescPergunta) 
     .should('be.visible')
 
   // Verifica se a pergunta foi salva
-  cy.get(`tr[title*='${newDescPergunta.slice(0, 1000)}']`, { timeout: TIMEOUT_PADRAO })
+  cy.get(`tr[title*='${newDescPergunta.slice(0, 1000)}']`, { timeout: timeoutPadrao })
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name preencherDadosUsuario
- * 
- * @description
- * Comando personalizado para preencher os campos de um usuário.
- * 
- * @actions
- * 1. Preenche os campos do usuário com base nos dados fornecidos.
- * 2. Limpa os campos antes de preencher, se a opção 'limpar' for verdadeira.
- * 
- * @param {Object} conteudo - Os dados a serem preenchidos nos campos do usuário.
- * @param {Object} opcoes - Habilita ou não a limpeza dos campos antes do seu preenchimento.
- * 
- * @example
- * cy.preencherDadosUsuario({ nome: 'Nome do Usuário', email: 'Email do Usuário' }, { limpar: true })
- * ou
- * cy.preencherDadosUsuario(dados, { limpar: false })
- * 
- * @throws {Error} - Se o campo informado não for válido. // Existente no método 'preencherCampo' da classe 'formUsuarios'
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
-Cypress.Commands.add('preencherDadosUsuario', (conteudo, opcoes = { limpar: false }) => {
+Cypress.Commands.add('preencherDadosUsuario', (dados, opcoes = { limpar: false }) => {
   const formulario = new formUsuarios()
   
-  Object.keys(conteudo).forEach(nomeCampo => {
-      const valor = conteudo[nomeCampo]
+  Object.keys(dados).forEach(nomeCampo => {
+      const valor = dados[nomeCampo]
       formulario.preencherCampo(nomeCampo, valor, opcoes)
   })
 }) 
 
-/** DOCUMENTAÇÃO:
- * @name validarDadosUsuario
- * 
- * @description
- * Comando personalizado para validar os dados de um usuário.
- * 
- * @actions
- * 1. Valida os campos do usuário com base nos dados fornecidos.
- * 
- * @param {Object} conteudo - Os dados a serem validados nos campos do usuário.
- * 
- * @example
- * cy.validarDadosUsuario({ nome: 'Nome do Usuário', email: 'Email do Usuário' })
- * ou
- * cy.validarDadosUsuario(dados)
- * 
- * @throws {Error} - Se o campo informado não for válido. // Existente no método 'validarCampo' da classe 'formUsuarios'
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
-Cypress.Commands.add('validarDadosUsuario', (conteudo) => {
+Cypress.Commands.add('validarDadosUsuario', (dados) => {
   const formulario = new formUsuarios()
 
-  Object.keys(conteudo).forEach(nomeCampo => {
-    const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
     formulario.validarCampo(nomeCampo, valor)
   })
 })
 
-/** DOCUMENTAÇÃO:
- * @name salvarUsuario
- * 
- * @description
- * Comando personalizado para salvar um usuário, validar a mensagem de sucesso e verificar se o usuário foi salvo.
- * 
- * @actions
- * 1. Salva o usuário.
- * 2. Confirma a mensagem de sucesso após o salvamento.
- * 3. Verifica se o usuário foi salvo.
- * 
- * @param {String} nomeUsuario - O nome do usuário a ser salvo.
- * 
- * @example
- * cy.salvarUsuario('Nome do Usuário')
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('salvarUsuario', (nomeUsuario) => {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const formulario = new formUsuarios()
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.usuarios
@@ -2141,7 +1160,7 @@ Cypress.Commands.add('salvarUsuario', (nomeUsuario) => {
   formulario.salvar()
 
   // Confirma a mensagem de sucesso
-  cy.contains('.flash.success', msgSucesso, { timeout: TIMEOUT_PADRAO })
+  cy.contains('.flash.success', msgSucesso, { timeout: timeoutPadrao })
     .should('be.visible')
 
   // Verifica se o usuário foi criado com sucesso
@@ -2150,30 +1169,8 @@ Cypress.Commands.add('salvarUsuario', (nomeUsuario) => {
     .should('contain', nomeUsuario)
 })
 
-/** DOCUMENTAÇÃO:
- * @name excluirUsuario
- * 
- * @description
- * Comando personalizado para excluir um usuário específico, confirmar a exclusão e verificar se o usuário foi excluído.
- * 
- * @actions
- * 1. Clica no botão de exclusão do usuário específico.
- * 2. Valida o modal de confirmação da exclusão.
- * 3. Confirma a exclusão do usuário.
- * 4. Valida a mensagem de sucesso após a exclusão.
- * 5. Verifica se o usuário foi excluído.
- * 
- * @param {String} nomeUsuario - O nome do usuário a ser excluído.
- * 
- * @example
- * cy.excluirUsuario('Nome do Usuário')
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('excluirUsuario', (nomeUsuario) => {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { tituloModalExclusao, texto1ModalExclusao, texto2ModalExclusao, btnConfirmar, msgSucessoExclusao } = labels.usuarios
 
@@ -2218,36 +1215,17 @@ Cypress.Commands.add('excluirUsuario', (nomeUsuario) => {
     .click()
 
   // Valida a mensagem de sucesso após a exclusão
-  cy.contains('.flash.success', msgSucessoExclusao, { timeout: TIMEOUT_PADRAO })
+  cy.contains('.flash.success', msgSucessoExclusao, { timeout: timeoutPadrao })
     .should('be.visible')
 
   // Verifica se o usuário foi excluído e não é exibido na listagem
   cy.get('tr.professional-row')
-    .contains(nomeUsuario, { timeout: TIMEOUT_PADRAO })
+    .contains(nomeUsuario, { timeout: timeoutPadrao })
     .should('not.exist')
 })
 
-/** DOCUMENTAÇÃO:
- * @name editarUsuario
- * 
- * @description
- * Comando personalizado para editar um usuário específico e validar o redirecionamento correto da página.
- * 
- * @actions
- * 1. Edita o usuário específico.
- * 2. Valida a exibição da página de edição do usuário.
- * 
- * @param {String} nomeUsuario - O nome do usuário a ser editado.
- * 
- * @example
- * cy.editarUsuario('Nome do Usuário')
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('editarUsuario', (nomeUsuario) => {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { breadcrumb, tituloPgEdicao } = labels.usuarios
 
@@ -2259,35 +1237,13 @@ Cypress.Commands.add('editarUsuario', (nomeUsuario) => {
     })
 
   // Valida se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO })
+  cy.contains('#page-breadcrumb', breadcrumb, { timeout: timeoutPadrao })
     .should('be.visible')
 
   cy.contains('.detail_title', tituloPgEdicao)
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name excluirUsuarioViaApi
- * 
- * @description
- * Comando personalizado para excluir usuários via API.
- * 
- * @actions
- * 1. Obtém a listagem de usuários.
- * 2. Exclui todos os usuários, exceto o usuário administrador.
- * 
- * @example
- * cy.excluirUsuarioViaApi()
- * 
- * @throws {Error} - Se ocorrer algum erro ao obter a listagem de usuários ou ao excluir um usuário.
- * 
- * @obs
- * Deve ser configurado o ID do usuário administrador no arquivo 'cypress.config.json' no 'env', campo 'userAdminId'.
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('excluirUsuarioViaApi', function() {
   cy.request({
     method: 'GET',
@@ -2321,59 +1277,20 @@ Cypress.Commands.add('excluirUsuarioViaApi', function() {
   })
 })
 
-/** DOCUMENTAÇÃO:
- * @name acessarPgUsuarios
- * 
- * @description
- * Comando personalizado para acessar a página de usuários e validar o redirecionamento correto da página.
- * 
- * @actions
- * 1. Acessa a página de usuários.
- * 2. Valida a exibição da página de usuários.
- * 
- * @example
- * cy.acessarPgUsuarios()
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('acessarPgUsuarios', () => {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { breadcrumb } = labels.usuarios
 
   cy.visit(`/o/${Cypress.env('orgId')}/users`)
   
   // Valida se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO })
+  cy.contains('#page-breadcrumb', breadcrumb, { timeout: timeoutPadrao })
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name addUsuario
- * 
- * @description
- * Comando personalizado para adicionar um usuário e validar o redirecionamento correto da página.
- * 
- * @actions
- * 1. Clica no botão de adicionar usuário.
- * 2. Valida a exibição da página de adicionar usuário.
- * 
- * @example
- * cy.addUsuario()
- * 
- * @obs
- * Esta comando não cria um usuário, apenas acessa a página de adicionar usuário. Para criar um usuário 
- * @see preencherDadosUsuario
- * @see salvarUsuario
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('addUsuario', () => {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { breadcrumb, tituloPgAdicionar } = labels.usuarios
 
@@ -2381,30 +1298,13 @@ Cypress.Commands.add('addUsuario', () => {
     .click()
 
   // Valida se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO })
+  cy.contains('#page-breadcrumb', breadcrumb, { timeout: timeoutPadrao })
     .should('be.visible')
 
-  cy.contains('.detail_title', tituloPgAdicionar, { timeout: TIMEOUT_PADRAO })
+  cy.contains('.detail_title', tituloPgAdicionar, { timeout: timeoutPadrao })
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name cancelarFormularioUsuario
- * 
- * @description
- * Comando para cancelar o formulário de usuário e validar o redirecionamento correto da página.
- * 
- * @actions
- * 1. Clica no botão de cancelar.
- * 2. Valida a exibição da página de usuários.
- * 
- * @example
- * cy.cancelarFormularioUsuario()
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('cancelarFormularioUsuario', function() {
   const labels = Cypress.env('labels')
   const { breadcrumb } = labels.usuarios
@@ -2419,32 +1319,8 @@ Cypress.Commands.add('cancelarFormularioUsuario', function() {
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name resetSenhaUsuario
- * 
- * @description
- * Comando personalizado para resetar a senha de um usuário.
- * 
- * @actions
- * 1. Clica em 'Alterar senha' do usuário específico.
- * 2. Valida o título do modal de alteração de senha.
- * 3. Insere senhas incompatíveis e valida a mensagem de senhas diferentes.
- * 4. Insere senhas compatíveis e valida a mensagem de senhas iguais.
- * 5. Confirma a alteração de senha do usuário.
- * 6. Valida a mensagem de sucesso após a alteração de senha.
- * 
- * @param {String} nomeUsuario - O nome do usuário a ter a senha resetada.
- * @param {String} senha - A nova senha do usuário.
- * 
- * @example
- * cy.resetSenhaUsuario('Nome do Usuário', 'Nova Senha')
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('resetSenhaUsuario', function(nomeUsuario, senha) {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { tituloAlterarSenha, aguardandoSenha, senhasDiferentes, senhasIguais, msgSucessoSenha } = labels.usuarios
 
@@ -2487,36 +1363,12 @@ Cypress.Commands.add('resetSenhaUsuario', function(nomeUsuario, senha) {
     .click()
 
   // Valida a mensagem de sucesso
-  cy.contains('.flash.notice', msgSucessoSenha, { timeout: TIMEOUT_PADRAO })
+  cy.contains('.flash.notice', msgSucessoSenha, { timeout: timeoutPadrao })
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name inativarUsuario
- * 
- * @description
- * Comando personalizado para inativar um usuário específico.
- * 
- * @actions
- * 1. Clica no botão de inativar do usuário específico.
- * 2. Valida o título e texto do modal de inativação.
- * 3. Confirma a inativação do usuário.
- * 4. Valida a mensagem de sucesso após a inativação.
- * 5. Verifica se o usuário foi inativado.
- * 6. Verifica se os elementos de alteração de senha, edição e exclusão não estão visíveis.
- * 7. Verifica se o status do usuário é "Inativo".
- * 
- * @param {String} nomeUsuario - O nome do usuário a ser inativado.
- * 
- * @example
- * cy.inativarUsuario('Nome do Usuário')
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('inativarUsuario', function(nomeUsuario) {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { tituloModalInativar, textoModalInativar, msgSucessoInativar } = labels.usuarios
 
@@ -2545,7 +1397,7 @@ Cypress.Commands.add('inativarUsuario', function(nomeUsuario) {
     .click()
 
   // Valida a mensagem de sucesso após a inativação
-  cy.contains('.flash.notice', msgSucessoInativar, { timeout: TIMEOUT_PADRAO })
+  cy.contains('.flash.notice', msgSucessoInativar, { timeout: timeoutPadrao })
     .should('be.visible')
 
   // Verifica se o usuário foi inativado
@@ -2557,51 +1409,27 @@ Cypress.Commands.add('inativarUsuario', function(nomeUsuario) {
         .should('be.visible')
 
       // Verifica se o elemento de alteração de senha não está visível
-      cy.get('a.user-password-change', { timeout: TIMEOUT_PADRAO})
+      cy.get('a.user-password-change', { timeout: timeoutPadrao})
         .should('not.exist')
 
       // Verifica se o elemento de edição não está visível
-      cy.get('td.professional-progress[title="Editar"]', { timeout: TIMEOUT_PADRAO})
+      cy.get('td.professional-progress[title="Editar"]', { timeout: timeoutPadrao})
         .find('a.professional-edit')
         .should('not.exist')
 
       // Verifica se o elemento de exclusão não está visível
-      cy.get('td.professional-progress[title="Excluir"]', { timeout: TIMEOUT_PADRAO})
+      cy.get('td.professional-progress[title="Excluir"]', { timeout: timeoutPadrao})
         .find('a.professional-delete')
         .should('not.exist')
 
       // Verifica se o status do usuário é "Inativo"
-      cy.get('td.ellipsis', { timeout: TIMEOUT_PADRAO})
+      cy.get('td.ellipsis', { timeout: timeoutPadrao})
         .should('contain', 'Inativo')
     })
 })
 
-/** DOCUMENTAÇÃO:
- * @name ativarUsuario
- * 
- * @description
- * Comando personalizado para ativar um usuário específico.
- * 
- * @actions
- * 1. Clica no botão de ativar do usuário específico.
- * 2. Valida o título e texto do modal de ativação.
- * 3. Confirma a ativação do usuário.
- * 4. Valida a mensagem de sucesso após a ativação.
- * 5. Verifica se o usuário foi ativado.
- * 6. Verifica se os elementos de alteração de senha, edição e exclusão estão visíveis.
- * 7. Verifica se o status do usuário é "Ativo".
- * 
- * @param {String} nomeUsuario - O nome do usuário a ser ativado.
- * 
- * @example
- * cy.ativarUsuario('Nome do Usuário')
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('ativarUsuario', function(nomeUsuario) {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { tituloModalAtivar, textoModalAtivar, msgSucessoAtivar } = labels.usuarios
 
@@ -2630,7 +1458,7 @@ Cypress.Commands.add('ativarUsuario', function(nomeUsuario) {
     .click()
 
   // Valida a mensagem de sucesso após a ativação
-  cy.contains('.flash.notice', msgSucessoAtivar, { timeout: TIMEOUT_PADRAO })
+  cy.contains('.flash.notice', msgSucessoAtivar, { timeout: timeoutPadrao })
     .should('be.visible')
 
   // Verifica se o usuário foi ativado
@@ -2642,73 +1470,48 @@ Cypress.Commands.add('ativarUsuario', function(nomeUsuario) {
         .should('be.visible')
 
       // Verifica se o elemento de alteração de senha não está visível
-      cy.get('a.user-password-change', { timeout: TIMEOUT_PADRAO})
+      cy.get('a.user-password-change', { timeout: timeoutPadrao})
         .should('be.visible')
 
       // Verifica se o elemento de edição não está visível
-      cy.get('td.professional-progress[title="Editar"]', { timeout: TIMEOUT_PADRAO})
+      cy.get('td.professional-progress[title="Editar"]', { timeout: timeoutPadrao})
         .find('a.professional-edit')
         .should('be.visible')
 
       // Verifica se o elemento de exclusão não está visível
-      cy.get('td.professional-progress[title="Excluir"]', { timeout: TIMEOUT_PADRAO})
+      cy.get('td.professional-progress[title="Excluir"]', { timeout: timeoutPadrao})
         .find('a.professional-delete')
         .should('be.visible')
 
       // Verifica se o status do usuário é "Ativo"
-      cy.get('td.ellipsis', { timeout: TIMEOUT_PADRAO})
+      cy.get('td.ellipsis', { timeout: timeoutPadrao})
         .should('contain', 'Ativo')
     })
 })
 
-/** DOCUMENTAÇÃO:
- * @name addParticipanteConteudo
- * 
- * @description
- * Comando personalizado para acessar a página de inscrição de um participante em um conteúdo específico e validar o 
- * redirecionamento correto da página.
- * 
- * @actions
- * 1. Clica em 'Opções' do conteúdo específico.
- * 2. Clica em 'Inscrição' do conteúdo específico.
- * 3. Valida a exibição da página de inscrição de participante.
- * 
- * @param {String} nomeConteudo - O nome do conteúdo a ser inscrito.
- * 
- * @example
- * cy.addParticipanteConteudo('Nome do Conteúdo')
- * 
- * @obs
- * Esta comando não inscreve um participante, apenas acessa a página de inscrição de participante. Para inscrever um participante
- * @see preencherDadosParticipante
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('addParticipanteConteudo', function(nomeConteudo, tipoConteudo) {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   
   const labels = Cypress.env('labels')
   const { breadcrumb, tituloPg, breadcrumbTrilha } = labels.participantes
 
   // Clica em 'Opções' e 'Atividades'
-  cy.get(`tr[tag-name='${nomeConteudo}']`, { timeout: TIMEOUT_PADRAO})
+  cy.get(`tr[tag-name='${nomeConteudo}']`, { timeout: timeoutPadrao})
     .find('svg[aria-label="Options"]')
     .click()
 
-  cy.get(`tr[tag-name='${nomeConteudo}']`, { timeout: TIMEOUT_PADRAO})
+  cy.get(`tr[tag-name='${nomeConteudo}']`, { timeout: timeoutPadrao})
     .contains('button', 'Inscrição')
     .click( {force: true} )
 
   // Validar se a página foi carregada corretamente
   switch (tipoConteudo) {
     case 'Trilha':
-      cy.contains('#page-breadcrumb', breadcrumbTrilha, { timeout: TIMEOUT_PADRAO })
+      cy.contains('#page-breadcrumb', breadcrumbTrilha, { timeout: timeoutPadrao })
         .should('be.visible')
       break
     case 'curso':
-      cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO })
+      cy.contains('#page-breadcrumb', breadcrumb, { timeout: timeoutPadrao })
         .should('be.visible')
       break
   }
@@ -2717,30 +1520,6 @@ Cypress.Commands.add('addParticipanteConteudo', function(nomeConteudo, tipoConte
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name preencherDadosParticipante
- * 
- * @description
- * Comando personalizado para preencher os campos de um participante.
- * 
- * @actions
- * 1. Preenche os campos do participante com base nos dados fornecidos.
- * 2. Limpa os campos antes de preencher, se a opção 'limpar' for verdadeira.
- * 
- * @param {Object} conteudo - Os dados a serem preenchidos nos campos do participante.
- * @param {Object} opcoes - Habilita ou não a limpeza dos campos antes do seu preenchimento.
- * 
- * @example
- * cy.preencherDadosParticipante({ nome: 'Nome do Participante', email: 'Email do Participante' }, { limpar: true })
- * ou
- * cy.preencherDadosParticipante(dados, { limpar: false })
- * 
- * @throws {Error} - Se o campo informado não for válido. // Existente no método 'preencherCampo' da classe 'formUsuarios'
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('preencherDadosParticipante', (conteudo, opcoes = { limpar: false }) => {
   const formulario = new formParticipantes()
   
@@ -2750,28 +1529,6 @@ Cypress.Commands.add('preencherDadosParticipante', (conteudo, opcoes = { limpar:
   })
 }) 
 
-/** DOCUMENTAÇÃO:
- * @name validarDadosParticipante
- * 
- * @description
- * Comando personalizado para validar os dados de um participante.
- * 
- * @actions
- * 1. Valida os campos do participante com base nos dados fornecidos.
- * 
- * @param {Object} conteudo - Os dados a serem validados nos campos do participante.
- * 
- * @example
- * cy.validarDadosParticipante({ nome: 'Nome do Participante', email: 'Email do Participante' })
- * ou
- * cy.validarDadosParticipante(dados)
- * 
- * @throws {Error} - Se o campo informado não for válido. // Existente no método 'validarCampo' da classe 'formUsuarios'
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('validarDadosParticipante', (conteudo) => {
   const formulario = new formParticipantes()
 
@@ -2781,28 +1538,8 @@ Cypress.Commands.add('validarDadosParticipante', (conteudo) => {
   })
 })
 
-/** DOCUMENTAÇÃO:
- * @name salvarNovoParticipante
- * 
- * @description
- * Comando personalizado para salvar um novo participante, validar a mensagem de sucesso e verificar se o participante foi salvo.
- * 
- * @actions
- * 1. Salva o participante.
- * 2. Confirma a mensagem de sucesso após o salvamento.
- * 3. Verifica se o participante foi salvo.
- * 
- * @param {String} nomeUsuario - O nome do participante a ser salvo.
- * 
- * @example
- * cy.salvarNovoParticipante('Nome do Participante')
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('salvarNovoParticipante', (nomeParticipante) => {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const formulario = new formParticipantes()
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.participantes
@@ -2811,37 +1548,16 @@ Cypress.Commands.add('salvarNovoParticipante', (nomeParticipante) => {
   formulario.salvar()
 
   // Confirma a mensagem de sucesso
-  cy.contains('.flash.notice', msgSucesso, { timeout: TIMEOUT_PADRAO })
+  cy.contains('.flash.notice', msgSucesso, { timeout: timeoutPadrao })
     .should('be.visible')
 
   // Verifica se o usuário foi criado com sucesso
-  cy.contains('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
+  cy.contains('td', nomeParticipante, { timeout: timeoutPadrao })
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name salvarEdicaoParticipante
- * 
- * @description
- * Comando personalizado para salvar a edição de um participante, validar a mensagem de sucesso e 
- * verificar se o participante foi salvo de acordo com o status informado.
- * 
- * @actions
- * 1. Salva a edição de um participante.
- * 2. Confirma a mensagem de sucesso na atualização após o salvamento conforme o status informado.
- * 3. Verifica se o participante foi salvo no status informado.
- * 
- * @param {String} nomeUsuario - O nome do participante a ser salvo.
- * 
- * @example
- * cy.salvarEdicaoParticipante('Nome do Participante', 'Confirmados')
- * 
- * @author Karla Daiany
- * @version 1.1.0
- * @since 1.0.0
- */
 Cypress.Commands.add('salvarEdicaoParticipante', (nomeParticipante, status = 'Confirmados') => {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const formulario = new formParticipantes()
   const labels = Cypress.env('labels')
   const { msgSucessoEdicao } = labels.participantes
@@ -2850,7 +1566,7 @@ Cypress.Commands.add('salvarEdicaoParticipante', (nomeParticipante, status = 'Co
   formulario.salvar()
 
   // Confirma a mensagem de sucesso
-  cy.contains('.flash.notice', msgSucessoEdicao, { timeout: TIMEOUT_PADRAO })
+  cy.contains('.flash.notice', msgSucessoEdicao, { timeout: timeoutPadrao })
     .should('be.visible')
 
   // Mapeia a aba esperada para o seletor correspondente
@@ -2875,31 +1591,12 @@ Cypress.Commands.add('salvarEdicaoParticipante', (nomeParticipante, status = 'Co
 
   // Verifica se o usuário foi editado com sucesso na aba esperada
   cy.get(abaSeletor[status])
-    .contains('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
+    .contains('td', nomeParticipante, { timeout: timeoutPadrao })
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name editarParticipante
- * 
- * @description
- * Comando personalizado para editar um participante específico e validar o redirecionamento correto da página.
- * 
- * @actions
- * 1. Edita o participante específico.
- * 2. Valida a exibição da página de edição do participante.
- * 
- * @param {String} nomeUsuario - O nome do participante a ser editado.
- * 
- * @example
- * cy.editarParticipante('Nome do Participante')
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('editarParticipante', (nomeParticipante, tipoConteudo) => {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { breadcrumbEdicao, tituloPgEdicao, breadcrumbTrilha } = labels.participantes
 
@@ -2916,11 +1613,11 @@ Cypress.Commands.add('editarParticipante', (nomeParticipante, tipoConteudo) => {
   // Valida se a página foi carregada corretamente [obs. adicionado tipoConteudo devido BUG no breadcrumb da trilha]
   switch (tipoConteudo) {
     case 'trilha':
-      cy.contains('#page-breadcrumb', breadcrumbTrilha, { timeout: TIMEOUT_PADRAO })
+      cy.contains('#page-breadcrumb', breadcrumbTrilha, { timeout: timeoutPadrao })
         .should('be.visible')
       break
     case 'curso':
-      cy.contains('#page-breadcrumb', breadcrumbEdicao, { timeout: TIMEOUT_PADRAO })
+      cy.contains('#page-breadcrumb', breadcrumbEdicao, { timeout: timeoutPadrao })
         .should('be.visible')
       break
   }
@@ -2929,30 +1626,8 @@ Cypress.Commands.add('editarParticipante', (nomeParticipante, tipoConteudo) => {
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name addParticipante
- * 
- * @description
- * Comando personalizado para clicar no botão de 'Adicionar' na tela de inscrição.
- * 
- * @actions
- * 1. Clica no botão de 'Adicionar' participante.
- * 2. Valida a exibição da página de inscrição de participante.
- * 
- * @example
- * cy.addParticipante()
- * 
- * @obs
- * Esta comando não cria um participante, apenas clica na opção de 'Adicionar' participante. Para criar um participante 
- * @see preencherDadosUsuario
- * @see salvarNovoUsuario
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('addParticipante', (tipoConteudo) => {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { breadcrumbAdicionar, tituloPgAdicionar, breadcrumbTrilha } = labels.participantes
 
@@ -2962,51 +1637,21 @@ Cypress.Commands.add('addParticipante', (tipoConteudo) => {
   // Valida se a página foi carregada corretamente [obs. adicionado tipoConteudo devido BUG no breadcrumb da trilha]
   switch (tipoConteudo) {
     case 'trilha':
-      cy.contains('#page-breadcrumb', breadcrumbTrilha, { timeout: TIMEOUT_PADRAO })
+      cy.contains('#page-breadcrumb', breadcrumbTrilha, { timeout: timeoutPadrao })
         .should('be.visible')
       break
     case 'curso':
-      cy.contains('#page-breadcrumb', breadcrumbAdicionar, { timeout: TIMEOUT_PADRAO })
+      cy.contains('#page-breadcrumb', breadcrumbAdicionar, { timeout: timeoutPadrao })
         .should('be.visible')
       break
   }
 
-  cy.contains('.detail_title', tituloPgAdicionar, { timeout: TIMEOUT_PADRAO })
+  cy.contains('.detail_title', tituloPgAdicionar, { timeout: timeoutPadrao })
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name alteraStatus
- * 
- * @description
- * Comando personalizado para alterar o status de um ou mais participantes com base no status informado
- * e validar a alteração do status.
- * 
- * @actions
- * 1. Seleciona o(s) participante(s) desejado(s), marcando a caixa de seleção.
- * 2. Clica no botão correspondente ao status desejado.
- * 3. Insere o motivo de cancelamento, se o status for 'Cancelado'.
- * 4. Confirma a alteração do status.
- * 5. Valida a mensagem de sucesso após a alteração do status.
- * 6. Navega para a aba correspondente ao status.
- * 7. Valida o status do(s) participante(s).
- * 
- * @param {String|Array} nomeParticipantes - O nome do(s) participante(s) a ter o status alterado.
- * @param {String} status - O status a ser alterado (e.g., 'Confirmado', 'Pendente', 'Cancelado').
- * 
- * @example
- * cy.alteraStatus('Nome do Participante', 'Confirmado')
- * ou
- * cy.alteraStatus(['Nome do Participante 1', 'Nome do Participante 2'], 'Pendente')
- * 
- * @throws {Error} - Se o status informado não for válido.
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('alteraStatus', function(nomeParticipantes, status) {
-  const TIMEOUT_PADRAO = 20000
+  const timeoutPadrao = 20000
   const labels = Cypress.env('labels')
   const { msgAlteraConfirmado, msgAlteraPendente, msgAlteraCancelado, msgSucessoAlteraStatus } = labels.participantes
 
@@ -3052,20 +1697,20 @@ Cypress.Commands.add('alteraStatus', function(nomeParticipantes, status) {
     default:
       throw new Error(`Status inválido: ${status}`)
   }
-  // Valida apenas a última mensagem de sucesso (por isso a inclusão do wait de 3 segundos)
+  // Problemas na validação das demais mensagens, validando apenas a última mensagem de sucesso (por isso a inclusão do wait de 3 segundos)
   // switch (status) {
   //   case 'Confirmado':
-  //     cy.contains('.flash.success', msgAlteraConfirmado, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+  //     cy.contains('.flash.success', msgAlteraConfirmado, { timeout: timeoutPadrao }).should('be.visible')
   //     break
   //   case 'Pendente':
-  //     cy.contains('.flash.success', msgAlteraPendente, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+  //     cy.contains('.flash.success', msgAlteraPendente, { timeout: timeoutPadrao }).should('be.visible')
   //     break
   //   case 'Cancelado':
-  //     cy.contains('.flash.success', msgAlteraCancelado, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+  //     cy.contains('.flash.success', msgAlteraCancelado, { timeout: timeoutPadrao }).should('be.visible')
   //     break
   // }
   cy.wait(2000)
-  cy.contains('.flash.success', msgSucessoAlteraStatus, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+  cy.contains('.flash.success', msgSucessoAlteraStatus, { timeout: timeoutPadrao }).should('be.visible')
 
   // Medida de contorno para atualizar a página e validar o status do(s) participante(s)
   cy.addParticipante()
@@ -3093,102 +1738,28 @@ Cypress.Commands.add('alteraStatus', function(nomeParticipantes, status) {
     }
 
     cy.get(`#${statusSeletor[status]}`)
-      .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
+      .find('td', nomeParticipante, { timeout: timeoutPadrao })
       .should('be.visible')
   })
 })
 
-/** DOCUMENTAÇÃO:
- * @name abaConfirmados
- * 
- * @description
- * Comando personalizado para clicar na aba 'Confirmados'.
- * 
- * @actions
- * 1. Clica na aba 'Confirmados'.
- * 
- * @example
- * cy.abaConfirmados()
- * 
- * @obs
- * Este comando é utilizado para navegar entre as abas de status dos participantes.
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('abaConfirmados', function() {
   cy.contains('.tab_selector', 'Confirmados')
     .click()
 })
 
-/** DOCUMENTAÇÃO:
- * @name abaPendentes
- * 
- * @description
- * Comando personalizado para clicar na aba 'Pendentes'.
- * 
- * @actions
- * 1. Clica na aba 'Pendentes'.
- * 
- * @example
- * cy.abaPendentes()
- * 
- * @obs
- * Este comando é utilizado para navegar entre as abas de status dos participantes.
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('abaPendentes', function() {
   cy.contains('.tab_selector', 'Pendentes')
     .click()
 })
 
-/** DOCUMENTAÇÃO:
- * @name abaCancelados
- * 
- * @description
- * Comando personalizado para clicar na aba 'Cancelados'.
- * 
- * @actions
- * 1. Clica na aba 'Cancelados'.
- * 
- * @example
- * cy.abaCancelados()
- * 
- * @obs
- * Este comando é utilizado para navegar entre as abas de status dos participantes.
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('abaCancelados', function() {
   cy.contains('.tab_selector', 'Cancelados')
     .click()
 })
 
-/** DOCUMENTAÇÃO:
- * @name cancelarFormularioParticipante
- * 
- * @description
- * Comando personalizado para cancelar o formulário de participante e validar o redirecionamento correto da página.
- * 
- * @actions
- * 1. Clica no botão 'Cancelar' para cancelar a criação/edição de determinado participante.
- * 2. Valida a exibição da página correta após o cancelamento.
- * 
- * @example
- * cy.cancelarFormularioParticipante()
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('cancelarFormularioParticipante', function(tipoConteudo) {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { breadcrumb, tituloPg, breadcrumbTrilha } = labels.participantes
 
@@ -3197,51 +1768,25 @@ Cypress.Commands.add('cancelarFormularioParticipante', function(tipoConteudo) {
     .should('be.visible')
     .as('btnCancelar')
 
-  cy.get('@btnCancelar', { timeout: TIMEOUT_PADRAO })
+  cy.get('@btnCancelar', { timeout: timeoutPadrao })
     .click()
 
   // Validar redirecionamento [obs. adicionado tipoConteudo devido BUG no breadcrumb da trilha]
   switch (tipoConteudo) {
     case 'trilha':
-      cy.contains('#page-breadcrumb', breadcrumbTrilha, { timeout: TIMEOUT_PADRAO })
+      cy.contains('#page-breadcrumb', breadcrumbTrilha, { timeout: timeoutPadrao })
         .should('be.visible')
       break
     case 'curso':
-      cy.contains('#page-breadcrumb', breadcrumb, { timeout: TIMEOUT_PADRAO })
+      cy.contains('#page-breadcrumb', breadcrumb, { timeout: timeoutPadrao })
         .should('be.visible')
       break
   }
 
-  cy.contains('.detail_title', tituloPg, { timeout: TIMEOUT_PADRAO })
+  cy.contains('.detail_title', tituloPg, { timeout: timeoutPadrao })
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name criarUsuarioViaApi
- * 
- * @description
- * Comando personalizado para criar um usuário via API com base nos dados fornecidos (body).
- * 
- * @actions
- * 1. Cria um usuário via API com base nos dados fornecidos.
- * 2. Valida se o status da requisição é 201.
- * 
- * @param {Object} body - Os dados a serem enviados na requisição.
- * @param {Number} attempt - A tentativa de criação do usuário.
- * 
- * @example
- * cy.criarUsuarioViaApi({ nome: 'Nome do Usuário', email: 'Email do Usuário' })
- * 
- * @throws {Error} - Se a requisição falhar após 3 tentativas.
- * 
- * @obs
- * O comando tentará criar o usuário até 3 vezes. Caso a requisição falhe após 3 tentativas, uma mensagem 
- * de erro será exibida.
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('criarUsuarioViaApi', function(body) {
   const url = `/api/v1/o/${Cypress.env('orgId')}/students`
 
@@ -3259,38 +1804,16 @@ Cypress.Commands.add('criarUsuarioViaApi', function(body) {
       cy.log(`Tentativa ${attempt}: Falha na requisição. Tentando novamente`)
       cy.criarUsuarioViaApi(body, attempt + 1)
     } else if (response.status !== 201) {
-      cy.log(`Tentativa ${attempt}: Falha na requisição. Não foi possível criar o catálogo`)
-      throw new Error(`Erro na criação do catálogo: ${response}`)
+      cy.log(`Tentativa ${attempt}: Falha na requisição. Não foi possível criar o usuário`)
+      throw new Error(`Erro na criação do usuário: ${response.body}`)
     } else {
       expect(response.status).to.eq(201)
     }
   })
 })
 
-/** DOCUMENTAÇÃO:
- * @name associarParticipante
- * 
- * @description
- * Comando personalizado para associar um participante a um conteúdo (via cadastro de participante).
- * 
- * @actions
- * 1. Insere o e-mail do participante.
- * 2. Seleciona o participante correspondente clicando em 'Associar'.
- * 3. Salva a associação do participante.
- * 4. Valida a mensagem de sucesso após a associação.
- * 
- * @param {String} emailParticipante - O e-mail do participante a ser associado.
- * @param {String} nomeParticipante - O nome do participante a ser associado (nome e sobrenome).
- * 
- * @example
- * cy.associarParticipante('joaquim@gmail.com', 'Joaquim Silva')
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('associarParticipante', function(emailParticipante, nomeParticipante) {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.participantes
 
@@ -3311,42 +1834,12 @@ Cypress.Commands.add('associarParticipante', function(emailParticipante, nomePar
   cy.salvarNovoParticipante(nomeParticipante)
 
   // Valida a mensagem de sucesso
-  cy.contains('.flash.notice', msgSucesso, { timeout: TIMEOUT_PADRAO })
+  cy.contains('.flash.notice', msgSucesso, { timeout: timeoutPadrao })
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name alterarStatusTodosParticipantes
- * 
- * @description
- * Comando personalizado para alterar o status de todos os participantes com base no status atual 
- * e no novo status informado. Validando se os participantes foram alterados com sucesso.
- * 
- * @actions
- * 1. Clica na aba correspondente ao status atual.
- * 2. Seleciona todos os participantes conforme a aba do status atual.
- * 3. Clica no botão correspondente ao status desejado.
- * 4. Insere o motivo de cancelamento, se o status for 'Cancelado'.
- * 5. Confirma a alteração do status.
- * 6. Valida a mensagem de sucesso após a alteração do status.
- * 7. Navega para a aba correspondente ao novo status.
- * 8. Valida o novo status do(s) participante(s).
- * 
- * @param {String} status - O status atual dos participantes (e.g., 'Confirmado', 'Pendente', 'Cancelado').
- * @param {String} novoStatus - O novo status dos participantes (e.g., 'Confirmado', 'Pendente', 'Cancelado').
- * @param {Array} listaParticipantes - A lista de participantes a ter o status alterado.
- * 
- * @example
- * cy.alterarStatusTodosParticipantes('Confirmado', 'Pendente', ['Nome do Participante 1', 'Nome do Participante 2'])
- * 
- * @throws {Error} - Se o status informado não for válido.
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('alterarStatusTodosParticipantes', function(status, novoStatus, listaParticipantes) {
-  const TIMEOUT_PADRAO = 20000
+  const timeoutPadrao = 20000
   const labels = Cypress.env('labels')
   const { msgAlteraConfirmado, msgAlteraPendente, msgAlteraCancelado, msgSucessoAlteraStatus } = labels.participantes
 
@@ -3416,20 +1909,20 @@ Cypress.Commands.add('alterarStatusTodosParticipantes', function(status, novoSta
       throw new Error(`Status inválido: ${novoStatus}`)
   }
 
-  // Valida apenas a última mensagem de sucesso (por isso a inclusão do wait de 3 segundos)
+  // Problemas ao validar demais mensagens, validando apenas a última mensagem de sucesso (por isso a inclusão do wait de 3 segundos)
   // switch (novoStatus) {
   //   case 'Confirmado':
-  //     cy.contains('.flash.success', msgAlteraConfirmado, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+  //     cy.contains('.flash.success', msgAlteraConfirmado, { timeout: timeoutPadrao }).should('be.visible')
   //     break
   //   case 'Pendente':
-  //     cy.contains('.flash.success', msgAlteraPendente, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+  //     cy.contains('.flash.success', msgAlteraPendente, { timeout: timeoutPadrao }).should('be.visible')
   //     break
   //   case 'Cancelado':
-  //     cy.contains('.flash.success', msgAlteraCancelado, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+  //     cy.contains('.flash.success', msgAlteraCancelado, { timeout: timeoutPadrao }).should('be.visible')
   //     break
   // }
   cy.wait(2000)
-  cy.contains('.flash.success', msgSucessoAlteraStatus, { timeout: TIMEOUT_PADRAO }).should('be.visible')
+  cy.contains('.flash.success', msgSucessoAlteraStatus, { timeout: timeoutPadrao }).should('be.visible')
 
   // Medida de contorno para atualizar a página e validar o status do(s) participante(s)
   cy.addParticipante()
@@ -3457,13 +1950,13 @@ Cypress.Commands.add('alterarStatusTodosParticipantes', function(status, novoSta
     }
 
     cy.get(`#${statusSeletor[novoStatus]}`)
-      .find('td', nomeParticipante, { timeout: TIMEOUT_PADRAO })
+      .find('td', nomeParticipante, { timeout: timeoutPadrao })
       .should('be.visible')
   })
 })
 
 Cypress.Commands.add('importarParticipante', function(arquivo) {
-  const TIMEOUT_PADRAO = 5000
+  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { msgUploadImportacao, msgImportacaoEmAndamento, msgImportacaoConcluida } = labels.participantes
 
@@ -3473,7 +1966,7 @@ Cypress.Commands.add('importarParticipante', function(arquivo) {
 
   // Clica em 'Enviar arquivo'
   cy.get('#file-name-container')
-    .contains('a', 'Enviar arquivo', { timeout: TIMEOUT_PADRAO })
+    .contains('a', 'Enviar arquivo', { timeout: timeoutPadrao })
     .click( { force: true } )
 
   // Seleciona o arquivo a ser importado
@@ -3485,7 +1978,7 @@ Cypress.Commands.add('importarParticipante', function(arquivo) {
     .click( { force: true } )
 
   // Valida a mensagem de sucesso do upload do arquivo
-  cy.contains('.flash.success', msgUploadImportacao, { timeout: TIMEOUT_PADRAO })
+  cy.contains('.flash.success', msgUploadImportacao, { timeout: timeoutPadrao })
     .should('be.visible')
 
   // Valida modal de campos para importar
@@ -3506,62 +1999,116 @@ Cypress.Commands.add('importarParticipante', function(arquivo) {
     .click( { force: true } )
 
   // Valida a mensagem de sucesso após a importação
-  cy.contains('.flash.success', msgImportacaoEmAndamento, { timeout: TIMEOUT_PADRAO })
+  cy.contains('.flash.success', msgImportacaoEmAndamento, { timeout: timeoutPadrao })
+    .should('be.visible')
+
+  // Valida a mensagem de sucesso da importação com espera de até 2 minutos
+  cy.contains('.flash.success', msgImportacaoConcluida, { timeout: 120000 })
     .should('be.visible')
 })
 
-Cypress.Commands.add('verificarImportacao', () => {
-  const TIMEOUT_PADRAO = 5000
+Cypress.Commands.add('validarStatusImportacao', (tipo, statusEsperado) => {
+  const timeoutPadrao = 5000
+  const TIMEOUT_IMPORTACAO = 180000
+
+  const labels = Cypress.env('labels')
+  const { msgImportacaoConcluida, msgImportacaoCancelada } = labels.usuarios
+
+  let seletor = ''
+
+  cy.log(`Status de importação esperado: ${statusEsperado}`)
+
+  switch (tipo) {
+    case 'usuários':
+      seletor = '#import_users'
+      break
+    case 'participantes':
+      seletor = '.import'
+      break
+    default:
+      throw new Error(`Tipo de importação inválido: ${tipo}`)
+  }
+
+  // Validar a mensagem da importação com espera de até 3 minutos com base na opção
+  switch(statusEsperado) {
+    case 'Concluído':
+      cy.contains('.flash.success', msgImportacaoConcluida, { timeout: TIMEOUT_IMPORTACAO })
+        .should('be.visible')
+      break
+    case 'Cancelado':
+      cy.contains('.flash.error', msgImportacaoCancelada, { timeout: TIMEOUT_IMPORTACAO })
+        .should('be.visible')
+      break
+  }
 
   function verificarStatus() {
-    cy.get('#imports-list tbody tr:last-child td:nth-child(4)').then($cell => {
+    // Seleciona a primeira linha de dados da tabela, ignorando explicitamente o cabeçalho
+    // Usamos o seletor 'tr:has(td)' para garantir que estamos selecionando apenas linhas que contêm células de dados
+    cy.get('#imports-list').find('tr:nth-child(2)').find('td:nth-child(4)').then($cell => {
       const status = $cell.text().trim()
       cy.log(`Status da importação: ${status}`)
 
       if (status === 'Execução' || status === 'Pendente') {
         cy.log('Arquivo de importação ainda está sendo processado. Aguardando...')
         cy.get('#twygo-modal-close').click()
-        cy.wait(TIMEOUT_PADRAO)
-        cy.get('.import').click()
+        cy.wait(timeoutPadrao)
+        cy.get(seletor).click()
         verificarStatus()
-      } else if (status === 'Concluído') {
-        cy.log('Arquivo importado com sucesso.')
+      } else if (status === statusEsperado) {
+        cy.log(`Status da importação está conforme o esperado: ${statusEsperado}`)
         cy.get('#twygo-modal-close').click()
-      } else if (status === 'Erro') {
-        throw new Error('Erro na importação do arquivo.')
-      } else {
-        throw new Error(`Status desconhecido: ${status}`)
+      } else if (status !== statusEsperado) {
+        throw new Error(`Status: ${status}`)
       }
     })
   }
+  
+  if (tipo === 'usuários'){
+    cy.acessarPgUsuarios()
+  }
 
-  cy.get('.import').click()
+  cy.get(seletor)
+    .click()
+
   verificarStatus()
 })
 
-/** DOCUMENTAÇÃO:
- * @name vincularInstrutor
- * 
- * @description
- * Comando personalizado para vincular um instrutor em um conteúdo
- * 
- * @actions
- * 1. Pesquisa pelo nome do Instrutor.
- * 2. Clica para buscar.
- * 3. Clica no botão de associar.
- * 4. Valida a associação.
- * 
- * @param {String} nomeInstrutor - Nome do instrutor a ser vinculado
- * 
- * @example
- * cy.vincularInstrutor(nomeInstrutor)
- * 
- * @see formInstrutor
- * 
- * @author Jadson
- * @version 1.0.0
- * @since 1.0.0 
- */
+Cypress.Commands.add('criarUsuario', function(dados) {
+  cy.acessarPgUsuarios()
+  cy.addUsuario()
+  cy.preencherDadosUsuario(dados, { limpar: true })
+  cy.salvarUsuario(`${dados.nome} ${dados.sobrenome}`) 
+})
+
+Cypress.Commands.add('configUsuario', (idioma = 'pt') => {
+  const timeoutPadrao = 5000
+  
+  const labels = Cypress.env('labels')[idioma]
+  const { breadcrumb, tituloPg } = labels.configUsuario
+  
+  cy.get('#btn-profile')
+    .click()
+
+  cy.get('#config-profile')
+    .click()
+
+  // Valida se a página foi carregada corretamente
+  cy.contains('#page-breadcrumb', breadcrumb, { timeout: timeoutPadrao })
+    .should('be.visible')
+
+  cy.contains('.detail_title', tituloPg, { timeout: timeoutPadrao })
+    .should('be.visible')
+})
+
+Cypress.Commands.add('preencherDadosConfigUsuario', (dados, opcoes = { limpar: false }) => {
+  const formulario = new formConfigUsuario()
+  
+  Object.keys(dados).forEach(nomeCampo => {
+      const valor = dados[nomeCampo]
+      formulario.preencherCampo(nomeCampo, valor, opcoes)
+  })
+})
+
 Cypress.Commands.add('vincularInstrutor', (nomeInstrutor) => {
   const formulario = new formInstrutor()
 
@@ -3575,29 +2122,11 @@ Cypress.Commands.add('habilitarDesabilitarGestao', (nomeGestor) => {
   formulario.alternarStatusGestao(nomeGestor)
 })
 
-/** DOCUMENTAÇÃO:
- * @name validarVinculoInstrutor
- * 
- * @description
- * Comando personalizado para validar se um instrutor foi vinculado corretamente ao conteúdo.
- * 
- * @actions
- * 1. Pesquisa pelo nome do Instrutor.
- * 2. Verifica se o nome está sendo exibido na tela.
- * 
- * @param {String} nomeInstrutor - Nome do instrutor a ser vinculado
- * 
- * @example
- * cy.validarVinculoInstrutor(nomeInstrutor)
- * 
- * @author Jadson
- * @version 1.0.0
- * @since 1.0.0 
- */
 Cypress.Commands.add('validarVinculoInstrutor', (nomeInstrutor) => {
   cy.contains('.speaker_name', nomeInstrutor)
   .should('be.visible')
 })
+
 
 Cypress.Commands.add('validarRemocaoVinculoGestor', (nomeGestor) => {
   const TIMEOUT_PADRAO = 5000
@@ -3639,27 +2168,7 @@ Cypress.Commands.add('validarRemocaoGestor', (nomeGestor) => {
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name removerVinculoInstrutor
- * 
- * @description
- * Comando personalizado para remover a associação do instrutor em um conteúdo
- * 
- * @actions
- * 1. Pesquisa pelo nome do Instrutor.
- * 2. Clica para remover.
- * 3. Valida a remoção.
- * 
- * @param {String} nomeInstrutor - Nome do instrutor a ser excluído
- * 
- * @example
- * cy.excluirInstrutor(nomeInstrutor)
- * 
- * 
- * @author Jadson
- * @version 1.0.0
- * @since 1.0.0 
- */
+
 Cypress.Commands.add('removerVinculoInstrutor', (nomeInstrutor) => {
   //Encontra o instrutor e clica para remover 
   cy.contains('.speaker_name', nomeInstrutor)
@@ -3670,53 +2179,10 @@ Cypress.Commands.add('removerVinculoInstrutor', (nomeInstrutor) => {
     .click()
 })
 
-/** DOCUMENTAÇÃO:
- * @name validarRemocaoVinculoInstrutor
- * 
- * @description
- * Comando personalizado para validar se um instrutor foi removido corretamente do conteúdo
- * 
- * @actions
- * 1. Pesquisa pelo nome do Instrutor.
- * 2. Verifica se o nome não está sendo exibido na tela.
- * 
- * @param {String} nomeInstrutor - Nome do instrutor a ser vinculado
- * 
- * @example
- * cy.validarRemocaoInstrutor(nomeInstrutor)
- * 
- * @author Jadson
- * @version 1.0.0
- * @since 1.0.0 
- */
 Cypress.Commands.add('validarRemocaoVinculoInstrutor', (nomeInstrutor) => {
   cy.contains('.speaker_name', nomeInstrutor).should('not.exist')
 })
 
-/** DOCUMENTAÇÃO:
- * @name criarInstrutor
- * 
- * @description
- * Comando personalizado para criar um usuário instrutor via front.
- * 
- * @actions
- * 1. Loga na aplicação.
- * 2. Altera o perfil para administrador.
- * 3. Acessa a página de usuários.
- * 4. Clica para adicionar um novo usuário.
- * 5. Preenche os dados para criar um usuário Instrutor.
- * 6. Salva o formulário.
- * 
- * @param {String} nomeInstrutor - Nome do instrutor a ser criado
- * @param {String} sobrenomeInstrutor - Sobrenome do instrutor a ser criado
- * 
- * @example
- * cy.criarInstrutor(nomeInstrutor, sobrenomeInstrutor)
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('criarInstrutor', (nomeInstrutor, sobrenomeInstrutor) => {
   // Massa de dados
   let nome = nomeInstrutor
@@ -3736,36 +2202,34 @@ Cypress.Commands.add('criarInstrutor', (nomeInstrutor, sobrenomeInstrutor) => {
   cy.salvarUsuario(`${dados.nome} ${dados.sobrenome}`)
 })
 
-/** DOCUMENTAÇÃO:
- * @name instrutorConteudo
- * 
- * @description
- * Comando personalizado para acessar a página de instrutor um conteúdo específico e validar o redirecionamento correto da página.
- * 
- * @actions
- * 1. Define um timeout padrão de 5 segundos.
- * 2. Acessa a opção de 'Instrutor' conforme cada tipo de conteúdo para iniciar o processo adição/remoção de instrutor.
- * 3. Valida a exibição da página de edição do conteúdo.
- * 
- * @param {String} nomeConteudo - O nome do conteúdo a ser editado. Este nome é utilizado para encontrar o conteúdo na listagem e clicar no botão de edição.
- * @param {String} tipoConteudo - O tipo do conteúdo a ser editado (e.g., 'trilha', 'curso', 'catalogo'). Este parâmetro influencia no seletor utilizado para 
- * encontrar o conteúdo na listagem e na página carregada para edição do conteúdo.
- * 
- * @example
- * cy.editarConteudo('Nome do Conteúdo', 'tipoConteudo')
- * 
- * @observations
- * Este comando não realiza a adição ou remoção de instrutores no conteúdo. Para isso, @see vincularInstrutor e @see excluirInstrutor 
- * 
- * @throws {Error} - Se o tipo de conteúdo informado não for 'trilha', 'curso'.
- * 
- * @author Karla Daiany
- * @version 1.0.0
- * @since 1.0.0
- */
-Cypress.Commands.add('instrutorConteudo', (nomeConteudo) => {
-  // Define o timeout padrão para validação das páginas
+Cypress.Commands.add('validarDadosConfigUsuario', (dados) => {
+  const formulario = new formConfigUsuario()
 
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+    formulario.validarCampo(nomeCampo, valor)
+  })
+})
+
+Cypress.Commands.add('logout', (idioma = 'pt') => {
+  // obs.: a msgLogout só é alterada após logout, ou seja em uma mudança de idioma, a msgLogout será a do idioma anterior
+  const timeoutPadrao = 5000
+  
+  const labels = Cypress.env('labels')[idioma]
+  const { msgLogout } = labels.configUsuario
+  
+  cy.get('#btn-profile')
+    .click()
+
+  cy.get('#link_logout')
+    .click( { force: true } )
+
+  // Validar mensagem de sucesso do logout
+  cy.contains('.flash.notice', msgLogout, { timeout: timeoutPadrao })
+    .should('be.visible')
+})
+
+Cypress.Commands.add('instrutorConteudo', (nomeConteudo) => {
   // Acessa o arquivo de labels
   const labels = Cypress.env('labels')
   const { breadcrumb, tituloPg } = labels.instrutores
@@ -3791,30 +2255,6 @@ Cypress.Commands.add('instrutorConteudo', (nomeConteudo) => {
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name criarGestor
- * 
- * @description
- * Comando personalizado para criar um usuário gestor via front.
- * 
- * @actions
- * 1. Loga na aplicação.
- * 2. Altera o perfil para administrador.
- * 3. Acessa a página de usuários.
- * 4. Clica para adicionar um novo usuário.
- * 5. Preenche os dados para criar um usuário Gestor.
- * 6. Salva o formulário.
- * 
- * @param {String} nomeGestor - Nome do gestor a ser criado
- * @param {String} sobrenomeGestor - Sobrenome do gestor a ser criado
- * 
- * @example
- * cy.criarGestor(nome, sobrenome)
- * 
- * @author Jadson
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('criarGestor', (nomeGestor, sobrenomeGestor) => {
   // Massa de dados
   let nome = nomeGestor
@@ -3834,31 +2274,6 @@ Cypress.Commands.add('criarGestor', (nomeGestor, sobrenomeGestor) => {
   cy.salvarUsuario(`${dados.nome} ${dados.sobrenome}`)
 })
 
-/** DOCUMENTAÇÃO:
- * @name gestorConteudo
- * 
- * @description
- * Comando personalizado para acessar a página de gestor de turma de um conteúdo específico e validar o redirecionamento correto da página.
- * 
- * @actions
- * 1. Acessa a opção de 'Gestores de turma' conforme cada tipo de conteúdo para iniciar o processo de habilitar/desabilitar a gestão de turma.
- * 2. Valida a exibição da página de edição do conteúdo.
- * 
- * @param {String} nomeConteudo - O nome do conteúdo a ser editado. Este nome é utilizado para encontrar o conteúdo na listagem e clicar no botão de edição.
- * @param {String} tipoConteudo - O tipo do conteúdo a ser editado (e.g., 'trilha', 'curso', 'catalogo'). Este parâmetro influencia no seletor utilizado para 
- * encontrar o conteúdo na listagem e na página carregada para edição do conteúdo.
- * 
- * @example
- * cy.editarConteudo('Nome do Conteúdo', 'tipoConteudo')
- * 
- * @observations
- * Este comando não realiza a adição ou remoção de gestores no conteúdo. Para isso, @see alternarStatusGestao
- * @throws {Error} - Se o tipo de conteúdo informado não for 'trilha', 'curso'.
- * 
- * @author Jadson
- * @version 1.0.0
- * @since 1.0.0
- */
 Cypress.Commands.add('gestorConteudo', (nomeConteudo) => {
   // Acessa o arquivo de labels
   const labels = Cypress.env('labels')
@@ -3885,22 +2300,189 @@ Cypress.Commands.add('gestorConteudo', (nomeConteudo) => {
     .should('be.visible')
 })
 
-/** DOCUMENTAÇÃO:
- * @name voltar
- * 
- * @description
- * Comando personalizado para clicar no botão de voltar existente em várias páginas.
- * 
- * @actions
- * 1. Localiza o botão voltar.
- * 2. Clica no botão voltar
- * 
- * @author Jadson
- * @version 1.0.0
- * @since 1.0.0
- */
-Cypress.Commands.add('voltar', function() {
+
+Cypress.Commands.add('login', function(login, password, username, idioma = 'pt') {
+  const labels = Cypress.env('labels')[idioma]
+  const { pgInicialAluno, btnProfile } = labels.configUsuario
+  
+  cy.visit('/users/login')
+
+  cy.get('#user_email')
+    .type(login)
+  
+  cy.get('#user_password')
+    .type(password)
+
+  cy.contains('button', 'Entrar')
+    .should('be.visible')  
+    .click()
+
+  // Aceite dos termos de uso
+  cy.get('#agree_check')
+    .click()
+
+  cy.get('#next')
+    .click()
+
+  // Verificar se o login foi realizado com sucesso
+  cy.contains('#page-breadcrumb', pgInicialAluno)
+    .should('be.visible')
+
+    switch (idioma) {
+      case 'pt':
+      case 'es':
+        cy.contains('.name', username)
+          .should('be.visible')
+        break
+      case 'en':
+        const nomeCompleto = username
+        const palavras = nomeCompleto.split(' ')
+
+        const nome = palavras[0]
+        const sobrenome = palavras.slice(1).join(' ')
+
+        cy.contains('.name', `${sobrenome}, ${nome}`)
+          .should('be.visible')
+        break
+      default:
+        throw new Error(`Idioma inválido: ${idioma}. Utilize 'pt', 'en' ou 'es'`)
+    }
+
+  cy.contains('#btn-profile', btnProfile)
+    .should('be.visible')
+})
+
+Cypress.Commands.add('salvarConfigUsuario', (idioma = 'pt') => {
+  // obs.: a msgSucesso só é alterada após salvar, ou seja em uma mudança de idioma, a msgSucesso será a do idioma anterior
+  const timeoutPadrao = 5000
+  
+  const labels = Cypress.env('labels')[idioma]
+  const { msgSucesso, pgInicialAluno, btnSalvar } = labels.configUsuario
+
+  cy.contains('button', btnSalvar)
+  .should('be.visible')
+  .click()  
+
+  // Valida a mensagem
+  cy.contains('.flash.notice', msgSucesso, { timeout: timeoutPadrao })
+    .should('be.visible')
+
+  // Valida o redirecionamento
+  cy.contains('#page-breadcrumb', pgInicialAluno, { timeout: timeoutPadrao })
+    .should('be.visible')
+})
+
+Cypress.Commands.add('voltar', () => {
   // Localiza o e clica no botão de voltar
   cy.contains('.btn.btn-default.btn-back.waves-effect', 'Voltar')
     .click()  
+})
+
+Cypress.Commands.add('importarUsuarios', function(arquivo, opcao = 'Cancelar') {
+  const timeoutPadrao = 5000
+  const labels = Cypress.env('labels')
+  const { msgUploadImportacao, msgImportacaoEmAndamento } = labels.usuarios
+
+  // Clica no botão 'Importar'
+  cy.get('#import_users')
+    .click()
+
+  // Clica em 'Enviar arquivo'
+  cy.get('#file-name-container')
+    .contains('a', 'Enviar arquivo', { timeout: timeoutPadrao })
+    .click( { force: true } )
+
+  // Seleciona o arquivo a ser importado
+  cy.get('#file')
+    .selectFile(`cypress/fixtures/${arquivo}`, { force: true })
+    
+  // Seleciona a opção de ação para os "Usuários já cadastrados"
+  cy.get('#user_exists_action')
+    .select(opcao)
+
+  // Clica em 'Enviar'
+  cy.get('#send_to_import')
+    .click( { force: true } )
+
+  // Valida a mensagem de sucesso do upload do arquivo
+  cy.contains('.flash.success', msgUploadImportacao, { timeout: timeoutPadrao })
+    .should('be.visible')
+
+  // Valida modal de campos para importar
+  cy.get('#imports-fields')
+    .contains('h3', 'Campos para importar')
+
+  // Seleciona as opções de telefone pessoal, comercial e celular
+  cy.get('#importables_phone1')
+    .select('Telefone pessoal')
+
+  cy.get('#importables_phone2')
+    .select('Telefone comercial')
+
+  cy.get('#importables_cell_phone')
+    .select('Celular')
+
+  // Clica em 'Enviar'
+  cy.get('#csv-settings-form')
+    .find('div.field.fs3')
+    .contains('button', 'Enviar')
+    .click( { force: true } )
+
+  // Valida a mensagem de sucesso após o upload do arquivo
+  cy.contains('.flash.success', msgImportacaoEmAndamento, { timeout: timeoutPadrao })
+    .should('be.visible')
+})
+
+Cypress.Commands.add('limparDadosOrg', function() {
+  const timeoutPadrao = 5000
+  const TIMEOUT_EXCLUSAO = 300000
+  const labels = Cypress.env('labels')
+  const { exclusaoEmAndamento, exclusaoConcluida } = labels.menuSophia
+
+  // Acessar menu da Sophia
+  cy.get('img[src*="sophia"]')
+    .eq(0)
+    .click()
+
+  // Selecionar a opção para excluir informações
+  cy.get('#accordion-button-delete-info')
+    .click()
+
+  // Selecionar a opção para limpar todas as informações
+  cy.get('.chakra-checkbox__control')
+    .eq(3)
+    .click()
+
+  // Alternativa para navegar até o botão de excluir
+  cy.realPress('Tab')
+
+  cy.realType('{enter}')
+
+  // Confirmar a ação de exclusão
+  cy.contains('.flash.success', exclusaoEmAndamento, { timeout: timeoutPadrao })
+    .should('be.visible')	
+
+  // Aguardar mensagem de confirmação de exclusão	
+  cy.contains('.flash.success', exclusaoConcluida, { timeout: TIMEOUT_EXCLUSAO })
+    .should('be.visible')
+})
+
+Cypress.Commands.add('ignorarCapturaErros', (errorsToIgnore, options = { ignoreScriptErrors: false, ignoreNetworkErrors: false }) => {
+  Cypress.on('uncaught:exception', (err, runnable) => {
+    const shouldIgnoreError = errorsToIgnore.some(errorToIgnore => err.message.includes(errorToIgnore))
+    
+    // Verificações específicas para erros de script de origem cruzada e erros de rede
+    const isCrossOriginError = err.message.includes('Script error.') || err.message.includes('cross-origin')
+    const isNetworkError = err.message.includes('Network Error')
+
+    if (shouldIgnoreError || 
+        (options.ignoreScriptErrors && isCrossOriginError) ||
+        (options.ignoreNetworkErrors && isNetworkError)) {
+      return false // Ignora o erro
+    }
+  })
+})
+
+Cypress.Commands.add('ativarCapturaErros', function() {
+  Cypress.removeAllListeners('uncaught:exception')
 })

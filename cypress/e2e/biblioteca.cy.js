@@ -18,11 +18,11 @@ describe('Biblioteca', () => {
         })
     })
 
-    beforeEach(() => {
-        // Ativa o tratamento de exceção não capturada especificamente para este teste
-		Cypress.on('uncaught:exception', (err, runnable) => {
-            return false
-        })
+    beforeEach(() => {      
+        // Ignora mensagens de erro conhecidas
+        cy.ignorarCapturaErros([
+            "Unexpected identifier 'id'",
+        ], { ignoreScriptErrors: true})   
         
         //Define o tipo de conteúdo
         tipoConteudo = 'biblioteca'
@@ -41,46 +41,9 @@ describe('Biblioteca', () => {
     })
 
     afterEach(() => {
-		// Desativa o tratamento após o teste para evitar afetar outros testes
-		Cypress.removeAllListeners('uncaught:exception')
-	})
+        cy.ativarCapturaErros()
+    })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 1. CRUD biblioteca "Em companhia"
-     * 
-     * @description
-     * Testa a criação, leitura, atualização e exclusão de uma biblioteca com o canal "Em companhia".
-     * 
-     * @steps
-     * 1. Cria uma biblioteca com o canal "Em companhia"
-     * 2. Realiza a leitura dos dados da biblioteca
-     * 3. Edita a biblioteca
-     * 4. Realiza a leitura dos dados da biblioteca editada
-     * 5. Exclui a biblioteca
-     * 
-     * @expected
-     * Espera-se que a biblioteca seja criada, editada e excluída com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Biblioteca, CRUD
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     * @since 1.0.0
-     */
     it('1. CRUD biblioteca "Em companhia"', () => {
         // Massa de dados para criação da biblioteca
         const dados = {
@@ -131,42 +94,6 @@ describe('Biblioteca', () => {
         cy.excluirConteudo(novosDados.nome, tipoConteudo)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 2. CRUD biblioteca "Aberto"
-     * 
-     * @description
-     * Testa a criação, leitura, atualização e exclusão de uma biblioteca com o canal "Aberto".
-     * 
-     * @steps
-     * 1. Cria uma biblioteca com o canal "Aberto"
-     * 2. Realiza a leitura dos dados da biblioteca
-     * 3. Edita a biblioteca
-     * 4. Realiza a leitura dos dados da biblioteca editada
-     * 5. Exclui a biblioteca
-     * 
-     * @expected
-     * Espera-se que a biblioteca seja criada, editada e excluída com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Biblioteca, CRUD
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     * @since 1.0.0
-     */
     it('2. CRUD biblioteca "Aberto"', () => {
         // Massa de dados para criação da biblioteca
         const dados = {
@@ -217,42 +144,6 @@ describe('Biblioteca', () => {
         cy.excluirConteudo(novosDados.nome, tipoConteudo)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 3. CRUD biblioteca "Outros"
-     * 
-     * @description
-     * Testa a criação, leitura, atualização e exclusão de uma biblioteca com o canal "Outros".
-     * 
-     * @steps
-     * 1. Cria uma biblioteca com o canal "Outros"
-     * 2. Realiza a leitura dos dados da biblioteca
-     * 3. Edita a biblioteca
-     * 4. Realiza a leitura dos dados da biblioteca editada
-     * 5. Exclui a biblioteca
-     * 
-     * @expected
-     * Espera-se que a biblioteca seja criada, editada e excluída com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Biblioteca, CRUD
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     * @since 1.0.0
-     */
     it('3. CRUD biblioteca "Outros"', () => {
         // Massa de dados para criação da biblioteca
         const dados = {
@@ -303,42 +194,6 @@ describe('Biblioteca', () => {
         cy.excluirConteudo(novosDados.nome, tipoConteudo)
     })
 
-    /** DOCUMENTAÇÃO:
-     * @name
-     * 4. CRUD biblioteca sem canal
-     * 
-     * @description
-     * Testa a criação, leitura, atualização e exclusão de uma biblioteca sem canal.
-     * 
-     * @steps
-     * 1. Cria uma biblioteca sem canal
-     * 2. Realiza a leitura dos dados da biblioteca
-     * 3. Edita a biblioteca
-     * 4. Realiza a leitura dos dados da biblioteca editada
-     * 5. Exclui a biblioteca
-     * 
-     * @expected
-     * Espera-se que a biblioteca seja criada, editada e excluída com sucesso.
-     * 
-     * @priority
-     * Alta
-     * 
-     * @type
-     * Regressão - CRUD - E2E
-     * 
-     * @time
-     * 1m
-     * 
-     * @tags
-     * Biblioteca, CRUD
-     * 
-     * @testCase
-     * à confirmar
-     * 
-     * @author Karla Daiany
-     * @version 1.0.0
-     * @since 1.0.0
-     */
     it('4. CRUD biblioteca sem canal', () => {
         // Massa de dados para criação da biblioteca
         const dados = {

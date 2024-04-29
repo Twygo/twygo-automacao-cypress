@@ -19,29 +19,6 @@ class formInstrutor{
         }
     }
 
-    /** DOCUMENTAÇÃO:
-     * @name associarInstrutor
-     * 
-     * @description
-     * Método para associar um instrutor em um conteúdo
-     * 
-     * @actions
-     * 1. Pesquisa pelo nome do instrutor
-     * 2. Clica para buscar
-     * 3. Clica para associar
-     * 
-     * @param {string} nomeInstrutor - Nome do instrutor a ser vinculado
-     * 
-     * @example
-     * associarInstrutor('nome')
-     * 
-     * @observations
-     * Não é possível buscar pelo nome completo do instrutor devido a um bug antigo da plataforma
-     * 
-     * @author Jadson
-     * @version 1.0.0
-     * @since 1.0.0
-     */
     associarInstrutor(nomeInstrutor) {
         cy.get(this.elementos.nomeInstrutor.seletor)
             .type(nomeInstrutor)
@@ -56,32 +33,6 @@ class formInstrutor{
             .click()             
     }
 
-    /** DOCUMENTAÇÃO:
-     * @name preencherCampo
-     * 
-     * @description
-     * Método para preencher campos de um formulário
-     * 
-     * @actions
-     * 1. Verifica se o campo existe
-     * 2. Verifica se o campo deve ser limpo antes de preencher
-     * 3. Preenche o campo de acordo com o tipo
-     * 
-     * @param {string} nomeCampo - Nome do campo a ser preenchido
-     * @param {string} valor - Valor a ser preenchido no campo
-     * @param {object} opcoes - Opções para definir se o campo deve ser limpo antes de preencher
-     * 
-     * @example
-     * preencherCampo('nome', 'Nome do Evento')
-     * 
-     * @throws {Error} - Caso o campo não seja encontrado
-     * @throws {Error} - Caso o tipo do campo não seja suportado
-     * @throws {Error} - Caso o campo não possa ser preenchido com o valor informado
-     * 
-     * @author Jadson
-     * @version 1.0.0
-     * @since 1.0.0
-     */
     preencherCampo(nomeCampo, valor, opcoes = { limpar: false }) {
 	    const campo = this.elementos[nomeCampo]
 
@@ -122,29 +73,6 @@ class formInstrutor{
 		}
 	}
 
-    /** DOCUMENTAÇÃO:
-     * @name validarCampo
-     * 
-     * @description
-     * Método para validar campos de um formulário
-     * 
-     * @actions
-     * 1. Verifica se o campo existe
-     * 2. Valida o campo de acordo com o tipo
-     * 
-     * @param {string} nomeCampo - Nome do campo a ser validado
-     * @param {string} valor - Valor a ser validado no campo
-     * 
-     * @example
-     * validarCampo('nome', 'Nome do Evento')
-     * 
-     * @throws {Error} - Caso o campo não seja encontrado
-     * @throws {Error} - Caso o tipo do campo não seja suportado
-     * 
-     * @author Jadson
-     * @version 1.0.0
-     * @since 1.0.0
-     */
     validarCampo(nomeCampo, valor) {
 		const campo = this.elementos[nomeCampo]
 

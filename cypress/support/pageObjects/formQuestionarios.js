@@ -10,7 +10,7 @@ class formQuestionarios {
         },
         nome: {
             seletor: '#question_list_name',
-            tipo: 'input_title'
+            tipo: 'inputTitle'
         },
         tipoProva: {
             seletor: '#question_list_kind_exam',
@@ -38,12 +38,12 @@ class formQuestionarios {
         },
         addCategoria1: {
             seletor: '#add_categories1',
-            tipo: 'input_add',
+            tipo: 'inputAdd',
 			seletorValor: '#categories1_'
         },
         addCategoria2: {
             seletor: '#add_categories2',
-            tipo: 'input_add',
+            tipo: 'inputAdd',
 			seletorValor: '#categories2_'
         },
 		editarCategoria: {
@@ -53,7 +53,7 @@ class formQuestionarios {
 		},
 		edicaoCategoria: {
 			seletor: '',
-			tipo: 'input_category_edit'
+			tipo: 'inputCategoryEdit'
 		},
 		excluirCategoria: {
 			seletor: '.remove_category',
@@ -103,35 +103,6 @@ class formQuestionarios {
         }
     }
 
-    /** DOCUMENTAÇÃO:
-	 * @name preencherCampo
-	 * 
-	 * @description 
-	 * Preenche os campo de um formulário com base no nome, tipo e valor informado.
-	 * 
-	 * @actions
-	 * 1. Busca o campo na lista de elementos com base no nome informado
-	 * 2. Verifica se o campo foi encontrado
-	 * 3. Verifica se o campo deve ser limpo antes de preencher
-	 * 4. Localiza o tipo de campo na lista de ações suportadas
-	 * 5. Executa a ação de preenchimento do campo
-	 * 
-	 * 
-	 * @param {string} nomeCampo - Nome do campo a ser preenchido
-	 * @param {string} valor - Valor a ser preenchido no campo
-	 * @param {boolean} opcoes.limpar - Determina se o campo deve ser limpo antes de preencher
-	 * 
-	 * @example
-	 * preencherCampo('nome', 'Nome do Evento')
-	 * 
-	 * @throws {Error} Campo {nomeCampo} não encontrado
-	 * @throws {Error} Tipo de campo {tipo} não suportado
-	 * @throws {Error} Campo {nomeCampo} não pode ser preenchido com valor {valorFinal}
-	 * 
-	 * @author Karla Daiany
-	 * @version 1.0.0
-	 * @since 1.0.0
-	 */
 	preencherCampo(nomeCampo, valor, opcoes = { limpar: false }) {
 		const campo = this.elementos[nomeCampo]
 
@@ -143,7 +114,7 @@ class formQuestionarios {
 
 		let valorFinal = valor !== undefined ? valor : valorDefault
 
-		if (opcoes.limpar && tipo === 'input' || tipo === 'input_title') {
+		if (opcoes.limpar && tipo === 'input' || tipo === 'inputTitle') {
 			cy.get(seletor)
 				.clear()
 			if (valorFinal === '') {
@@ -156,7 +127,7 @@ class formQuestionarios {
 				.clear()
 		} else if (valorFinal !== undefined) {
 			switch (tipo) {
-				case 'input_title':
+				case 'inputTitle':
 					cy.get(seletor)
 						.type(valorFinal)
 						.wait(2000)
@@ -173,7 +144,7 @@ class formQuestionarios {
 						}
 					})
 					break
-				case 'input_add':
+				case 'inputAdd':
 					if (Array.isArray(valorFinal)) {
 						valorFinal.forEach((valor) => {
 						cy.get(seletor)
@@ -221,7 +192,7 @@ class formQuestionarios {
 						throw new Error(`O valor de ${nomeCampo} está undefined`)
 					}
 					break				
-				case 'input_category_edit':
+				case 'inputCategoryEdit':
 					cy.focused().clear().type(valorFinal)
 					break
 				default:
@@ -232,31 +203,6 @@ class formQuestionarios {
 		}
 	}
 
-	/** DOCUMENTAÇÃO:
-	 * @name validarCampo
-	 * 
-	 * @description
-	 * Valida o campo de um formulário com base no nome e valor informado.
-	 * 
-	 * @actions
-	 * 1. Busca o campo na lista de elementos com base no nome informado
-	 * 2. Verifica se o campo foi encontrado
-	 * 3. Localiza o tipo de campo na lista de ações suportadas
-	 * 4. Executa a ação de validação do campo
-	 * 
-	 * @param {string} nomeCampo - Nome do campo a ser validado
-	 * @param {string} valor - Valor a ser validado no campo
-	 * 
-	 * @example
-	 * validarCampo('nome', 'Nome do Evento')
-	 * 
-	 * @throws {Error} Campo {nomeCampo} não encontrado
-	 * @throws {Error} Tipo de campo {tipo} não suportado
-	 * 
-	 * @author Karla Daiany
-	 * @version 1.0.0
-	 * @since 1.0.0
-	 */
 	validarCampo(nomeCampo, valor) {
 		const campo = this.elementos[nomeCampo]
 
@@ -270,11 +216,11 @@ class formQuestionarios {
 
 		switch (tipo) {
 			case 'input':
-			case 'input_title':
+			case 'inputTitle':
 				cy.get(seletor)
 					.should('have.value', valor)
 				break
-			case 'input_add':
+			case 'inputAdd':
 				if (Array.isArray(valor)) {
 					cy.get(seletorValor)
 						.each(($input, index) => {
@@ -297,7 +243,7 @@ class formQuestionarios {
 				break
 			case 'buttonEdit':
 			case 'buttonDelete':
-			case 'input_category_edit':
+			case 'inputCategoryEdit':
 				// Não é necessário validar
 				break
 			default:

@@ -5,28 +5,28 @@ class formConteudos {
 			seletor: '#event_name', 
 			tipo: 'input'
 		},
-		nome_portfolio: {
+		nomePortfolio: {
 			seletor: '#model_name',
 		},
-		data_inicio: { 
+		dataInicio: { 
 			seletor: '#date_start', 
 			tipo: 'input' 
 		},
-		hora_inicio: { 
+		horaInicio: { 
 			seletor: '#time_start', 
 			tipo: 'input' 
 		},
-		data_fim: { 
+		dataFim: { 
 			seletor: '#date_end', 
 			tipo: 'input' 
 		},
-		hora_fim: { 
+		horaFim: { 
 			seletor: '#time_end', 
 			tipo: 'input' 
 		},
 		descricao: {
 			seletor: 'div#cke_event_description iframe.cke_wysiwyg_frame',
-			tipo: 'iframe_text'
+			tipo: 'iframeText'
 		},
 		tipo: { 
 			seletor: '#event_event_type_id', 
@@ -48,12 +48,12 @@ class formConteudos {
 			tipo: 'select', 
 			default: '' 
 		},
-		carga_horaria: { 
+		cargaHoraria: { 
 			seletor: '#event_workload', 
 			tipo: 'input', 
 			default: '0' 
 		},
-		numero_turma: { 
+		numeroTurma: { 
 			seletor: '#event_class_number', 
 			tipo: 'input' 
 		},
@@ -62,7 +62,7 @@ class formConteudos {
 			tipo: 'input', 
 			default: '0' 
 		},
-		atualizar_inscritos: {
+		atualizarInscritos: {
 			seletor: '#update_inscriptions',
 			tipo: 'checkbox-action',
 			default: false
@@ -95,7 +95,7 @@ class formConteudos {
 			seletor: '#event_country', 
 			tipo: 'input' 
 		},
-		email_responsavel: { 
+		emailResponsavel: { 
 			seletor: '#event_email', 
 			tipo: 'input',
 			default: Cypress.env('login')
@@ -104,12 +104,12 @@ class formConteudos {
 			seletor: '#event_website', 
 			tipo: 'input' 
 		},
-		notificar_responsavel: { 
+		notificarResponsavel: { 
 			seletor: '#event_sent_mail_owner', 
 			tipo: 'checkbox', 
 			default: false 
 		},
-		rotulo_contato: { 
+		rotuloContato: { 
 			seletor: '#event_contact_label', 
 			tipo: 'input' 
 		},
@@ -123,29 +123,29 @@ class formConteudos {
 		},
 		addCategoria: {
 			seletor: "input.form-control.as-input[name='event[category_extra]']",
-			tipo: 'add_tag'
+			tipo: 'addTag'
 		},
 		removerCategoria: {
 			seletor: 'li.as-selection-item.blur',
-			tipo: 'del_tag'
+			tipo: 'delTag'
 		},
-		remover_banner: { 
+		removerBanner: { 
 			seletor: '#remove_banner', 
 			tipo: 'checkbox-action', 
 			default: false 
 		},
-		permite_anexo: {
+		permiteAnexo: {
 			seletor: 'div.col-md-6.col-lg-4:contains("Permitir envio de anexos na inscrição?")',
 			tipo: 'radio',
 			default: 'Desabilitado'
 		},
-		mensagem_anexo: {
+		mensagemAnexo: {
 			seletor: 'div#cke_event_attachment_description iframe.cke_wysiwyg_frame',
-			tipo: 'iframe_text'
+			tipo: 'iframeText'
 		},
-		status_iframe_anexo: {
+		statusIframeAnexo: {
 			seletor: 'div#cke_event_attachment_description iframe.cke_wysiwyg_frame',
-			tipo: 'iframe_status',
+			tipo: 'iframeStatus',
 			default: false
 		},      
 		visualizacao: {
@@ -158,87 +158,58 @@ class formConteudos {
 			tipo: 'select',
 			default: 'Em desenvolvimento'
 		},
-		notificar_concluir_primeira_aula: {
+		notificarConcluirPrimeiraAula: {
 			seletor: '#event_end_class',
 			tipo: 'select',
 			default: 'Não'
 		},
-		notificar_usuarios: {
+		notificarUsuarios: {
 			seletor: '#event_notify_users',
 			tipo: 'select',
 			default: 'Não'
 		},
-		dias_teste: {
+		diasTeste: {
 			seletor: '#event_trial_days',
 			tipo: 'input',
 			default: '0'
 		},
-		habilitar_dias_teste: {
+		habilitarDiasTeste: {
 			seletor: '#event_enable_trial_days',
 			tipo: 'checkbox',
 			default: false
 		},
-		exige_confirmacao: {
+		exigeConfirmacao: {
 			seletor: 'div.col-md-6.col-lg-4:contains("Exigir confirmação de inscrição pelo Organizador?")',
 			tipo: 'radio',
 			default: 'Habilitado'
 		},
-		valor_inscricao: {
+		valorInscricao: {
 			seletor: '#event_subscription_value',
-			tipo: 'input_value',
+			tipo: 'inputValue',
 			default: '0,00'
 		},
-		habilitar_pagamento: {
+		habilitarPagamento: {
 			seletor: '#event_payment_enabled',
 			tipo: 'checkbox',
 			default: false
 		},
-		nr_parcelas: {
+		nrParcelas: {
 			seletor: '#event_installments_number',
 			tipo: 'input',
 			default: '1'
 		},
-		valor_acrescimo: {
+		valorAcrescimo: {
 			seletor: '#event_addition',
 			tipo: 'input',
 			default: '0,0'
 		},
-		habilitar_chat: {
+		habilitarChat: {
 			seletor: '#event_enable_twygo_chat',
 			tipo: 'checkbox',
 			default: false
 		}
 	}
 			
-		/** DOCUMENTAÇÃO:
-	 * @name preencherCampo
-	 * 
-	 * @description 
-	 * Preenche os campo de um formulário com base no nome, tipo e valor informado.
-	 * 
-	 * @actions
-	 * 1. Busca o campo na lista de elementos com base no nome informado
-	 * 2. Verifica se o campo foi encontrado
-	 * 3. Verifica se o campo deve ser limpo antes de preencher
-	 * 4. Localiza o tipo de campo na lista de ações suportadas
-	 * 5. Executa a ação de preenchimento do campo
-	 * 
-	 * 
-	 * @param {string} nomeCampo - Nome do campo a ser preenchido
-	 * @param {string} valor - Valor a ser preenchido no campo
-	 * @param {boolean} opcoes.limpar - Determina se o campo deve ser limpo antes de preencher
-	 * 
-	 * @example
-	 * preencherCampo('nome', 'Nome do Evento')
-	 * 
-	 * @throws {Error} Campo {nomeCampo} não encontrado
-	 * @throws {Error} Tipo de campo {tipo} não suportado
-	 * @throws {Error} Campo {nomeCampo} não pode ser preenchido com valor {valorFinal}
-	 * 
-	 * @author Karla Daiany
-	 * @version 1.0.0
-	 * @since 1.0.0
-	 */
 	preencherCampo(nomeCampo, valor, opcoes = { limpar: false }) {
 		const campo = this.elementos[nomeCampo]
 		
@@ -303,13 +274,13 @@ class formConteudos {
 								cy.get(`input#${id}`).check().should('be.checked')
 						})
 					break
-				case 'iframe_text':
+				case 'iframeText':
 					cy.get(seletor, { timeout: 5000 }).then($iframe => {
 						const doc = $iframe.contents()
 						cy.wrap(doc).find('body.cke_editable').click({ force: true }).clear().type(valorFinal, { force: true })
 					})
 					break
-				case 'add_tag':
+				case 'addTag':
 					if (Array.isArray(valorFinal)) {
 						valorFinal.forEach(val => {
 							cy.get(seletor)
@@ -322,7 +293,7 @@ class formConteudos {
 						cy.realPress('Tab')
 					}
 					break
-				case 'del_tag':
+				case 'delTag':
 					if (Array.isArray(valorFinal)) {
 						valorFinal.forEach(val => {
 							cy.contains(seletor, `${val}`, { timeout: 5000})
@@ -335,7 +306,7 @@ class formConteudos {
 							.click()		
 					}
 					break	
-				case 'input_value':
+				case 'inputValue':
 					cy.get(seletor)
 						.clear()
 						.type(valorFinal.replace('.', ','))
@@ -346,32 +317,6 @@ class formConteudos {
 	}
 	}
 
-	/** DOCUMENTAÇÃO:
-	 * @name validarCampo
-	 * 
-	 * @description
-	 * Valida o campo de um formulário com base no nome e valor informado, assim como as categorias adicionadas/removidas.
-	 * 
-	 * @actions
-	 * 1. Busca o campo na lista de elementos com base no nome informado
-	 * 2. Verifica se o campo foi encontrado
-	 * 3. Localiza o tipo de campo na lista de ações suportadas
-	 * 4. Executa a ação de validação do campo e das categorias
-	 * 
-	 * @param {string} nomeCampo - Nome do campo a ser validado
-	 * @param {string} valor - Valor a ser validado no campo
-	 * @param {string} categoria - Categorias a serem validadas
-	 * 
-	 * @example
-	 * validarCampo('nome', 'Nome do Evento', ['Categoria 1', 'Categoria 2'])
-	 * 
-	 * @throws {Error} Campo {nomeCampo} não encontrado
-	 * @throws {Error} Tipo de campo {tipo} não suportado
-	 * 
-	 * @author Karla Daiany
-	 * @version 1.0.0
-	 * @since 1.0.0
-	 */
 	validarCampo(nomeCampo, valor, categoria) {
 		
 		const campo = this.elementos[nomeCampo]
@@ -418,7 +363,7 @@ class formConteudos {
 						cy.get(`input#${id}`).should('be.checked')
 					})
 				break
-			case 'iframe_text':
+			case 'iframeText':
 				cy.get(seletor, { timeout: 5000 }).then($iframe => {
 					const doc = $iframe.contents()
 				
@@ -427,7 +372,7 @@ class formConteudos {
 					})
 				})
 				break      
-			case 'iframe_status':
+			case 'iframeStatus':
 				cy.get(seletor, { timeout: 5000 }).then($iframe => {
 					cy.wait(3000)
 					const doc = $iframe.contents()
@@ -456,7 +401,7 @@ class formConteudos {
 					}
 				})
 				break
-			case 'input_value':
+			case 'inputValue':
 				cy.get(seletor)
 					.should('have.value', valorFinal.replace('.', ','))
 				break
