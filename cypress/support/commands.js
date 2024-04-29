@@ -197,6 +197,7 @@ Cypress.Commands.add('excluirCatalogoViaApi', function() {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': `Bearer ${Cypress.env('token')}`
     },
+    failOnStatusCode: false
   }).then((response) => {
     if (response.status !== 200) {
       throw new Error(`Erro ao obter a listagem de catálogos: ${response}`)
@@ -228,6 +229,7 @@ Cypress.Commands.add('excluirCursoViaApi', function() {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': `Bearer ${Cypress.env('token')}`
     },
+    failOnStatusCode: false
   }).then((response) => {
     if (response.status !== 200) {
       throw new Error(`Erro ao obter a listagem de cursos: ${response}`)
@@ -1251,6 +1253,7 @@ Cypress.Commands.add('excluirUsuarioViaApi', function() {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': `Bearer ${Cypress.env('token')}`
     },
+    failOnStatusCode: false
   }).then((response) => {
     if (response.status !== 200) {
       throw new Error(`Erro ao obter a listagem de usuários: ${response}`)
