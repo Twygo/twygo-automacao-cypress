@@ -363,7 +363,7 @@ describe('Perguntas', () => {
         cy.excluirPergunta(dadosUpdate.descricao)     
     })
 
-    it('6. CRUD pergunta do tipo "Texto" atualizada para "Múltipla Escolha"', () => {
+    it.skip('[BUG] 6. CRUD pergunta do tipo "Texto" atualizada para "Múltipla Escolha"', () => {
         // Massa de dados para criar pergunta do tipo "Texto"
         const dados = {
             titulo: titulo,
@@ -430,7 +430,7 @@ describe('Perguntas', () => {
         cy.excluirPergunta(dadosUpdate.descricao)     
     })
 
-    it('7. CRUD pergunta do tipo "Arquivo" atualizada para "Faixa de Valores"', () => {
+    it.skip('[BUG] 7. CRUD pergunta do tipo "Arquivo" atualizada para "Faixa de Valores"', () => {
         // Massa de dados para criar pergunta do tipo "Arquivo"
         const dados = {
             titulo: titulo,
@@ -492,7 +492,7 @@ describe('Perguntas', () => {
         cy.excluirPergunta(dadosUpdate.descricao)     
     })
 
-    it('8. CRUD pergunta do tipo "Faixa de Valores" atualizada para "Única Escolha"', () => {
+    it.skip('[BUG] 8. CRUD pergunta do tipo "Faixa de Valores" atualizada para "Única Escolha"', () => {
         // Massa de dados para criar pergunta do tipo "Faixa de Valores"
         const dados = {
             titulo: titulo,

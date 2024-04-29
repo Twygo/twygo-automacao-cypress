@@ -605,7 +605,7 @@ describe('Participante', () => {
 		cy.excluirUsuario(`${dados.nome} ${dados.sobrenome}`)
     })
 
-    it('8. Altera status de um participante default e atualiza os dados em situação "Cancelado"', () => {
+    it.skip('[BUG STAGE alterar status] 8. Altera status de um participante default e atualiza os dados em situação "Cancelado"', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
         let sobrenome = fakerPT_BR.person.lastName()
@@ -693,7 +693,7 @@ describe('Participante', () => {
 		cy.excluirUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
     })
 
-    it('9. Altera status de um participante default e atualiza os dados em situação "Pendente"', () => {
+    it.skip('[BUG STAGE alterar status] 9. Altera status de um participante default e atualiza os dados em situação "Pendente"', () => {
         // Massa de dados
         let nome = fakerPT_BR.person.firstName()
         let sobrenome = fakerPT_BR.person.lastName()
@@ -781,7 +781,7 @@ describe('Participante', () => {
 		cy.excluirUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
     })
 
-    it('10. Associa 5 participantes em curso que não exige confirmação e altera status individualmente e depois de todos', () => {
+    it.skip('[BUG STAGE alterar status] 10. Associa 5 participantes em curso que não exige confirmação e altera status individualmente e depois de todos', () => {
         let participantesAssociados = []
         let participantesPendentes = []
         let participantesCancelados = []

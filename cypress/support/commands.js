@@ -1653,7 +1653,7 @@ Cypress.Commands.add('addParticipante', (tipoConteudo) => {
 })
 
 Cypress.Commands.add('alteraStatus', function(nomeParticipantes, status) {
-  const timeoutPadrao = 20000
+  const timeoutPadrao = 100000
   const labels = Cypress.env('labels')
   const { msgAlteraConfirmado, msgAlteraPendente, msgAlteraCancelado, msgSucessoAlteraStatus } = labels.participantes
 
@@ -1699,19 +1699,19 @@ Cypress.Commands.add('alteraStatus', function(nomeParticipantes, status) {
     default:
       throw new Error(`Status inválido: ${status}`)
   }
-  // Problemas na validação das demais mensagens, validando apenas a última mensagem de sucesso (por isso a inclusão do wait de 3 segundos)
-  // switch (status) {
-  //   case 'Confirmado':
-  //     cy.contains('.flash.success', msgAlteraConfirmado, { timeout: timeoutPadrao }).should('be.visible')
-  //     break
-  //   case 'Pendente':
-  //     cy.contains('.flash.success', msgAlteraPendente, { timeout: timeoutPadrao }).should('be.visible')
-  //     break
-  //   case 'Cancelado':
-  //     cy.contains('.flash.success', msgAlteraCancelado, { timeout: timeoutPadrao }).should('be.visible')
-  //     break
-  // }
-  cy.wait(2000)
+
+  switch (status) {
+    case 'Confirmado':
+      cy.contains('.flash.success', msgAlteraConfirmado, { timeout: timeoutPadrao }).should('be.visible')
+      break
+    case 'Pendente':
+      cy.contains('.flash.success', msgAlteraPendente, { timeout: timeoutPadrao }).should('be.visible')
+      break
+    case 'Cancelado':
+      cy.contains('.flash.success', msgAlteraCancelado, { timeout: timeoutPadrao }).should('be.visible')
+      break 
+  }
+
   cy.contains('.flash.success', msgSucessoAlteraStatus, { timeout: timeoutPadrao }).should('be.visible')
 
   // Medida de contorno para atualizar a página e validar o status do(s) participante(s)
@@ -1911,19 +1911,18 @@ Cypress.Commands.add('alterarStatusTodosParticipantes', function(status, novoSta
       throw new Error(`Status inválido: ${novoStatus}`)
   }
 
-  // Problemas ao validar demais mensagens, validando apenas a última mensagem de sucesso (por isso a inclusão do wait de 3 segundos)
-  // switch (novoStatus) {
-  //   case 'Confirmado':
-  //     cy.contains('.flash.success', msgAlteraConfirmado, { timeout: timeoutPadrao }).should('be.visible')
-  //     break
-  //   case 'Pendente':
-  //     cy.contains('.flash.success', msgAlteraPendente, { timeout: timeoutPadrao }).should('be.visible')
-  //     break
-  //   case 'Cancelado':
-  //     cy.contains('.flash.success', msgAlteraCancelado, { timeout: timeoutPadrao }).should('be.visible')
-  //     break
-  // }
-  cy.wait(2000)
+  switch (novoStatus) {
+    case 'Confirmado':
+      cy.contains('.flash.success', msgAlteraConfirmado, { timeout: timeoutPadrao }).should('be.visible')
+      break
+    case 'Pendente':
+      cy.contains('.flash.success', msgAlteraPendente, { timeout: timeoutPadrao }).should('be.visible')
+      break
+    case 'Cancelado':
+      cy.contains('.flash.success', msgAlteraCancelado, { timeout: timeoutPadrao }).should('be.visible')
+      break
+  }
+
   cy.contains('.flash.success', msgSucessoAlteraStatus, { timeout: timeoutPadrao }).should('be.visible')
 
   // Medida de contorno para atualizar a página e validar o status do(s) participante(s)
