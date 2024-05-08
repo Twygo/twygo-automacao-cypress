@@ -51,8 +51,17 @@ class formGestor{
     }
     
 
-    alternarStatusGestao(nomeGestor) {
-        cy.get(`td:contains('${nomeGestor}')`)
+    vincularGestor(nomeGestor) {
+        cy.get('div.class-manager-assignment.not_assigned')
+            .get(`td:contains('${nomeGestor}')`)
+            .parents('tr')
+            .find(this.elementos.mudarStatusGestao.seletor)
+            .click()
+    }
+
+    desvincularGestor(nomeGestor) {
+        cy.get('div.class-manager-assignment.assigned')
+            .get(`td:contains('${nomeGestor}')`)
             .parents('tr')
             .find(this.elementos.mudarStatusGestao.seletor)
             .click()

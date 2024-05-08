@@ -2116,10 +2116,17 @@ Cypress.Commands.add('vincularInstrutor', (nomeInstrutor) => {
 
 })
 
-Cypress.Commands.add('habilitarDesabilitarGestao', (nomeGestor) => {
+Cypress.Commands.add('vinculoGestao', (nomeGestor, acao) => {
   const formulario = new formGestor()
 
-  formulario.alternarStatusGestao(nomeGestor)
+  switch(acao) {
+    case 'Vincular':
+      formulario.vincularGestor(nomeGestor)
+      break
+    case  'Desvincular':
+      formulario.desvincularGestor(nomeGestor)
+      break
+  }
 })
 
 Cypress.Commands.add('validarVinculoInstrutor', (nomeInstrutor) => {
@@ -2141,33 +2148,32 @@ Cypress.Commands.add('validarRemocaoVinculoGestor', (nomeGestor) => {
     .find('.icon-check-circle.off')
 })
 
-Cypress.Commands.add('validarVinculoGestor', (nomeGestor) => {
+Cypress.Commands.add('validarVinculoGestor', (nomeGestor, status) => {
   const TIMEOUT_PADRAO = 5000
   const labels = Cypress.env('labels')
   const { msgSucessoVinculo } = labels.gestores
-
-  cy.contains('.flash.success', msgSucessoVinculo, { timeout: TIMEOUT_PADRAO })
-    .should('be.visible')
-  
-  cy.get(`td:contains('${nomeGestor}')`)
-    .parents('tr')
-    .find('.icon-check-circle.on')
-})
-
-Cypress.Commands.add('validarRemocaoGestor', (nomeGestor) => {
-  const TIMEOUT_PADRAO = 5000
-  const labels = Cypress.env('labels')
   const { msgSucessoRemocao } = labels.gestores
 
-  cy.contains('.flash.success', msgSucessoRemocao, { timeout: TIMEOUT_PADRAO })
-    .should('be.visible')
-  
-  cy.get(`td:contains('${nomeGestor}')`)
-    .parents('tr')
-    .find('.icon-times-circle.off')
-    .should('be.visible')
-})
+  switch(status) {
+    case 'Vinculado':
+      cy.contains('.flash.success', msgSucessoVinculo, { timeout: TIMEOUT_PADRAO })
+        .should('be.visible')
 
+      cy.get(`td:contains('${nomeGestor}')`)
+        .parents('tr')
+        .find('.icon-check-circle.on')
+      break
+    case 'Desvinculado':
+      cy.contains('.flash.success', msgSucessoRemocao, { timeout: TIMEOUT_PADRAO })
+        .should('be.visible')
+  
+      cy.get(`td:contains('${nomeGestor}')`)
+        .parents('tr')
+        .find('.icon-times-circle.off')
+        .should('be.visible')
+      break  
+  }
+})
 
 Cypress.Commands.add('removerVinculoInstrutor', (nomeInstrutor) => {
   //Encontra o instrutor e clica para remover 
@@ -2276,30 +2282,30 @@ Cypress.Commands.add('criarGestor', (nomeGestor, sobrenomeGestor) => {
 
 Cypress.Commands.add('gestorConteudo', (nomeConteudo) => {
   // Acessa o arquivo de labels
-  const labels = Cypress.env('labels')
-  const { breadcrumb, tituloPg } = labels.gestores
+  cy.readFile('cypress/fixtures/labels.json').then(labels => {
+    const { breadcrumb, tituloPg } = labels.gestores;
 
-  // Define o seletor para encontrar o conteúdo na listagem
-  let seletor = ''
-  
-  seletor = `tr[tag-name='${nomeConteudo}']`    
-  // Clica em 'Opções' e 'Gestores de turma'
-  cy.get(seletor)
-    .find('svg[aria-label="Options"]')
-    .click()
+    // Define o seletor para encontrar o conteúdo na listagem
+    let seletor = `tr[tag-name='${nomeConteudo}']`;
 
-  cy.get(seletor)
-    .contains('button', 'Gestores de turma')
-    .click({force: true})
-  
-  // Valida se a página foi carregada corretamente conforme o tipo de conteúdo
-  cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+    // Clica em 'Opções' e 'Gestores de turma'
+    cy.get(seletor)
+      .find('svg[aria-label="Options"]')
+      .click();
 
-  cy.contains('.detail_title', tituloPg)
-    .should('be.visible')
+    cy.get(seletor)
+      .contains('button', 'Gestores de turma')
+      .click({ force: true });
+
+    // Valida se a página foi carregada corretamente conforme o tipo de conteúdo
+    const breadcrumbComVariavel = breadcrumb.replace('{{nomeDoConteudo}}', nomeConteudo);
+    cy.contains('#page-breadcrumb', breadcrumbComVariavel)
+      .should('be.visible');
+
+    cy.contains('.detail_title', tituloPg)
+      .should('be.visible');
+  })
 })
-
 
 Cypress.Commands.add('login', function(login, password, username, idioma = 'pt') {
   const labels = Cypress.env('labels')[idioma]

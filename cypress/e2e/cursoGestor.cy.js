@@ -1,6 +1,6 @@
 /// reference types="cypress" />
 import { fakerPT_BR } from '@faker-js/faker'
-import { getAuthToken } from '../support/auth_helper'
+import { getAuthToken } from '../support/authHelper'
 let faker = require('faker-br')
 
 describe('Gestor', () => {
@@ -15,10 +15,11 @@ describe('Gestor', () => {
     })
 
     beforeEach(() => {
-        // Ativa o tratamento de exceção não capturada especificamente para este teste
-        Cypress.on('uncaught:exception', (err, runnable) => {
-            return false
-        }) 
+        // Ignora mensagens de erro conhecidas
+		cy.ignorarCapturaErros([
+			"Unexpected identifier 'id'",
+            "ResizeObserver loop completed with undelivered notifications"
+		], { ignoreScriptErrors: true })
 
         // Gera um nome aleatório para o conteúdo e para a atividade
         nomeConteudo = fakerPT_BR.commerce.productName()
@@ -26,7 +27,7 @@ describe('Gestor', () => {
         // Obtém o token de autenticação
         getAuthToken()
 
-        // Gerar nomes aleatórios para os instrutores
+        // Gerar nomes aleatórios para os gestores
         nomeGestor1 = fakerPT_BR.person.firstName()
         sobrenomeGestor1 = fakerPT_BR.person.lastName()
         nomeGestor2 = fakerPT_BR.person.firstName()
@@ -40,15 +41,14 @@ describe('Gestor', () => {
 
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')
-        // Cria os instrutores
+        // Cria os gestores
         cy.criarGestor(nomeGestor1, sobrenomeGestor1)
         cy.criarGestor(nomeGestor2, sobrenomeGestor2)
     })
 
     afterEach(() => {
-        // Desativa o tratamento após o teste para evitar afetar outros testes
-        Cypress.removeAllListeners('uncaught:exception')
-    })
+		cy.ativarCapturaErros()
+	})
 
     it('1. CRUD - Vincular gestor em curso liberado', () => {
         // CREATE
@@ -66,24 +66,24 @@ describe('Gestor', () => {
             //Acessa Opções > Gestor
             cy.gestorConteudo(nomeConteudo)
             //Habilita o Gestor
-            cy.habilitarDesabilitarGestao(nomeGestor1)
+            cy.vinculoGestao(nomeGestor1, 'Vincular')
             cy.voltar()
             cy.gestorConteudo(nomeConteudo)
             
             //READ              
-            cy.validarVinculoGestor(nomeGestor1)
+            cy.validarVinculoGestor(nomeGestor1, 'Vinculado')
 
             //UPDATE
             cy.voltar()
             cy.gestorConteudo(nomeConteudo)
-            cy.habilitarDesabilitarGestao(nomeGestor2)
-            cy.validarVinculoGestor(nomeGestor2)
+            cy.vinculoGestao(nomeGestor2, 'Vincular')
+            cy.validarVinculoGestor(nomeGestor2, 'Vinculado')
     
             // DELETE
             cy.voltar()
             cy.gestorConteudo(nomeConteudo)
-            cy.habilitarDesabilitarGestao(nomeGestor2)
-            cy.validarRemocaoGestor(nomeGestor2)
+            cy.vinculoGestao(nomeGestor2, 'Desvincular')
+            cy.validarVinculoGestor(nomeGestor2, 'Desvinculado')
     })
 
     it('2. CRUD - Vincular gestor em curso em desenvolvimento', () => {
@@ -102,24 +102,24 @@ describe('Gestor', () => {
             //Acessa Opções > Gestor
             cy.gestorConteudo(nomeConteudo)
             //Habilita o Gestor
-            cy.habilitarDesabilitarGestao(nomeGestor1)
+            cy.vinculoGestao(nomeGestor1, 'Vincular')
             cy.voltar()
             cy.gestorConteudo(nomeConteudo)
-            
+
             //READ              
-            cy.validarVinculoGestor(nomeGestor1)
+            cy.validarVinculoGestor(nomeGestor1, 'Vinculado')
 
             //UPDATE
             cy.voltar()
             cy.gestorConteudo(nomeConteudo)
-            cy.habilitarDesabilitarGestao(nomeGestor2)
-            cy.validarVinculoGestor(nomeGestor2)
-    
+            cy.vinculoGestao(nomeGestor2, 'Vincular')
+            cy.validarVinculoGestor(nomeGestor2, 'Vinculado')
+
             // DELETE
             cy.voltar()
             cy.gestorConteudo(nomeConteudo)
-            cy.habilitarDesabilitarGestao(nomeGestor2)
-            cy.validarRemocaoGestor(nomeGestor2)
+            cy.vinculoGestao(nomeGestor2, 'Desvincular')
+            cy.validarVinculoGestor(nomeGestor2, 'Desvinculado')
     })
 
     it('3. CRUD - Vincular gestor em curso suspenso', () => {
@@ -138,23 +138,23 @@ describe('Gestor', () => {
             //Acessa Opções > Gestor
             cy.gestorConteudo(nomeConteudo)
             //Habilita o Gestor
-            cy.habilitarDesabilitarGestao(nomeGestor1)
+            cy.vinculoGestao(nomeGestor1, 'Vincular')
             cy.voltar()
             cy.gestorConteudo(nomeConteudo)
-            
+
             //READ              
-            cy.validarVinculoGestor(nomeGestor1)
+            cy.validarVinculoGestor(nomeGestor1, 'Vinculado')
 
             //UPDATE
             cy.voltar()
             cy.gestorConteudo(nomeConteudo)
-            cy.habilitarDesabilitarGestao(nomeGestor2)
-            cy.validarVinculoGestor(nomeGestor2)
-    
+            cy.vinculoGestao(nomeGestor2, 'Vincular')
+            cy.validarVinculoGestor(nomeGestor2, 'Vinculado')
+
             // DELETE
             cy.voltar()
             cy.gestorConteudo(nomeConteudo)
-            cy.habilitarDesabilitarGestao(nomeGestor2)
-            cy.validarRemocaoGestor(nomeGestor2)
+            cy.vinculoGestao(nomeGestor2, 'Desvincular')
+            cy.validarVinculoGestor(nomeGestor2, 'Desvinculado')
     })
 })
