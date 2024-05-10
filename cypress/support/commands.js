@@ -8,6 +8,7 @@ import formUsuarios from "./pageObjects/formUsuarios"
 import formParticipantes from "./pageObjects/formParticipantes"
 import formConfigUsuario from "./pageObjects/formConfigUsuario"
 import formInstrutor from "./pageObjects/formInstrutor"
+import formGestor from "./pageObjects/formGestor"
 import { fakerPT_BR } from "@faker-js/faker"
 import 'cypress-real-events/support'
 
@@ -2118,9 +2119,49 @@ Cypress.Commands.add('vincularInstrutor', (nomeInstrutor) => {
 
 })
 
+Cypress.Commands.add('vinculoGestao', (nomeGestor, acao) => {
+  const formulario = new formGestor()
+
+  switch(acao) {
+    case 'Vincular':
+      formulario.vincularGestor(nomeGestor)
+      break
+    case  'Desvincular':
+      formulario.desvincularGestor(nomeGestor)
+      break
+  }
+})
+
 Cypress.Commands.add('validarVinculoInstrutor', (nomeInstrutor) => {
   cy.contains('.speaker_name', nomeInstrutor)
   .should('be.visible')
+})
+
+Cypress.Commands.add('validarVinculoGestor', (nomeGestor, status) => {
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { msgSucessoVinculo } = labels.gestores
+  const { msgSucessoRemocao } = labels.gestores
+
+  switch(status) {
+    case 'Vinculado':
+      cy.contains('.flash.success', msgSucessoVinculo, { timeout: TIMEOUT_PADRAO })
+        .should('be.visible')
+
+      cy.get(`td:contains('${nomeGestor}')`)
+        .parents('tr')
+        .find('.icon-check-circle.on')
+      break
+    case 'Desvinculado':
+      cy.contains('.flash.success', msgSucessoRemocao, { timeout: TIMEOUT_PADRAO })
+        .should('be.visible')
+  
+      cy.get(`td:contains('${nomeGestor}')`)
+        .parents('tr')
+        .find('.icon-times-circle.off')
+        .should('be.visible')
+      break  
+  }
 })
 
 Cypress.Commands.add('removerVinculoInstrutor', (nomeInstrutor) => {
@@ -2207,6 +2248,52 @@ Cypress.Commands.add('instrutorConteudo', (nomeConteudo) => {
 
   cy.contains('.detail_title', tituloPg)
     .should('be.visible')
+})
+
+Cypress.Commands.add('criarGestor', (nomeGestor, sobrenomeGestor) => {
+  // Massa de dados
+  let nome = nomeGestor
+  let sobrenome = sobrenomeGestor
+  let email = fakerPT_BR.internet.email({ firstName: nome, lastName: sobrenome}).toLowerCase()
+
+  const dados = {
+      email: email,
+      nome: nome,
+      sobrenome: sobrenome,
+      perfilGestor: true
+  }
+
+  cy.acessarPgUsuarios()
+  cy.addUsuario()
+  cy.preencherDadosUsuario(dados, { limpar: true })
+  cy.salvarUsuario(`${dados.nome} ${dados.sobrenome}`)
+})
+
+Cypress.Commands.add('gestorConteudo', (nomeConteudo) => {
+  // Acessa o arquivo de labels
+  cy.readFile('cypress/fixtures/labels.json').then(labels => {
+    const { breadcrumb, tituloPg } = labels.gestores;
+
+    // Define o seletor para encontrar o conteúdo na listagem
+    let seletor = `tr[tag-name='${nomeConteudo}']`;
+
+    // Clica em 'Opções' e 'Gestores de turma'
+    cy.get(seletor)
+      .find('svg[aria-label="Options"]')
+      .click();
+
+    cy.get(seletor)
+      .contains('button', 'Gestores de turma')
+      .click({ force: true });
+
+    // Valida se a página foi carregada corretamente conforme o tipo de conteúdo
+    const breadcrumbComVariavel = breadcrumb.replace('{{nomeDoConteudo}}', nomeConteudo);
+    cy.contains('#page-breadcrumb', breadcrumbComVariavel)
+      .should('be.visible');
+
+    cy.contains('.detail_title', tituloPg)
+      .should('be.visible');
+  })
 })
 
 Cypress.Commands.add('login', function(login, password, username, idioma = 'pt') {
