@@ -2134,20 +2134,6 @@ Cypress.Commands.add('validarVinculoInstrutor', (nomeInstrutor) => {
   .should('be.visible')
 })
 
-
-Cypress.Commands.add('validarRemocaoVinculoGestor', (nomeGestor) => {
-  const TIMEOUT_PADRAO = 5000
-  const labels = Cypress.env('labels')
-  const { msgSucessoRemocao } = labels.gestores
-
-  cy.contains('.flash.success', msgSucessoRemocao, { timeout: TIMEOUT_PADRAO })
-    .should('be.visible')
-  
-  cy.get(`td:contains('${nomeGestor}')`)
-    .parents('tr')
-    .find('.icon-check-circle.off')
-})
-
 Cypress.Commands.add('validarVinculoGestor', (nomeGestor, status) => {
   const TIMEOUT_PADRAO = 5000
   const labels = Cypress.env('labels')
