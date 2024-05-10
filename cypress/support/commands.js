@@ -8,6 +8,7 @@ import formUsuarios from "./pageObjects/formUsuarios"
 import formParticipantes from "./pageObjects/formParticipantes"
 import formConfigUsuario from "./pageObjects/formConfigUsuario"
 import formInstrutor from "./pageObjects/formInstrutor"
+import formConfigOrganizacao from "./pageObjects/formConfigOrganizacao"
 import { fakerPT_BR } from "@faker-js/faker"
 import 'cypress-real-events/support'
 
@@ -158,10 +159,49 @@ Cypress.Commands.add('acessarPgLogin', function() {
 })
 
 Cypress.Commands.add('acessarPgQuestionarios', function() {
-  cy.visit(`/o/${Cypress.env('orgId')}/question_lists`)
-
   const labels = Cypress.env('labels')
   const { breadcrumb } = labels.questionario
+
+  cy.visit(`/o/${Cypress.env('orgId')}/question_lists`)
+
+  // Verificar se a página de questionários foi acessada com sucesso
+  cy.contains('#page-breadcrumb', breadcrumb)
+    .should('be.visible')
+})
+
+Cypress.Commands.add('acessarPgConfigOrganizacao', function(aba) {
+  const labels = Cypress.env('labels')
+  const { breadcrumb } = labels.configOrganizacao
+  const formulario = new formConfigOrganizacao()
+  
+  cy.visit(`/o/${Cypress.env('orgId')}/edit`)
+
+  // Verificar se a página de configuração da organização foi acessada com sucesso
+  cy.contains('#page-breadcrumb', breadcrumb)
+    .should('be.visible')
+
+  switch (aba) {
+    case 'dados':
+      formulario.abaDados()
+      break
+    case 'customizacoes':
+      formulario.abaCustomizacoes()
+      break
+    case 'certificado':
+      formulario.abaCertificado()
+      break
+    case 'integracoes':
+      formulario.abaIntegracoes()
+      break
+    case 'termos':
+      formulario.abaTermos()
+      break
+    case 'urlWebhooks':
+      formulario.abaUrlWebhooks()
+      break
+    default:
+      throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
+  }
 })
 
 Cypress.Commands.add("criarCatalogoViaApi", (body, attempt = 1) => {
