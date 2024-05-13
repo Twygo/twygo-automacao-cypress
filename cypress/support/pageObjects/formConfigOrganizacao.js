@@ -128,6 +128,7 @@ class formConfigOrganizacao {
             seletor: '#role',
             tipo: 'input' 
         },
+        salvarDados: () => cy.get('#organization-form').find('button[type="submit"]'),
 
         // :: Aba Customizações ::
         // Alterar dados do usuário
@@ -378,5 +379,139 @@ class formConfigOrganizacao {
     abaUrlWebhooks() {
         this.elementos.abaUrlWebhooks().click()
     }
+
+    salvarDados() {
+        this.elementos.salvarDados().click()
+    }
+
+    preencherCampo(nomeCampo, valor, opcoes = { limpar: false }) {
+        const timeoutPadrao = 5000
+        const campo = this.elementos[nomeCampo]
+        
+        if (!campo) {
+            throw new Error(`Campo ${nomeCampo} não encontrado`)
+        }
+    
+        const { seletor, tipo, default: valorDefault } = campo 
+        
+        let valorFinal = valor !== undefined ? valor : valorDefault
+        
+        if (opcoes.limpar || valorFinal === '') {
+            if (tipo === 'input') {
+                cy.get(seletor).clear()
+            } else if (tipo === 'iframeText') {
+                cy.get(seletor, { timeout: timeoutPadrao }).then($iframe => {
+                    const doc = $iframe.contents()
+                    cy.wrap(doc).find('body.cke_editable').invoke('text', '').type(' ', { force: true })
+                })
+            }
+            
+            if (valorFinal === '') {
+                return
+            }
+        }
+    
+        switch (tipo) {
+            case 'select':
+                cy.get(seletor).select(valorFinal)
+                break
+            case 'checkbox':
+            case 'checkbox-action':
+                // Verifica o estado atual do checkbox e só clica se necessário
+                cy.get(seletor).then($checkbox => {
+                    const isChecked = $checkbox.is(':checked')
+                    // Se o estado desejado for diferente do estado atual, clica para alterar
+                    if ((valorFinal && !isChecked) || (!valorFinal && isChecked)) {
+                        cy.get(seletor).click().then(() => {
+                            // Caso específico para o seletor '#event_enable_twygo_chat'
+                            if (seletor === '#event_enable_twygo_chat' && valorFinal === false) {
+                                cy.wait(1000)
+                                cy.get('body').then(($body) => {
+                                    if ($body.find('button:contains("Sair")').length) {
+                                        cy.contains('button', 'Sair').click()
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
+                break      
+            case 'radio':
+                const valorParaMarcar = valorFinal === 'Habilitado' ? 'Habilitado' : 'Desabilitado'
+                cy.get(seletor)
+                    .contains(valorParaMarcar)
+                    .parents('.col-md-6.col-lg-4')
+                    .find(`label:contains("${valorParaMarcar}")`)
+                    .invoke('attr', 'for')
+                    .then((id) => {
+                        cy.get(`input#${id}`).check().should('be.checked')
+                    })
+                break
+            case 'input':
+            case 'iframeText':
+                cy.get(seletor).type(valorFinal)
+                break
+            default:
+                throw new Error(`Tipo de campo desconhecido: ${tipo}`)
+        }
+    }
+
+	validarCampo(nomeCampo, valor) {
+		
+		const campo = this.elementos[nomeCampo]
+
+			if (!campo) {
+				throw new Error(`Campo ${nomeCampo} não encontrado`)
+			}
+
+			const { seletor, tipo, default: valorDefault } = campo
+				
+			const valorFinal = valor !== undefined ? valor : valorDefault
+		
+			switch (tipo) {
+			case 'input':
+				cy.get(seletor)
+					.should('have.value', valorFinal)
+				break
+			case 'select':
+				cy.get(seletor)
+					.find('option:selected')
+					.should('have.text', valorFinal)
+				break
+			case 'checkbox-action':
+				cy.get(seletor)
+					.should('not.be.checked')
+				break
+			case 'checkbox':
+				if (valorFinal === true ) {
+					cy.get(seletor)
+						.should('be.checked')
+				} else {
+					cy.get(seletor)
+						.should('not.be.checked')
+				}
+				break
+			case 'radio':
+				const valorParaMarcar = valorFinal === 'Habilitado' ? 'Habilitado' : 'Desabilitado'
+				cy.get(seletor)
+					.contains(valorParaMarcar)
+					.parents('.col-md-6.col-lg-4')
+					.find(`label:contains("${valorParaMarcar}")`)
+					.invoke('attr', 'for')
+					.then((id) => {
+						cy.get(`input#${id}`).should('be.checked')
+					})
+				break
+			case 'iframeText':
+				cy.get(seletor, { timeout: 5000 }).then($iframe => {
+					const doc = $iframe.contents()
+				
+					cy.wrap(doc).find('body.cke_editable').then($body => {
+						cy.wrap($body).should('have.text', valorFinal)
+					})
+				})
+				break      
+			}
+	}
 }
 export default formConfigOrganizacao

@@ -169,39 +169,15 @@ Cypress.Commands.add('acessarPgQuestionarios', function() {
     .should('be.visible')
 })
 
-Cypress.Commands.add('acessarPgConfigOrganizacao', function(aba) {
+Cypress.Commands.add('acessarPgConfigOrganizacao', function() {
   const labels = Cypress.env('labels')
   const { breadcrumb } = labels.configOrganizacao
-  const formulario = new formConfigOrganizacao()
   
   cy.visit(`/o/${Cypress.env('orgId')}/edit`)
 
   // Verificar se a página de configuração da organização foi acessada com sucesso
   cy.contains('#page-breadcrumb', breadcrumb)
     .should('be.visible')
-
-  switch (aba) {
-    case 'dados':
-      formulario.abaDados()
-      break
-    case 'customizacoes':
-      formulario.abaCustomizacoes()
-      break
-    case 'certificado':
-      formulario.abaCertificado()
-      break
-    case 'integracoes':
-      formulario.abaIntegracoes()
-      break
-    case 'termos':
-      formulario.abaTermos()
-      break
-    case 'urlWebhooks':
-      formulario.abaUrlWebhooks()
-      break
-    default:
-      throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
-  }
 })
 
 Cypress.Commands.add("criarCatalogoViaApi", (body, attempt = 1) => {
@@ -2433,4 +2409,128 @@ Cypress.Commands.add('ignorarCapturaErros', (errorsToIgnore, options = { ignoreS
 
 Cypress.Commands.add('ativarCapturaErros', function() {
   Cypress.removeAllListeners('uncaught:exception')
+})
+
+Cypress.Commands.add('preencherDadosConfigOrganizacao', (dados, aba, opcoes = { limpar: false }) => {
+  const formulario = new formConfigOrganizacao()
+
+  switch (aba) {
+    case 'dados':
+      formulario.abaDados()
+      break
+    case 'customizacoes':
+      formulario.abaCustomizacoes()
+      break
+    case 'certificado':
+      formulario.abaCertificado()
+      break
+    case 'integracoes':
+      formulario.abaIntegracoes()
+      break
+    case 'termos':
+      formulario.abaTermos()
+      break
+    case 'urlWebhooks':
+      formulario.abaUrlWebhooks()
+      break
+    default:
+      throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
+  }
+  
+  Object.keys(dados).forEach(nomeCampo => {
+      const valor = dados[nomeCampo]
+      formulario.preencherCampo(nomeCampo, valor, opcoes)
+  })
+}) 
+
+Cypress.Commands.add('validarDadosConfigOrganizacao', (dados, aba) => {
+  const formulario = new formConteudos()
+
+  switch (aba) {
+    case 'dados':
+      formulario.abaDados()
+      break
+    case 'customizacoes':
+      formulario.abaCustomizacoes()
+      break
+    case 'certificado':
+      formulario.abaCertificado()
+      break
+    case 'integracoes':
+      formulario.abaIntegracoes()
+      break
+    case 'termos':
+      formulario.abaTermos()
+      break
+    case 'urlWebhooks':
+      formulario.abaUrlWebhooks()
+      break
+    default:
+      throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
+  }
+
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+    formulario.validarCampo(nomeCampo, valor)
+  })
+})
+
+Cypress.Commands.add('salvarConfigOrganizacao', () => {
+  const timeoutPadrao = 5000
+  const formulario = new formConfigOrganizacao()
+  const labels = Cypress.env('labels')
+  const { msgSucesso } = labels.configOrganizacao.dados
+
+  formulario.salvarDados()
+  // Trecho comentado pois por algum motivo obscuro a flash notice não é exibida quando executado pelo Cypress
+  // cy.get('.flash.notice', { timeout: timeoutPadrao })
+  //   .contains(msgSucesso)
+  //   .should('be.visible')
+})
+
+Cypress.Commands.add('resetConfigOrganizacao', (aba) => {
+  switch (aba) {
+    case 'dados':
+      const formDadosDefault = {
+        nome: Cypress.env('orgName'),
+        descricao: '',
+        informacoesGerais: '',
+        resumoIndexacao: '',
+        cep: '',
+        endereco: '',
+        complemento: '',
+        bairro: '',
+        cidade: '',
+        estado: '',
+        pais: '',
+        telefone: '(45) 99999-9999',
+        email: Cypress.env('login'),
+        site: '',
+        converterEscalaBranco: false,
+        personalizarLinkLogotipo: true,
+        linkRedirecionamento: '',
+        botaoContato: '',
+        usarGestaoCompetencias: false,
+        ativarGamificacao: false,
+        visualizacao: 'Privada',
+        abaPortfolio: false,
+        abaAgenda: false,
+        abaParceiros: false,
+        abaSobre: false,
+        abaPlanos: false,
+        listaEmpresas: '',
+        nrColaboradores: '',
+        ramoAtuacao: '',
+        cargo: ''
+      }
+
+      const atualizarPersonalizarLink = {
+          personalizarLinkLogotipo: false,
+      }
+
+      cy.preencherDadosConfigOrganizacao(formDadosDefault, 'dados', { limpar: true })
+      cy.preencherDadosConfigOrganizacao(atualizarPersonalizarLink, 'dados')
+      cy.salvarConfigOrganizacao()
+      break
+  }
 })

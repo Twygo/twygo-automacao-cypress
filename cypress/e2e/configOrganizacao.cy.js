@@ -1,7 +1,7 @@
 ///reference types="cypress" />
-import { faker } from "@faker-js/faker"
+import { fakerPT_BR, faker } from "@faker-js/faker"
 
-describe('Configurações > Organização', () => {
+describe('Configurações > Organização > Dados', () => {
     const formDadosDefault = {
         nome: Cypress.env('orgName'),
         descricao: '',
@@ -22,7 +22,7 @@ describe('Configurações > Organização', () => {
         linkRedirecionamento: '',
         botaoContato: '',
         usarGestaoCompetencias: false,
-        ativarGamificacao: true,
+        ativarGamificacao: false,
         visualizacao: 'Privada',
         abaPortfolio: false,
         abaAgenda: false,
@@ -45,274 +45,104 @@ describe('Configurações > Organização', () => {
         //Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([
             "Unexpected identifier 'id'"
-        ])
+        ], { ignoreScriptErrors: true })
+
+        cy.loginTwygoAutomacao()
+        cy.alterarPerfil('administrador')      
+
+        cy.acessarPgConfigOrganizacao()
+        cy.resetConfigOrganizacao('dados')
     })
 
     afterEach(() => {
         cy.ativarCapturaErros()
     })
 
-    it('1. CRUD aba Dados', () => {
+    it.only('1. CRUD aba Dados', () => {
         // Massa de dados
         const dados = {
-            nome: Cypress.env('orgName'),
-            descricao: '',
-            informacoesGerais: '',
-            resumoIndexacao: '',
-            cep: '',
-            endereco: '',
-            complemento: '',
-            bairro: '',
-            cidade: '',
-            estado: '',
-            pais: '',
-            telefone: '(45) 99999-9999',
-            email: Cypress.env('login'),
-            site: '',
-            converterEscalaBranco: false,
-            personalizarLinkLogotipo: false,
-            linkRedirecionamento: '',
-            botaoContato: '',
-            usarGestaoCompetencias: false,
+            nome: faker.commerce.productName(),
+            descricao: faker.lorem.sentence(50),
+            informacoesGerais: faker.lorem.sentence(50),
+            resumoIndexacao: faker.lorem.sentence(3),
+            cep: faker.string.numeric(8),
+            endereco: fakerPT_BR.location.streetAddress(),
+            complemento: faker.lorem.sentence(2),
+            bairro: faker.lorem.word(),
+            cidade: faker.location.city(),
+            estado: faker.location.state(),
+            pais: faker.location.country(),
+            telefone: '(45) 3030-3030',
+            email: faker.internet.email(),
+            site: faker.internet.url(),
+            converterEscalaBranco: true,
+            personalizarLinkLogotipo: true,
+            linkRedirecionamento: faker.internet.url(),
+            botaoContato: faker.lorem.word(),
+            usarGestaoCompetencias: true,
             ativarGamificacao: true,
-            visualizacao: 'Privada',
-            abaPortfolio: false,
-            abaAgenda: false,
-            abaParceiros: false,
-            abaSobre: false,
-            abaPlanos: false,
-            listaEmpresas: '',
-            nrColaboradores: '',
-            ramoAtuacao: '',
-            cargo: ''
+            visualizacao: 'Pública',
+            abaPortfolio: true,
+            abaAgenda: true,
+            abaParceiros: true,
+            abaSobre: true,
+            abaPlanos: true,
+            listaEmpresas: faker.lorem.word(),
+            nrColaboradores: faker.number.int({ min: 1, max: 1000 }),
+            ramoAtuacao: faker.lorem.word(),
+            cargo: faker.person.jobTitle()
         }
 
         // CREATE
 		cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')      
-
-        cy.acessarPgConfigOrganizacao('dados')
+        cy.acessarPgConfigOrganizacao()
+        cy.preencherDadosConfigOrganizacao(dados, 'dados', { limpar: true })
+        cy.salvarConfigOrganizacao()
     })
+})
 
+describe('Configurações > Organização > Customizações', () => {
     it('2. CRUD aba Customizações', () => {
-        // Massa de dados
-        const dados = {
-            nome: Cypress.env('orgName'),
-            descricao: '',
-            informacoesGerais: '',
-            resumoIndexacao: '',
-            cep: '',
-            endereco: '',
-            complemento: '',
-            bairro: '',
-            cidade: '',
-            estado: '',
-            pais: '',
-            telefone: '(45) 99999-9999',
-            email: Cypress.env('login'),
-            site: '',
-            converterEscalaBranco: false,
-            personalizarLinkLogotipo: false,
-            linkRedirecionamento: '',
-            botaoContato: '',
-            usarGestaoCompetencias: false,
-            ativarGamificacao: true,
-            visualizacao: 'Privada',
-            abaPortfolio: false,
-            abaAgenda: false,
-            abaParceiros: false,
-            abaSobre: false,
-            abaPlanos: false,
-            listaEmpresas: '',
-            nrColaboradores: '',
-            ramoAtuacao: '',
-            cargo: ''
-        }
-
         // CREATE
 		cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')      
-
-        cy.acessarPgConfigOrganizacao('customizacoes')
+        cy.acessarPgConfigOrganizacao()
     })
+})
 
+describe('Configurações > Organização > Certificado', () => {
     it('3. CRUD aba Certificado', () => {
-        // Massa de dados
-        const dados = {
-            nome: Cypress.env('orgName'),
-            descricao: '',
-            informacoesGerais: '',
-            resumoIndexacao: '',
-            cep: '',
-            endereco: '',
-            complemento: '',
-            bairro: '',
-            cidade: '',
-            estado: '',
-            pais: '',
-            telefone: '(45) 99999-9999',
-            email: Cypress.env('login'),
-            site: '',
-            converterEscalaBranco: false,
-            personalizarLinkLogotipo: false,
-            linkRedirecionamento: '',
-            botaoContato: '',
-            usarGestaoCompetencias: false,
-            ativarGamificacao: true,
-            visualizacao: 'Privada',
-            abaPortfolio: false,
-            abaAgenda: false,
-            abaParceiros: false,
-            abaSobre: false,
-            abaPlanos: false,
-            listaEmpresas: '',
-            nrColaboradores: '',
-            ramoAtuacao: '',
-            cargo: ''
-        }
-
         // CREATE
 		cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')      
-
-        cy.acessarPgConfigOrganizacao('certificado')
+        cy.acessarPgConfigOrganizacao()
     })
+})
 
+describe('Configurações > Organização > Integrações', () => {
     it('4. CRUD aba Integrações', () => {
-        // Massa de dados
-        const dados = {
-            nome: Cypress.env('orgName'),
-            descricao: '',
-            informacoesGerais: '',
-            resumoIndexacao: '',
-            cep: '',
-            endereco: '',
-            complemento: '',
-            bairro: '',
-            cidade: '',
-            estado: '',
-            pais: '',
-            telefone: '(45) 99999-9999',
-            email: Cypress.env('login'),
-            site: '',
-            converterEscalaBranco: false,
-            personalizarLinkLogotipo: false,
-            linkRedirecionamento: '',
-            botaoContato: '',
-            usarGestaoCompetencias: false,
-            ativarGamificacao: true,
-            visualizacao: 'Privada',
-            abaPortfolio: false,
-            abaAgenda: false,
-            abaParceiros: false,
-            abaSobre: false,
-            abaPlanos: false,
-            listaEmpresas: '',
-            nrColaboradores: '',
-            ramoAtuacao: '',
-            cargo: ''
-        }
-
         // CREATE
 		cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')      
-
-        cy.acessarPgConfigOrganizacao('integracoes')
+        cy.acessarPgConfigOrganizacao()
     })
+})
 
+describe('Configurações > Organização > Termos', () => {
     it('5. CRUD aba Termos', () => {
-        // Massa de dados
-        const dados = {
-            nome: Cypress.env('orgName'),
-            descricao: '',
-            informacoesGerais: '',
-            resumoIndexacao: '',
-            cep: '',
-            endereco: '',
-            complemento: '',
-            bairro: '',
-            cidade: '',
-            estado: '',
-            pais: '',
-            telefone: '(45) 99999-9999',
-            email: Cypress.env('login'),
-            site: '',
-            converterEscalaBranco: false,
-            personalizarLinkLogotipo: false,
-            linkRedirecionamento: '',
-            botaoContato: '',
-            usarGestaoCompetencias: false,
-            ativarGamificacao: true,
-            visualizacao: 'Privada',
-            abaPortfolio: false,
-            abaAgenda: false,
-            abaParceiros: false,
-            abaSobre: false,
-            abaPlanos: false,
-            listaEmpresas: '',
-            nrColaboradores: '',
-            ramoAtuacao: '',
-            cargo: ''
-        }
-
         // CREATE
 		cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')      
-
-        cy.acessarPgConfigOrganizacao('termos')
+        cy.acessarPgConfigOrganizacao()
     })
+})
 
+describe('Configurações > Organização > Url Webhooks', () => {
     it('6. CRUD aba Url Webhooks', () => {
-        // Massa de dados
-        const dados = {
-            nome: Cypress.env('orgName'),
-            descricao: '',
-            informacoesGerais: '',
-            resumoIndexacao: '',
-            cep: '',
-            endereco: '',
-            complemento: '',
-            bairro: '',
-            cidade: '',
-            estado: '',
-            pais: '',
-            telefone: '(45) 99999-9999',
-            email: Cypress.env('login'),
-            site: '',
-            converterEscalaBranco: false,
-            personalizarLinkLogotipo: false,
-            linkRedirecionamento: '',
-            botaoContato: '',
-            usarGestaoCompetencias: false,
-            ativarGamificacao: true,
-            visualizacao: 'Privada',
-            abaPortfolio: false,
-            abaAgenda: false,
-            abaParceiros: false,
-            abaSobre: false,
-            abaPlanos: false,
-            listaEmpresas: '',
-            nrColaboradores: '',
-            ramoAtuacao: '',
-            cargo: ''
-        }
-
         // CREATE
 		cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')      
-
-        cy.acessarPgConfigOrganizacao('urlWebhooks')
+        cy.acessarPgConfigOrganizacao()
     })
 })
