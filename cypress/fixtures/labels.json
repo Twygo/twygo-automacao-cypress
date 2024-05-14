@@ -181,5 +181,10 @@
     "menuSophia": {
         "exclusaoEmAndamento": "A exclusão está sendo realizada, aguarde alguns instantes.",
         "exclusaoConcluida": "Todos os dados solicitados foram excluídos, atualize a página."
+    },
+    "ambientesAdicionais": {
+        "breadcrumb": "Ambientes adicionais",
+        "msgSucesso": "Ambiente adicional criado com sucesso",
+        "msgInativacao": "Ambiente inativado com sucesso"
     }
 }
