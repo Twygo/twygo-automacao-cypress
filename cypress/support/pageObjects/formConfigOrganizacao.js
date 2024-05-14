@@ -26,7 +26,7 @@ class formConfigOrganizacao {
         },
         cep: {
             seletor: '#organization_zip_code',
-            tipo: 'input' 
+            tipo: 'input-zipcode' 
         },
         endereco: {
             seletor: '#organization_address',
@@ -412,6 +412,10 @@ class formConfigOrganizacao {
         }
     
         switch (tipo) {
+            case 'input':
+            case 'input-zipcode':
+                cy.get(seletor).type(valorFinal)
+                break
             case 'select':
                 cy.get(seletor).select(valorFinal)
                 break
@@ -447,9 +451,16 @@ class formConfigOrganizacao {
                         cy.get(`input#${id}`).check().should('be.checked')
                     })
                 break
-            case 'input':
             case 'iframeText':
-                cy.get(seletor).type(valorFinal)
+                cy.get(seletor, { timeout: timeoutPadrao }).then($iframe => {
+                    const doc = $iframe.contents()
+                    const body = cy.wrap(doc.find('body.cke_editable'))
+                    body.click({ force: true }).clear({ force: true }).then(() => {
+                        if (valorFinal !== '') {
+                            body.type(valorFinal, { force: true })
+                        }
+                    })
+                })
                 break
             default:
                 throw new Error(`Tipo de campo desconhecido: ${tipo}`)
@@ -473,6 +484,15 @@ class formConfigOrganizacao {
 				cy.get(seletor)
 					.should('have.value', valorFinal)
 				break
+            case 'input-zipcode':
+                cy.get(seletor)
+                    .invoke('val')
+                    .should(val => {
+                        expect(val).to.satisfy(val => 
+                            val === '' || /\d{5}-\d{3}/.test(val),
+                        )
+                    })
+                break
 			case 'select':
 				cy.get(seletor)
 					.find('option:selected')

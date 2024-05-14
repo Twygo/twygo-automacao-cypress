@@ -72,7 +72,7 @@ describe('Configurações > Organização > Dados', () => {
             cidade: faker.location.city(),
             estado: faker.location.state(),
             pais: faker.location.country(),
-            telefone: '(45) 3030-3030',
+            telefone: '(45) 3 0303-030',
             email: faker.internet.email(),
             site: faker.internet.url(),
             converterEscalaBranco: true,
@@ -99,6 +99,49 @@ describe('Configurações > Organização > Dados', () => {
         cy.acessarPgConfigOrganizacao()
         cy.preencherDadosConfigOrganizacao(dados, 'dados', { limpar: true })
         cy.salvarConfigOrganizacao()
+
+        // READ
+        cy.log('## READ ##')
+
+        cy.validarDadosConfigOrganizacao(dados, 'dados')
+
+        // UPDATE
+        // Massa de dados para atualização
+        const dadosUpdate = {
+            descricao: faker.lorem.sentence(50),
+            resumoIndexacao: '',
+            telefone: '(45) 9 8888-777',
+            converterEscalaBranco: false,
+            personalizarLinkLogotipo: false,
+            usarGestaoCompetencias: false,
+            ativarGamificacao: true,
+            visualizacao: 'Pública',
+            abaPortfolio: true,
+            abaAgenda: true,
+            abaParceiros: false,
+            abaSobre: true,
+            abaPlanos: false,
+            listaEmpresas: faker.lorem.word(),
+            nrColaboradores: '',
+            ramoAtuacao: faker.lorem.word(),
+            cargo: ''
+        }
+
+        cy.log('## UPDATE ##')
+
+        cy.preencherDadosConfigOrganizacao(dadosUpdate, 'dados', { limpar: true })
+        cy.salvarConfigOrganizacao()
+
+        // READ-UPDATE
+        cy.log('## READ-UPDATE ##')
+
+        const dadosParaValidar = { ...dados, ...dadosUpdate }
+        cy.validarDadosConfigOrganizacao(dadosParaValidar, 'dados')
+
+        // DELETE
+        cy.log('## DELETE ##')
+
+        cy.resetConfigOrganizacao('dados')
     })
 })
 

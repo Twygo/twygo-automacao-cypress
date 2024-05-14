@@ -2531,7 +2531,7 @@ Cypress.Commands.add('preencherDadosConfigOrganizacao', (dados, aba, opcoes = { 
 }) 
 
 Cypress.Commands.add('validarDadosConfigOrganizacao', (dados, aba) => {
-  const formulario = new formConteudos()
+  const formulario = new formConfigOrganizacao()
 
   switch (aba) {
     case 'dados':
