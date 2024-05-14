@@ -426,7 +426,7 @@ class formConfigOrganizacao {
                     const isChecked = $checkbox.is(':checked')
                     // Se o estado desejado for diferente do estado atual, clica para alterar
                     if ((valorFinal && !isChecked) || (!valorFinal && isChecked)) {
-                        cy.get(seletor).click().then(() => {
+                        cy.get(seletor).click( {force: true} ).then(() => {
                             // Caso específico para o seletor '#event_enable_twygo_chat'
                             if (seletor === '#event_enable_twygo_chat' && valorFinal === false) {
                                 cy.wait(1000)
@@ -461,6 +461,11 @@ class formConfigOrganizacao {
                         }
                     })
                 })
+                break
+            case 'button':
+                if (valorFinal === true) {
+                    cy.get(seletor).click({ force: true })
+                }
                 break
             default:
                 throw new Error(`Tipo de campo desconhecido: ${tipo}`)

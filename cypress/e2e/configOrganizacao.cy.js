@@ -35,6 +35,27 @@ describe('Configurações > Organização > Dados', () => {
         cargo: ''
     }
 
+    const formCustomizacoesDefault = {
+        // Alterar dados do usuário
+        naoPermitirAlterarDados: '',
+        // Configurações de login
+        tempoExpiracaoLogin: false,
+        tempoMaxInativo: '0',
+        loginEmail: true,
+        loginCpf: false,
+        // Customização de interface
+        corPrimaria: '#9349DE',
+        corTexto: '#596679',
+        mostrarFundoLogin: false,
+        mostrarBotaoRegistrar: true,
+        removerImagemFundoLogin: false,
+        // Envio de E-mails
+        nomeEmail: '',
+        emailEmail: '',
+        // Configurar SEO
+        selecionarPagina: 'Selecione uma página'
+    }
+
     before(() => {
         cy.fixture('labels.json').then((labels) => {
             Cypress.env('labels', labels)
@@ -58,7 +79,7 @@ describe('Configurações > Organização > Dados', () => {
         cy.ativarCapturaErros()
     })
 
-    it.only('1. CRUD aba Dados', () => {
+    it('1. CRUD aba Dados', () => {
         // Massa de dados
         const dados = {
             nome: faker.commerce.productName(),
@@ -103,7 +124,8 @@ describe('Configurações > Organização > Dados', () => {
         // READ
         cy.log('## READ ##')
 
-        cy.validarDadosConfigOrganizacao(dados, 'dados')
+        let dadosParaValidar = { ...formDadosDefault, ...dados }
+        cy.validarDadosConfigOrganizacao(dadosParaValidar, 'dados')
 
         // UPDATE
         // Massa de dados para atualização
@@ -135,7 +157,7 @@ describe('Configurações > Organização > Dados', () => {
         // READ-UPDATE
         cy.log('## READ-UPDATE ##')
 
-        const dadosParaValidar = { ...dados, ...dadosUpdate }
+        dadosParaValidar = { ...dadosParaValidar, ...dadosUpdate }
         cy.validarDadosConfigOrganizacao(dadosParaValidar, 'dados')
 
         // DELETE
@@ -146,11 +168,66 @@ describe('Configurações > Organização > Dados', () => {
 })
 
 describe('Configurações > Organização > Customizações', () => {
-    it('2. CRUD aba Customizações', () => {
+    before(() => {
+        cy.fixture('labels.json').then((labels) => {
+            Cypress.env('labels', labels)
+        })
+    })
+
+    beforeEach(() => {
+        //Ignora mensagens de erro conhecidas
+        cy.ignorarCapturaErros([
+            "Unexpected identifier 'id'"
+        ], { ignoreScriptErrors: true })
+
+        cy.loginTwygoAutomacao()
+        cy.alterarPerfil('administrador')      
+
+        // cy.acessarPgConfigOrganizacao()
+        // cy.resetConfigOrganizacao('dados')
+    })
+
+    afterEach(() => {
+        cy.ativarCapturaErros()
+    })
+
+    
+    it.only('2. CRUD aba Customizações', () => {
+        // Massa de dados
+        const dados1 = {
+            // Alterar dados do usuário
+            naoPermitirAlterarDados: true,
+            salvarAlterarDados: true,
+            // Configurações de login
+            tempoExpiracaoLogin: true,
+            tempoMaxInativo: '19',
+            loginEmail: true,
+            loginCpf: true,
+            salvarConfiguracoesLogin: true,
+            // Customização de interface
+            corPrimaria: '#DB1CC2',     // padrão '#9349DE'
+            corTexto: '#1A1A1A',    // padrão '#596679'
+            mostrarFundoLogin: true,
+            mostrarBotaoRegistrar: false,
+            removerImagemFundoLogin: true,
+            salvarCustomizacaoInterface: true
+        }
+
+        const dados2 = {
+            // Envio de E-mails
+            nomeEmail: 'Nome para teste de e-mail',
+            emailEmail: 'teste@mazepa.com.br',
+            salvarValidarEnvioEmail: true,
+            // Configurar SEO
+            selecionarPagina: 'Agenda'
+        }
+
         // CREATE
 		cy.log('## CREATE ##')
 
         cy.acessarPgConfigOrganizacao()
+        cy.preencherDadosConfigOrganizacao(dados1, 'customizacoes', { limpar: true })
+        cy.preencherDadosConfigOrganizacao(dados2, 'customizacoes', { limpar: true })
     })
 })
 
