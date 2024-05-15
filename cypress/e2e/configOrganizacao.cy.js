@@ -35,27 +35,6 @@ describe('Configurações > Organização > Dados', () => {
         cargo: ''
     }
 
-    const formCustomizacoesDefault = {
-        // Alterar dados do usuário
-        naoPermitirAlterarDados: '',
-        // Configurações de login
-        tempoExpiracaoLogin: false,
-        tempoMaxInativo: '0',
-        loginEmail: true,
-        loginCpf: false,
-        // Customização de interface
-        corPrimaria: '#9349DE',
-        corTexto: '#596679',
-        mostrarFundoLogin: false,
-        mostrarBotaoRegistrar: true,
-        removerImagemFundoLogin: false,
-        // Envio de E-mails
-        nomeEmail: '',
-        emailEmail: '',
-        // Configurar SEO
-        selecionarPagina: 'Selecione uma página'
-    }
-
     before(() => {
         cy.fixture('labels.json').then((labels) => {
             Cypress.env('labels', labels)
@@ -65,7 +44,8 @@ describe('Configurações > Organização > Dados', () => {
     beforeEach(() => {
         //Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'"
+            // "Unexpected identifier 'id'"    // Chrome
+            "unexpected token: identifier"    // Firefox
         ], { ignoreScriptErrors: true })
 
         cy.loginTwygoAutomacao()
@@ -79,7 +59,7 @@ describe('Configurações > Organização > Dados', () => {
         cy.ativarCapturaErros()
     })
 
-    it('1. CRUD aba Dados', () => {
+    it.only('1. CRUD aba Dados', () => {
         // Massa de dados
         const dados = {
             nome: faker.commerce.productName(),
@@ -111,7 +91,8 @@ describe('Configurações > Organização > Dados', () => {
             listaEmpresas: faker.lorem.word(),
             nrColaboradores: faker.number.int({ min: 1, max: 1000 }),
             ramoAtuacao: faker.lorem.word(),
-            cargo: faker.person.jobTitle()
+            cargo: faker.person.jobTitle(),
+            salvarDados: true
         }
 
         // CREATE
@@ -119,7 +100,6 @@ describe('Configurações > Organização > Dados', () => {
 
         cy.acessarPgConfigOrganizacao()
         cy.preencherDadosConfigOrganizacao(dados, 'dados', { limpar: true })
-        cy.salvarConfigOrganizacao()
 
         // READ
         cy.log('## READ ##')
@@ -146,13 +126,13 @@ describe('Configurações > Organização > Dados', () => {
             listaEmpresas: faker.lorem.word(),
             nrColaboradores: '',
             ramoAtuacao: faker.lorem.word(),
-            cargo: ''
+            cargo: '',
+            salvarDados: true
         }
 
         cy.log('## UPDATE ##')
 
         cy.preencherDadosConfigOrganizacao(dadosUpdate, 'dados', { limpar: true })
-        cy.salvarConfigOrganizacao()
 
         // READ-UPDATE
         cy.log('## READ-UPDATE ##')
@@ -168,6 +148,34 @@ describe('Configurações > Organização > Dados', () => {
 })
 
 describe('Configurações > Organização > Customizações', () => {
+    const formAlterarDadosUsuarioDefault = {
+        // Alterar dados do usuário
+        naoPermitirAlterarDados: false
+    }
+
+    const formConfigLoginDefault = {
+        // Configurações de login
+        tempoExpiracaoLogin: false,
+        loginEmail: true,
+        loginCpf: false
+    }
+
+    const formCustomizacoesInterfaceDefault = {
+        // Customização de interface
+        corPrimaria: '#9349DE',
+        corTexto: '#596679',
+        mostrarFundoLogin: false,
+        mostrarBotaoRegistrar: true,
+        removerImagemFundoLogin: false
+    }
+
+    const formEnvioEmailsDefault = {
+        // Envio de E-mails
+        nomeEmail: '',
+        emailEmail: ''
+    }
+
+    
     before(() => {
         cy.fixture('labels.json').then((labels) => {
             Cypress.env('labels', labels)
@@ -177,14 +185,15 @@ describe('Configurações > Organização > Customizações', () => {
     beforeEach(() => {
         //Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'"
+            // "Unexpected identifier 'id'"    // Chrome
+            "unexpected token: identifier"    // Firefox
         ], { ignoreScriptErrors: true })
 
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')      
 
-        // cy.acessarPgConfigOrganizacao()
-        // cy.resetConfigOrganizacao('dados')
+        cy.acessarPgConfigOrganizacao()
+        cy.resetConfigOrganizacao('customizacoes')
     })
 
     afterEach(() => {
@@ -194,40 +203,107 @@ describe('Configurações > Organização > Customizações', () => {
     
     it.only('2. CRUD aba Customizações', () => {
         // Massa de dados
-        const dados1 = {
+        const alterarDadosUsuario = {
             // Alterar dados do usuário
             naoPermitirAlterarDados: true,
-            salvarAlterarDados: true,
+            salvarAlterarDados: true
+        }
+
+        const configLogin = {
             // Configurações de login
             tempoExpiracaoLogin: true,
             tempoMaxInativo: '19',
             loginEmail: true,
             loginCpf: true,
-            salvarConfiguracoesLogin: true,
+            salvarConfiguracoesLogin: true
+        }
+
+        const customizacoesInterface = {
             // Customização de interface
-            corPrimaria: '#DB1CC2',     // padrão '#9349DE'
-            corTexto: '#1A1A1A',    // padrão '#596679'
+            corPrimaria: faker.color.rgb({ casing: 'upper' }),
+            corTexto: faker.color.rgb({ casing: 'upper' }),
             mostrarFundoLogin: true,
             mostrarBotaoRegistrar: false,
             removerImagemFundoLogin: true,
             salvarCustomizacaoInterface: true
         }
-
-        const dados2 = {
+        
+        const envioEmails = {
             // Envio de E-mails
             nomeEmail: 'Nome para teste de e-mail',
             emailEmail: 'teste@mazepa.com.br',
-            salvarValidarEnvioEmail: true,
-            // Configurar SEO
-            selecionarPagina: 'Agenda'
+            salvarValidarEnvioEmail: true
         }
 
         // CREATE
 		cy.log('## CREATE ##')
 
         cy.acessarPgConfigOrganizacao()
-        cy.preencherDadosConfigOrganizacao(dados1, 'customizacoes', { limpar: true })
-        cy.preencherDadosConfigOrganizacao(dados2, 'customizacoes', { limpar: true })
+        cy.preencherDadosConfigOrganizacao(alterarDadosUsuario, 'customizacoes', { limpar: true })
+        cy.preencherDadosConfigOrganizacao(configLogin, 'customizacoes', { limpar: true })
+        cy.preencherDadosConfigOrganizacao(customizacoesInterface, 'customizacoes', { limpar: true })
+
+        // Pausa para aguardar a atualização da página
+        cy.wait(2000)
+
+        cy.preencherDadosConfigOrganizacao(envioEmails, 'customizacoes', { limpar: true })
+
+        // READ
+        cy.log('## READ ##')
+
+        let dadosParaValidar1 = { ...formAlterarDadosUsuarioDefault, ...alterarDadosUsuario}
+        cy.validarDadosConfigOrganizacao(dadosParaValidar1, 'customizacoes')
+
+        let dadosParaValidar2 = { ...formConfigLoginDefault, ...configLogin}
+        cy.validarDadosConfigOrganizacao(dadosParaValidar2, 'customizacoes')
+
+        let dadosParaValidar3 = { ...formCustomizacoesInterfaceDefault, ...customizacoesInterface}
+        cy.validarDadosConfigOrganizacao(dadosParaValidar3, 'customizacoes')
+
+        let dadosParaValidar4 = { ...formEnvioEmailsDefault, ...envioEmails}
+        cy.validarDadosConfigOrganizacao(dadosParaValidar4, 'customizacoes')
+
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        // Massa de dados
+        const configLoginUpdate = {
+            // Configurações de login
+            tempoMaxInativo: '120',
+            loginEmail: true,
+            loginCpf: false,
+            salvarConfiguracoesLogin: true
+        }
+
+        const customizacoesInterfaceUpdate = {
+            // Customização de interface
+            corTexto: faker.color.rgb({ casing: 'upper' }),
+            mostrarFundoLogin: false,
+            mostrarBotaoRegistrar: true,
+            salvarCustomizacaoInterface: true
+        }
+        
+        cy.acessarPgConfigOrganizacao()
+        cy.preencherDadosConfigOrganizacao(configLoginUpdate, 'customizacoes', { limpar: true })
+        cy.preencherDadosConfigOrganizacao(customizacoesInterfaceUpdate, 'customizacoes', { limpar: true })
+
+        // READ-UPDATE
+        cy.log('## READ-UPDATE ##')
+
+        cy.validarDadosConfigOrganizacao(dadosParaValidar1, 'customizacoes')
+        
+        dadosParaValidar2 = { ...dadosParaValidar2, ...configLoginUpdate}
+        cy.validarDadosConfigOrganizacao(dadosParaValidar2, 'customizacoes')
+
+        dadosParaValidar3 = { ...dadosParaValidar3, ...customizacoesInterfaceUpdate}
+        cy.validarDadosConfigOrganizacao(dadosParaValidar3, 'customizacoes')
+
+        cy.validarDadosConfigOrganizacao(dadosParaValidar4, 'customizacoes')
+
+        // DELETE
+        cy.log('## DELETE ##')
+
+        cy.resetConfigOrganizacao('customizacoes')
     })
 })
 

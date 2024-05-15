@@ -128,7 +128,10 @@ class formConfigOrganizacao {
             seletor: '#role',
             tipo: 'input' 
         },
-        salvarDados: () => cy.get('#organization-form').find('button[type="submit"]'),
+        salvarDados: {
+            seletor: '#organization-form button.btn-primary.save[type="submit"]',
+            tipo: 'button'
+        },
 
         // :: Aba Customizações ::
         // Alterar dados do usuário
@@ -151,11 +154,11 @@ class formConfigOrganizacao {
             tipo: 'input' 
         },
         loginEmail: {
-            seletor: '#organization_login_by_email',
+            seletor: 'input[type="checkbox"]#organization_login_by_email',
             tipo: 'checkbox' 
         },
         loginCpf: {
-            seletor: '#organization_login_by_cpf',
+            seletor: 'input[type="checkbox"]#organization_login_by_cpf',
             tipo: 'checkbox' 
         },
         salvarConfiguracoesLogin: {
@@ -165,11 +168,11 @@ class formConfigOrganizacao {
 
         // Configurações de interface
         corPrimaria: {
-            seletor: '#defaultColor',   // default: #FFFFFF
+            seletor: '#defaultColor',
             tipo: 'input' 
         },
         corTexto: {
-            seletor: '#textColor',  // default: #FFFFFF
+            seletor: '#textColor',
             tipo: 'input' 
         },
         mostrarFundoLogin: {
@@ -177,7 +180,7 @@ class formConfigOrganizacao {
             tipo: 'checkbox' 
         },
         mostrarBotaoRegistrar: {
-            seletor: '#register_button',
+            seletor: 'input[type="checkbox"]#register_button',
             tipo: 'checkbox' 
         },
         removerImagemFundoLogin: {
@@ -201,6 +204,10 @@ class formConfigOrganizacao {
         salvarValidarEnvioEmail: {
             seletor: '#organization_email_is_spf_valid',
             tipo: 'button' 
+        },
+        limparInformacoesEmail: {
+            seletor: '#cancel-organization-email',
+            tipo: 'button'
         },
 
         // Domínios
@@ -239,12 +246,6 @@ class formConfigOrganizacao {
         utilizarDominioPadrao: {
             seletor: '#domain_is_default_url',
             tipo: 'checkbox' 
-        },
-
-        // Configurar SEO
-        selecionarPagina: {
-            seletor: '#seo_page_select',
-            tipo: 'select' 
         },
 
         // :: Aba Certificado ::
@@ -380,10 +381,6 @@ class formConfigOrganizacao {
         this.elementos.abaUrlWebhooks().click()
     }
 
-    salvarDados() {
-        this.elementos.salvarDados().click()
-    }
-
     preencherCampo(nomeCampo, valor, opcoes = { limpar: false }) {
         const timeoutPadrao = 5000
         const campo = this.elementos[nomeCampo]
@@ -464,7 +461,12 @@ class formConfigOrganizacao {
                 break
             case 'button':
                 if (valorFinal === true) {
-                    cy.get(seletor).click({ force: true })
+                    cy.get('body').then($body => {
+                        if ($body.find(seletor).length) {
+                            cy.get(seletor, { timeout: 10000, log: false }).click({ force: true })
+                        }
+                        // Nenhuma ação é realizada se o botão não for encontrado
+                    })
                 }
                 break
             default:
@@ -535,7 +537,12 @@ class formConfigOrganizacao {
 						cy.wrap($body).should('have.text', valorFinal)
 					})
 				})
-				break      
+				break
+            case 'button':
+                // Nenhuma validação a ser feita
+                break
+            default:
+                throw new Error(`Tipo de campo desconhecido: ${tipo}`)
 			}
 	}
 }

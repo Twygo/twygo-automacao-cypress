@@ -2562,19 +2562,6 @@ Cypress.Commands.add('validarDadosConfigOrganizacao', (dados, aba) => {
   })
 })
 
-Cypress.Commands.add('salvarConfigOrganizacao', () => {
-  const timeoutPadrao = 5000
-  const formulario = new formConfigOrganizacao()
-  const labels = Cypress.env('labels')
-  const { msgSucesso } = labels.configOrganizacao.dados
-
-  formulario.salvarDados()
-  // Trecho comentado pois por algum motivo obscuro a flash notice não é exibida quando executado pelo Cypress
-  // cy.get('.flash.notice', { timeout: timeoutPadrao })
-  //   .contains(msgSucesso)
-  //   .should('be.visible')
-})
-
 Cypress.Commands.add('resetConfigOrganizacao', (aba) => {
   switch (aba) {
     case 'dados':
@@ -2613,11 +2600,52 @@ Cypress.Commands.add('resetConfigOrganizacao', (aba) => {
 
       const atualizarPersonalizarLink = {
           personalizarLinkLogotipo: false,
+          salvarDados: true
       }
 
       cy.preencherDadosConfigOrganizacao(formDadosDefault, 'dados', { limpar: true })
       cy.preencherDadosConfigOrganizacao(atualizarPersonalizarLink, 'dados')
-      cy.salvarConfigOrganizacao()
+      break
+    case 'customizacoes':
+      const formAlterarDadosUsuarioDefault = {
+        // Alterar dados do usuário
+        naoPermitirAlterarDados: false,
+        salvarAlterarDados: true
+      }
+
+      cy.preencherDadosConfigOrganizacao(formAlterarDadosUsuarioDefault, 'customizacoes', { limpar: true })
+
+      const formConfigLoginDefault = {
+        // Configurações de login
+        tempoExpiracaoLogin: false,
+        loginEmail: true,
+        loginCpf: false,
+        salvarConfiguracoesLogin: true
+      }
+
+      cy.preencherDadosConfigOrganizacao(formConfigLoginDefault, 'customizacoes', { limpar: true })
+
+      const formCustomizacoesInterfaceDefault = {
+        // Customização de interface
+        corPrimaria: '#9349DE',
+        corTexto: '#596679',
+        mostrarFundoLogin: false,
+        mostrarBotaoRegistrar: true,
+        removerImagemFundoLogin: false,
+        salvarCustomizacaoInterface: true
+      }
+
+      cy.preencherDadosConfigOrganizacao(formCustomizacoesInterfaceDefault, 'customizacoes', { limpar: true })
+
+      const formEnvioEmailsDefault = {
+        // Envio de E-mails
+        limparInformacoesEmail: true
+      }
+
+      // Esperar para atualização da customização
+      cy.wait(5000)
+
+      cy.preencherDadosConfigOrganizacao(formEnvioEmailsDefault, 'customizacoes', { limpar: true })
       break
   }
 })

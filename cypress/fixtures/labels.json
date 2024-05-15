@@ -183,9 +183,6 @@
         "exclusaoConcluida": "Todos os dados solicitados foram excluídos, atualize a página."
     },
     "configOrganizacao": {
-        "breadcrumb": "Organização",
-        "dados": {
-            "msgSucesso": "Organização atualizada com sucesso.   "
-        }
+        "breadcrumb": "Organização"
     }
 }
