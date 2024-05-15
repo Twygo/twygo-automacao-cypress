@@ -253,6 +253,10 @@ class formConfigOrganizacao {
             seletor: '.btn.btn-primary.ghost.waves-effect',
             tipo: 'button' 
         },
+        selecionarImagem: {
+            seletor: '#certificate_template_background',
+            tipo: 'uploadButton'
+        },
         salvarGerarModelo: {
             seletor: '.form-submit.btn.btn-primary',
             tipo: 'button'
@@ -473,6 +477,11 @@ class formConfigOrganizacao {
                     })
                 }
                 break
+            case 'uploadButton':
+                cy.get(seletor)
+                    .click()    
+                    .selectFile(`cypress/fixtures/${valorFinal}`)
+                break
             default:
                 throw new Error(`Tipo de campo desconhecido: ${tipo}`)
         }
@@ -543,6 +552,7 @@ class formConfigOrganizacao {
 				})
 				break
             case 'button':
+            case 'uploadButton':
                 // Nenhuma validação a ser feita
                 break
             default:

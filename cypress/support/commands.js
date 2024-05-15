@@ -2647,5 +2647,58 @@ Cypress.Commands.add('resetConfigOrganizacao', (aba) => {
 
       cy.preencherDadosConfigOrganizacao(formEnvioEmailsDefault, 'customizacoes', { limpar: true })
       break
+    case 'certificado':
+      // Carregar um certificado em branco, pois não é possível limpar os dados	
+      const carregarCertificadoEmBranco = {
+        configurar: true,
+        selecionarImagem: `imagem_0.jpg`,
+        salvarGerarModelo: true
+      }
+
+      const formConfigCertificadoDefault = {
+          notificarGestorNovosCertificados: false,
+          salvarCertificado: true
+      }
+
+      cy.acessarPgConfigOrganizacao()
+      cy.preencherDadosConfigOrganizacao(carregarCertificadoEmBranco, 'certificado')
+
+      cy.acessarPgConfigOrganizacao()
+      cy.preencherDadosConfigOrganizacao(formConfigCertificadoDefault, 'certificado')
+      
+      // Aguardar 10 segundos para que o certificado seja carregado
+      cy.wait(10000)
+      break    
   }
+})
+
+Cypress.Commands.add('validarCertificadoGerado', (dadosGerarCertificado) => {
+  const orgName = Cypress.env('orgName').replace(/ /g, '_')
+
+  // Validação do nome do arquivo do certificado
+  cy.get('.file-size')
+      .contains('.label', `${Cypress.env('orgId')}-${orgName}.pdf`)
+      .should('exist')
+
+  // Mapeamento dos tamanhos de arquivo por imagem
+  const tamanhosPorImagem = {
+      'imagem_0.jpg': '1602 bytes',
+      'imagem_1.jpg': '348689 bytes',
+      'imagem_2.jpg': '285303 bytes',
+      'imagem_3.jpg': '236988 bytes',
+      'imagem_4.jpg': '212021 bytes',
+      'imagem_5.jpg': '268280 bytes',
+      'imagem_6.jpg': '110903 bytes',
+      'imagem_7.jpg': '60988 bytes',
+      'imagem_8.jpg': '226841 bytes',
+      'imagem_9.jpg': '11045 bytes',
+      'imagem_10.jpg': '163247 bytes',
+  }
+
+  let tamanho = tamanhosPorImagem[dadosGerarCertificado.selecionarImagem]
+
+  // Validação do tamanho do arquivo
+  cy.get('.file-size')
+      .contains('.size', tamanho)
+      .should('exist')
 })

@@ -316,22 +316,26 @@ describe('Configurações > Organização > Certificado', () => {
     beforeEach(() => {
         //Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([
-            // "Unexpected identifier 'id'"    // Chrome
+            "Unexpected identifier 'id'",    // Chrome
             "unexpected token: identifier"    // Firefox
         ], { ignoreScriptErrors: true })
 
         cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')      
+        cy.alterarPerfil('administrador')
+        
+        cy.acessarPgConfigOrganizacao()
+        cy.resetConfigOrganizacao('certificado')
     })
 
     afterEach(() => {
         cy.ativarCapturaErros()
     })  
     
-    it.only('3. CRUD aba Certificado', () => {      
+    it('3. CRUD aba Certificado', () => {      
         // Massa de dados
         const dadosGerarCertificado = {
             configurar: true,
+            selecionarImagem: `imagem_${faker.number.int({ min: 1, max: 10 })}.jpg`,
             salvarGerarModelo: true
         }
 
@@ -343,21 +347,53 @@ describe('Configurações > Organização > Certificado', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-        cy.acessarPgConfigOrganizacao()
         cy.preencherDadosConfigOrganizacao(dadosGerarCertificado, 'certificado')
-
         cy.acessarPgConfigOrganizacao()
         cy.preencherDadosConfigOrganizacao(dadosConfigCertificado, 'certificado')
+        
+        // Aguardar 10 segundos para que o certificado seja gerado, e então validar
+        cy.wait(10000)
         
         // READ
         cy.log('## READ ##')
 
         cy.acessarPgConfigOrganizacao()
-
         cy.validarDadosConfigOrganizacao(dadosConfigCertificado.notificarGestorNovosCertificados, 'certificado')
-        cy.get('.file-size')
-            .contains('.label', '22219-Twygo_Automação.pdf')
+        cy.validarCertificadoGerado(dadosGerarCertificado)
 
+        // UPDATE
+        cy.log('## UPDATE ##')
+        
+        // Massa de dados para atualização
+        const dadosGerarCertificadoUpdate = {
+            configurar: true,
+            selecionarImagem: `imagem_${faker.number.int({ min: 1, max: 10 })}.jpg`,
+            salvarGerarModelo: true
+        }
+
+        const dadosConfigCertificadoUpdate = {
+            notificarGestorNovosCertificados: false,
+            salvarCertificado: true
+        }
+
+        cy.acessarPgConfigOrganizacao()
+        cy.preencherDadosConfigOrganizacao(dadosGerarCertificadoUpdate, 'certificado')
+
+        cy.acessarPgConfigOrganizacao()
+        cy.preencherDadosConfigOrganizacao(dadosConfigCertificadoUpdate, 'certificado')
+        // Aguardar 10 segundos para que o certificado seja gerado, e então validar
+        cy.wait(10000)
+        
+        // READ
+        cy.log('## READ ##')
+
+        cy.acessarPgConfigOrganizacao()
+        cy.validarDadosConfigOrganizacao(dadosConfigCertificadoUpdate.notificarGestorNovosCertificados, 'certificado')
+        cy.validarCertificadoGerado(dadosGerarCertificadoUpdate)
+
+        // DELETE
+        cy.log('## DELETE ##')
+        cy.log('## Não é possível excluir o certificado ##')
     })
 })
 
