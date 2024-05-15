@@ -253,12 +253,16 @@ class formConfigOrganizacao {
             seletor: '.btn.btn-primary.ghost.waves-effect',
             tipo: 'button' 
         },
+        salvarGerarModelo: {
+            seletor: '.form-submit.btn.btn-primary',
+            tipo: 'button'
+        },
         notificarGestorNovosCertificados: {
             seletor: '#sent_mail_owner',
             tipo: 'checkbox' 
         },
         salvarCertificado: {
-            seletor: '.btn.btn-primary.save.waves-effect',
+            seletor: '#organization-certificate_tab .btn.btn-primary.save.waves-effect',
             tipo: 'button' 
         },
 

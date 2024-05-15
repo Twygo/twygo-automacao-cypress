@@ -59,7 +59,7 @@ describe('Configurações > Organização > Dados', () => {
         cy.ativarCapturaErros()
     })
 
-    it.only('1. CRUD aba Dados', () => {
+    it('1. CRUD aba Dados', () => {
         // Massa de dados
         const dados = {
             nome: faker.commerce.productName(),
@@ -199,9 +199,8 @@ describe('Configurações > Organização > Customizações', () => {
     afterEach(() => {
         cy.ativarCapturaErros()
     })
-
     
-    it.only('2. CRUD aba Customizações', () => {
+    it('2. CRUD aba Customizações', () => {
         // Massa de dados
         const alterarDadosUsuario = {
             // Alterar dados do usuário
@@ -308,11 +307,57 @@ describe('Configurações > Organização > Customizações', () => {
 })
 
 describe('Configurações > Organização > Certificado', () => {
-    it('3. CRUD aba Certificado', () => {
+    before(() => {
+        cy.fixture('labels.json').then((labels) => {
+            Cypress.env('labels', labels)
+        })
+    })
+
+    beforeEach(() => {
+        //Ignora mensagens de erro conhecidas
+        cy.ignorarCapturaErros([
+            // "Unexpected identifier 'id'"    // Chrome
+            "unexpected token: identifier"    // Firefox
+        ], { ignoreScriptErrors: true })
+
+        cy.loginTwygoAutomacao()
+        cy.alterarPerfil('administrador')      
+    })
+
+    afterEach(() => {
+        cy.ativarCapturaErros()
+    })  
+    
+    it.only('3. CRUD aba Certificado', () => {      
+        // Massa de dados
+        const dadosGerarCertificado = {
+            configurar: true,
+            salvarGerarModelo: true
+        }
+
+        const dadosConfigCertificado = {
+            notificarGestorNovosCertificados: true,
+            salvarCertificado: true
+        }
+
         // CREATE
 		cy.log('## CREATE ##')
 
         cy.acessarPgConfigOrganizacao()
+        cy.preencherDadosConfigOrganizacao(dadosGerarCertificado, 'certificado')
+
+        cy.acessarPgConfigOrganizacao()
+        cy.preencherDadosConfigOrganizacao(dadosConfigCertificado, 'certificado')
+        
+        // READ
+        cy.log('## READ ##')
+
+        cy.acessarPgConfigOrganizacao()
+
+        cy.validarDadosConfigOrganizacao(dadosConfigCertificado.notificarGestorNovosCertificados, 'certificado')
+        cy.get('.file-size')
+            .contains('.label', '22219-Twygo_Automação.pdf')
+
     })
 })
 
