@@ -501,16 +501,185 @@ describe('Configurações > Organização > Integrações', () => {
 })
 
 describe('Configurações > Organização > Termos', () => {
-    it('5. CRUD aba Termos', () => {
+    before(() => {
+        cy.fixture('labels.json').then((labels) => {
+            Cypress.env('labels', labels)
+        })
+    })
+
+    beforeEach(() => {
+        //Ignora mensagens de erro conhecidas
+        cy.ignorarCapturaErros([
+            "Unexpected identifier 'id'",    // Chrome
+            "unexpected token: identifier"    // Firefox
+        ], { ignoreScriptErrors: true })
+
+        cy.loginTwygoAutomacao()
+        cy.alterarPerfil('administrador')
+        
+        cy.acessarPgConfigOrganizacao()
+        cy.resetConfigOrganizacao('termos')
+
+        // Aguardar 2 segundos para que o aceite seja salvo
+        cy.wait(2000)
+
+        cy.visit(`/o/${Cypress.env('orgId')}/events?tab=events`)
+        cy.aceiteTermos()
+        
+        // Aguardar 2 segundos para que o aceite seja registrado
+        cy.wait(2000)
+        cy.alterarPerfil('administrador')
+    })
+
+    afterEach(() => {
+        cy.ativarCapturaErros()
+    })  
+
+    it('5. CRUD aba Termos com editor de texto', () => {
+        // Massa de dados
+        const dados = {
+            editorTexto: true,
+            termosUsoTexto: faker.lorem.paragraph(),
+            politicaPrivacidadeTexto: faker.lorem.paragraph(),
+            salvarTermosPoliticaTexto: true
+        }
+
         // CREATE
 		cy.log('## CREATE ##')
 
         cy.acessarPgConfigOrganizacao()
+        cy.preencherDadosConfigOrganizacao(dados, 'termos')
+
+        // READ
+        cy.log('## READ ##')
+
+        // Aguardar 2 segundos para que o aceite seja salvo
+        cy.wait(2000)
+
+        cy.visit(`/o/${Cypress.env('orgId')}/events?tab=events`)
+        cy.aceiteTermos()
+        
+        // Aguardar 2 segundos para que o aceite seja registrado
+        cy.wait(2000)
+        cy.alterarPerfil('administrador')
+        
+        cy.acessarPgConfigOrganizacao()
+        cy.validarDadosConfigOrganizacao(dados, 'termos')
+
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        // Massa de dados para atualização
+        const dadosUpdate = {
+            termosUsoTexto: faker.lorem.paragraph(),
+            politicaPrivacidadeTexto: faker.lorem.paragraph(),
+            salvarTermosPoliticaTexto: true
+        }
+
+        cy.preencherDadosConfigOrganizacao(dadosUpdate, 'termos')
+
+        // READ-UPDATE
+        cy.log('## READ-UPDATE ##')
+
+        // Aguardar 2 segundos para que o aceite seja salvo
+        cy.wait(2000)
+
+        cy.visit(`/o/${Cypress.env('orgId')}/events?tab=events`)
+        cy.aceiteTermos()
+        
+        // Aguardar 2 segundos para que o aceite seja registrado
+        cy.wait(2000)
+        cy.alterarPerfil('administrador')
+        
+        cy.acessarPgConfigOrganizacao()
+        cy.validarDadosConfigOrganizacao(dadosUpdate, 'termos')
+
+        // DELETE
+        cy.log('## DELETE ##')
+
+        cy.resetConfigOrganizacao('termos')
+        
+        // Aguardar 2 segundos para que o aceite seja salvo
+        cy.wait(2000)
+
+        cy.visit(`/o/${Cypress.env('orgId')}/events?tab=events`)
+        cy.aceiteTermos()        
+    })
+
+    it.only('6. CRUD aba Termos com editor de HTML', () => {
+        // Massa de dados
+        const dados = {
+            htmlCustomizado: true,
+            termosUsoHtml: faker.lorem.paragraph(),
+            politicaPrivacidadeHtml: faker.lorem.paragraph(),
+            salvarTermosPoliticaHtml: true
+        }
+
+        // CREATE
+		cy.log('## CREATE ##')
+
+        cy.acessarPgConfigOrganizacao()
+        cy.preencherDadosConfigOrganizacao(dados, 'termos', { limpar: true })
+
+        // READ
+        cy.log('## READ ##')
+
+        // Aguardar 2 segundos para que o aceite seja salvo
+        cy.wait(2000)
+
+        cy.visit(`/o/${Cypress.env('orgId')}/events?tab=events`)
+        cy.aceiteTermos()
+        
+        // Aguardar 2 segundos para que o aceite seja registrado
+        cy.wait(2000)
+        cy.alterarPerfil('administrador')
+        
+        cy.acessarPgConfigOrganizacao()
+        cy.validarDadosConfigOrganizacao(dados, 'termos')
+
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        // Massa de dados para atualização
+        const dadosUpdate = {
+            termosUsoHtml: faker.lorem.paragraph(),
+            politicaPrivacidadeHtml: faker.lorem.paragraph(),
+            salvarTermosPoliticaHtml: true
+        }
+
+        cy.preencherDadosConfigOrganizacao(dadosUpdate, 'termos', { limpar: true })
+
+        // READ-UPDATE
+        cy.log('## READ-UPDATE ##')
+
+        // Aguardar 2 segundos para que o aceite seja salvo
+        cy.wait(2000)
+
+        cy.visit(`/o/${Cypress.env('orgId')}/events?tab=events`)
+        cy.aceiteTermos()
+        
+        // Aguardar 2 segundos para que o aceite seja registrado
+        cy.wait(2000)
+        cy.alterarPerfil('administrador')
+        
+        cy.acessarPgConfigOrganizacao()
+        cy.validarDadosConfigOrganizacao(dadosUpdate, 'termos')
+
+        // DELETE
+        cy.log('## DELETE ##')
+
+        cy.resetConfigOrganizacao('termos')
+        
+        // Aguardar 2 segundos para que o aceite seja salvo
+        cy.wait(2000)
+
+        cy.visit(`/o/${Cypress.env('orgId')}/events?tab=events`)
+        cy.aceiteTermos()        
     })
 })
 
 describe('Configurações > Organização > Url Webhooks', () => {
-    it('6. CRUD aba Url Webhooks', () => {
+    it('7. CRUD aba Url Webhooks', () => {
         // CREATE
 		cy.log('## CREATE ##')
 

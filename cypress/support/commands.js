@@ -2686,6 +2686,16 @@ Cypress.Commands.add('resetConfigOrganizacao', (aba) => {
         })
       })
       break
+    case 'termos':
+      const formTermosDefault = {
+        editorTexto: true,
+        termosUsoTexto: '.',
+        politicaPrivacidadeTexto: '.',
+        salvarTermosPoliticaTexto: true
+      }
+
+      cy.preencherDadosConfigOrganizacao(formTermosDefault, 'termos')
+      break
   }
 })
 
@@ -2762,4 +2772,12 @@ Cypress.Commands.add('editarIdentificadorPixel', (identificador) => {
       cy.log(`Identificador ${identificador} não encontrado.`)
     }
   })
+})
+
+Cypress.Commands.add('aceiteTermos', ()=> {
+    cy.get('#agree_check')
+    .click()
+
+  cy.get('#next')
+    .click()
 })

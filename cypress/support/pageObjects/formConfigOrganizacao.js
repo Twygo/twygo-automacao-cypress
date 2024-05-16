@@ -317,6 +317,10 @@ class formConfigOrganizacao {
             seletor: 'div#cke_term_privacy_policy_content iframe.cke_wysiwyg_frame',
             tipo: 'iframeText'
         },
+        salvarTermosPoliticaTexto: {
+            seletor: 'div.container-text button.btn.btn-primary.save.waves-effect',
+            tipo: 'button'
+        },
         htmlCustomizado: {
             seletor: '#selected_option_html',
             tipo: 'radio' 
@@ -329,8 +333,8 @@ class formConfigOrganizacao {
             seletor: '#privacy_policy_text',
             tipo: 'input' 
         },
-        salvarTermosPolitica: {
-            seletor: '.btn.btn-primary.save.waves-effect',
+        salvarTermosPoliticaHtml: {
+            seletor: 'div.container-HTML button.btn.btn-primary.save.waves-effect',
             tipo: 'button' 
         },
 
@@ -428,6 +432,7 @@ class formConfigOrganizacao {
             case 'select':
                 cy.get(seletor).select(valorFinal)
                 break
+            case 'radio':
             case 'checkbox':
             case 'checkbox-action':
                 // Verifica o estado atual do checkbox e só clica se necessário
@@ -435,31 +440,10 @@ class formConfigOrganizacao {
                     const isChecked = $checkbox.is(':checked')
                     // Se o estado desejado for diferente do estado atual, clica para alterar
                     if ((valorFinal && !isChecked) || (!valorFinal && isChecked)) {
-                        cy.get(seletor).click( {force: true} ).then(() => {
-                            // Caso específico para o seletor '#event_enable_twygo_chat'
-                            if (seletor === '#event_enable_twygo_chat' && valorFinal === false) {
-                                cy.wait(1000)
-                                cy.get('body').then(($body) => {
-                                    if ($body.find('button:contains("Sair")').length) {
-                                        cy.contains('button', 'Sair').click()
-                                    }
-                                })
-                            }
-                        })
+                        cy.get(seletor).click( {force: true} )
                     }
                 })
                 break      
-            case 'radio':
-                const valorParaMarcar = valorFinal === 'Habilitado' ? 'Habilitado' : 'Desabilitado'
-                cy.get(seletor)
-                    .contains(valorParaMarcar)
-                    .parents('.col-md-6.col-lg-4')
-                    .find(`label:contains("${valorParaMarcar}")`)
-                    .invoke('attr', 'for')
-                    .then((id) => {
-                        cy.get(`input#${id}`).check().should('be.checked')
-                    })
-                break
             case 'iframeText':
                 cy.get(seletor, { timeout: timeoutPadrao }).then($iframe => {
                     const doc = $iframe.contents()
@@ -526,7 +510,8 @@ class formConfigOrganizacao {
 				cy.get(seletor)
 					.should('not.be.checked')
 				break
-			case 'checkbox':
+			case 'radio':
+            case 'checkbox':
 				if (valorFinal === true ) {
 					cy.get(seletor)
 						.should('be.checked')
@@ -534,17 +519,6 @@ class formConfigOrganizacao {
 					cy.get(seletor)
 						.should('not.be.checked')
 				}
-				break
-			case 'radio':
-				const valorParaMarcar = valorFinal === 'Habilitado' ? 'Habilitado' : 'Desabilitado'
-				cy.get(seletor)
-					.contains(valorParaMarcar)
-					.parents('.col-md-6.col-lg-4')
-					.find(`label:contains("${valorParaMarcar}")`)
-					.invoke('attr', 'for')
-					.then((id) => {
-						cy.get(`input#${id}`).should('be.checked')
-					})
 				break
 			case 'iframeText':
 				cy.get(seletor, { timeout: 5000 }).then($iframe => {
