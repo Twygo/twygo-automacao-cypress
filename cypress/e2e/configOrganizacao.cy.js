@@ -44,7 +44,7 @@ describe('Configurações > Organização > Dados', () => {
     beforeEach(() => {
         //Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([
-            // "Unexpected identifier 'id'"    // Chrome
+            "Unexpected identifier 'id'",    // Chrome
             "unexpected token: identifier"    // Firefox
         ], { ignoreScriptErrors: true })
 
@@ -185,7 +185,7 @@ describe('Configurações > Organização > Customizações', () => {
     beforeEach(() => {
         //Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([
-            // "Unexpected identifier 'id'"    // Chrome
+            "Unexpected identifier 'id'",    // Chrome
             "unexpected token: identifier"    // Firefox
         ], { ignoreScriptErrors: true })
 
@@ -422,7 +422,7 @@ describe('Configurações > Organização > Integrações', () => {
         cy.ativarCapturaErros()
     })  
     
-    it.only('4. CRUD aba Integrações', () => {
+    it('4. CRUD aba Integrações', () => {
         // Massa de dados
         const dados = {
             // Pixel
@@ -454,37 +454,40 @@ describe('Configurações > Organização > Integrações', () => {
               const identificadorLimpo = dados.identificador.trim().toLowerCase()
               return nomeLimpo === identificadorLimpo
             })
-            console.log(`Identificador encontrado: ${identificadorEncontrado}`)
             expect(identificadorEncontrado).to.be.true
         })
 
         // UPDATE
         cy.log('## UPDATE ##')
+        
         // Massa de dados para atualização
-        const dadosUpdate = {
+        const dadosPixelUpdate = {
             // Pixel
-            adicionarPixel: true,
             identificador: faker.lorem.word(),
             codigo: faker.lorem.paragraph(),
-            salvarPixel: true,
+            salvarPixel2: true
+        }
 
+        const dadosLoginUpdate = {
             // Login redes sociais
             ativarLogin: false,
             salvarLogin: true
         }
 
-        cy.preencherDadosConfigOrganizacao(dadosUpdate, 'integracoes')
+        cy.editarIdentificadorPixel(dados.identificador)
+        cy.preencherDadosConfigOrganizacao(dadosPixelUpdate, null, { limpar: true })
+        cy.preencherDadosConfigOrganizacao(dadosLoginUpdate)
 
         // READ-UPDATE
         cy.log('## READ-UPDATE ##')
 
-        cy.validarDadosConfigOrganizacao(dadosUpdate.ativarLogin, 'integracoes')
+        cy.validarDadosConfigOrganizacao(dadosLoginUpdate.ativarLogin, 'integracoes')
         
         cy.listaPixels().then((nomes) => {
             const identificadorEncontrado = nomes.some(nome => {
                 // Remove espaços em branco, incluindo novas linhas, do início e do fim
                 const nomeLimpo = nome.replace(/^\s+|\s+$/g, '').toLowerCase()
-                const identificadorLimpo = dadosUpdate.identificador.trim().toLowerCase()
+                const identificadorLimpo = dadosPixelUpdate.identificador.trim().toLowerCase()
                 return nomeLimpo === identificadorLimpo
             })
             expect(identificadorEncontrado).to.be.true

@@ -2501,27 +2501,29 @@ Cypress.Commands.add('ativarCapturaErros', function() {
 Cypress.Commands.add('preencherDadosConfigOrganizacao', (dados, aba, opcoes = { limpar: false }) => {
   const formulario = new formConfigOrganizacao()
 
-  switch (aba) {
-    case 'dados':
-      formulario.abaDados()
-      break
-    case 'customizacoes':
-      formulario.abaCustomizacoes()
-      break
-    case 'certificado':
-      formulario.abaCertificado()
-      break
-    case 'integracoes':
-      formulario.abaIntegracoes()
-      break
-    case 'termos':
-      formulario.abaTermos()
-      break
-    case 'urlWebhooks':
-      formulario.abaUrlWebhooks()
-      break
-    default:
-      throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
+  if (aba) {
+    switch (aba) {
+      case 'dados':
+        formulario.abaDados()
+        break
+      case 'customizacoes':
+        formulario.abaCustomizacoes()
+        break
+      case 'certificado':
+        formulario.abaCertificado()
+        break
+      case 'integracoes':
+        formulario.abaIntegracoes()
+        break
+      case 'termos':
+        formulario.abaTermos()
+        break
+      case 'urlWebhooks':
+        formulario.abaUrlWebhooks()
+        break
+      default:
+        throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
+    }
   }
   
   Object.keys(dados).forEach(nomeCampo => {
@@ -2739,12 +2741,25 @@ Cypress.Commands.add('excluirIdentificadorPixel', (identificador) => {
     // Verifica se o identificador existe na página antes de tentar excluí-lo
     if ($body.find(`tbody tr:contains('${identificador}')`).length) {
       cy.get(`tbody tr:contains('${identificador}')`).within(() => {
-        cy.get('a').contains('Excluir').click();
-      });
+        cy.get('a').contains('Excluir').click()
+      })
       // Aguarda a exclusão ser processada, idealmente substituir por uma verificação de estado da página
-      cy.wait(1000); // Considerar substituir por uma estratégia mais robusta
+      cy.wait(1000) // Considerar substituir por uma estratégia mais robusta
     } else {
-      cy.log(`Identificador ${identificador} não encontrado.`);
+      cy.log(`Identificador ${identificador} não encontrado.`)
     }
-  });
-});
+  })
+})
+
+Cypress.Commands.add('editarIdentificadorPixel', (identificador) => {
+  cy.get('body').then($body => {
+    // Verifica se o identificador existe na página antes de tentar editá-lo
+    if ($body.find(`tbody tr:contains('${identificador}')`).length) {
+      cy.get(`tbody tr:contains('${identificador}')`).within(() => {
+        cy.get('a').contains('Editar').click()
+      })
+    } else {
+      cy.log(`Identificador ${identificador} não encontrado.`)
+    }
+  })
+})

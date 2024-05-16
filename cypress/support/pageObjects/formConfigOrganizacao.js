@@ -288,6 +288,10 @@ class formConfigOrganizacao {
             seletor: 'div#pixel-form button.btn.btn-primary.waves-effect',
             tipo: 'button' 
         },
+        salvarPixel2: {
+            seletor: 'div.integration--item div#pixel-form button.btn.btn-primary.waves-effect',
+            tipo: 'button' 
+        },
 
         // Login com redes sociais
         ativarLogin: {
@@ -468,7 +472,6 @@ class formConfigOrganizacao {
                 })
                 break
             case 'button':
-                cy.log('Clicando no botão com seletor: ' + seletor)
                 if (valorFinal === true) {
                     cy.get('body').then($body => {
                         if ($body.find(seletor).length) {
