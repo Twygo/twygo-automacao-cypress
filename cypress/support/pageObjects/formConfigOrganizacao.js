@@ -285,17 +285,17 @@ class formConfigOrganizacao {
             tipo: 'input' 
         },
         salvarPixel: {
-            seletor: '.btn.btn-primary.waves-effect',
+            seletor: 'div#pixel-form button.btn.btn-primary.waves-effect',
             tipo: 'button' 
         },
 
         // Login com redes sociais
         ativarLogin: {
-            seletor: '#organization_setting_value',
+            seletor: 'input[type="checkbox"]#organization_setting_value',
             tipo: 'checkbox' 
         },
         salvarLogin: {
-            seletor: '.btn.btn-primary.inline.waves-effect',
+            seletor: '.secret_key_form button.btn.btn-primary.inline.waves-effect',
             tipo: 'button' 
         },
 
@@ -468,6 +468,7 @@ class formConfigOrganizacao {
                 })
                 break
             case 'button':
+                cy.log('Clicando no botão com seletor: ' + seletor)
                 if (valorFinal === true) {
                     cy.get('body').then($body => {
                         if ($body.find(seletor).length) {

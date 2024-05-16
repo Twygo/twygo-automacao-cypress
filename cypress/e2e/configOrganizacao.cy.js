@@ -350,7 +350,7 @@ describe('Configurações > Organização > Certificado', () => {
         cy.preencherDadosConfigOrganizacao(dadosGerarCertificado, 'certificado')
         cy.acessarPgConfigOrganizacao()
         cy.preencherDadosConfigOrganizacao(dadosConfigCertificado, 'certificado')
-        
+
         // Aguardar 10 segundos para que o certificado seja gerado, e então validar
         cy.wait(10000)
         
@@ -398,11 +398,102 @@ describe('Configurações > Organização > Certificado', () => {
 })
 
 describe('Configurações > Organização > Integrações', () => {
-    it('4. CRUD aba Integrações', () => {
+    before(() => {
+        cy.fixture('labels.json').then((labels) => {
+            Cypress.env('labels', labels)
+        })
+    })
+
+    beforeEach(() => {
+        //Ignora mensagens de erro conhecidas
+        cy.ignorarCapturaErros([
+            "Unexpected identifier 'id'",    // Chrome
+            "unexpected token: identifier"    // Firefox
+        ], { ignoreScriptErrors: true })
+
+        cy.loginTwygoAutomacao()
+        cy.alterarPerfil('administrador')
+        
+        cy.acessarPgConfigOrganizacao()
+        cy.resetConfigOrganizacao('integracoes')
+    })
+
+    afterEach(() => {
+        cy.ativarCapturaErros()
+    })  
+    
+    it.only('4. CRUD aba Integrações', () => {
+        // Massa de dados
+        const dados = {
+            // Pixel
+            adicionarPixel: true,
+            identificador: faker.lorem.word(),
+            codigo: faker.lorem.paragraph(),
+            salvarPixel: true,
+
+            // Login redes sociais
+            ativarLogin: true,
+            salvarLogin: true
+        }
+
         // CREATE
 		cy.log('## CREATE ##')
 
         cy.acessarPgConfigOrganizacao()
+        cy.preencherDadosConfigOrganizacao(dados, 'integracoes')
+
+        // READ
+        cy.log('## READ ##')
+      
+        cy.validarDadosConfigOrganizacao(dados.ativarLogin, 'integracoes')
+        
+        cy.listaPixels().then((nomes) => {
+            const identificadorEncontrado = nomes.some(nome => {
+              // Remove espaços em branco, incluindo novas linhas, do início e do fim
+              const nomeLimpo = nome.replace(/^\s+|\s+$/g, '').toLowerCase()
+              const identificadorLimpo = dados.identificador.trim().toLowerCase()
+              return nomeLimpo === identificadorLimpo
+            })
+            console.log(`Identificador encontrado: ${identificadorEncontrado}`)
+            expect(identificadorEncontrado).to.be.true
+        })
+
+        // UPDATE
+        cy.log('## UPDATE ##')
+        // Massa de dados para atualização
+        const dadosUpdate = {
+            // Pixel
+            adicionarPixel: true,
+            identificador: faker.lorem.word(),
+            codigo: faker.lorem.paragraph(),
+            salvarPixel: true,
+
+            // Login redes sociais
+            ativarLogin: false,
+            salvarLogin: true
+        }
+
+        cy.preencherDadosConfigOrganizacao(dadosUpdate, 'integracoes')
+
+        // READ-UPDATE
+        cy.log('## READ-UPDATE ##')
+
+        cy.validarDadosConfigOrganizacao(dadosUpdate.ativarLogin, 'integracoes')
+        
+        cy.listaPixels().then((nomes) => {
+            const identificadorEncontrado = nomes.some(nome => {
+                // Remove espaços em branco, incluindo novas linhas, do início e do fim
+                const nomeLimpo = nome.replace(/^\s+|\s+$/g, '').toLowerCase()
+                const identificadorLimpo = dadosUpdate.identificador.trim().toLowerCase()
+                return nomeLimpo === identificadorLimpo
+            })
+            expect(identificadorEncontrado).to.be.true
+        })
+
+        // DELETE
+        cy.log('## DELETE ##')
+
+        cy.resetConfigOrganizacao('integracoes')        
     })
 })
 

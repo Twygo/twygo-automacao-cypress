@@ -2665,10 +2665,25 @@ Cypress.Commands.add('resetConfigOrganizacao', (aba) => {
 
       cy.acessarPgConfigOrganizacao()
       cy.preencherDadosConfigOrganizacao(formConfigCertificadoDefault, 'certificado')
-      
+
       // Aguardar 10 segundos para que o certificado seja carregado
       cy.wait(10000)
       break    
+    case 'integracoes':
+      const formConfigIntegracoesDefault = {
+        // Configurações de integrações
+        ativarLogin: false,
+        salvarLogin: true
+      }
+
+      cy.preencherDadosConfigOrganizacao(formConfigIntegracoesDefault, 'integracoes')
+
+      cy.listaPixels().then(nomes => {
+        nomes.forEach(nome => {
+          cy.excluirIdentificadorPixel(nome)
+        })
+      })
+      break
   }
 })
 
@@ -2702,3 +2717,34 @@ Cypress.Commands.add('validarCertificadoGerado', (dadosGerarCertificado) => {
       .contains('.size', tamanho)
       .should('exist')
 })
+
+Cypress.Commands.add('listaPixels', () => {
+  cy.get('body').then($body => {
+    // Verifica se existe algum 'tr' dentro de 'tbody'
+    if ($body.find('tbody tr').length > 0) {
+      // Se existir, prossegue com a lógica
+      return cy.get('tbody tr').then($trs => {
+        const nomes = $trs.map((index, tr) => Cypress.$(tr).find('td').first().text()).get()
+        return nomes
+      })
+    } else {
+      // Se não, retorna um array vazio
+      return []
+    }
+  })
+})
+
+Cypress.Commands.add('excluirIdentificadorPixel', (identificador) => {
+  cy.get('body').then($body => {
+    // Verifica se o identificador existe na página antes de tentar excluí-lo
+    if ($body.find(`tbody tr:contains('${identificador}')`).length) {
+      cy.get(`tbody tr:contains('${identificador}')`).within(() => {
+        cy.get('a').contains('Excluir').click();
+      });
+      // Aguarda a exclusão ser processada, idealmente substituir por uma verificação de estado da página
+      cy.wait(1000); // Considerar substituir por uma estratégia mais robusta
+    } else {
+      cy.log(`Identificador ${identificador} não encontrado.`);
+    }
+  });
+});
