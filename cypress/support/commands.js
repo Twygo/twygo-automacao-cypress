@@ -2631,8 +2631,12 @@ Cypress.Commands.add('resetConfigOrganizacao', (aba) => {
           salvarDados: true
       }
 
+      cy.acessarPgConfigOrganizacao()
       cy.preencherDadosConfigOrganizacao(formDadosDefault, 'dados', { limpar: true })
-      cy.preencherDadosConfigOrganizacao(atualizarPersonalizarLink, 'dados')
+      cy.preencherDadosConfigOrganizacao(atualizarPersonalizarLink)
+      // Aguardar 3 segundos para atualização dos dados
+      cy.wait(3000)
+      cy.acessarPgConfigOrganizacao()
       break
     case 'customizacoes':
       const formAlterarDadosUsuarioDefault = {
@@ -2641,6 +2645,7 @@ Cypress.Commands.add('resetConfigOrganizacao', (aba) => {
         salvarAlterarDados: true
       }
 
+      cy.acessarPgConfigOrganizacao()
       cy.preencherDadosConfigOrganizacao(formAlterarDadosUsuarioDefault, 'customizacoes', { limpar: true })
 
       const formConfigLoginDefault = {
@@ -2704,6 +2709,7 @@ Cypress.Commands.add('resetConfigOrganizacao', (aba) => {
         salvarLogin: true
       }
 
+      cy.acessarPgConfigOrganizacao()
       cy.preencherDadosConfigOrganizacao(formConfigIntegracoesDefault, 'integracoes')
 
       cy.listaPixels().then(nomes => {
@@ -2720,6 +2726,7 @@ Cypress.Commands.add('resetConfigOrganizacao', (aba) => {
         salvarTermosPoliticaTexto: true
       }
 
+      cy.acessarPgConfigOrganizacao()
       cy.preencherDadosConfigOrganizacao(formTermosDefault, 'termos')
       break
     case 'urlWebhooks':

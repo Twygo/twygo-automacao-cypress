@@ -51,7 +51,6 @@ describe('Configurações > Organização > Dados', () => {
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')      
 
-        cy.acessarPgConfigOrganizacao()
         cy.resetConfigOrganizacao('dados')
     })
 
@@ -141,6 +140,7 @@ describe('Configurações > Organização > Dados', () => {
         cy.validarDadosConfigOrganizacao(dadosParaValidar, 'dados')
 
         // DELETE
+        // Não é possível excluir os dados da organização, apenas limpá-los
         cy.log('## DELETE ##')
 
         cy.resetConfigOrganizacao('dados')
@@ -192,7 +192,6 @@ describe('Configurações > Organização > Customizações', () => {
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')      
 
-        cy.acessarPgConfigOrganizacao()
         cy.resetConfigOrganizacao('customizacoes')
     })
 
@@ -323,7 +322,6 @@ describe('Configurações > Organização > Certificado', () => {
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')
         
-        cy.acessarPgConfigOrganizacao()
         cy.resetConfigOrganizacao('certificado')
     })
 
@@ -387,8 +385,12 @@ describe('Configurações > Organização > Certificado', () => {
         // READ
         cy.log('## READ ##')
 
+        cy.wait(3000)
         cy.acessarPgConfigOrganizacao()
         cy.validarDadosConfigOrganizacao(dadosConfigCertificadoUpdate.notificarGestorNovosCertificados, 'certificado')
+        
+        cy.wait(5000)
+        cy.acessarPgConfigOrganizacao()
         cy.validarCertificadoGerado(dadosGerarCertificadoUpdate)
 
         // DELETE
@@ -414,7 +416,6 @@ describe('Configurações > Organização > Integrações', () => {
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')
         
-        cy.acessarPgConfigOrganizacao()
         cy.resetConfigOrganizacao('integracoes')
     })
 
@@ -517,7 +518,6 @@ describe('Configurações > Organização > Termos', () => {
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')
         
-        cy.acessarPgConfigOrganizacao()
         cy.resetConfigOrganizacao('termos')
 
         // Aguardar 2 segundos para que o aceite seja salvo
@@ -696,7 +696,6 @@ describe('Configurações > Organização > Url Webhooks', () => {
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')
         
-        cy.acessarPgConfigOrganizacao()
         cy.resetConfigOrganizacao('urlWebhooks')
     })
 
