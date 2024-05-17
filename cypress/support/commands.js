@@ -170,7 +170,8 @@ Cypress.Commands.add('acessarPgQuestionarios', function() {
     .should('be.visible')
 })
 
-Cypress.Commands.add('acessarPgConfigOrganizacao', function() {
+Cypress.Commands.add('acessarPgConfigOrganizacao', function(aba) {
+  const formulario = new formConfigOrganizacao()
   const labels = Cypress.env('labels')
   const { breadcrumb } = labels.configOrganizacao
   
@@ -179,6 +180,31 @@ Cypress.Commands.add('acessarPgConfigOrganizacao', function() {
   // Verificar se a página de configuração da organização foi acessada com sucesso
   cy.contains('#page-breadcrumb', breadcrumb)
     .should('be.visible')
+  
+  if (aba) {
+    switch (aba) {
+      case 'dados':
+        formulario.abaDados()
+        break
+      case 'customizacoes':
+        formulario.abaCustomizacoes()
+        break
+      case 'certificado':
+        formulario.abaCertificado()
+        break
+      case 'integracoes':
+        formulario.abaIntegracoes()
+        break
+      case 'termos':
+        formulario.abaTermos()
+        break
+      case 'urlWebhooks':
+        formulario.abaUrlWebhooks()
+        break
+      default:
+        throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
+    }
+  }  
 })
 
 Cypress.Commands.add("criarCatalogoViaApi", (body, attempt = 1) => {
@@ -2696,6 +2722,20 @@ Cypress.Commands.add('resetConfigOrganizacao', (aba) => {
 
       cy.preencherDadosConfigOrganizacao(formTermosDefault, 'termos')
       break
+    case 'urlWebhooks':
+      cy.acessarPgConfigOrganizacao('urlWebhooks')
+      cy.listaConfigUrlWebhooks().then((configs) => {
+        // Verifica se existem configurações para excluir
+        if (configs.length > 0) {
+            // Exclui cada configuração encontrada
+            configs.forEach(config => {
+                cy.excluirUrlWebhook(config.nomeFuncao, config.url)
+            })
+        }
+    })
+      break
+    default:
+      throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
   }
 })
 
@@ -2781,11 +2821,72 @@ Cypress.Commands.add('aceiteTermos', ()=> {
   cy.get('#next')
     .click()
 })
-// TODO: Comando abaixo falta validar
+
 Cypress.Commands.add('validarWebhook', (dadosWebhook) => {
   cy.get('div.url_webhook label[for="url"]')
     .should('have.text', dadosWebhook.urlWebhook)
 
   cy.get('div.url_webhook label[for="function"]')
     .should('have.text', dadosWebhook.funcionalidade)
+})
+
+Cypress.Commands.add('listaConfigUrlWebhooks', () => {
+  cy.get('body').then($body => {
+    // Verifica se existe algum elemento com a classe '.url_webhook' no corpo do documento
+    if ($body.find('.url_webhook').length) {
+      // Se existir, prossegue com a lógica de mapeamento
+      return cy.get('.url_webhook').then($webhooks => {
+        const configs = $webhooks.map((index, webhook) => {
+          const nomeFuncao = Cypress.$(webhook).find('.col-md-3 label').text().trim()
+          const url = Cypress.$(webhook).find('.col-md-7 label').text().trim()
+          return {
+            nomeFuncao,
+            url
+          };
+        }).get()
+        // Usa cy.wrap para retornar a lista de configurações de forma assíncrona
+        return cy.wrap(configs)
+      })
+    } else {
+      // Se não existir, usa cy.wrap para retornar uma lista vazia de forma assíncrona
+      cy.log('Nenhuma configuração de URL de webhook encontrada.')
+      return cy.wrap([])
+    }
+  })
+})
+
+Cypress.Commands.add('excluirUrlWebhook', (nomeFuncao, url) => {
+  cy.get('.url_webhook').then($webhooks => {
+    const webhookEspecifico = $webhooks.filter((index, webhook) => {
+      const nomeFuncaoAtual = Cypress.$(webhook).find('.col-md-3 label').text()
+      const urlAtual = Cypress.$(webhook).find('.col-md-7 label').text()
+      return nomeFuncaoAtual === nomeFuncao && urlAtual === url
+    })
+
+    if (webhookEspecifico.length) {
+      // Assume que o botão de excluir está sempre no último `.col-md-1`
+      cy.wrap(webhookEspecifico).find('.col-md-1 .url_webhook_destroy').click()
+      cy.contains('.flash.success', 'URL deletada com sucesso', { timeout: 5000 })
+        .should('be.visible')
+    } else {
+      cy.log(`Configuração com nome ${nomeFuncao} e URL ${url} não encontrada.`)
+    }
+  })
+})
+
+Cypress.Commands.add('editarUrlWebhook', (nomeFuncao, url) => {
+  cy.get('.url_webhook').then($webhooks => {
+    const webhookEspecifico = $webhooks.filter((index, webhook) => {
+      const nomeFuncaoAtual = Cypress.$(webhook).find('.col-md-3 label').text().trim()
+      const urlAtual = Cypress.$(webhook).find('.col-md-7 label').text().trim()
+      return nomeFuncaoAtual === nomeFuncao && urlAtual === url
+    })
+
+    if (webhookEspecifico.length) {
+      // Assume que o botão de editar pode ser identificado de forma única
+      cy.wrap(webhookEspecifico).find('.col-md-1 .url_webhook_edit').click()
+    } else {
+      cy.log(`Configuração com nome ${nomeFuncao} e URL ${url} não encontrada.`)
+    }
+  })
 })

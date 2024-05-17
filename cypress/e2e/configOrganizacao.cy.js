@@ -595,6 +595,7 @@ describe('Configurações > Organização > Termos', () => {
         cy.validarDadosConfigOrganizacao(dadosUpdate, 'termos')
 
         // DELETE
+        // Após configuração de termos e política, não é possível excluir
         cy.log('## DELETE ##')
 
         cy.resetConfigOrganizacao('termos')
@@ -695,15 +696,15 @@ describe('Configurações > Organização > Url Webhooks', () => {
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')
         
-        // cy.acessarPgConfigOrganizacao()
-        // cy.resetConfigOrganizacao('urlWebhooks')
+        cy.acessarPgConfigOrganizacao()
+        cy.resetConfigOrganizacao('urlWebhooks')
     })
 
     afterEach(() => {
         cy.ativarCapturaErros()
     })
     
-    it.only('7. CRUD aba Url Webhooks - Ao completar o curso', () => {
+    it('7. CRUD aba Url Webhooks - Ao completar o curso', () => {
         // Massa de dados
         const dados = {
             novaUrl: true,
@@ -722,5 +723,160 @@ describe('Configurações > Organização > Url Webhooks', () => {
         cy.log('## READ ##')
 
         cy.validarWebhook(dados)
+
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        // Massa de dados para atualização
+        const dadosUpdate = {
+            funcionalidade: 'Novo cadastro na academia',
+            urlWebhook: faker.internet.url(),
+            salvarUrlWebhook: true
+        }
+
+        cy.editarUrlWebhook(dados.funcionalidade, dados.urlWebhook)
+        cy.preencherDadosConfigOrganizacao(dadosUpdate, null, { limpar: true })
+
+        // READ-UPDATE
+        cy.log('## READ-UPDATE ##')
+
+        cy.validarWebhook(dadosUpdate)
+
+        // DELETE
+        cy.log('## DELETE ##')
+
+        cy.excluirUrlWebhook(dadosUpdate.funcionalidade, dadosUpdate.urlWebhook)
+    })
+
+    it('8. CRUD aba Url Webhooks - Ao Completar a aula', () => {
+        // Massa de dados
+        const dados = {
+            novaUrl: true,
+            funcionalidade: 'Ao Completar a aula',
+            urlWebhook: faker.internet.url(),
+            salvarUrlWebhook: true
+        }
+
+        // CREATE
+		cy.log('## CREATE ##')
+
+        cy.acessarPgConfigOrganizacao()
+        cy.preencherDadosConfigOrganizacao(dados, 'urlWebhooks')
+
+        // READ
+        cy.log('## READ ##')
+
+        cy.validarWebhook(dados)
+
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        // Massa de dados para atualização
+        const dadosUpdate = {
+            funcionalidade: 'Data de Vigência do Curso',
+            urlWebhook: faker.internet.url(),
+            salvarUrlWebhook: true
+        }
+
+        cy.editarUrlWebhook(dados.funcionalidade, dados.urlWebhook)
+        cy.preencherDadosConfigOrganizacao(dadosUpdate, null, { limpar: true })
+
+        // READ-UPDATE
+        cy.log('## READ-UPDATE ##')
+
+        cy.validarWebhook(dadosUpdate)
+
+        // DELETE
+        cy.log('## DELETE ##')
+
+        cy.excluirUrlWebhook(dadosUpdate.funcionalidade, dadosUpdate.urlWebhook)
+    })
+
+    it('9. CRUD aba Url Webhooks - Novo cadastro na academia', () => {
+        // Massa de dados
+        const dados = {
+            novaUrl: true,
+            funcionalidade: 'Novo cadastro na academia',
+            urlWebhook: faker.internet.url(),
+            salvarUrlWebhook: true
+        }
+
+        // CREATE
+		cy.log('## CREATE ##')
+
+        cy.acessarPgConfigOrganizacao()
+        cy.preencherDadosConfigOrganizacao(dados, 'urlWebhooks')
+
+        // READ
+        cy.log('## READ ##')
+
+        cy.validarWebhook(dados)
+
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        // Massa de dados para atualização
+        const dadosUpdate = {
+            funcionalidade: 'Ao Completar o curso',
+            urlWebhook: faker.internet.url(),
+            salvarUrlWebhook: true
+        }
+
+        cy.editarUrlWebhook(dados.funcionalidade, dados.urlWebhook)
+        cy.preencherDadosConfigOrganizacao(dadosUpdate, null, { limpar: true })
+
+        // READ-UPDATE
+        cy.log('## READ-UPDATE ##')
+
+        cy.validarWebhook(dadosUpdate)
+
+        // DELETE
+        cy.log('## DELETE ##')
+
+        cy.excluirUrlWebhook(dadosUpdate.funcionalidade, dadosUpdate.urlWebhook)
+    })
+
+    it('10. CRUD aba Url Webhooks - Data de Vigência do Curso', () => {
+        // Massa de dados
+        const dados = {
+            novaUrl: true,
+            funcionalidade: 'Data de Vigência do Curso',
+            urlWebhook: faker.internet.url(),
+            salvarUrlWebhook: true
+        }
+
+        // CREATE
+		cy.log('## CREATE ##')
+
+        cy.acessarPgConfigOrganizacao()
+        cy.preencherDadosConfigOrganizacao(dados, 'urlWebhooks')
+
+        // READ
+        cy.log('## READ ##')
+
+        cy.validarWebhook(dados)
+
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        // Massa de dados para atualização
+        const dadosUpdate = {
+            funcionalidade: 'Ao Completar a aula',
+            urlWebhook: faker.internet.url(),
+            salvarUrlWebhook: true
+        }
+
+        cy.editarUrlWebhook(dados.funcionalidade, dados.urlWebhook)
+        cy.preencherDadosConfigOrganizacao(dadosUpdate, null, { limpar: true })
+
+        // READ-UPDATE
+        cy.log('## READ-UPDATE ##')
+
+        cy.validarWebhook(dadosUpdate)
+
+        // DELETE
+        cy.log('## DELETE ##')
+
+        cy.excluirUrlWebhook(dadosUpdate.funcionalidade, dadosUpdate.urlWebhook)
     })
 })
