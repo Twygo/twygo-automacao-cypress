@@ -2781,3 +2781,11 @@ Cypress.Commands.add('aceiteTermos', ()=> {
   cy.get('#next')
     .click()
 })
+// TODO: Comando abaixo falta validar
+Cypress.Commands.add('validarWebhook', (dadosWebhook) => {
+  cy.get('div.url_webhook label[for="url"]')
+    .should('have.text', dadosWebhook.urlWebhook)
+
+  cy.get('div.url_webhook label[for="function"]')
+    .should('have.text', dadosWebhook.funcionalidade)
+})

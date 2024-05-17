@@ -606,7 +606,7 @@ describe('Configurações > Organização > Termos', () => {
         cy.aceiteTermos()        
     })
 
-    it.only('6. CRUD aba Termos com editor de HTML', () => {
+    it('6. CRUD aba Termos com editor de HTML', () => {
         // Massa de dados
         const dados = {
             htmlCustomizado: true,
@@ -679,10 +679,48 @@ describe('Configurações > Organização > Termos', () => {
 })
 
 describe('Configurações > Organização > Url Webhooks', () => {
-    it('7. CRUD aba Url Webhooks', () => {
+    before(() => {
+        cy.fixture('labels.json').then((labels) => {
+            Cypress.env('labels', labels)
+        })
+    })
+
+    beforeEach(() => {
+        //Ignora mensagens de erro conhecidas
+        cy.ignorarCapturaErros([
+            "Unexpected identifier 'id'",    // Chrome
+            "unexpected token: identifier"    // Firefox
+        ], { ignoreScriptErrors: true })
+
+        cy.loginTwygoAutomacao()
+        cy.alterarPerfil('administrador')
+        
+        // cy.acessarPgConfigOrganizacao()
+        // cy.resetConfigOrganizacao('urlWebhooks')
+    })
+
+    afterEach(() => {
+        cy.ativarCapturaErros()
+    })
+    
+    it.only('7. CRUD aba Url Webhooks - Ao completar o curso', () => {
+        // Massa de dados
+        const dados = {
+            novaUrl: true,
+            funcionalidade: 'Ao Completar o curso',
+            urlWebhook: faker.internet.url(),
+            salvarUrlWebhook: true
+        }
+
         // CREATE
 		cy.log('## CREATE ##')
 
         cy.acessarPgConfigOrganizacao()
+        cy.preencherDadosConfigOrganizacao(dados, 'urlWebhooks')
+
+        // READ
+        cy.log('## READ ##')
+
+        cy.validarWebhook(dados)
     })
 })
