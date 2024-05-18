@@ -238,8 +238,16 @@ describe('Configurações > Organização > Customizações', () => {
 
         cy.acessarPgConfigOrganizacao()
         cy.preencherDadosConfigOrganizacao(alterarDadosUsuario, 'customizacoes', { limpar: true })
+        cy.contains('.flash.success', 'Organização atualizada com sucesso.', { timeout: 5000 })
+            .should('be.visible')
+
         cy.preencherDadosConfigOrganizacao(configLogin, 'customizacoes', { limpar: true })
+        cy.contains('.flash.success', 'Informações salvas com sucesso!', { timeout: 5000 })
+            .should('be.visible')
+
         cy.preencherDadosConfigOrganizacao(customizacoesInterface, 'customizacoes', { limpar: true })
+        cy.contains('.flash.success', 'Personalização de interface salva com sucesso!', { timeout: 5000 })
+            .should('be.visible')
 
         // Pausa para aguardar a atualização da página
         cy.wait(2000)
@@ -283,7 +291,12 @@ describe('Configurações > Organização > Customizações', () => {
         
         cy.acessarPgConfigOrganizacao()
         cy.preencherDadosConfigOrganizacao(configLoginUpdate, 'customizacoes', { limpar: true })
+        cy.contains('.flash.success', 'Informações salvas com sucesso!', { timeout: 5000 })
+            .should('be.visible')
+
         cy.preencherDadosConfigOrganizacao(customizacoesInterfaceUpdate, 'customizacoes', { limpar: true })
+        cy.contains('.flash.success', 'Personalização de interface salva com sucesso!', { timeout: 5000 })
+            .should('be.visible')
 
         // READ-UPDATE
         cy.log('## READ-UPDATE ##')
@@ -425,13 +438,15 @@ describe('Configurações > Organização > Integrações', () => {
     
     it('4. CRUD aba Integrações', () => {
         // Massa de dados
-        const dados = {
+        const dadosPixel = {
             // Pixel
             adicionarPixel: true,
             identificador: faker.lorem.word(),
             codigo: faker.lorem.paragraph(),
-            salvarPixel: true,
+            salvarPixel: true
+        }
 
+        const dadosLogin = {
             // Login redes sociais
             ativarLogin: true,
             salvarLogin: true
@@ -441,18 +456,24 @@ describe('Configurações > Organização > Integrações', () => {
 		cy.log('## CREATE ##')
 
         cy.acessarPgConfigOrganizacao()
-        cy.preencherDadosConfigOrganizacao(dados, 'integracoes')
+        cy.preencherDadosConfigOrganizacao(dadosPixel, 'integracoes')
+        cy.contains('.flash.success', 'Pixel salvo!', { timeout: 5000 })
+            .should('be.visible')
+
+        cy.preencherDadosConfigOrganizacao(dadosLogin, 'integracoes')
+        cy.contains('.flash.success', 'Informações salvas com sucesso!', { timeout: 5000 })
+            .should('be.visible')
 
         // READ
         cy.log('## READ ##')
       
-        cy.validarDadosConfigOrganizacao(dados.ativarLogin, 'integracoes')
+        cy.validarDadosConfigOrganizacao(dadosLogin.ativarLogin, 'integracoes')
         
         cy.listaPixels().then((nomes) => {
             const identificadorEncontrado = nomes.some(nome => {
               // Remove espaços em branco, incluindo novas linhas, do início e do fim
               const nomeLimpo = nome.replace(/^\s+|\s+$/g, '').toLowerCase()
-              const identificadorLimpo = dados.identificador.trim().toLowerCase()
+              const identificadorLimpo = dadosPixel.identificador.trim().toLowerCase()
               return nomeLimpo === identificadorLimpo
             })
             expect(identificadorEncontrado).to.be.true
@@ -475,9 +496,15 @@ describe('Configurações > Organização > Integrações', () => {
             salvarLogin: true
         }
 
-        cy.editarIdentificadorPixel(dados.identificador)
+        cy.editarIdentificadorPixel(dadosPixel.identificador)
         cy.preencherDadosConfigOrganizacao(dadosPixelUpdate, null, { limpar: true })
+        cy.contains('.flash.success', 'Pixel salvo!', { timeout: 5000 })
+            .should('be.visible')
+
         cy.preencherDadosConfigOrganizacao(dadosLoginUpdate)
+        cy.contains('.flash.success', 'Informações salvas com sucesso!', { timeout: 5000 })
+            .should('be.visible')
+
 
         // READ-UPDATE
         cy.log('## READ-UPDATE ##')
@@ -549,6 +576,8 @@ describe('Configurações > Organização > Termos', () => {
 
         cy.acessarPgConfigOrganizacao()
         cy.preencherDadosConfigOrganizacao(dados, 'termos')
+        cy.contains('.flash.success', 'Informações salvas com sucesso!', { timeout: 5000 })
+            .should('be.visible')
 
         // READ
         cy.log('## READ ##')
@@ -577,6 +606,8 @@ describe('Configurações > Organização > Termos', () => {
         }
 
         cy.preencherDadosConfigOrganizacao(dadosUpdate, 'termos')
+        cy.contains('.flash.success', 'Informações salvas com sucesso!', { timeout: 5000 })
+            .should('be.visible')
 
         // READ-UPDATE
         cy.log('## READ-UPDATE ##')
@@ -621,6 +652,8 @@ describe('Configurações > Organização > Termos', () => {
 
         cy.acessarPgConfigOrganizacao()
         cy.preencherDadosConfigOrganizacao(dados, 'termos', { limpar: true })
+        cy.contains('.flash.success', 'Informações salvas com sucesso!', { timeout: 5000 })
+            .should('be.visible')
 
         // READ
         cy.log('## READ ##')
@@ -649,6 +682,8 @@ describe('Configurações > Organização > Termos', () => {
         }
 
         cy.preencherDadosConfigOrganizacao(dadosUpdate, 'termos', { limpar: true })
+        cy.contains('.flash.success', 'Informações salvas com sucesso!', { timeout: 5000 })
+            .should('be.visible')
 
         // READ-UPDATE
         cy.log('## READ-UPDATE ##')
@@ -717,6 +752,8 @@ describe('Configurações > Organização > Url Webhooks', () => {
 
         cy.acessarPgConfigOrganizacao()
         cy.preencherDadosConfigOrganizacao(dados, 'urlWebhooks')
+        cy.contains('.flash.success', 'URL criada com sucesso', { timeout: 5000 })
+            .should('be.visible')
 
         // READ
         cy.log('## READ ##')
@@ -735,6 +772,8 @@ describe('Configurações > Organização > Url Webhooks', () => {
 
         cy.editarUrlWebhook(dados.funcionalidade, dados.urlWebhook)
         cy.preencherDadosConfigOrganizacao(dadosUpdate, null, { limpar: true })
+        cy.contains('.flash.success', 'URL criada com sucesso', { timeout: 5000 })
+            .should('be.visible')
 
         // READ-UPDATE
         cy.log('## READ-UPDATE ##')
@@ -761,6 +800,8 @@ describe('Configurações > Organização > Url Webhooks', () => {
 
         cy.acessarPgConfigOrganizacao()
         cy.preencherDadosConfigOrganizacao(dados, 'urlWebhooks')
+        cy.contains('.flash.success', 'URL criada com sucesso', { timeout: 5000 })
+            .should('be.visible')
 
         // READ
         cy.log('## READ ##')
@@ -779,6 +820,8 @@ describe('Configurações > Organização > Url Webhooks', () => {
 
         cy.editarUrlWebhook(dados.funcionalidade, dados.urlWebhook)
         cy.preencherDadosConfigOrganizacao(dadosUpdate, null, { limpar: true })
+        cy.contains('.flash.success', 'URL criada com sucesso', { timeout: 5000 })
+            .should('be.visible')
 
         // READ-UPDATE
         cy.log('## READ-UPDATE ##')
@@ -805,6 +848,8 @@ describe('Configurações > Organização > Url Webhooks', () => {
 
         cy.acessarPgConfigOrganizacao()
         cy.preencherDadosConfigOrganizacao(dados, 'urlWebhooks')
+        cy.contains('.flash.success', 'URL criada com sucesso', { timeout: 5000 })
+            .should('be.visible')
 
         // READ
         cy.log('## READ ##')
@@ -823,6 +868,8 @@ describe('Configurações > Organização > Url Webhooks', () => {
 
         cy.editarUrlWebhook(dados.funcionalidade, dados.urlWebhook)
         cy.preencherDadosConfigOrganizacao(dadosUpdate, null, { limpar: true })
+        cy.contains('.flash.success', 'URL criada com sucesso', { timeout: 5000 })
+            .should('be.visible')
 
         // READ-UPDATE
         cy.log('## READ-UPDATE ##')
@@ -849,6 +896,8 @@ describe('Configurações > Organização > Url Webhooks', () => {
 
         cy.acessarPgConfigOrganizacao()
         cy.preencherDadosConfigOrganizacao(dados, 'urlWebhooks')
+        cy.contains('.flash.success', 'URL criada com sucesso', { timeout: 5000 })
+            .should('be.visible')
 
         // READ
         cy.log('## READ ##')
@@ -867,6 +916,8 @@ describe('Configurações > Organização > Url Webhooks', () => {
 
         cy.editarUrlWebhook(dados.funcionalidade, dados.urlWebhook)
         cy.preencherDadosConfigOrganizacao(dadosUpdate, null, { limpar: true })
+        cy.contains('.flash.success', 'URL criada com sucesso', { timeout: 5000 })
+            .should('be.visible')
 
         // READ-UPDATE
         cy.log('## READ-UPDATE ##')
