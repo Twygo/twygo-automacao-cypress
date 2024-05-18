@@ -181,5 +181,15 @@
     "menuSophia": {
         "exclusaoEmAndamento": "A exclusão está sendo realizada, aguarde alguns instantes.",
         "exclusaoConcluida": "Todos os dados solicitados foram excluídos, atualize a página."
+    },
+    "configOrganizacao": {
+        "breadcrumb": "Organização",
+        "msgSucessoAlterarDadosUsuario": "Organização atualizada com sucesso.",
+        "msgSucessoConfigLogin": "Informações salvas com sucesso!",
+        "msgSucessoCustomizacoesInterface": "Personalização de interface salva com sucesso!",
+        "msgSucessoPixel": "Pixel salvo!",
+        "msgSucessoLogin": "Informações salvas com sucesso!",
+        "msgSucessoTermos": "Informações salvas com sucesso!",
+        "msgSucessoUrlWebhooks": "URL criada com sucesso"
     }
 }

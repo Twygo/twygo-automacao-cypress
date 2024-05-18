@@ -9,6 +9,7 @@ import formParticipantes from "./pageObjects/formParticipantes"
 import formConfigUsuario from "./pageObjects/formConfigUsuario"
 import formInstrutor from "./pageObjects/formInstrutor"
 import formGestor from "./pageObjects/formGestor"
+import formConfigOrganizacao from "./pageObjects/formConfigOrganizacao"
 import { fakerPT_BR } from "@faker-js/faker"
 import 'cypress-real-events/support'
 
@@ -159,10 +160,51 @@ Cypress.Commands.add('acessarPgLogin', function() {
 })
 
 Cypress.Commands.add('acessarPgQuestionarios', function() {
-  cy.visit(`/o/${Cypress.env('orgId')}/question_lists`)
-
   const labels = Cypress.env('labels')
   const { breadcrumb } = labels.questionario
+
+  cy.visit(`/o/${Cypress.env('orgId')}/question_lists`)
+
+  // Verificar se a página de questionários foi acessada com sucesso
+  cy.contains('#page-breadcrumb', breadcrumb)
+    .should('be.visible')
+})
+
+Cypress.Commands.add('acessarPgConfigOrganizacao', function(aba) {
+  const formulario = new formConfigOrganizacao()
+  const labels = Cypress.env('labels')
+  const { breadcrumb } = labels.configOrganizacao
+  
+  cy.visit(`/o/${Cypress.env('orgId')}/edit`)
+
+  // Verificar se a página de configuração da organização foi acessada com sucesso
+  cy.contains('#page-breadcrumb', breadcrumb)
+    .should('be.visible')
+  
+  if (aba) {
+    switch (aba) {
+      case 'dados':
+        formulario.abaDados()
+        break
+      case 'customizacoes':
+        formulario.abaCustomizacoes()
+        break
+      case 'certificado':
+        formulario.abaCertificado()
+        break
+      case 'integracoes':
+        formulario.abaIntegracoes()
+        break
+      case 'termos':
+        formulario.abaTermos()
+        break
+      case 'urlWebhooks':
+        formulario.abaUrlWebhooks()
+        break
+      default:
+        throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
+    }
+  }  
 })
 
 Cypress.Commands.add("criarCatalogoViaApi", (body, attempt = 1) => {
@@ -2480,4 +2522,378 @@ Cypress.Commands.add('ignorarCapturaErros', (errorsToIgnore, options = { ignoreS
 
 Cypress.Commands.add('ativarCapturaErros', function() {
   Cypress.removeAllListeners('uncaught:exception')
+})
+
+Cypress.Commands.add('preencherDadosConfigOrganizacao', (dados, aba, opcoes = { limpar: false }) => {
+  const formulario = new formConfigOrganizacao()
+
+  if (aba) {
+    switch (aba) {
+      case 'dados':
+        formulario.abaDados()
+        break
+      case 'customizacoes':
+        formulario.abaCustomizacoes()
+        break
+      case 'certificado':
+        formulario.abaCertificado()
+        break
+      case 'integracoes':
+        formulario.abaIntegracoes()
+        break
+      case 'termos':
+        formulario.abaTermos()
+        break
+      case 'urlWebhooks':
+        formulario.abaUrlWebhooks()
+        break
+      default:
+        throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
+    }
+  }
+  
+  Object.keys(dados).forEach(nomeCampo => {
+      const valor = dados[nomeCampo]
+      formulario.preencherCampo(nomeCampo, valor, opcoes)
+  })
+}) 
+
+Cypress.Commands.add('validarDadosConfigOrganizacao', (dados, aba) => {
+  const formulario = new formConfigOrganizacao()
+
+  switch (aba) {
+    case 'dados':
+      formulario.abaDados()
+      break
+    case 'customizacoes':
+      formulario.abaCustomizacoes()
+      break
+    case 'certificado':
+      formulario.abaCertificado()
+      break
+    case 'integracoes':
+      formulario.abaIntegracoes()
+      break
+    case 'termos':
+      formulario.abaTermos()
+      break
+    case 'urlWebhooks':
+      formulario.abaUrlWebhooks()
+      break
+    default:
+      throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
+  }
+
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+    formulario.validarCampo(nomeCampo, valor)
+  })
+})
+
+Cypress.Commands.add('resetConfigOrganizacao', (aba) => {
+  switch (aba) {
+    case 'dados':
+      const formDadosDefault = {
+        nome: Cypress.env('orgName'),
+        descricao: '',
+        informacoesGerais: '',
+        resumoIndexacao: '',
+        cep: '',
+        endereco: '',
+        complemento: '',
+        bairro: '',
+        cidade: '',
+        estado: '',
+        pais: '',
+        telefone: '(45) 99999-9999',
+        email: Cypress.env('login'),
+        site: '',
+        converterEscalaBranco: false,
+        personalizarLinkLogotipo: true,
+        linkRedirecionamento: '',
+        botaoContato: '',
+        usarGestaoCompetencias: false,
+        ativarGamificacao: false,
+        visualizacao: 'Privada',
+        abaPortfolio: false,
+        abaAgenda: false,
+        abaParceiros: false,
+        abaSobre: false,
+        abaPlanos: false,
+        listaEmpresas: '',
+        nrColaboradores: '',
+        ramoAtuacao: '',
+        cargo: ''
+      }
+
+      const atualizarPersonalizarLink = {
+          personalizarLinkLogotipo: false,
+          salvarDados: true
+      }
+
+      cy.acessarPgConfigOrganizacao()
+      cy.preencherDadosConfigOrganizacao(formDadosDefault, 'dados', { limpar: true })
+      cy.preencherDadosConfigOrganizacao(atualizarPersonalizarLink)
+      // Aguardar 3 segundos para atualização dos dados
+      cy.wait(3000)
+      cy.acessarPgConfigOrganizacao()
+      break
+    case 'customizacoes':
+      const formAlterarDadosUsuarioDefault = {
+        // Alterar dados do usuário
+        naoPermitirAlterarDados: false,
+        salvarAlterarDados: true
+      }
+
+      cy.acessarPgConfigOrganizacao()
+      cy.preencherDadosConfigOrganizacao(formAlterarDadosUsuarioDefault, 'customizacoes', { limpar: true })
+
+      const formConfigLoginDefault = {
+        // Configurações de login
+        tempoExpiracaoLogin: false,
+        loginEmail: true,
+        loginCpf: false,
+        salvarConfiguracoesLogin: true
+      }
+
+      cy.preencherDadosConfigOrganizacao(formConfigLoginDefault, 'customizacoes', { limpar: true })
+
+      const formCustomizacoesInterfaceDefault = {
+        // Customização de interface
+        corPrimaria: '#9349DE',
+        corTexto: '#596679',
+        mostrarFundoLogin: false,
+        mostrarBotaoRegistrar: true,
+        removerImagemFundoLogin: false,
+        salvarCustomizacaoInterface: true
+      }
+
+      cy.preencherDadosConfigOrganizacao(formCustomizacoesInterfaceDefault, 'customizacoes', { limpar: true })
+
+      const formEnvioEmailsDefault = {
+        // Envio de E-mails
+        limparInformacoesEmail: true
+      }
+
+      // Esperar para atualização da customização
+      cy.wait(5000)
+
+      cy.preencherDadosConfigOrganizacao(formEnvioEmailsDefault, 'customizacoes', { limpar: true })
+      break
+    case 'certificado':
+      // Carregar um certificado em branco, pois não é possível limpar os dados	
+      const carregarCertificadoEmBranco = {
+        configurar: true,
+        selecionarImagem: `imagem_0.jpg`,
+        salvarGerarModelo: true
+      }
+
+      const formConfigCertificadoDefault = {
+          notificarGestorNovosCertificados: false,
+          salvarCertificado: true
+      }
+
+      cy.acessarPgConfigOrganizacao()
+      cy.preencherDadosConfigOrganizacao(carregarCertificadoEmBranco, 'certificado')
+
+      cy.acessarPgConfigOrganizacao()
+      cy.preencherDadosConfigOrganizacao(formConfigCertificadoDefault, 'certificado')
+
+      // Aguardar 10 segundos para que o certificado seja carregado
+      cy.wait(10000)
+      break    
+    case 'integracoes':
+      const formConfigIntegracoesDefault = {
+        // Configurações de integrações
+        ativarLogin: false,
+        salvarLogin: true
+      }
+
+      cy.acessarPgConfigOrganizacao()
+      cy.preencherDadosConfigOrganizacao(formConfigIntegracoesDefault, 'integracoes')
+
+      cy.listaPixels().then(nomes => {
+        nomes.forEach(nome => {
+          cy.excluirIdentificadorPixel(nome)
+        })
+      })
+      break
+    case 'termos':
+      const formTermosDefault = {
+        editorTexto: true,
+        termosUsoTexto: '.',
+        politicaPrivacidadeTexto: '.',
+        salvarTermosPoliticaTexto: true
+      }
+
+      cy.acessarPgConfigOrganizacao()
+      cy.preencherDadosConfigOrganizacao(formTermosDefault, 'termos')
+      break
+    case 'urlWebhooks':
+      cy.acessarPgConfigOrganizacao('urlWebhooks')
+      cy.listaConfigUrlWebhooks().then((configs) => {
+        // Verifica se existem configurações para excluir
+        if (configs.length > 0) {
+            // Exclui cada configuração encontrada
+            configs.forEach(config => {
+                cy.excluirUrlWebhook(config.nomeFuncao, config.url)
+            })
+        }
+    })
+      break
+    default:
+      throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
+  }
+})
+
+Cypress.Commands.add('validarCertificadoGerado', (dadosGerarCertificado) => {
+  const orgName = Cypress.env('orgName').replace(/ /g, '_')
+
+  // Validação do nome do arquivo do certificado
+  cy.get('.file-size')
+      .contains('.label', `${Cypress.env('orgId')}-${orgName}.pdf`)
+      .should('exist')
+
+  // Mapeamento dos tamanhos de arquivo por imagem
+  const tamanhosPorImagem = {
+      'imagem_0.jpg': '1602 bytes',
+      'imagem_1.jpg': '348689 bytes',
+      'imagem_2.jpg': '285303 bytes',
+      'imagem_3.jpg': '236988 bytes',
+      'imagem_4.jpg': '212021 bytes',
+      'imagem_5.jpg': '268280 bytes',
+      'imagem_6.jpg': '110903 bytes',
+      'imagem_7.jpg': '60988 bytes',
+      'imagem_8.jpg': '226841 bytes',
+      'imagem_9.jpg': '11045 bytes',
+      'imagem_10.jpg': '163247 bytes',
+  }
+
+  let tamanho = tamanhosPorImagem[dadosGerarCertificado.selecionarImagem]
+
+  // Validação do tamanho do arquivo
+  cy.get('.file-size')
+      .contains('.size', tamanho)
+      .should('exist')
+})
+
+Cypress.Commands.add('listaPixels', () => {
+  cy.get('body').then($body => {
+    // Verifica se existe algum 'tr' dentro de 'tbody'
+    if ($body.find('tbody tr').length > 0) {
+      // Se existir, prossegue com a lógica
+      return cy.get('tbody tr').then($trs => {
+        const nomes = $trs.map((index, tr) => Cypress.$(tr).find('td').first().text()).get()
+        return nomes
+      })
+    } else {
+      // Se não, retorna um array vazio
+      return []
+    }
+  })
+})
+
+Cypress.Commands.add('excluirIdentificadorPixel', (identificador) => {
+  cy.get('body').then($body => {
+    // Verifica se o identificador existe na página antes de tentar excluí-lo
+    if ($body.find(`tbody tr:contains('${identificador}')`).length) {
+      cy.get(`tbody tr:contains('${identificador}')`).within(() => {
+        cy.get('a').contains('Excluir').click()
+      })
+      // Aguarda a exclusão ser processada, idealmente substituir por uma verificação de estado da página
+      cy.wait(1000) // Considerar substituir por uma estratégia mais robusta
+    } else {
+      cy.log(`Identificador ${identificador} não encontrado.`)
+    }
+  })
+})
+
+Cypress.Commands.add('editarIdentificadorPixel', (identificador) => {
+  cy.get('body').then($body => {
+    // Verifica se o identificador existe na página antes de tentar editá-lo
+    if ($body.find(`tbody tr:contains('${identificador}')`).length) {
+      cy.get(`tbody tr:contains('${identificador}')`).within(() => {
+        cy.get('a').contains('Editar').click()
+      })
+    } else {
+      cy.log(`Identificador ${identificador} não encontrado.`)
+    }
+  })
+})
+
+Cypress.Commands.add('aceiteTermos', ()=> {
+    cy.get('#agree_check')
+    .click()
+
+  cy.get('#next')
+    .click()
+})
+
+Cypress.Commands.add('validarWebhook', (dadosWebhook) => {
+  cy.get('div.url_webhook label[for="url"]')
+    .should('have.text', dadosWebhook.urlWebhook)
+
+  cy.get('div.url_webhook label[for="function"]')
+    .should('have.text', dadosWebhook.funcionalidade)
+})
+
+Cypress.Commands.add('listaConfigUrlWebhooks', () => {
+  cy.get('body').then($body => {
+    // Verifica se existe algum elemento com a classe '.url_webhook' no corpo do documento
+    if ($body.find('.url_webhook').length) {
+      // Se existir, prossegue com a lógica de mapeamento
+      return cy.get('.url_webhook').then($webhooks => {
+        const configs = $webhooks.map((index, webhook) => {
+          const nomeFuncao = Cypress.$(webhook).find('.col-md-3 label').text().trim()
+          const url = Cypress.$(webhook).find('.col-md-7 label').text().trim()
+          return {
+            nomeFuncao,
+            url
+          };
+        }).get()
+        // Usa cy.wrap para retornar a lista de configurações de forma assíncrona
+        return cy.wrap(configs)
+      })
+    } else {
+      // Se não existir, usa cy.wrap para retornar uma lista vazia de forma assíncrona
+      cy.log('Nenhuma configuração de URL de webhook encontrada.')
+      return cy.wrap([])
+    }
+  })
+})
+
+Cypress.Commands.add('excluirUrlWebhook', (nomeFuncao, url) => {
+  cy.get('.url_webhook').then($webhooks => {
+    const webhookEspecifico = $webhooks.filter((index, webhook) => {
+      const nomeFuncaoAtual = Cypress.$(webhook).find('.col-md-3 label').text()
+      const urlAtual = Cypress.$(webhook).find('.col-md-7 label').text()
+      return nomeFuncaoAtual === nomeFuncao && urlAtual === url
+    })
+
+    if (webhookEspecifico.length) {
+      // Assume que o botão de excluir está sempre no último `.col-md-1`
+      cy.wrap(webhookEspecifico).find('.col-md-1 .url_webhook_destroy').click()
+      cy.contains('.flash.success', 'URL deletada com sucesso', { timeout: 5000 })
+        .should('be.visible')
+    } else {
+      cy.log(`Configuração com nome ${nomeFuncao} e URL ${url} não encontrada.`)
+    }
+  })
+})
+
+Cypress.Commands.add('editarUrlWebhook', (nomeFuncao, url) => {
+  cy.get('.url_webhook').then($webhooks => {
+    const webhookEspecifico = $webhooks.filter((index, webhook) => {
+      const nomeFuncaoAtual = Cypress.$(webhook).find('.col-md-3 label').text().trim()
+      const urlAtual = Cypress.$(webhook).find('.col-md-7 label').text().trim()
+      return nomeFuncaoAtual === nomeFuncao && urlAtual === url
+    })
+
+    if (webhookEspecifico.length) {
+      // Assume que o botão de editar pode ser identificado de forma única
+      cy.wrap(webhookEspecifico).find('.col-md-1 .url_webhook_edit').click()
+    } else {
+      cy.log(`Configuração com nome ${nomeFuncao} e URL ${url} não encontrada.`)
+    }
+  })
 })

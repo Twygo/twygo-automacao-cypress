@@ -17,7 +17,8 @@ describe('Instrutor', () => {
     beforeEach(() => {
         // Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'"
+            "Unexpected identifier 'id'",    // Chrome
+            "unexpected token: identifier"    // Firefox
         ])
 
         // Gera um nome aleatório para o conteúdo e para a atividade

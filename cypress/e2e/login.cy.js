@@ -4,7 +4,8 @@ describe('login', () => {
     before(() => {
         // Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'"
+            "Unexpected identifier 'id'",    // Chrome
+            "unexpected token: identifier"    // Firefox
         ])
         
         // Carrega os labels do arquivo JSON
