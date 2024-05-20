@@ -2545,3 +2545,101 @@ Cypress.Commands.add('inativarAmbienteAdicional', (dadosAmbiente) => {
 
 }) 
 
+Cypress.Commands.add('alterarParaNovaAba', function() {
+  // Esperar até que a nova aba seja carregada
+  cy.window({ timeout: 10000 }).its('length').should('be.gt', 1); // Verifica se há mais de uma janela
+  cy.window({ timeout: 10000 }).then(win => {
+    cy.stub(win, 'open').as('openStub');
+  });
+
+  // Esperar até que a nova aba seja aberta
+  cy.get('@openStub').should('be.called'); 
+
+  // Esperar até que a nova aba esteja pronta para ser manipulada
+  cy.window().then(win => {
+    cy.stub(win, 'focus').as('focusStub');
+    cy.stub(win, 'blur').as('blurStub');
+    cy.stub(win, 'close').as('closeStub');
+    cy.stub(win, 'confirm').as('confirmStub');
+    cy.stub(win, 'prompt').as('promptStub');
+    cy.stub(win, 'alert').as('alertStub');
+  });
+
+  // Esperar um breve período para garantir que a nova aba seja carregada
+  cy.wait(500); 
+})
+
+Cypress.Commands.add('fecharNovaAba', function() {
+  cy.window().then(win => {
+    win.close();
+  });
+})
+
+Cypress.Commands.add('ambientesAdicionaisConteudo', (nomeConteudo) => {
+  // Acessa o arquivo de labels
+  cy.readFile('cypress/fixtures/labels.json').then(labels => {
+    const { breadcrumbConteudo} = labels.ambientesAdicionais;
+
+    // Define o seletor para encontrar o conteúdo na listagem
+    let seletor = `tr[tag-name='${nomeConteudo}']`;
+
+    // Clica em 'Opções' e 'Gestores de turma'
+    cy.get(seletor)
+      .find('svg[aria-label="Options"]')
+      .click();
+
+    cy.get(seletor)
+      .contains('button', 'Ambiente adicional')
+      .click({ force: true });
+
+    // Valida se a página foi carregada corretamente conforme o tipo de conteúdo
+    const breadcrumbComVariavel = breadcrumbConteudo.replace('{{nomeDoConteudo}}', nomeConteudo);
+    cy.contains('#page-breadcrumb', breadcrumbComVariavel)
+      .should('be.visible');
+  })
+})
+
+Cypress.Commands.add('clicarCheckboxCompartilhamento', (dadosAmbiente) => {
+  const formulario = new formAmbientesAdicionais()
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const nomeAmbiente = dadosAmbiente.nome;  
+
+  cy.get(`span:contains("${nomeAmbiente}")`)
+    .parents('p')
+    .parents('div')
+    formulario.compartilharCurso()  
+  
+  formulario.salvarCompartilhamento
+}) 
+
+Cypress.Commands.add('acessarAmbienteAdicional', (dadosAmbiente) => {
+  const nomeAmbiente = dadosAmbiente.nome;  
+
+  cy.get(`span:contains("${nomeAmbiente}")`)
+    .click()
+
+  cy.alterarParaNovaAba()
+
+  cy.url().then(url => {
+    const newUrl = url.split('.com/')[0] + '.com/users/login';
+    cy.visit(newUrl);
+  });  
+})
+
+Cypress.Commands.add('validarConteudo', (nomeConteudo, compartilhamento) => {
+
+  switch(compartilhamento) {
+    case 'Compartilhar':
+      cy.get(`tr[tag-name='${nomeConteudo}']`)
+        .should('be.visible');
+      break
+    case 'Remover compartilhamento':
+      cy.get(`tr[tag-name='${nomeConteudo}']`)
+        .should('not.be.visible')
+      break  
+  }
+})
+
+
+

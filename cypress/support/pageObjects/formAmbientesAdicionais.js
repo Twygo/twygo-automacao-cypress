@@ -44,6 +44,14 @@ class formAmbientesAdicionais {
             seletor: 'button:contains("Cancelar")',
             tipo: 'button' 
         },
+        checkboxCompartilhamento: {
+            seletor: 'span[aria-hidden="true"]',
+            tipo: 'checkbox'
+        },
+        salvarCompartilhamento: {
+            seletor: '#partner-list-save',
+            tipo: 'button'
+        }
     }   
     
     preencherCampo(nomeCampo, valor, opcoes = { limpar: false }) {
@@ -104,6 +112,16 @@ class formAmbientesAdicionais {
 
     confirmarInativacaoAmbiente() {
         cy.get(this.elementos.confirmarInativacao.seletor)
+            .click()
+    }
+
+    compartilharCurso() {
+        cy.get(this.elementos.checkboxCompartilhamento.seletor)
+            .click({ force: true })
+    }
+
+    salvarCompartilhamento() {
+        cy.get(this.elementos.salvarCompartilhamento.seletor)
             .click()
     }
 }

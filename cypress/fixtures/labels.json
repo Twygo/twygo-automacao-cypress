@@ -184,6 +184,7 @@
     },
     "ambientesAdicionais": {
         "breadcrumb": "Ambientes adicionais",
+        "breadcrumbConteudo": "Lista de conteúdos > {{nomeDoConteudo}} > Ambiente adicional",
         "msgSucesso": "Ambiente adicional criado com sucesso",
         "msgInativacao": "Ambiente inativado com sucesso"
     }
