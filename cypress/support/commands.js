@@ -10,6 +10,7 @@ import formConfigUsuario from "./pageObjects/formConfigUsuario"
 import formInstrutor from "./pageObjects/formInstrutor"
 import formGestor from "./pageObjects/formGestor"
 import formConfigOrganizacao from "./pageObjects/formConfigOrganizacao"
+import formTrial from "./pageObjects/formTrial"
 import { fakerPT_BR } from "@faker-js/faker"
 import 'cypress-real-events/support'
 
@@ -2895,5 +2896,23 @@ Cypress.Commands.add('editarUrlWebhook', (nomeFuncao, url) => {
     } else {
       cy.log(`Configuração com nome ${nomeFuncao} e URL ${url} não encontrada.`)
     }
+  })
+})
+
+Cypress.Commands.add('preencherDadosTrial', (dados, opcoes = { limpar: false }) => {
+  const formulario = new formTrial()
+
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo]
+    formulario.preencherCampo(nomeCampo, valor, opcoes)
+  })
+})
+
+Cypress.Commands.add('validarDadosTrial', (dados) => {
+  const formulario = new formTrial()
+  
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+    formulario.validarCampo(nomeCampo, valor)
   })
 })
