@@ -2916,3 +2916,204 @@ Cypress.Commands.add('validarDadosTrial', (dados) => {
     formulario.validarCampo(nomeCampo, valor)
   })
 })
+
+Cypress.Commands.add('registroTrial', () => { 
+  // Clica no botão "Registre-se"
+  cy.get('#register_button')
+    .click()
+
+  // Valida página do trial
+  cy.url()
+    .should('include', '/new/register')
+})
+
+Cypress.Commands.add('validarMsgTrial', (step, objetivo, nomeUsuario) => {
+  const objetivoMap = {
+    'Treinamento de colaboradores': 'treinamentoColaboradores',
+    'Treinamento de clientes': 'treinamentoClientes',
+    'Treinamento de parceiros': 'treinamentoParceiros',
+    'Venda de cursos': 'vendaCursos',
+    'Outro': 'outro'
+  }
+
+  const validarTextos = (textos) => {
+    textos.forEach(({ seletor, texto }) => {
+      cy.contains(seletor, texto).should('be.visible')
+    })
+  }
+
+  const steps = {
+    seusDados: () => {
+      const { nomeStep, msgBemVindo, msgPreparado, msgSolicitaDados, texto1, texto2, texto3, texto4, texto5, texto6 } = Cypress.env('labels').trial.stepSeusDados
+      validarTextos([
+        { seletor: 'p.chakra-text', texto: nomeStep },
+        { seletor: 'h1.chakra-heading', texto: msgBemVindo },
+        { seletor: 'h2.chakra-heading', texto: msgPreparado },
+        { seletor: 'p.chakra-text', texto: msgSolicitaDados },
+        { seletor: 'span.chakra-text', texto: texto1 },
+        { seletor: 'span.chakra-text', texto: texto2 },
+        { seletor: 'b.chakra-text', texto: texto3 },
+        { seletor: 'span.chakra-text', texto: texto4 },
+        { seletor: 'b.chakra-text', texto: texto5 },
+        { seletor: 'span.chakra-text', texto: texto6 },
+      ])
+    },
+    dadosEmpresa: () => {
+      const { nomeStep, tituloStepDadosEmpresa, texto1, texto2, texto3, texto4 } = Cypress.env('labels').trial.stepDadosEmpresa
+      validarTextos([
+        { seletor: 'p.chakra-text', texto: nomeStep },
+        { seletor: 'h2.chakra-heading', texto: tituloStepDadosEmpresa },
+        { seletor: 'span.chakra-text', texto: texto1 },
+        { seletor: 'span.chakra-text', texto: texto2 },
+        { seletor: 'span.chakra-text', texto: texto3 },
+        { seletor: 'b.chakra-text', texto: texto4 },
+      ])
+    },
+    perfilUso: () => {
+      const { nomeStep, tituloStepPerfilUso, texto1, texto2, texto3 } = Cypress.env('labels').trial.stepPerfilUso
+      validarTextos([
+        { seletor: 'p.chakra-text', texto: nomeStep },
+        { seletor: 'label.chakra-form__label', texto: tituloStepPerfilUso },
+        { seletor: 'span.chakra-text', texto: texto1 },
+        { seletor: 'span.chakra-text', texto: texto2 },
+        { seletor: 'b.chakra-text', texto: texto3 },
+      ])
+    },
+    usuarios: () => {
+      const { nomeStep } = Cypress.env('labels').trial.stepUsuarios
+      validarTextos([
+        { seletor: 'p.chakra-text', texto: nomeStep },
+      ])
+
+      if (objetivo !== '') {
+        const objetivosUsuarios = {
+          treinamentoColaboradores: () => {
+            const { tituloStepUsuarios, texto1, texto2 } = Cypress.env('labels').trial.stepUsuarios.treinamentoColaboradores
+            validarTextos([
+              { seletor: 'p.chakra-text', texto: tituloStepUsuarios },
+              { seletor: 'span.chakra-text', texto: texto1 },
+              { seletor: 'span.chakra-text', texto: texto2 },
+            ])
+          },
+          treinamentoClientes: () => {
+            const { tituloStepUsuarios, texto1, texto2, informativo1, informativo2 } = Cypress.env('labels').trial.stepUsuarios.treinamentoClientes
+            validarTextos([
+              { seletor: 'p.chakra-text', texto: tituloStepUsuarios },
+              { seletor: 'p.chakra-text', texto: informativo1 },
+              { seletor: 'p.chakra-text', texto: informativo2 },
+              { seletor: 'span.chakra-text', texto: texto1 },
+              { seletor: 'span.chakra-text', texto: texto2 },
+            ])
+          },
+          treinamentoParceiros: () => {
+            const { tituloStepUsuarios, texto1, texto2, informativo1, informativo2 } = Cypress.env('labels').trial.stepUsuarios.treinamentoParceiros
+            validarTextos([
+              { seletor: 'p.chakra-text', texto: tituloStepUsuarios },
+              { seletor: 'p.chakra-text', texto: informativo1 },
+              { seletor: 'p.chakra-text', texto: informativo2 },
+              { seletor: 'span.chakra-text', texto: texto1 },
+              { seletor: 'span.chakra-text', texto: texto2 },
+            ])
+          },
+          vendaCursos: () => {
+            const { tituloStepUsuarios, texto1, texto2, texto3, informativo1, informativo2 } = Cypress.env('labels').trial.stepUsuarios.vendaCursos
+            validarTextos([
+              { seletor: 'p.chakra-text', texto: tituloStepUsuarios },
+              { seletor: 'p.chakra-text', texto: informativo1 },
+              { seletor: 'p.chakra-text', texto: informativo2 },
+              { seletor: 'span.chakra-text', texto: texto1 },
+              { seletor: 'span.chakra-text', texto: texto2 },
+              { seletor: 'span.chakra-text', texto: texto3 },
+            ])
+          },
+          outro: () => {
+            const { tituloStepUsuarios, texto1, texto2 } = Cypress.env('labels').trial.stepUsuarios.outro
+            validarTextos([
+              { seletor: 'p.chakra-text', texto: tituloStepUsuarios },
+              { seletor: 'span.chakra-text', texto: texto1 },
+              { seletor: 'span.chakra-text', texto: texto2 },
+            ])
+          },
+        }
+
+        const mappedObjetivo = objetivoMap[objetivo]
+        if (mappedObjetivo && objetivosUsuarios[mappedObjetivo]) {
+          objetivosUsuarios[mappedObjetivo]()
+        } else {
+          throw new Error(`Objetivo inválido: ${objetivo}. Utilize 'Treinamento de colaboradores', 'Treinamento de clientes', 'Treinamento de parceiros', 'Venda de cursos' ou 'Outro'`)
+        }
+      }
+    },
+    loginSenha: () => {
+      const { nomeStep, tituloStepLoginSenha } = Cypress.env('labels').trial.stepLoginSenha
+      validarTextos([
+        { seletor: 'p.chakra-text', texto: nomeStep },
+        { seletor: 'p.chakra-text', texto: tituloStepLoginSenha },
+      ])
+
+      if (objetivo !== '') {
+        const objetivosLoginSenha = {
+          treinamentoColaboradores: () => {
+            const { texto1, texto2 } = Cypress.env('labels').trial.stepLoginSenha.treinamentoColaboradores
+            validarTextos([
+              { seletor: 'span.chakra-text', texto: texto1 },
+              { seletor: 'span.chakra-text', texto: texto2 },
+            ])
+          },
+          treinamentoClientes: () => {
+            const { texto1, texto2 } = Cypress.env('labels').trial.stepLoginSenha.treinamentoClientes
+            validarTextos([
+              { seletor: 'span.chakra-text', texto: texto1 },
+              { seletor: 'span.chakra-text', texto: texto2 },
+            ])
+          },
+          treinamentoParceiros: () => {
+            const { texto1, texto2 } = Cypress.env('labels').trial.stepLoginSenha.treinamentoParceiros
+            validarTextos([
+              { seletor: 'span.chakra-text', texto: texto1 },
+              { seletor: 'span.chakra-text', texto: texto2 },
+            ])
+          },
+          vendaCursos: () => {
+            const { texto1, texto2, texto3 } = Cypress.env('labels').trial.stepLoginSenha.vendaCursos
+            validarTextos([
+              { seletor: 'span.chakra-text', texto: texto1 },
+              { seletor: 'span.chakra-text', texto: texto2 },
+              { seletor: 'span.chakra-text', texto: texto3 },
+            ])
+          },
+          outro: () => {
+            const { texto1, texto2 } = Cypress.env('labels').trial.stepLoginSenha.outro
+            validarTextos([
+              { seletor: 'span.chakra-text', texto: texto1 },
+              { seletor: 'span.chakra-text', texto: texto2 },
+            ])
+          },
+        }
+
+        const mappedObjetivo = objetivoMap[objetivo]
+        if (mappedObjetivo && objetivosLoginSenha[mappedObjetivo]) {
+          objetivosLoginSenha[mappedObjetivo]()
+        } else {
+          throw new Error(`Objetivo inválido: ${objetivo}. Utilize 'Treinamento de colaboradores', 'Treinamento de clientes', 'Treinamento de parceiros', 'Venda de cursos' ou 'Outro'`)
+        }
+      }
+    },
+    finalizacao: () => {
+      const { textoSucesso, textoEmail, textoCliqueAqui, textoReenviar } = Cypress.env('labels').trial.finalizacao
+      validarTextos([
+        { seletor: 'span.chakra-text', texto: nomeUsuario },
+        { seletor: 'span.chakra-text', texto: textoSucesso },
+        { seletor: 'p.chakra-text', texto: textoEmail },
+        { seletor: 'u.chakra-text', texto: textoCliqueAqui },
+        { seletor: 'p.chakra-text', texto: textoReenviar },
+      ])
+    }
+  }
+
+  if (steps[step]) {
+    steps[step]()
+  } else {
+    throw new Error(`Step inválido: ${step}. Utilize 'seusDados', 'dadosEmpresa', 'perfilUso', 'usuarios', 'loginSenha', 'finalizacao'`)
+  }
+})

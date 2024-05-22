@@ -21,11 +21,11 @@ class formTrial {
             tipo: 'input'
         },
         termos: {
-            seletor: '#field-6',
+            seletor: 'span.chakra-checkbox__label:contains("Termos de uso")',
             tipo: 'checkbox'
         },
         politica: {
-            seletor: '#field-7',
+            seletor: 'span.chakra-checkbox__label:contains("Política de privacidade")',
             tipo: 'checkbox'
         },
         proximoStep0: {
@@ -83,6 +83,12 @@ class formTrial {
             seletor: '.chakra-button.finish',
             tipo: 'button'
         }
+    }
+
+    voltarStep() {
+        cy.get('button.chakra-button')
+            .contains('Anterior')
+            .click()
     }
 
     // Implementado para mover o thumb do slider com as setas de teclado pois não foi possível fazer com o método .click()
@@ -162,27 +168,27 @@ class formTrial {
             case 'select':
                 cy.get(seletor).select(valorFinal)
                 break
-                case 'radio':
-                    cy.get(seletor).then($elements => {
-                        // Itera sobre cada elemento encontrado
-                        cy.wrap($elements).each($element => {
-                            // Verifica se o texto desejado está dentro do div irmão
-                            if ($element.next().text().includes(valorFinal)) {
-                                // Encontra o input radio dentro do label
-                                cy.wrap($element).find(`input[type="${tipo}"]`).check({ force: true })
-                            }
-                        })
+            case 'radio':
+                cy.get(seletor).then($elements => {
+                    // Itera sobre cada elemento encontrado
+                    cy.wrap($elements).each($element => {
+                        // Verifica se o texto desejado está dentro do div irmão
+                        if ($element.next().text().includes(valorFinal)) {
+                            // Encontra o input radio dentro do label
+                            cy.wrap($element).find(`input[type="${tipo}"]`).check({ force: true })
+                        }
                     })
+                })
                 break
             case 'checkbox':
                 // Verifica o estado atual do checkbox e só clica se necessário
-                cy.get(seletor).then($checkbox => {
-                    const isChecked = $checkbox.is(':checked')
+                cy.get(seletor).closest('label').find('input[type="checkbox"]').then($checkbox => {
+                    const isChecked = $checkbox.prop('checked')
                     // Se o estado desejado for diferente do estado atual, clica para alterar
                     if ((valorFinal && !isChecked) || (!valorFinal && isChecked)) {
-                        cy.get(seletor).click( {force: true} )
+                        cy.wrap($checkbox).click({ force: true })
                     }
-                })
+                })                
                 break      
             case 'button':
                 if (valorFinal === true) {
@@ -217,26 +223,35 @@ class formTrial {
 					.should('have.value', valorFinal)
 				break
 			case 'select':
-				cy.get(seletor)
-					.find('option:selected')
-					.should('have.text', valorFinal)
-				break
-			case 'radio':
                 cy.get(seletor)
-                    .contains(valorFinal)
-                    .closest('div')
-                    .find('input[type="radio"]')
-                    .should('be.checked')
+                    .find('option:selected')
+                    .invoke('text')
+                    .then((text) => {
+                    expect(text.trim()).to.eq(valorFinal.trim())
+                })
+                break
+			case 'radio':
+                // Verifica se o radio button com o valor específico está selecionado
+                cy.get(seletor).then($elements => {
+                    // Itera sobre cada elemento encontrado
+                    cy.wrap($elements).each($element => {
+                        // Verifica se o texto desejado está dentro do div irmão
+                        if ($element.next().text().includes(valorFinal)) {
+                            // Verifica se a label tem o atributo data-checked
+                            cy.wrap($element).closest('label').should('have.attr', 'data-checked')
+                        }
+                    })
+                })               
                 break
             case 'checkbox':
-				if (valorFinal === true ) {
-					cy.get(seletor)
-						.should('be.checked')
-				} else {
-					cy.get(seletor)
-						.should('not.be.checked')
-				}
-				break
+                if (valorFinal === true) {
+                    cy.get(seletor).closest('label').find('input[type="checkbox"]')
+                        .should('be.checked')
+                } else {
+                    cy.get(seletor).closest('label').find('input[type="checkbox"]')
+                        .should('not.be.checked')
+                }
+                break
             case 'button':
                 // Nenhuma validação a ser feita
                 break
