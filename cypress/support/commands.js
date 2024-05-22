@@ -2550,10 +2550,16 @@ Cypress.Commands.add('inativarAmbienteAdicional', (nomeAmbiente) => {
 Cypress.Commands.add('listaAmbientesAdicionais', () => {
   const nomesAmbientesAdicionais = []
 
-  cy.get('.chakra-text.partner-card-text span').each(($el) => {
-    nomesAmbientesAdicionais.push($el.text())
-  }).then(() => {
-    return nomesAmbientesAdicionais
+  cy.get('body').then(($body) => {
+    if ($body.find('.chakra-text.partner-card-text span').length > 0) {
+      cy.get('.chakra-text.partner-card-text span').each(($el) => {
+        nomesAmbientesAdicionais.push($el.text())
+      }).then(() => {
+        return nomesAmbientesAdicionais
+      })
+    } else {
+      return nomesAmbientesAdicionais
+    } 
   })
 })
 
