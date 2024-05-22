@@ -9,6 +9,7 @@ import formParticipantes from "./pageObjects/formParticipantes"
 import formConfigUsuario from "./pageObjects/formConfigUsuario"
 import formInstrutor from "./pageObjects/formInstrutor"
 import formGestor from "./pageObjects/formGestor"
+import formAmbientesAdicionais from "./pageObjects/formAmbientesAdicionais"
 import formConfigOrganizacao from "./pageObjects/formConfigOrganizacao"
 import formTrial from "./pageObjects/formTrial"
 import { fakerPT_BR } from "@faker-js/faker"
@@ -138,6 +139,17 @@ Cypress.Commands.add('acessarPgListaConteudos', function() {
   const { breadcrumb } = labels.conteudo.curso
 
   // Verificar se a página de lista de conteúdos foi acessada com sucesso
+  cy.contains('#page-breadcrumb', breadcrumb)
+    .should('be.visible')
+})
+
+Cypress.Commands.add('acessarPgAmbientesAdicionais', function() {
+  cy.visit(`/o/${Cypress.env('orgId')}/additional_environments`)
+
+  const labels = Cypress.env('labels')
+  const { breadcrumb } = labels.ambientesAdicionais
+
+  // Verificar se a página de ambientes adicionais foi acessada com sucesso
   cy.contains('#page-breadcrumb', breadcrumb)
     .should('be.visible')
 })
@@ -2523,6 +2535,84 @@ Cypress.Commands.add('ignorarCapturaErros', (errorsToIgnore, options = { ignoreS
 
 Cypress.Commands.add('ativarCapturaErros', function() {
   Cypress.removeAllListeners('uncaught:exception')
+})
+
+Cypress.Commands.add('criarAmbienteAdicional', (dadosAmbiente, opcoes = { limpar: true }) => {
+  const formulario = new formAmbientesAdicionais()
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { msgSucesso } = labels.ambientesAdicionais
+  
+  formulario.criarAmbienteAdicional()  
+  
+  Object.keys(dadosAmbiente).forEach(nomeCampo => {
+      const valor = dadosAmbiente[nomeCampo]
+      formulario.preencherCampo(nomeCampo, valor, opcoes)
+  })
+
+  formulario.salvarAmbiente()
+  cy.contains('#success-toast', msgSucesso, { timeout: TIMEOUT_PADRAO })
+        .should('be.visible')
+}) 
+
+Cypress.Commands.add('validarAmbienteAdicional', (dadosAmbiente, acao) => {
+  // Extrai o valor da chave 'nome' do objeto 'dadosAmbiente'
+  const nomeAmbiente = dadosAmbiente.nome;
+
+  switch(acao) {
+    case 'Criação':
+      cy.get('span.css-0')
+        .should('be.visible')
+        .should('contain', nomeAmbiente)
+      break
+    case 'Inativação':
+      cy.get('span.css-0').should('not.exist')
+      break
+  }
+})
+
+Cypress.Commands.add('inativarAmbienteAdicional', (nomeAmbiente) => {
+  const formulario = new formAmbientesAdicionais()
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { msgInativacao } = labels.ambientesAdicionais
+
+  cy.contains('div', nomeAmbiente).within(() => {
+    cy.get(formulario.elementos.inativar.seletor)
+    .click()
+  })   
+
+  // Confirmar a inativação do ambiente
+  formulario.confirmarInativacaoAmbiente()
+  
+  // Valida a mensagem de sucesso
+  cy.contains('.chakra-alert__desc.css-zycdy9', msgInativacao, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
+}) 
+
+Cypress.Commands.add('listaAmbientesAdicionais', () => {
+  const nomesAmbientesAdicionais = []
+
+  cy.get('body').then(($body) => {
+    if ($body.find('.chakra-text.partner-card-text span').length > 0) {
+      cy.get('.chakra-text.partner-card-text span').each(($el) => {
+        nomesAmbientesAdicionais.push($el.text())
+      }).then(() => {
+        return nomesAmbientesAdicionais
+      })
+    } else {
+      return nomesAmbientesAdicionais
+    } 
+  })
+})
+
+Cypress.Commands.add('inativarTodosAmbientesAdicionais', () => {
+  cy.listaAmbientesAdicionais().then((nomesAmbientesAdicionais) => {
+    nomesAmbientesAdicionais.forEach((nome) => {
+      cy.inativarAmbienteAdicional(nome)
+    })
+  })
+  cy.acessarPgAmbientesAdicionais()
 })
 
 Cypress.Commands.add('preencherDadosConfigOrganizacao', (dados, aba, opcoes = { limpar: false }) => {
