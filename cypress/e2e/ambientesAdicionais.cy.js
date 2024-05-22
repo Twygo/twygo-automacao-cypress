@@ -39,7 +39,7 @@ describe('ambientesAdicionais', () => {
 
         // CREATE
         cy.log('## CREATE ##')
-        cy.criarAmbienteAdicional(dadosAmbiente, { limpar: true }) 
+        cy.criarAmbienteAdicional('Criar', dadosAmbiente, { limpar: true }) 
 
         // READ
         cy.log('## READ ##')

@@ -12,6 +12,7 @@ import formGestor from "./pageObjects/formGestor"
 import formAmbientesAdicionais from "./pageObjects/formAmbientesAdicionais"
 import formConfigOrganizacao from "./pageObjects/formConfigOrganizacao"
 import formTrial from "./pageObjects/formTrial"
+import formConteudosAmbienteAdicional from "./pageObjects/formConteudosAmbienteAdicional"
 import { fakerPT_BR } from "@faker-js/faker"
 import 'cypress-real-events/support'
 
@@ -2537,13 +2538,17 @@ Cypress.Commands.add('ativarCapturaErros', function() {
   Cypress.removeAllListeners('uncaught:exception')
 })
 
-Cypress.Commands.add('criarAmbienteAdicional', (dadosAmbiente, opcoes = { limpar: true }) => {
+Cypress.Commands.add('criarAmbienteAdicional', (acao, dadosAmbiente, opcoes = { limpar: true }) => {
   const formulario = new formAmbientesAdicionais()
   const TIMEOUT_PADRAO = 5000
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.ambientesAdicionais
   
-  formulario.criarAmbienteAdicional()  
+  if (acao === 'Criar') {
+    formulario.criarAmbienteAdicional()
+  } else if (acao === 'Adicionar') {
+    formulario.adicionarAmbienteAdicional()
+  }
   
   Object.keys(dadosAmbiente).forEach(nomeCampo => {
       const valor = dadosAmbiente[nomeCampo]
@@ -2590,100 +2595,72 @@ Cypress.Commands.add('inativarAmbienteAdicional', (nomeAmbiente) => {
     .should('be.visible')
 }) 
 
-Cypress.Commands.add('alterarParaNovaAba', function() {
-  // Esperar até que a nova aba seja carregada
-  cy.window({ timeout: 10000 }).its('length').should('be.gt', 1); // Verifica se há mais de uma janela
-  cy.window({ timeout: 10000 }).then(win => {
-    cy.stub(win, 'open').as('openStub');
-  });
+Cypress.Commands.add('ambienteAdicionalConteudo', (nomeConteudo, tipoConteudo) => {
+  const labels = Cypress.env('labels')
+  const { breadcrumbAmbienteAdicional } = labels.conteudo[tipoConteudo]
 
-  // Esperar até que a nova aba seja aberta
-  cy.get('@openStub').should('be.called'); 
+  // Define o seletor para encontrar o conteúdo na listagem
+  let seletor = `tr[tag-name='${nomeConteudo}']`
 
-  // Esperar até que a nova aba esteja pronta para ser manipulada
-  cy.window().then(win => {
-    cy.stub(win, 'focus').as('focusStub');
-    cy.stub(win, 'blur').as('blurStub');
-    cy.stub(win, 'close').as('closeStub');
-    cy.stub(win, 'confirm').as('confirmStub');
-    cy.stub(win, 'prompt').as('promptStub');
-    cy.stub(win, 'alert').as('alertStub');
-  });
+  // Clica em 'Opções' e 'Ambientes adicionais'
+  cy.get(seletor)
+    .find('svg[aria-label="Options"]')
+    .click();
 
-  // Esperar um breve período para garantir que a nova aba seja carregada
-  cy.wait(500); 
+  cy.get(seletor)
+    .contains('button', 'Ambiente adicional')
+    .click({ force: true })
+
+  // Valida se a página foi carregada corretamente
+  const breadcrumbComVariavel = breadcrumbAmbienteAdicional.replace('{{nomeDoConteudo}}', nomeConteudo)
+  cy.contains('#page-breadcrumb', breadcrumbComVariavel)
+    .should('be.visible')
 })
 
-Cypress.Commands.add('fecharNovaAba', function() {
-  cy.window().then(win => {
-    win.close();
-  });
-})
-
-Cypress.Commands.add('ambientesAdicionaisConteudo', (nomeConteudo) => {
-  // Acessa o arquivo de labels
-  cy.readFile('cypress/fixtures/labels.json').then(labels => {
-    const { breadcrumbConteudo} = labels.ambientesAdicionais;
-
-    // Define o seletor para encontrar o conteúdo na listagem
-    let seletor = `tr[tag-name='${nomeConteudo}']`;
-
-    // Clica em 'Opções' e 'Gestores de turma'
-    cy.get(seletor)
-      .find('svg[aria-label="Options"]')
-      .click();
-
-    cy.get(seletor)
-      .contains('button', 'Ambiente adicional')
-      .click({ force: true });
-
-    // Valida se a página foi carregada corretamente conforme o tipo de conteúdo
-    const breadcrumbComVariavel = breadcrumbConteudo.replace('{{nomeDoConteudo}}', nomeConteudo);
-    cy.contains('#page-breadcrumb', breadcrumbComVariavel)
-      .should('be.visible');
+Cypress.Commands.add('compartilharComAmbienteAdicional', (nomeAmbiente, acao) => {
+  // Encontra o card que contém o nome do ambiente
+  cy.contains('p.chakra-text.partner-card-text span', nomeAmbiente).closest('div').within(() => {
+    // Verifica o estado atual do checkbox
+    cy.get('label.chakra-checkbox input[type="checkbox"]').then(($checkbox) => {
+      const isChecked = $checkbox.is(':checked')
+      
+      if (acao === 'Habilitar' && !isChecked) {
+        // Se a ação for 'Habilitar' e o checkbox não estiver marcado, marque-o
+        cy.wrap($checkbox).check({ force: true });
+      } else if (acao === 'Desabilitar' && isChecked) {
+        // Se a ação for 'Desabilitar' e o checkbox estiver marcado, desmarque-o
+        cy.wrap($checkbox).uncheck({ force: true })
+      }
+    })
   })
 })
 
-Cypress.Commands.add('clicarCheckboxCompartilhamento', (dadosAmbiente) => {
-  const formulario = new formAmbientesAdicionais()
-  const TIMEOUT_PADRAO = 5000
+Cypress.Commands.add('salvarCompartilhamentoAmbienteAdicional', () => {
+  const formulario = new formConteudosAmbienteAdicional()
   const labels = Cypress.env('labels')
-  const nomeAmbiente = dadosAmbiente.nome;  
+  const { msgCompartilhamento } = labels.ambientesAdicionais
 
-  cy.get(`span:contains("${nomeAmbiente}")`)
-    .parents('p')
-    .parents('div')
-    formulario.compartilharCurso()  
-  
-  formulario.salvarCompartilhamento
-}) 
+  formulario.salvarCompartilhamento()
 
-Cypress.Commands.add('acessarAmbienteAdicional', (dadosAmbiente) => {
-  const nomeAmbiente = dadosAmbiente.nome;  
-
-  cy.get(`span:contains("${nomeAmbiente}")`)
-    .click()
-
-  cy.alterarParaNovaAba()
-
-  cy.url().then(url => {
-    const newUrl = url.split('.com/')[0] + '.com/users/login';
-    cy.visit(newUrl);
-  });  
+  // Valida a mensagem de sucesso
+  cy.contains('.chakra-alert__desc', msgCompartilhamento)
+    .should('be.visible')
 })
 
-Cypress.Commands.add('validarConteudo', (nomeConteudo, compartilhamento) => {
-
-  switch(compartilhamento) {
-    case 'Compartilhar':
-      cy.get(`tr[tag-name='${nomeConteudo}']`)
-        .should('be.visible');
-      break
-    case 'Remover compartilhamento':
-      cy.get(`tr[tag-name='${nomeConteudo}']`)
-        .should('not.be.visible')
-      break  
-  }
+Cypress.Commands.add('validarCompartilhamentoComAmbienteAdicional', (nomeAmbiente, acao) => {
+  // Encontra o card que contém o nome do ambiente
+  cy.contains('p.chakra-text.partner-card-text span', nomeAmbiente).closest('div').within(() => {
+    // Verifica o estado atual do checkbox
+    cy.get('label.chakra-checkbox input[type="checkbox"]').should(($checkbox) => {
+      const isChecked = $checkbox.is(':checked')
+      
+      if (acao === 'Habilitado') {
+        expect(isChecked).to.be.true
+      } else if (acao === 'Desabilitado') {
+        expect(isChecked).to.be.false
+      }
+    })
+  })
 })
 
 Cypress.Commands.add('listaAmbientesAdicionais', () => {
