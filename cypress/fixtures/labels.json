@@ -10,7 +10,8 @@
             "tituloModalExclusao": "Excluir curso",
             "texto1ModalExclusao": "Você tem certeza que deseja excluir este curso?",
             "texto2ModalExclusao": "Esta ação não poderá ser desfeita.",
-            "msgSucessoExclusao": "Conteúdo excluído com sucesso"
+            "msgSucessoExclusao": "Conteúdo excluído com sucesso",
+            "breadcrumbAmbienteAdicional": "Lista de conteúdos > {{nomeDoConteudo}} > Ambiente adicional"
         },
         "criarCurso": {
             "breadcrumb": "Catálogo de cursos",
@@ -185,7 +186,8 @@
     "ambientesAdicionais": {
         "breadcrumb": "Ambientes adicionais",
         "msgSucesso": "Ambiente adicional criado com sucesso",
-        "msgInativacao": "Ambiente inativado com sucesso"
+        "msgInativacao": "Ambiente inativado com sucesso",
+        "msgCompartilhamento": "Alterações salvas com sucesso"
     },
     "configOrganizacao": {
         "breadcrumb": "Organização",

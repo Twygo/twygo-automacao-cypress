@@ -12,6 +12,7 @@ import formGestor from "./pageObjects/formGestor"
 import formAmbientesAdicionais from "./pageObjects/formAmbientesAdicionais"
 import formConfigOrganizacao from "./pageObjects/formConfigOrganizacao"
 import formTrial from "./pageObjects/formTrial"
+import formConteudosAmbienteAdicional from "./pageObjects/formConteudosAmbienteAdicional"
 import { fakerPT_BR } from "@faker-js/faker"
 import 'cypress-real-events/support'
 
@@ -2537,13 +2538,17 @@ Cypress.Commands.add('ativarCapturaErros', function() {
   Cypress.removeAllListeners('uncaught:exception')
 })
 
-Cypress.Commands.add('criarAmbienteAdicional', (dadosAmbiente, opcoes = { limpar: true }) => {
+Cypress.Commands.add('criarAmbienteAdicional', (acao, dadosAmbiente, opcoes = { limpar: true }) => {
   const formulario = new formAmbientesAdicionais()
   const TIMEOUT_PADRAO = 5000
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.ambientesAdicionais
   
-  formulario.criarAmbienteAdicional()  
+  if (acao === 'Criar') {
+    formulario.criarAmbienteAdicional()
+  } else if (acao === 'Adicionar') {
+    formulario.adicionarAmbienteAdicional()
+  }
   
   Object.keys(dadosAmbiente).forEach(nomeCampo => {
       const valor = dadosAmbiente[nomeCampo]
@@ -2589,6 +2594,74 @@ Cypress.Commands.add('inativarAmbienteAdicional', (nomeAmbiente) => {
   cy.contains('.chakra-alert__desc.css-zycdy9', msgInativacao, { timeout: TIMEOUT_PADRAO })
     .should('be.visible')
 }) 
+
+Cypress.Commands.add('ambienteAdicionalConteudo', (nomeConteudo, tipoConteudo) => {
+  const labels = Cypress.env('labels')
+  const { breadcrumbAmbienteAdicional } = labels.conteudo[tipoConteudo]
+
+  // Define o seletor para encontrar o conteúdo na listagem
+  let seletor = `tr[tag-name='${nomeConteudo}']`
+
+  // Clica em 'Opções' e 'Ambientes adicionais'
+  cy.get(seletor)
+    .find('svg[aria-label="Options"]')
+    .click();
+
+  cy.get(seletor)
+    .contains('button', 'Ambiente adicional')
+    .click({ force: true })
+
+  // Valida se a página foi carregada corretamente
+  const breadcrumbComVariavel = breadcrumbAmbienteAdicional.replace('{{nomeDoConteudo}}', nomeConteudo)
+  cy.contains('#page-breadcrumb', breadcrumbComVariavel)
+    .should('be.visible')
+})
+
+Cypress.Commands.add('compartilharComAmbienteAdicional', (nomeAmbiente, acao) => {
+  // Encontra o card que contém o nome do ambiente
+  cy.contains('p.chakra-text.partner-card-text span', nomeAmbiente).closest('div').within(() => {
+    // Verifica o estado atual do checkbox
+    cy.get('label.chakra-checkbox input[type="checkbox"]').then(($checkbox) => {
+      const isChecked = $checkbox.is(':checked')
+      
+      if (acao === 'Habilitar' && !isChecked) {
+        // Se a ação for 'Habilitar' e o checkbox não estiver marcado, marque-o
+        cy.wrap($checkbox).check({ force: true });
+      } else if (acao === 'Desabilitar' && isChecked) {
+        // Se a ação for 'Desabilitar' e o checkbox estiver marcado, desmarque-o
+        cy.wrap($checkbox).uncheck({ force: true })
+      }
+    })
+  })
+})
+
+Cypress.Commands.add('salvarCompartilhamentoAmbienteAdicional', () => {
+  const formulario = new formConteudosAmbienteAdicional()
+  const labels = Cypress.env('labels')
+  const { msgCompartilhamento } = labels.ambientesAdicionais
+
+  formulario.salvarCompartilhamento()
+
+  // Valida a mensagem de sucesso
+  cy.contains('.chakra-alert__desc', msgCompartilhamento)
+    .should('be.visible')
+})
+
+Cypress.Commands.add('validarCompartilhamentoComAmbienteAdicional', (nomeAmbiente, acao) => {
+  // Encontra o card que contém o nome do ambiente
+  cy.contains('p.chakra-text.partner-card-text span', nomeAmbiente).closest('div').within(() => {
+    // Verifica o estado atual do checkbox
+    cy.get('label.chakra-checkbox input[type="checkbox"]').should(($checkbox) => {
+      const isChecked = $checkbox.is(':checked')
+      
+      if (acao === 'Habilitado') {
+        expect(isChecked).to.be.true
+      } else if (acao === 'Desabilitado') {
+        expect(isChecked).to.be.false
+      }
+    })
+  })
+})
 
 Cypress.Commands.add('listaAmbientesAdicionais', () => {
   const nomesAmbientesAdicionais = []
