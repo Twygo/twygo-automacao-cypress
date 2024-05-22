@@ -186,5 +186,111 @@
         "breadcrumb": "Ambientes adicionais",
         "msgSucesso": "Ambiente adicional criado com sucesso",
         "msgInativacao": "Ambiente inativado com sucesso"
+    },
+    "configOrganizacao": {
+        "breadcrumb": "Organização",
+        "msgSucessoAlterarDadosUsuario": "Organização atualizada com sucesso.",
+        "msgSucessoConfigLogin": "Informações salvas com sucesso!",
+        "msgSucessoCustomizacoesInterface": "Personalização de interface salva com sucesso!",
+        "msgSucessoPixel": "Pixel salvo!",
+        "msgSucessoLogin": "Informações salvas com sucesso!",
+        "msgSucessoTermos": "Informações salvas com sucesso!",
+        "msgSucessoUrlWebhooks": "URL criada com sucesso"
+    },
+    "trial": {
+        "stepSeusDados": {
+            "nomeStep": "Seus dados",
+            "msgBemVindo": "Bem vindo a",
+            "msgPreparado": "Preparado para começar essa nova jornada?",
+            "msgSolicitaDados": "Comece informando seus dados para gente.",    
+            "texto1": "Fácil de usar",
+            "texto2": "Nossa plataforma é",
+            "texto3": "pronta para uso.",
+            "texto4": "Tenha independência para",
+            "texto5": "você mesmo administrar seu ambiente LMS",
+            "texto6": "desde o primeiro contato com a Twygo."
+        },
+        "stepDadosEmpresa": {
+            "nomeStep": "Dados da empresa",
+            "tituloStepDadosEmpresa": "Agora que já sabemos quem é você, fale mais sobre a sua empresa.",
+            "texto1": "Experiência única",
+            "texto2": "desde o primeiro contato",
+            "texto3": "Conte com nossos",
+            "texto4": "especialistas preparados para resolver qualquer desafio."
+        },
+        "stepPerfilUso": {
+            "nomeStep": "Perfil de uso",
+            "tituloStepPerfilUso": "Qual seu principal objetivo com a Twygo?",
+            "texto1": "Personalizável",
+            "texto2": "Altere as cores, logo e até o domínio.",
+            "texto3": "Tudo do seu jeito."
+        },
+        "stepUsuarios": {
+            "nomeStep": "Usuários",
+            "treinamentoColaboradores": {
+                "tituloStepUsuarios": "Aproximadamente quantas pessoas serão treinadas?",
+                "texto1": "Organize todos os treinamentos da empresa",
+                "texto2": "em um único lugar."
+            },
+            "treinamentoClientes": {
+                "tituloStepUsuarios": "Aproximadamente quantas pessoas serão treinadas mensalmente?",
+                "texto1": "Organize todos os treinamentos dos seus produtos",
+                "texto2": "em um único lugar.",
+                "informativo1": "Nos planos com controle de acessos mensais você poderá ter usuários ilimitados cadastrados na plataforma.",
+                "informativo2": "Somente usuários que acessam são considerados nesse tipo de plano."
+            },
+            "treinamentoParceiros": {
+                "tituloStepUsuarios": "Aproximadamente quantas pessoas serão treinadas mensalmente?",
+                "texto1": "Crie cursos e trilhas de conhecimentos técnicos e tenha",
+                "texto2": "todos os seus parceiros capacitados.",
+                "informativo1": "Nos planos com controle de acessos mensais você poderá ter usuários ilimitados cadastrados na plataforma.",
+                "informativo2": "Somente usuários que acessam são considerados nesse tipo de plano."
+            },
+            "vendaCursos": {
+                "tituloStepUsuarios": "Aproximadamente quantas pessoas serão treinadas mensalmente?",
+                "texto1": "Ofereça seus treinamentos online e",
+                "texto2": "facilite o acesso",
+                "texto3": "para os seus clientes.",
+                "informativo1": "Nos planos com controle de acessos mensais você poderá ter usuários ilimitados cadastrados na plataforma.",
+                "informativo2": "Somente usuários que acessam são considerados nesse tipo de plano."
+            },
+            "outro": {
+                "tituloStepUsuarios": "Aproximadamente quantas pessoas serão treinadas?",
+                "texto1": "Organize todos os seus treinamentos",
+                "texto2": "em um único lugar."
+            }            
+        },
+        "stepLoginSenha": {
+            "nomeStep": "Login e senha",
+            "tituloStepLoginSenha": "Agora é só criar o seu acesso.",
+            "treinamentoColaboradores": {
+                "texto1": "Controle total das informações",
+                "texto2": "com relatórios e dashboards."
+            },
+            "treinamentoParceiros": {
+                "texto1": "Controle total das informações",
+                "texto2": "com relatórios e dashboards."
+            },
+            "treinamentoClientes": {
+                "texto1": "Facilite a aprendizagem com treinamentos disponíveis a qualquer momento.",
+                "texto2": "Autonomia para o seu cliente aprender."
+            },
+            "vendaCursos": {
+                "texto1": "Na Twygo",
+                "texto2": "você não precisa pagar nenhum percentual",
+                "texto3": "sobre a venda dos seus cursos."
+            },
+            "outro": {
+                "texto1": "Controle total das informações",
+                "texto2": "com relatórios e dashboards."
+            }
+        },
+        "finalizacao": {
+            "textoSucesso": "a Twygo está pronta, veja o seu e-mail!",
+            "textoEmail": "Enviamos uma mensagem de confirmação, se você não receber em até 2 minutos,",
+            "textoCliqueAqui": "clique aqui",
+            "textoReenviar": "para reenviar."
+
+        }
     }
 }
