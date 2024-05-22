@@ -48,7 +48,8 @@ describe('Participante', () => {
     beforeEach(() => {
         // Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'"
+            "Unexpected identifier 'id'",    // Chrome
+            "unexpected token: identifier"    // Firefox
         ], { ignoreScriptErrors: true })
         
         // Obtém token autenticação, lista e exclui os usuários e cursos

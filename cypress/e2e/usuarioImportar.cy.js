@@ -284,7 +284,8 @@ describe('Importar Usuários', () => {
     beforeEach(() => {
         // Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'"
+            "Unexpected identifier 'id'",    // Chrome
+            "unexpected token: identifier"    // Firefox
         ])
         
         // Exclui todos os usuários cadastrados (com excessão do usuário administrador principal)

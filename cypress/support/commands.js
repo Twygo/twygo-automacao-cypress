@@ -10,6 +10,8 @@ import formConfigUsuario from "./pageObjects/formConfigUsuario"
 import formInstrutor from "./pageObjects/formInstrutor"
 import formGestor from "./pageObjects/formGestor"
 import formAmbientesAdicionais from "./pageObjects/formAmbientesAdicionais"
+import formConfigOrganizacao from "./pageObjects/formConfigOrganizacao"
+import formTrial from "./pageObjects/formTrial"
 import { fakerPT_BR } from "@faker-js/faker"
 import 'cypress-real-events/support'
 
@@ -171,10 +173,51 @@ Cypress.Commands.add('acessarPgLogin', function() {
 })
 
 Cypress.Commands.add('acessarPgQuestionarios', function() {
-  cy.visit(`/o/${Cypress.env('orgId')}/question_lists`)
-
   const labels = Cypress.env('labels')
   const { breadcrumb } = labels.questionario
+
+  cy.visit(`/o/${Cypress.env('orgId')}/question_lists`)
+
+  // Verificar se a página de questionários foi acessada com sucesso
+  cy.contains('#page-breadcrumb', breadcrumb)
+    .should('be.visible')
+})
+
+Cypress.Commands.add('acessarPgConfigOrganizacao', function(aba) {
+  const formulario = new formConfigOrganizacao()
+  const labels = Cypress.env('labels')
+  const { breadcrumb } = labels.configOrganizacao
+  
+  cy.visit(`/o/${Cypress.env('orgId')}/edit`)
+
+  // Verificar se a página de configuração da organização foi acessada com sucesso
+  cy.contains('#page-breadcrumb', breadcrumb)
+    .should('be.visible')
+  
+  if (aba) {
+    switch (aba) {
+      case 'dados':
+        formulario.abaDados()
+        break
+      case 'customizacoes':
+        formulario.abaCustomizacoes()
+        break
+      case 'certificado':
+        formulario.abaCertificado()
+        break
+      case 'integracoes':
+        formulario.abaIntegracoes()
+        break
+      case 'termos':
+        formulario.abaTermos()
+        break
+      case 'urlWebhooks':
+        formulario.abaUrlWebhooks()
+        break
+      default:
+        throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
+    }
+  }  
 })
 
 Cypress.Commands.add("criarCatalogoViaApi", (body, attempt = 1) => {
@@ -2528,21 +2571,23 @@ Cypress.Commands.add('validarAmbienteAdicional', (dadosAmbiente, acao) => {
   }
 })
 
-Cypress.Commands.add('inativarAmbienteAdicional', (dadosAmbiente) => {
-    const formulario = new formAmbientesAdicionais()
-    const TIMEOUT_PADRAO = 5000
-    const labels = Cypress.env('labels')
-    const { msgInativacao } = labels.ambientesAdicionais
-    const nomeAmbiente = dadosAmbiente.nome;  
+Cypress.Commands.add('inativarAmbienteAdicional', (nomeAmbiente) => {
+  const formulario = new formAmbientesAdicionais()
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { msgInativacao } = labels.ambientesAdicionais
 
-    cy.get(`div:contains("${nomeAmbiente}")`)
-      formulario.inativarAmbiente()     
-      
-    formulario.confirmarInativacaoAmbiente()
+  cy.contains('div', nomeAmbiente).within(() => {
+    cy.get(formulario.elementos.inativar.seletor)
+    .click()
+  })   
+
+  // Confirmar a inativação do ambiente
+  formulario.confirmarInativacaoAmbiente()
   
-    cy.contains('.chakra-alert__desc.css-zycdy9', msgInativacao, { timeout: TIMEOUT_PADRAO })
-      .should('be.visible')
-
+  // Valida a mensagem de sucesso
+  cy.contains('.chakra-alert__desc.css-zycdy9', msgInativacao, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
 }) 
 
 Cypress.Commands.add('alterarParaNovaAba', function() {
@@ -2641,5 +2686,620 @@ Cypress.Commands.add('validarConteudo', (nomeConteudo, compartilhamento) => {
   }
 })
 
+Cypress.Commands.add('listaAmbientesAdicionais', () => {
+  const nomesAmbientesAdicionais = []
 
+  cy.get('body').then(($body) => {
+    if ($body.find('.chakra-text.partner-card-text span').length > 0) {
+      cy.get('.chakra-text.partner-card-text span').each(($el) => {
+        nomesAmbientesAdicionais.push($el.text())
+      }).then(() => {
+        return nomesAmbientesAdicionais
+      })
+    } else {
+      return nomesAmbientesAdicionais
+    } 
+  })
+})
 
+Cypress.Commands.add('inativarTodosAmbientesAdicionais', () => {
+  cy.listaAmbientesAdicionais().then((nomesAmbientesAdicionais) => {
+    nomesAmbientesAdicionais.forEach((nome) => {
+      cy.inativarAmbienteAdicional(nome)
+    })
+  })
+  cy.acessarPgAmbientesAdicionais()
+})
+
+Cypress.Commands.add('preencherDadosConfigOrganizacao', (dados, aba, opcoes = { limpar: false }) => {
+  const formulario = new formConfigOrganizacao()
+
+  if (aba) {
+    switch (aba) {
+      case 'dados':
+        formulario.abaDados()
+        break
+      case 'customizacoes':
+        formulario.abaCustomizacoes()
+        break
+      case 'certificado':
+        formulario.abaCertificado()
+        break
+      case 'integracoes':
+        formulario.abaIntegracoes()
+        break
+      case 'termos':
+        formulario.abaTermos()
+        break
+      case 'urlWebhooks':
+        formulario.abaUrlWebhooks()
+        break
+      default:
+        throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
+    }
+  }
+  
+  Object.keys(dados).forEach(nomeCampo => {
+      const valor = dados[nomeCampo]
+      formulario.preencherCampo(nomeCampo, valor, opcoes)
+  })
+}) 
+
+Cypress.Commands.add('validarDadosConfigOrganizacao', (dados, aba) => {
+  const formulario = new formConfigOrganizacao()
+
+  switch (aba) {
+    case 'dados':
+      formulario.abaDados()
+      break
+    case 'customizacoes':
+      formulario.abaCustomizacoes()
+      break
+    case 'certificado':
+      formulario.abaCertificado()
+      break
+    case 'integracoes':
+      formulario.abaIntegracoes()
+      break
+    case 'termos':
+      formulario.abaTermos()
+      break
+    case 'urlWebhooks':
+      formulario.abaUrlWebhooks()
+      break
+    default:
+      throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
+  }
+
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+    formulario.validarCampo(nomeCampo, valor)
+  })
+})
+
+Cypress.Commands.add('resetConfigOrganizacao', (aba) => {
+  switch (aba) {
+    case 'dados':
+      const formDadosDefault = {
+        nome: Cypress.env('orgName'),
+        descricao: '',
+        informacoesGerais: '',
+        resumoIndexacao: '',
+        cep: '',
+        endereco: '',
+        complemento: '',
+        bairro: '',
+        cidade: '',
+        estado: '',
+        pais: '',
+        telefone: '(45) 99999-9999',
+        email: Cypress.env('login'),
+        site: '',
+        converterEscalaBranco: false,
+        personalizarLinkLogotipo: true,
+        linkRedirecionamento: '',
+        botaoContato: '',
+        usarGestaoCompetencias: false,
+        ativarGamificacao: false,
+        visualizacao: 'Privada',
+        abaPortfolio: false,
+        abaAgenda: false,
+        abaParceiros: false,
+        abaSobre: false,
+        abaPlanos: false,
+        listaEmpresas: '',
+        nrColaboradores: '',
+        ramoAtuacao: '',
+        cargo: ''
+      }
+
+      const atualizarPersonalizarLink = {
+          personalizarLinkLogotipo: false,
+          salvarDados: true
+      }
+
+      cy.acessarPgConfigOrganizacao()
+      cy.preencherDadosConfigOrganizacao(formDadosDefault, 'dados', { limpar: true })
+      cy.preencherDadosConfigOrganizacao(atualizarPersonalizarLink)
+      // Aguardar 3 segundos para atualização dos dados
+      cy.wait(3000)
+      cy.acessarPgConfigOrganizacao()
+      break
+    case 'customizacoes':
+      const formAlterarDadosUsuarioDefault = {
+        // Alterar dados do usuário
+        naoPermitirAlterarDados: false,
+        salvarAlterarDados: true
+      }
+
+      cy.acessarPgConfigOrganizacao()
+      cy.preencherDadosConfigOrganizacao(formAlterarDadosUsuarioDefault, 'customizacoes', { limpar: true })
+
+      const formConfigLoginDefault = {
+        // Configurações de login
+        tempoExpiracaoLogin: false,
+        loginEmail: true,
+        loginCpf: false,
+        salvarConfiguracoesLogin: true
+      }
+
+      cy.preencherDadosConfigOrganizacao(formConfigLoginDefault, 'customizacoes', { limpar: true })
+
+      const formCustomizacoesInterfaceDefault = {
+        // Customização de interface
+        corPrimaria: '#9349DE',
+        corTexto: '#596679',
+        mostrarFundoLogin: false,
+        mostrarBotaoRegistrar: true,
+        removerImagemFundoLogin: false,
+        salvarCustomizacaoInterface: true
+      }
+
+      cy.preencherDadosConfigOrganizacao(formCustomizacoesInterfaceDefault, 'customizacoes', { limpar: true })
+
+      const formEnvioEmailsDefault = {
+        // Envio de E-mails
+        limparInformacoesEmail: true
+      }
+
+      // Esperar para atualização da customização
+      cy.wait(5000)
+
+      cy.preencherDadosConfigOrganizacao(formEnvioEmailsDefault, 'customizacoes', { limpar: true })
+      break
+    case 'certificado':
+      // Carregar um certificado em branco, pois não é possível limpar os dados	
+      const carregarCertificadoEmBranco = {
+        configurar: true,
+        selecionarImagem: `imagem_0.jpg`,
+        salvarGerarModelo: true
+      }
+
+      const formConfigCertificadoDefault = {
+          notificarGestorNovosCertificados: false,
+          salvarCertificado: true
+      }
+
+      cy.acessarPgConfigOrganizacao()
+      cy.preencherDadosConfigOrganizacao(carregarCertificadoEmBranco, 'certificado')
+
+      cy.acessarPgConfigOrganizacao()
+      cy.preencherDadosConfigOrganizacao(formConfigCertificadoDefault, 'certificado')
+
+      // Aguardar 10 segundos para que o certificado seja carregado
+      cy.wait(10000)
+      break    
+    case 'integracoes':
+      const formConfigIntegracoesDefault = {
+        // Configurações de integrações
+        ativarLogin: false,
+        salvarLogin: true
+      }
+
+      cy.acessarPgConfigOrganizacao()
+      cy.preencherDadosConfigOrganizacao(formConfigIntegracoesDefault, 'integracoes')
+
+      cy.listaPixels().then(nomes => {
+        nomes.forEach(nome => {
+          cy.excluirIdentificadorPixel(nome)
+        })
+      })
+      break
+    case 'termos':
+      const formTermosDefault = {
+        editorTexto: true,
+        termosUsoTexto: '.',
+        politicaPrivacidadeTexto: '.',
+        salvarTermosPoliticaTexto: true
+      }
+
+      cy.acessarPgConfigOrganizacao()
+      cy.preencherDadosConfigOrganizacao(formTermosDefault, 'termos')
+      break
+    case 'urlWebhooks':
+      cy.acessarPgConfigOrganizacao('urlWebhooks')
+      cy.listaConfigUrlWebhooks().then((configs) => {
+        // Verifica se existem configurações para excluir
+        if (configs.length > 0) {
+            // Exclui cada configuração encontrada
+            configs.forEach(config => {
+                cy.excluirUrlWebhook(config.nomeFuncao, config.url)
+            })
+        }
+    })
+      break
+    default:
+      throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
+  }
+})
+
+Cypress.Commands.add('validarCertificadoGerado', (dadosGerarCertificado) => {
+  const orgName = Cypress.env('orgName').replace(/ /g, '_')
+
+  // Validação do nome do arquivo do certificado
+  cy.get('.file-size')
+      .contains('.label', `${Cypress.env('orgId')}-${orgName}.pdf`)
+      .should('exist')
+
+  // Mapeamento dos tamanhos de arquivo por imagem
+  const tamanhosPorImagem = {
+      'imagem_0.jpg': '1602 bytes',
+      'imagem_1.jpg': '348689 bytes',
+      'imagem_2.jpg': '285303 bytes',
+      'imagem_3.jpg': '236988 bytes',
+      'imagem_4.jpg': '212021 bytes',
+      'imagem_5.jpg': '268280 bytes',
+      'imagem_6.jpg': '110903 bytes',
+      'imagem_7.jpg': '60988 bytes',
+      'imagem_8.jpg': '226841 bytes',
+      'imagem_9.jpg': '11045 bytes',
+      'imagem_10.jpg': '163247 bytes',
+  }
+
+  let tamanho = tamanhosPorImagem[dadosGerarCertificado.selecionarImagem]
+
+  // Validação do tamanho do arquivo
+  cy.get('.file-size')
+      .contains('.size', tamanho)
+      .should('exist')
+})
+
+Cypress.Commands.add('listaPixels', () => {
+  cy.get('body').then($body => {
+    // Verifica se existe algum 'tr' dentro de 'tbody'
+    if ($body.find('tbody tr').length > 0) {
+      // Se existir, prossegue com a lógica
+      return cy.get('tbody tr').then($trs => {
+        const nomes = $trs.map((index, tr) => Cypress.$(tr).find('td').first().text()).get()
+        return nomes
+      })
+    } else {
+      // Se não, retorna um array vazio
+      return []
+    }
+  })
+})
+
+Cypress.Commands.add('excluirIdentificadorPixel', (identificador) => {
+  cy.get('body').then($body => {
+    // Verifica se o identificador existe na página antes de tentar excluí-lo
+    if ($body.find(`tbody tr:contains('${identificador}')`).length) {
+      cy.get(`tbody tr:contains('${identificador}')`).within(() => {
+        cy.get('a').contains('Excluir').click()
+      })
+      // Aguarda a exclusão ser processada, idealmente substituir por uma verificação de estado da página
+      cy.wait(1000) // Considerar substituir por uma estratégia mais robusta
+    } else {
+      cy.log(`Identificador ${identificador} não encontrado.`)
+    }
+  })
+})
+
+Cypress.Commands.add('editarIdentificadorPixel', (identificador) => {
+  cy.get('body').then($body => {
+    // Verifica se o identificador existe na página antes de tentar editá-lo
+    if ($body.find(`tbody tr:contains('${identificador}')`).length) {
+      cy.get(`tbody tr:contains('${identificador}')`).within(() => {
+        cy.get('a').contains('Editar').click()
+      })
+    } else {
+      cy.log(`Identificador ${identificador} não encontrado.`)
+    }
+  })
+})
+
+Cypress.Commands.add('aceiteTermos', ()=> {
+    cy.get('#agree_check')
+    .click()
+
+  cy.get('#next')
+    .click()
+})
+
+Cypress.Commands.add('validarWebhook', (dadosWebhook) => {
+  cy.get('div.url_webhook label[for="url"]')
+    .should('have.text', dadosWebhook.urlWebhook)
+
+  cy.get('div.url_webhook label[for="function"]')
+    .should('have.text', dadosWebhook.funcionalidade)
+})
+
+Cypress.Commands.add('listaConfigUrlWebhooks', () => {
+  cy.get('body').then($body => {
+    // Verifica se existe algum elemento com a classe '.url_webhook' no corpo do documento
+    if ($body.find('.url_webhook').length) {
+      // Se existir, prossegue com a lógica de mapeamento
+      return cy.get('.url_webhook').then($webhooks => {
+        const configs = $webhooks.map((index, webhook) => {
+          const nomeFuncao = Cypress.$(webhook).find('.col-md-3 label').text().trim()
+          const url = Cypress.$(webhook).find('.col-md-7 label').text().trim()
+          return {
+            nomeFuncao,
+            url
+          };
+        }).get()
+        // Usa cy.wrap para retornar a lista de configurações de forma assíncrona
+        return cy.wrap(configs)
+      })
+    } else {
+      // Se não existir, usa cy.wrap para retornar uma lista vazia de forma assíncrona
+      cy.log('Nenhuma configuração de URL de webhook encontrada.')
+      return cy.wrap([])
+    }
+  })
+})
+
+Cypress.Commands.add('excluirUrlWebhook', (nomeFuncao, url) => {
+  cy.get('.url_webhook').then($webhooks => {
+    const webhookEspecifico = $webhooks.filter((index, webhook) => {
+      const nomeFuncaoAtual = Cypress.$(webhook).find('.col-md-3 label').text()
+      const urlAtual = Cypress.$(webhook).find('.col-md-7 label').text()
+      return nomeFuncaoAtual === nomeFuncao && urlAtual === url
+    })
+
+    if (webhookEspecifico.length) {
+      // Assume que o botão de excluir está sempre no último `.col-md-1`
+      cy.wrap(webhookEspecifico).find('.col-md-1 .url_webhook_destroy').click()
+      cy.contains('.flash.success', 'URL deletada com sucesso', { timeout: 5000 })
+        .should('be.visible')
+    } else {
+      cy.log(`Configuração com nome ${nomeFuncao} e URL ${url} não encontrada.`)
+    }
+  })
+})
+
+Cypress.Commands.add('editarUrlWebhook', (nomeFuncao, url) => {
+  cy.get('.url_webhook').then($webhooks => {
+    const webhookEspecifico = $webhooks.filter((index, webhook) => {
+      const nomeFuncaoAtual = Cypress.$(webhook).find('.col-md-3 label').text().trim()
+      const urlAtual = Cypress.$(webhook).find('.col-md-7 label').text().trim()
+      return nomeFuncaoAtual === nomeFuncao && urlAtual === url
+    })
+
+    if (webhookEspecifico.length) {
+      // Assume que o botão de editar pode ser identificado de forma única
+      cy.wrap(webhookEspecifico).find('.col-md-1 .url_webhook_edit').click()
+    } else {
+      cy.log(`Configuração com nome ${nomeFuncao} e URL ${url} não encontrada.`)
+    }
+  })
+})
+
+Cypress.Commands.add('preencherDadosTrial', (dados, opcoes = { limpar: false }) => {
+  const formulario = new formTrial()
+
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo]
+    formulario.preencherCampo(nomeCampo, valor, opcoes)
+  })
+})
+
+Cypress.Commands.add('validarDadosTrial', (dados) => {
+  const formulario = new formTrial()
+  
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+    formulario.validarCampo(nomeCampo, valor)
+  })
+})
+
+Cypress.Commands.add('registroTrial', () => { 
+  // Clica no botão "Registre-se"
+  cy.get('#register_button')
+    .click()
+
+  // Valida página do trial
+  cy.url()
+    .should('include', '/new/register')
+})
+
+Cypress.Commands.add('validarMsgTrial', (step, objetivo, nomeUsuario) => {
+  const objetivoMap = {
+    'Treinamento de colaboradores': 'treinamentoColaboradores',
+    'Treinamento de clientes': 'treinamentoClientes',
+    'Treinamento de parceiros': 'treinamentoParceiros',
+    'Venda de cursos': 'vendaCursos',
+    'Outro': 'outro'
+  }
+
+  const validarTextos = (textos) => {
+    textos.forEach(({ seletor, texto }) => {
+      cy.contains(seletor, texto).should('be.visible')
+    })
+  }
+
+  const steps = {
+    seusDados: () => {
+      const { nomeStep, msgBemVindo, msgPreparado, msgSolicitaDados, texto1, texto2, texto3, texto4, texto5, texto6 } = Cypress.env('labels').trial.stepSeusDados
+      validarTextos([
+        { seletor: 'p.chakra-text', texto: nomeStep },
+        { seletor: 'h1.chakra-heading', texto: msgBemVindo },
+        { seletor: 'h2.chakra-heading', texto: msgPreparado },
+        { seletor: 'p.chakra-text', texto: msgSolicitaDados },
+        { seletor: 'span.chakra-text', texto: texto1 },
+        { seletor: 'span.chakra-text', texto: texto2 },
+        { seletor: 'b.chakra-text', texto: texto3 },
+        { seletor: 'span.chakra-text', texto: texto4 },
+        { seletor: 'b.chakra-text', texto: texto5 },
+        { seletor: 'span.chakra-text', texto: texto6 },
+      ])
+    },
+    dadosEmpresa: () => {
+      const { nomeStep, tituloStepDadosEmpresa, texto1, texto2, texto3, texto4 } = Cypress.env('labels').trial.stepDadosEmpresa
+      validarTextos([
+        { seletor: 'p.chakra-text', texto: nomeStep },
+        { seletor: 'h2.chakra-heading', texto: tituloStepDadosEmpresa },
+        { seletor: 'span.chakra-text', texto: texto1 },
+        { seletor: 'span.chakra-text', texto: texto2 },
+        { seletor: 'span.chakra-text', texto: texto3 },
+        { seletor: 'b.chakra-text', texto: texto4 },
+      ])
+    },
+    perfilUso: () => {
+      const { nomeStep, tituloStepPerfilUso, texto1, texto2, texto3 } = Cypress.env('labels').trial.stepPerfilUso
+      validarTextos([
+        { seletor: 'p.chakra-text', texto: nomeStep },
+        { seletor: 'label.chakra-form__label', texto: tituloStepPerfilUso },
+        { seletor: 'span.chakra-text', texto: texto1 },
+        { seletor: 'span.chakra-text', texto: texto2 },
+        { seletor: 'b.chakra-text', texto: texto3 },
+      ])
+    },
+    usuarios: () => {
+      const { nomeStep } = Cypress.env('labels').trial.stepUsuarios
+      validarTextos([
+        { seletor: 'p.chakra-text', texto: nomeStep },
+      ])
+
+      if (objetivo !== '') {
+        const objetivosUsuarios = {
+          treinamentoColaboradores: () => {
+            const { tituloStepUsuarios, texto1, texto2 } = Cypress.env('labels').trial.stepUsuarios.treinamentoColaboradores
+            validarTextos([
+              { seletor: 'p.chakra-text', texto: tituloStepUsuarios },
+              { seletor: 'span.chakra-text', texto: texto1 },
+              { seletor: 'span.chakra-text', texto: texto2 },
+            ])
+          },
+          treinamentoClientes: () => {
+            const { tituloStepUsuarios, texto1, texto2, informativo1, informativo2 } = Cypress.env('labels').trial.stepUsuarios.treinamentoClientes
+            validarTextos([
+              { seletor: 'p.chakra-text', texto: tituloStepUsuarios },
+              { seletor: 'p.chakra-text', texto: informativo1 },
+              { seletor: 'p.chakra-text', texto: informativo2 },
+              { seletor: 'span.chakra-text', texto: texto1 },
+              { seletor: 'span.chakra-text', texto: texto2 },
+            ])
+          },
+          treinamentoParceiros: () => {
+            const { tituloStepUsuarios, texto1, texto2, informativo1, informativo2 } = Cypress.env('labels').trial.stepUsuarios.treinamentoParceiros
+            validarTextos([
+              { seletor: 'p.chakra-text', texto: tituloStepUsuarios },
+              { seletor: 'p.chakra-text', texto: informativo1 },
+              { seletor: 'p.chakra-text', texto: informativo2 },
+              { seletor: 'span.chakra-text', texto: texto1 },
+              { seletor: 'span.chakra-text', texto: texto2 },
+            ])
+          },
+          vendaCursos: () => {
+            const { tituloStepUsuarios, texto1, texto2, texto3, informativo1, informativo2 } = Cypress.env('labels').trial.stepUsuarios.vendaCursos
+            validarTextos([
+              { seletor: 'p.chakra-text', texto: tituloStepUsuarios },
+              { seletor: 'p.chakra-text', texto: informativo1 },
+              { seletor: 'p.chakra-text', texto: informativo2 },
+              { seletor: 'span.chakra-text', texto: texto1 },
+              { seletor: 'span.chakra-text', texto: texto2 },
+              { seletor: 'span.chakra-text', texto: texto3 },
+            ])
+          },
+          outro: () => {
+            const { tituloStepUsuarios, texto1, texto2 } = Cypress.env('labels').trial.stepUsuarios.outro
+            validarTextos([
+              { seletor: 'p.chakra-text', texto: tituloStepUsuarios },
+              { seletor: 'span.chakra-text', texto: texto1 },
+              { seletor: 'span.chakra-text', texto: texto2 },
+            ])
+          },
+        }
+
+        const mappedObjetivo = objetivoMap[objetivo]
+        if (mappedObjetivo && objetivosUsuarios[mappedObjetivo]) {
+          objetivosUsuarios[mappedObjetivo]()
+        } else {
+          throw new Error(`Objetivo inválido: ${objetivo}. Utilize 'Treinamento de colaboradores', 'Treinamento de clientes', 'Treinamento de parceiros', 'Venda de cursos' ou 'Outro'`)
+        }
+      }
+    },
+    loginSenha: () => {
+      const { nomeStep, tituloStepLoginSenha } = Cypress.env('labels').trial.stepLoginSenha
+      validarTextos([
+        { seletor: 'p.chakra-text', texto: nomeStep },
+        { seletor: 'p.chakra-text', texto: tituloStepLoginSenha },
+      ])
+
+      if (objetivo !== '') {
+        const objetivosLoginSenha = {
+          treinamentoColaboradores: () => {
+            const { texto1, texto2 } = Cypress.env('labels').trial.stepLoginSenha.treinamentoColaboradores
+            validarTextos([
+              { seletor: 'span.chakra-text', texto: texto1 },
+              { seletor: 'span.chakra-text', texto: texto2 },
+            ])
+          },
+          treinamentoClientes: () => {
+            const { texto1, texto2 } = Cypress.env('labels').trial.stepLoginSenha.treinamentoClientes
+            validarTextos([
+              { seletor: 'span.chakra-text', texto: texto1 },
+              { seletor: 'span.chakra-text', texto: texto2 },
+            ])
+          },
+          treinamentoParceiros: () => {
+            const { texto1, texto2 } = Cypress.env('labels').trial.stepLoginSenha.treinamentoParceiros
+            validarTextos([
+              { seletor: 'span.chakra-text', texto: texto1 },
+              { seletor: 'span.chakra-text', texto: texto2 },
+            ])
+          },
+          vendaCursos: () => {
+            const { texto1, texto2, texto3 } = Cypress.env('labels').trial.stepLoginSenha.vendaCursos
+            validarTextos([
+              { seletor: 'span.chakra-text', texto: texto1 },
+              { seletor: 'span.chakra-text', texto: texto2 },
+              { seletor: 'span.chakra-text', texto: texto3 },
+            ])
+          },
+          outro: () => {
+            const { texto1, texto2 } = Cypress.env('labels').trial.stepLoginSenha.outro
+            validarTextos([
+              { seletor: 'span.chakra-text', texto: texto1 },
+              { seletor: 'span.chakra-text', texto: texto2 },
+            ])
+          },
+        }
+
+        const mappedObjetivo = objetivoMap[objetivo]
+        if (mappedObjetivo && objetivosLoginSenha[mappedObjetivo]) {
+          objetivosLoginSenha[mappedObjetivo]()
+        } else {
+          throw new Error(`Objetivo inválido: ${objetivo}. Utilize 'Treinamento de colaboradores', 'Treinamento de clientes', 'Treinamento de parceiros', 'Venda de cursos' ou 'Outro'`)
+        }
+      }
+    },
+    finalizacao: () => {
+      const { textoSucesso, textoEmail, textoCliqueAqui, textoReenviar } = Cypress.env('labels').trial.finalizacao
+      validarTextos([
+        { seletor: 'span.chakra-text', texto: nomeUsuario },
+        { seletor: 'span.chakra-text', texto: textoSucesso },
+        { seletor: 'p.chakra-text', texto: textoEmail },
+        { seletor: 'u.chakra-text', texto: textoCliqueAqui },
+        { seletor: 'p.chakra-text', texto: textoReenviar },
+      ])
+    }
+  }
+
+  if (steps[step]) {
+    steps[step]()
+  } else {
+    throw new Error(`Step inválido: ${step}. Utilize 'seusDados', 'dadosEmpresa', 'perfilUso', 'usuarios', 'loginSenha', 'finalizacao'`)
+  }
+})

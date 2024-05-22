@@ -65,7 +65,8 @@ describe('curso', () => {
 	beforeEach( () => {
 		// Ignora mensagens de erro conhecidas
 		cy.ignorarCapturaErros([
-			"Unexpected identifier 'id'"
+            "Unexpected identifier 'id'",    // Chrome
+            "unexpected token: identifier"    // Firefox
 		], { ignoreScriptErrors: true })
 		
 		// Define o tipo de conteúdo
