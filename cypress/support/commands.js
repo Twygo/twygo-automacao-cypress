@@ -2528,20 +2528,40 @@ Cypress.Commands.add('validarAmbienteAdicional', (dadosAmbiente, acao) => {
   }
 })
 
-Cypress.Commands.add('inativarAmbienteAdicional', (dadosAmbiente) => {
-    const formulario = new formAmbientesAdicionais()
-    const TIMEOUT_PADRAO = 5000
-    const labels = Cypress.env('labels')
-    const { msgInativacao } = labels.ambientesAdicionais
-    const nomeAmbiente = dadosAmbiente.nome;  
+Cypress.Commands.add('inativarAmbienteAdicional', (nomeAmbiente) => {
+  const formulario = new formAmbientesAdicionais()
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { msgInativacao } = labels.ambientesAdicionais
 
-    cy.get(`div:contains("${nomeAmbiente}")`)
-      formulario.inativarAmbiente()     
-      
-    formulario.confirmarInativacaoAmbiente()
+  cy.contains('div', nomeAmbiente).within(() => {
+    cy.get(formulario.elementos.inativar.seletor)
+    .click()
+  })   
+
+  // Confirmar a inativação do ambiente
+  formulario.confirmarInativacaoAmbiente()
   
-    cy.contains('.chakra-alert__desc.css-zycdy9', msgInativacao, { timeout: TIMEOUT_PADRAO })
-      .should('be.visible')
-
+  // Valida a mensagem de sucesso
+  cy.contains('.chakra-alert__desc.css-zycdy9', msgInativacao, { timeout: TIMEOUT_PADRAO })
+    .should('be.visible')
 }) 
 
+Cypress.Commands.add('listaAmbientesAdicionais', () => {
+  const nomesAmbientesAdicionais = []
+
+  cy.get('.chakra-text.partner-card-text span').each(($el) => {
+    nomesAmbientesAdicionais.push($el.text())
+  }).then(() => {
+    return nomesAmbientesAdicionais
+  })
+})
+
+Cypress.Commands.add('inativarTodosAmbientesAdicionais', () => {
+  cy.listaAmbientesAdicionais().then((nomesAmbientesAdicionais) => {
+    nomesAmbientesAdicionais.forEach((nome) => {
+      cy.inativarAmbienteAdicional(nome)
+    })
+  })
+  cy.acessarPgAmbientesAdicionais()
+})

@@ -1,7 +1,5 @@
 /// reference types="cypress" />
-import { fakerPT_BR } from '@faker-js/faker'
-import { getAuthToken } from '../support/authHelper'
-let faker = require('faker-br')
+import { faker } from '@faker-js/faker'
 
 describe('ambientesAdicionais', () => {
 
@@ -18,18 +16,12 @@ describe('ambientesAdicionais', () => {
 		    "Unexpected identifier 'id'",
             "ResizeObserver loop completed with undelivered notifications"
 		], { ignoreScriptErrors: true })
+
+        // Exclui todos os ambientes adicionais 
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')
-
-        // Obtém o token de autenticação
-        getAuthToken()
-
-        // Exclui todos os cursos antes de iniciar o teste
-        cy.excluirCursoViaApi()
-
-        // Exclui todos os usuários antes de iniciar o teste
-        cy.excluirUsuarioViaApi()
- 
+        cy.acessarPgAmbientesAdicionais()
+        cy.inativarTodosAmbientesAdicionais() 
     })
 
     afterEach(() => {
@@ -39,22 +31,29 @@ describe('ambientesAdicionais', () => {
     it('1. CRUD - Ambiente adicional', () => {
     //Massa de dados para criação do ambiente
         const dadosAmbiente = {
-            nome: 'Parceira do Cypress',
-            email: 'jadson.santos@twygo.com',
-            telefone: '(91) 11111-1111',
-            site: 'www.sitedaparceira.com'
+            nome: faker.commerce.productName(),
+            email: faker.internet.email().toLowerCase(),
+            telefone: `(${faker.string.numeric(2)}) ${faker.string.numeric(5)}-${faker.string.numeric(4)}`,
+            site: faker.internet.url()
         }
 
-        // Criar o Ambiente Adicional
-        cy.acessarPgAmbientesAdicionais()
+        // CREATE
+        cy.log('## CREATE ##')
         cy.criarAmbienteAdicional(dadosAmbiente, { limpar: true }) 
 
-        //READ
+        // READ
+        cy.log('## READ ##')
         cy.acessarPgAmbientesAdicionais()
         cy.validarAmbienteAdicional(dadosAmbiente, 'Criação')
 
-        //DELETE
-        cy.inativarAmbienteAdicional(dadosAmbiente)
+        // UPDATE
+        cy.log('## UPDATE ##')
+        cy.log('Não é possível alterar dados do ambiente adicional por esta tela.')
+
+        // DELETE
+        cy.log('## DELETE ##')
+
+        cy.inativarAmbienteAdicional(dadosAmbiente.nome)
         cy.acessarPgAmbientesAdicionais()
         cy.validarAmbienteAdicional(dadosAmbiente, 'Inativação')
     })
