@@ -295,5 +295,8 @@
             "textoReenviar": "para reenviar."
 
         }
+    },
+    "integracoes": {
+        "breadcrumb": "Integrações > Chave de API"
     }
 }

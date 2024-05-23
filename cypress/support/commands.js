@@ -3280,3 +3280,14 @@ Cypress.Commands.add('validarMsgTrial', (step, objetivo, nomeUsuario) => {
     throw new Error(`Step inválido: ${step}. Utilize 'seusDados', 'dadosEmpresa', 'perfilUso', 'usuarios', 'loginSenha', 'finalizacao'`)
   }
 })
+
+Cypress.Commands.add('acessarPgIntegracoes', function() {
+  cy.visit(`/o/${Cypress.env('orgId')}/integrations?tab=api_tokens`)
+
+  const labels = Cypress.env('labels')
+  const { breadcrumb } = labels.integracoes
+
+  // Verificar se a página de integrações foi acessada com sucesso
+  cy.contains('#page-breadcrumb', breadcrumb)
+    .should('be.visible')
+})
