@@ -3,10 +3,10 @@ import { faker } from '@faker-js/faker'
 import { getAuthToken } from '../support/authHelper'
 import { gerarTelefone } from '../support/utilsHelper'
 
-describe('Compartilhar curso com ambientes adicionais', () => {
+describe('Compartilhar trilha com ambientes adicionais', () => {
 
-    let nomeConteudo, tipoConteudo, dadosAmbiente1, dadosAmbiente2, nomeAmbienteAdicional1, nomeAmbienteAdicional2, situacaoCurso, nomeTesteAtual,
-    celular, fixo
+    let nomeConteudo, tipoConteudo, dadosAmbiente1, dadosAmbiente2, nomeAmbienteAdicional1, nomeAmbienteAdicional2, 
+    situacaoTrilha, nomeTesteAtual, listaConteudos, celular, fixo
 
     before(() => {
         // Carrega os labels do arquivo JSON
@@ -32,37 +32,48 @@ describe('Compartilhar curso com ambientes adicionais', () => {
         // Captura o nome do teste atual
         nomeTesteAtual = this.currentTest.title
 
+        // Define tipo de conteúdo
+        tipoConteudo = 'trilha'
+
         // Obtém o token de autenticação
         getAuthToken()
 
-        // Exclui todos os cursos antes de iniciar o teste
+        // Exclui todos os cursos antes de iniciar o teste (devido a exibição na lista de conteúdos junto com as trilhas)
         cy.excluirCursoViaApi()
 
-        // Define situação do curso com base no nome do teste atual
+        // Exclui todas as trilhas antes de iniciar o teste
+        cy.loginTwygoAutomacao()
+        cy.alterarPerfil('administrador')
+
+        listaConteudos = []
+		cy.listaConteudo(tipoConteudo, listaConteudos)
+		cy.excluirConteudo(null, tipoConteudo, listaConteudos)	
+
+        // Define situação da trilha com base no nome do teste atual
         if (nomeTesteAtual.includes('liberado')) {
-            situacaoCurso = 1
+            situacaoTrilha = 'Liberado'
         } else if (nomeTesteAtual.includes('suspenso')) {
-            situacaoCurso = 2
+            situacaoTrilha = 'Suspenso'
         } else if (nomeTesteAtual.includes('em desenvolvimento')) {
-            situacaoCurso = 0
+            situacaoTrilha = 'Em desenvolvimento'
         } else {
-            cy.log('Situação do curso inválida, utilize "liberado", "suspenso" ou "em desenvolvimento"')
+            cy.log('Situação da trilha inválida, utilize "liberado", "suspenso" ou "em desenvolvimento"')
             return
         }
 
-        // Massa de dados para criar um curso
-        const body = {
-            name: nomeConteudo,
-            description: faker.lorem.sentence(5),
-            situation: situacaoCurso
-        }   
+        // Massa de dados para criar uma trilha
+        const conteudo = {
+            nome: nomeConteudo,
+            descricao: `${faker.commerce.productDescription()} do evento ${nomeConteudo}`,
+            situacao: situacaoTrilha
+        }
 
-        // Cria um novo curso via API
-        cy.criarCursoViaApi(body)
+        // Cria uma trilha para o teste
+        cy.addConteudo(tipoConteudo)
+        cy.preencherDadosConteudo(conteudo, { limpar: true })
+        cy.salvarConteudo(conteudo.nome, tipoConteudo)
 
         // Excluir todos os ambientes adicionais
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.acessarPgAmbientesAdicionais()
         cy.inativarTodosAmbientesAdicionais()
         
@@ -83,20 +94,17 @@ describe('Compartilhar curso com ambientes adicionais', () => {
 
         cy.criarAmbienteAdicional('Criar', dadosAmbiente1, { limpar: true })
         cy.criarAmbienteAdicional('Adicionar', dadosAmbiente2, { limpar: true })
-
-        // Define tipo de conteúdo
-        tipoConteudo = 'curso'
     })
 
     afterEach(() => {
 		cy.ativarCapturaErros()
 	})
 
-    it('1. CRUD - Curso liberado compartilhado com ambiente adicional', () => {
+    it('1. CRUD - Trilha com situação liberado compartilhada com ambiente adicional', () => {
             // CREATE
             cy.log('## CREATE ##')
 
-            // Compartilhar curso com o ambiente adicional
+            // Compartilhar trilha com o ambiente adicional
             cy.acessarPgListaConteudos()
             cy.ambienteAdicionalConteudo(nomeConteudo, tipoConteudo)
             cy.compartilharComAmbienteAdicional(nomeAmbienteAdicional1, 'Habilitar')
@@ -139,11 +147,11 @@ describe('Compartilhar curso com ambientes adicionais', () => {
             cy.validarCompartilhamentoComAmbienteAdicional(nomeAmbienteAdicional2, 'Desabilitado')
     })
 
-    it('2. CRUD - Curso suspenso compartilhado com ambiente adicional', () => {
+    it('2. CRUD - Trilha com situação suspenso compartilhada com ambiente adicional', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        // Compartilhar curso com o ambiente adicional
+        // Compartilhar trilha com o ambiente adicional
         cy.acessarPgListaConteudos()
         cy.ambienteAdicionalConteudo(nomeConteudo, tipoConteudo)
         cy.compartilharComAmbienteAdicional(nomeAmbienteAdicional1, 'Habilitar')
@@ -186,11 +194,11 @@ describe('Compartilhar curso com ambientes adicionais', () => {
         cy.validarCompartilhamentoComAmbienteAdicional(nomeAmbienteAdicional2, 'Desabilitado')
     })  
 
-    it('3. CRUD - Curso em desenvolvimento compartilhado com ambiente adicional', () => {
+    it('3. CRUD - Trilha com situação em desenvolvimento compartilhada com ambiente adicional', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        // Compartilhar curso com o ambiente adicional
+        // Compartilhar trilha com o ambiente adicional
         cy.acessarPgListaConteudos()
         cy.ambienteAdicionalConteudo(nomeConteudo, tipoConteudo)
         cy.compartilharComAmbienteAdicional(nomeAmbienteAdicional1, 'Habilitar')
