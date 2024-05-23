@@ -46,7 +46,8 @@
             "tituloPgEdicao": "Editar trilhas",
             "tituloModalExclusao": "Excluir conteúdo",
             "texto1ModalExclusao": "Ao excluir a trilha você não excluirá os conteúdos dentro dela, apenas o agrupamento. Tem certeza que deseja prosseguir?",
-            "msgSucessoExclusao": "Conteúdo excluído com sucesso"
+            "msgSucessoExclusao": "Conteúdo excluído com sucesso",
+            "breadcrumbAmbienteAdicional": "Lista de conteúdos > {{nomeDoConteudo}} > Ambiente adicional"
         },
         "biblioteca": {
             "breadcrumb": "Biblioteca",
