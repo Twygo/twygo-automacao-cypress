@@ -13,6 +13,7 @@ import formAmbientesAdicionais from "./pageObjects/formAmbientesAdicionais"
 import formConfigOrganizacao from "./pageObjects/formConfigOrganizacao"
 import formTrial from "./pageObjects/formTrial"
 import formConteudosAmbienteAdicional from "./pageObjects/formConteudosAmbienteAdicional"
+import formCobrancaAutomatica from "./pageObjects/formCobrancaAutomatica"
 import { fakerPT_BR } from "@faker-js/faker"
 import 'cypress-real-events/support'
 
@@ -219,6 +220,36 @@ Cypress.Commands.add('acessarPgConfigOrganizacao', function(aba) {
         throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
     }
   }  
+})
+
+Cypress.Commands.add('acessarPgConfigCobrancaInscricao', function(aba) {
+  const abaCobrancaAutomatica = new formCobrancaAutomatica()
+  const labels = Cypress.env('labels')
+  const { breadcrumb } = labels.cobrancaInscricao
+
+  cy.visit(`/o/${Cypress.env('orgId')}/payments`)
+
+  // Verificar se a página de configuração de cobrança de inscrição foi acessada com sucesso
+  cy.contains('#page-breadcrumb', breadcrumb)
+    .should('be.visible')
+
+  cy.wait (2000)
+
+  if (aba) {
+    switch (aba) {
+      case 'cobrancaAutomatica':
+        abaCobrancaAutomatica.abaCobrancaAutomatica()
+        break
+      case 'cuponsVouchers':
+        //TODO: Implementar
+        break
+      case 'logs':
+        //TODO: Implementar
+        break
+      default:
+        throw new Error(`Aba inválida: ${aba}. Utilize 'cobrancaAutomatica', 'cuponsVouchers' ou 'logs'`)
+    }
+  }
 })
 
 Cypress.Commands.add("criarCatalogoViaApi", (body, attempt = 1) => {
@@ -3279,4 +3310,77 @@ Cypress.Commands.add('validarMsgTrial', (step, objetivo, nomeUsuario) => {
   } else {
     throw new Error(`Step inválido: ${step}. Utilize 'seusDados', 'dadosEmpresa', 'perfilUso', 'usuarios', 'loginSenha', 'finalizacao'`)
   }
+})
+
+Cypress.Commands.add('preencherDadosCobrancaAutomatica', (conteudo, opcoes = { limpar: false }) => {
+  const formulario = new formCobrancaAutomatica()
+  
+  Object.keys(conteudo).forEach(nomeCampo => {
+      const valor = conteudo[nomeCampo]
+      formulario.preencherCampo(nomeCampo, valor, opcoes)
+  })
+}) 
+
+Cypress.Commands.add('validarDadosCobrancaAutomatica', (conteudo) => {
+  const formulario = new formCobrancaAutomatica()
+
+  Object.keys(conteudo).forEach(nomeCampo => {
+    const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
+    formulario.validarCampo(nomeCampo, valor)
+  })
+})
+
+Cypress.Commands.add('salvarCobrancaAutomatica', () => {
+  const formulario = new formCobrancaAutomatica()
+  const labels = Cypress.env('labels')
+  const { msgSucesso } = labels.cobrancaInscricao.cobrancaAutomatica
+
+  formulario.salvar()
+  cy.validarModal()
+  
+  // Valida a mensagem de sucesso
+  cy.contains('.chakra-alert__desc', msgSucesso)
+    .should('be.visible')
+})
+
+Cypress.Commands.add('resetCobrancaAutomatica', () => {
+  const formulario = new formCobrancaAutomatica()
+
+  const dados = {
+    radioAsaas: true,
+    chaveAsaas: 'a',
+    checkCartao: true, 
+    checkPixBoleto: true,
+    vencimentoBoleto: '3'
+  }
+
+  cy.acessarPgConfigCobrancaInscricao()
+  cy.preencherDadosCobrancaAutomatica({ habilitarCobrancaAutomatica: true })
+  
+  cy.reload()
+  cy.preencherDadosCobrancaAutomatica(dados)
+
+  // Desabilitar o "Pix e boleto"
+  cy.preencherDadosCobrancaAutomatica({ checkPixBoleto: false})
+
+  formulario.salvar()
+  cy.validarModal()
+
+  // Desabilitar a cobrança automática
+  cy.preencherDadosCobrancaAutomatica({ habilitarCobrancaAutomatica: false })  
+})
+
+Cypress.Commands.add('validarModal', () => {
+  const seletorModal = 'section.chakra-modal__content'
+  const seletorModalConfirmacao = '#payments-change-payment-method-save-button'
+  const timeout = 3000
+  
+  // Se aparecer modal de confirmação, clica para confirmar
+  cy.get('body', { timeout: timeout }).then($body => {
+    if ($body.find(seletorModal).length > 0) {
+      // Se o modal estiver presente, clica no botão de confirmação
+      cy.get(seletorModalConfirmacao, { timeout: timeout })
+        .click()
+    }
+  })
 })
