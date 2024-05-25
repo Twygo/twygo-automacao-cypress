@@ -58,14 +58,19 @@ class formCobrancaAutomatica {
         }
     }
 
+    abaCobrancaAutomatica() {
+        cy.get(this.elementos.abaCobrancaAutomatica.seletor)
+            .click()
+    }
+    
     salvar() {
         cy.get(this.elementos.salvar.seletor)
-            .click({ force: true })
+            .click()
     }
 
     cancelar() {
         cy.get(this.elementos.cancelar.seletor)
-            .click({ force: true })
+            .click()
     }
 
     preencherCampo(nomeCampo, valor, opcoes = { limpar: false }) {

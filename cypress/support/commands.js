@@ -14,6 +14,7 @@ import formConfigOrganizacao from "./pageObjects/formConfigOrganizacao"
 import formTrial from "./pageObjects/formTrial"
 import formConteudosAmbienteAdicional from "./pageObjects/formConteudosAmbienteAdicional"
 import formCobrancaAutomatica from "./pageObjects/formCobrancaAutomatica"
+import formCuponsVouchers from "./pageObjects/formCuponsVouchers"
 import { fakerPT_BR } from "@faker-js/faker"
 import 'cypress-real-events/support'
 
@@ -223,7 +224,6 @@ Cypress.Commands.add('acessarPgConfigOrganizacao', function(aba) {
 })
 
 Cypress.Commands.add('acessarPgConfigCobrancaInscricao', function(aba) {
-  const abaCobrancaAutomatica = new formCobrancaAutomatica()
   const labels = Cypress.env('labels')
   const { breadcrumb } = labels.cobrancaInscricao
 
@@ -238,13 +238,13 @@ Cypress.Commands.add('acessarPgConfigCobrancaInscricao', function(aba) {
   if (aba) {
     switch (aba) {
       case 'cobrancaAutomatica':
-        abaCobrancaAutomatica.abaCobrancaAutomatica()
+        formCobrancaAutomatica.abaCobrancaAutomatica()
         break
       case 'cuponsVouchers':
-        //TODO: Implementar
+        formCuponsVouchers.abaCuponsVouchers()
         break
       case 'logs':
-        //TODO: Implementar
+        // Não será validado neste momento
         break
       default:
         throw new Error(`Aba inválida: ${aba}. Utilize 'cobrancaAutomatica', 'cuponsVouchers' ou 'logs'`)
@@ -3336,7 +3336,7 @@ Cypress.Commands.add('salvarCobrancaAutomatica', () => {
   const { msgSucesso } = labels.cobrancaInscricao.cobrancaAutomatica
 
   formulario.salvar()
-  cy.validarModal()
+  validarModalSubstCobranca()
   
   // Valida a mensagem de sucesso
   cy.contains('.chakra-alert__desc', msgSucesso)
@@ -3364,13 +3364,13 @@ Cypress.Commands.add('resetCobrancaAutomatica', () => {
   cy.preencherDadosCobrancaAutomatica({ checkPixBoleto: false})
 
   formulario.salvar()
-  cy.validarModal()
+  validarModalSubstCobranca()
 
   // Desabilitar a cobrança automática
   cy.preencherDadosCobrancaAutomatica({ habilitarCobrancaAutomatica: false })  
 })
 
-Cypress.Commands.add('validarModal', () => {
+Cypress.Commands.add('validarModalSubstCobranca', () => {
   const seletorModal = 'section.chakra-modal__content'
   const seletorModalConfirmacao = '#payments-change-payment-method-save-button'
   const timeout = 3000
@@ -3382,5 +3382,164 @@ Cypress.Commands.add('validarModal', () => {
       cy.get(seletorModalConfirmacao, { timeout: timeout })
         .click()
     }
+  })
+})
+
+Cypress.Commands.add('adicionarCupomVoucher', (tipoDesconto) => {   //ok  
+  const labels = Cypress.env('labels')
+  const { breadcrumbTipo, tituloPg } = labels.cuponsVouchers
+
+  formCuponsVouchers.adicionar()
+  cy.preencherDadosCupomVoucher({ tipo: tipoDesconto })
+
+  // Valida a página
+  cy.get('#page-breadcrumb')
+    .should('contain', breadcrumbTipo.replace('{{ tipo }}', tipoDesconto.toLowerCase()))
+    .should('be.visible')
+
+  cy.get('h2.chakra-heading')
+    .should('contain', tituloPg)
+    .should('be.visible')
+})
+
+Cypress.Commands.add('preencherDadosCupomVoucher', (dados, opcoes = { limpar: false }) => {   //ok 
+  Object.keys(dados).forEach(nomeCampo => {
+      const valor = dados[nomeCampo]
+      formCuponsVouchers.preencherCampo(nomeCampo, valor, opcoes)
+  })
+}) 
+
+Cypress.Commands.add('validarDadosCupomVoucher', (dados) => {
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+    formCuponsVouchers.validarCampo(nomeCampo, valor)
+  })
+})
+
+Cypress.Commands.add('validarTabelaCupomVoucher', (dados) => {
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo]
+    formCuponsVouchers.validarTabela(nomeCampo, valor)
+  })
+})
+
+Cypress.Commands.add('salvarCupomVoucher', (tipo) => {    //a validar
+  const labels = Cypress.env('labels')
+  const { msgSucesso } = labels.cuponsVouchers
+  
+  formCuponsVouchers.salvar()
+
+  // Valida a mensagem de sucesso
+  cy.contains('.chakra-alert__desc', msgSucesso.replace('{{ tipo }}', tipo))
+    .should('be.visible')
+})
+
+Cypress.Commands.add('adicionarItemCupomVoucher', (tipo) => {   //ok
+  const labels = Cypress.env('labels')
+  const { tituloModal, descricaoModal } = labels.cuponsVouchers.modalAplicadoItem
+  
+  formCuponsVouchers.adicionarItem()
+
+  cy.get(formCuponsVouchers.elementos.tituloModal.seletor)
+    .should('contain', tituloModal.replace('{{ tipo }}', tipo))
+    .should('be.visible')
+
+  cy.get(formCuponsVouchers.elementos.descricaoModal.seletor)
+    .should('contain', descricaoModal.replace('{{ tipo }}', tipo.toLowerCase()))
+    .should('be.visible')
+})
+
+Cypress.Commands.add('aplicarItemAoCupomVoucher', (nomeItem, tipo) => {   //a validar
+  const labels = Cypress.env('labels')
+  const { msgSucesso } = labels.cuponsVouchers.modalAplicadoItem
+  
+  if (Array.isArray(nomeItem)) {
+    nomeItem.forEach(nome => {
+      formCuponsVouchers.aplicarItens(nome)
+    })
+  } else {
+    formCuponsVouchers.aplicarItens(nomeItem)
+  }
+
+  formCuponsVouchers.salvarItem()
+
+  // Validar mensagem de sucesso
+  cy.get('.chakra-alert__desc')
+    .should('contain', msgSucesso.replace('{{ tipo }}', tipo))
+})
+
+Cypress.Commands.add('editarCupomVoucher', (nome) => {
+  const labels = Cypress.env('labels')
+  const { breadcrumbEdicao, tituloPgEdicao } = labels.cuponsVouchers
+  const seletor = `tr[data-item-name="${nome}"]`
+
+  cy.get(seletor)
+    .find(formCuponsVouchers.elementos.editar.seletor)
+    .click()
+  
+  // Valida a página de edição
+  cy.get('#page-breadcrumb')
+    .should('contain', breadcrumbEdicao)
+    .should('be.visible')
+
+  cy.get('h2.chakra-heading')
+    .should('contain', tituloPgEdicao)
+    .should('be.visible')
+})
+
+Cypress.Commands.add('excluirCupomVoucher', (nome, tipo) => {   //ok  
+  const labels = Cypress.env('labels')
+  const { tituloModal, descricaoModal, msgSucesso } = labels.cuponsVouchers.modalExclusao
+  const seletor = `tr[data-item-name="${nome}"]`
+
+  cy.get(seletor)
+    .find(formCuponsVouchers.elementos.excluir.seletor)
+    .click()
+
+  // Valida a mensagem de exclusão
+  cy.get(formCuponsVouchers.elementos.tituloModalExclusao.seletor)
+    .should('contain', tituloModal)
+    .should('be.visible')
+
+  cy.get(formCuponsVouchers.elementos.descricaoModalExclusao.seletor)
+    .should('contain', descricaoModal)
+    .should('be.visible')
+
+  // Confirma a exclusão
+  formCuponsVouchers.confirmarExclusao()
+
+  // Valida a mensagem de sucesso da exclusão
+  cy.get('.chakra-alert__desc')
+    .should('contain', msgSucesso.replace('{{ tipo }}', tipo))
+    .should('be.visible')
+})
+
+Cypress.Commands.add('excluirTodosCuponsVouchers', () => {    //TODO: Está funcionando apenas adicionar e utilizar labels para a mensagem de nenhum resultado
+  const listaCuponsVouchers = []
+  
+  cy.get('tbody').then($tbody => {
+    if ($tbody.find('tr:contains("Nenhum resultado para mostrar")').length > 0) {
+      return listaCuponsVouchers
+    } else {
+      cy.get('tbody tr').each($row => {
+        const cupomVoucher = {}
+        cy.wrap($row).find('td.coupons-name-data').invoke('text').then((text) => {
+          cupomVoucher.nome = text.trim()
+        })
+        cy.wrap($row).find('td.coupons-discount_type-data').invoke('text').then((text) => {
+          cupomVoucher.tipo = text.trim()
+        }).then(() => {
+          listaCuponsVouchers.push(cupomVoucher)
+        })
+      }).then(() => {
+        return listaCuponsVouchers
+      })
+    }
+  }).then((listaCuponsVouchers) => {
+    listaCuponsVouchers.forEach(({ nome, tipo }) => {
+      cy.excluirCupomVoucher(nome, tipo)
+
+      cy.get('div[role="alert"]#success-toast button[aria-label="Close"]').click()
+    })
   })
 })
