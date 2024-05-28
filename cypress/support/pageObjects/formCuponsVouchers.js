@@ -232,15 +232,18 @@ class formCuponsVouchers {
     }
 
     aplicarItens(nomeItem) {
+        // Digita o nome do item a ser pesquisado
         cy.get(this.elementos.pesquisarItem.seletor)
             .type(nomeItem)
         
         // Aguarda a busca ser realizada
         cy.wait(3000)
 
-        cy.get(this.elementos.selecionarItem.seletorValor).then($label => {
+        // Encontra o label que contém o nome do item e o checkbox
+        cy.get(this.elementos.selecionarItem.seletorValor(nomeItem)).then($label => {
             const checkbox = $label.find('input[type="checkbox"]')
-            if (!checkbox.checked) {
+            if (!checkbox.prop('checked')) {
+                // Clica no checkbox se ele não estiver marcado
                 cy.wrap($label).find(this.elementos.selecionarItem.seletor).click()
             }
         })

@@ -3423,7 +3423,7 @@ Cypress.Commands.add('validarTabelaCupomVoucher', (dados) => {
   })
 })
 
-Cypress.Commands.add('salvarCupomVoucher', (tipo) => {    //a validar
+Cypress.Commands.add('salvarCupomVoucher', (tipo) => {    //ok
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.cuponsVouchers
   
@@ -3449,7 +3449,7 @@ Cypress.Commands.add('adicionarItemCupomVoucher', (tipo) => {   //ok
     .should('be.visible')
 })
 
-Cypress.Commands.add('aplicarItemAoCupomVoucher', (nomeItem, tipo) => {   //a validar
+Cypress.Commands.add('aplicarItemAoCupomVoucher', (nomeItem, tipoDesconto) => {   //ok
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.cuponsVouchers.modalAplicadoItem
   
@@ -3465,7 +3465,7 @@ Cypress.Commands.add('aplicarItemAoCupomVoucher', (nomeItem, tipo) => {   //a va
 
   // Validar mensagem de sucesso
   cy.get('.chakra-alert__desc')
-    .should('contain', msgSucesso.replace('{{ tipo }}', tipo))
+    .should('contain', msgSucesso.replace('{{ tipo }}', tipoDesconto))
 })
 
 Cypress.Commands.add('editarCupomVoucher', (nome) => {

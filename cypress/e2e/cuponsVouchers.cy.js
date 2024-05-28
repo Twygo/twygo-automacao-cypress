@@ -95,9 +95,9 @@ describe('Cupons', () => {
         cy.log('## CREATE ##')
         cy.adicionarCupomVoucher(tipoDesconto)
         cy.preencherDadosCupomVoucher(dados, { limpar: true })
-        cy.adicionarItemCupomVoucher(tipoDesconto)      //ok até aqui
+        cy.adicionarItemCupomVoucher(tipoDesconto)
         cy.aplicarItemAoCupomVoucher(nomeConteudo1, tipoDesconto)
-        cy.salvarCupomVoucher()
+        cy.salvarCupomVoucher(tipoDesconto)     //ok até aqui
 
         // READ
         cy.log('## READ ##')
