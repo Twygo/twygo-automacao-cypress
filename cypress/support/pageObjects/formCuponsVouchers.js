@@ -27,11 +27,11 @@ class formCuponsVouchers {
         },
         valor: {
             seletor: '#payments-add-discount-value',
-            tipo: 'input'
+            tipo: 'inputValor'
         },
         aplicadoItens: {
             seletor: '#payments-add-discount-applied-to',
-            tipo: 'checkbox'
+            tipo: 'applyTo'
         },
         adicionarItem: {
             seletor: '#payments-add-discount-apply-to-item-button',
@@ -156,7 +156,7 @@ class formCuponsVouchers {
         
         let valorFinal = valor !== undefined ? valor : valorDefault
         
-        if ((opcoes.limpar || valorFinal === '') && tipo === 'input') {
+        if ((opcoes.limpar || valorFinal === '') && (tipo === 'input' || tipo === 'inputValor')) {
             cy.get(seletor).clear()
 
             if (valorFinal === '') {
@@ -166,6 +166,7 @@ class formCuponsVouchers {
     
         switch (tipo) {
             case 'input':
+            case 'inputValor':
             case 'search':
                 cy.get(seletor).type(valorFinal)
                 break
@@ -186,12 +187,14 @@ class formCuponsVouchers {
                         throw new Error(`Botão ${nomeCampo} não pode ser clicado`)
                     }
                 break
+            case 'applyTo':
+                // Nenhuma ação a ser realizada
             default:
                 throw new Error(`Tipo de campo desconhecido: ${tipo}`)
         }
     }
 
-	validarCampo(nomeCampo, valor) {		
+	validarCampo(nomeCampo, valor, tipoDesconto) {		
 		const campo = this.elementos[nomeCampo]
 
 			if (!campo) {
@@ -207,6 +210,20 @@ class formCuponsVouchers {
 				cy.get(seletor)
 					.should('have.value', valorFinal)
 				break
+            case 'inputValor':
+                cy.get(seletor).invoke('val').then((valorCampo) => {
+                    let valorEsperado
+                    if (tipoDesconto === 'Cupom') {
+                      valorEsperado = `${valorFinal} %`
+                    } else if (tipoDesconto === 'Voucher') {
+                      valorEsperado = `R$ ${valorFinal}`
+                    } else {
+                      throw new Error(`Tipo de desconto desconhecido: ${tipoDesconto}`)
+                    }
+            
+                    expect(valorCampo).to.eq(valorEsperado)
+                })
+                break
             case 'select':
                 const valor = {
                     "Cupom": "coupon",
@@ -216,6 +233,17 @@ class formCuponsVouchers {
                 cy.get(seletor)
                     .should('have.attr', 'data-selected', valor[valorFinal])
 
+                break
+            case 'applyTo':
+                cy.get(seletor)
+                    .find('span')
+                    .should('be.visible') // Verifica se o elemento está visível
+                    .invoke('text')
+                    .then((text) => {
+                        // Remover espaços em branco adicionais
+                        const cleanedText = text.replace(/\s+/g, ' ').trim();
+                        expect(cleanedText).to.equal(valorFinal)
+                    })
                 break
             case 'button':
             case 'search':
@@ -254,17 +282,30 @@ class formCuponsVouchers {
             .click()
     }
 
-    validarTabela(nomeCampo, valor) {
-        const campo = this.elementos[nomeCampo]
-
+    validarTabela(nomeCampo, valor, tipoDesconto) {
+        const campo = this.elementos.tabela[nomeCampo]
+    
         if (!campo) {
             throw new Error(`Campo ${nomeCampo} não encontrado`)
         }
-
+    
         const { seletor } = campo
-            
+    
+        // Verifica o tipo de desconto e formata o valor corretamente
+        let valorEsperado
+        if (nomeCampo === 'valor') {
+            if (tipoDesconto === 'Cupom') {
+                valorEsperado = `${valor}%`
+            } else if (tipoDesconto === 'Voucher') {
+                valorEsperado = `R$ ${valor}`
+            }
+        } else {
+            valorEsperado = valor
+        }
+    
+        // Valida o valor na tabela
         cy.get(seletor)
-            .should('have.value', valor)
+            .should('have.text', valorEsperado)
             .should('exist')
             .should('be.visible')
     }

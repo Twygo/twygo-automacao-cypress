@@ -93,20 +93,56 @@ describe('Cupons', () => {
 
         // CREATE
         cy.log('## CREATE ##')
+
         cy.adicionarCupomVoucher(tipoDesconto)
         cy.preencherDadosCupomVoucher(dados, { limpar: true })
         cy.adicionarItemCupomVoucher(tipoDesconto)
         cy.aplicarItemAoCupomVoucher(nomeConteudo1, tipoDesconto)
-        cy.salvarCupomVoucher(tipoDesconto)     //ok até aqui
+        cy.salvarCupomVoucher(tipoDesconto, 'salvar')     
 
         // READ
         cy.log('## READ ##')
 
+        let dadosParaValidarTabela = { ...dados, itens: nomeConteudo1 }
+        let dadosParaValidarForm = { ...dados, aplicadoItens: nomeConteudo1 }
+        cy.validarTabelaCupomVoucher(dadosParaValidarTabela, tipoDesconto)
+        cy.editarCupomVoucher(nomeDesconto)
+        cy.validarDadosCupomVoucher(dadosParaValidarForm, tipoDesconto)
+
         // UPDATE
         cy.log('## UPDATE ##')
+        
+        // Massa de dados
+        const dadosUpdate = {
+            nome: faker.word.words(1),
+            codigo: `${(tipoDesconto).toUpperCase()}-${(faker.word.words(1)).toUpperCase().trim().replace(' ', '')}${faker.number.int({ max: 100 })}`,
+            valor: faker.number.int({ min: 1, max: 100 }),
+            validade: gerarData(10, 0, 0, 'YYYY-MM-DD')
+        }
+
+        cy.preencherDadosCupomVoucher(dadosUpdate, { limpar: true })
+        cy.adicionarItemCupomVoucher(tipoDesconto)
+        cy.aplicarItemAoCupomVoucher(nomeConteudo2, tipoDesconto)
+        cy.salvarCupomVoucher(tipoDesconto, 'editar') 
+
+        // READ-UPDATE
+        cy.log('## READ-UPDATE ##')
+
+        dadosParaValidarTabela = { ...dadosUpdate, itens: nomeConteudo1 }
+        cy.validarTabelaCupomVoucher(dadosParaValidarTabela, tipoDesconto)
+
+        dadosParaValidarTabela = { itens: nomeConteudo2 }
+        cy.validarTabelaCupomVoucher(dadosParaValidarTabela, tipoDesconto)
+
+        cy.editarCupomVoucher(dadosUpdate.nome)
+        dadosParaValidarForm = { ...dadosUpdate, aplicadoItens: nomeConteudo1 }
+        cy.validarDadosCupomVoucher(dadosParaValidarForm, tipoDesconto)
+        dadosParaValidarForm = { aplicadoItens: nomeConteudo2 }
+        cy.validarDadosCupomVoucher(dadosParaValidarForm, tipoDesconto)
 
         // DELETE
         cy.log('## DELETE ##')
         
+        cy.excluirCupomVoucher(dadosUpdate.nome, tipoDesconto)
     })
 })

@@ -309,6 +309,8 @@
         "breadcrumbEdicao": "Cobrança de inscrição > {{ nome }}",
         "tituloPgEdicao": "{{ nome }}",
         "msgSucesso": "{{ tipo }} salvo com sucesso",
+        "msgSucessoEdicao": "{{ tipo }} alterado com sucesso",
+        "msgNenhumResultado": "Nenhum resultado para mostrar",
         "modalAplicadoItem": { 
             "tituloModal": "{{ tipo }} aplicado aos itens",
             "descricaoModal": "Esse {{ tipo }} está aplicado aos itens abaixo. Para adicionar novos, digite para pesquisar.",
