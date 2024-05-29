@@ -166,9 +166,17 @@ class formCuponsVouchers {
     
         switch (tipo) {
             case 'input':
-            case 'inputValor':
             case 'search':
                 cy.get(seletor).type(valorFinal)
+                break
+            case 'inputValor':
+                cy.get(seletor).then($input => {
+                    const input = $input[0]
+                    input.setSelectionRange(0, input.value.length)
+                    input.focus()
+                    cy.get(seletor)
+                        .type(valorFinal, { force: true })
+                })
                 break
             case 'select':
                 const texto = {
@@ -216,7 +224,7 @@ class formCuponsVouchers {
                     if (tipoDesconto === 'Cupom') {
                       valorEsperado = `${valorFinal} %`
                     } else if (tipoDesconto === 'Voucher') {
-                      valorEsperado = `R$ ${valorFinal}`
+                        valorEsperado = `R$ ${Number(valorFinal).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
                     } else {
                       throw new Error(`Tipo de desconto desconhecido: ${tipoDesconto}`)
                     }
@@ -232,17 +240,19 @@ class formCuponsVouchers {
 
                 cy.get(seletor)
                     .should('have.attr', 'data-selected', valor[valorFinal])
-
                 break
             case 'applyTo':
+                // Concatenar itens se valor for um array
+                const valorConcatenado = Array.isArray(valorFinal) ? valorFinal.join(' ') : valorFinal;
+
                 cy.get(seletor)
                     .find('span')
-                    .should('be.visible') // Verifica se o elemento está visível
+                    .should('be.visible')
                     .invoke('text')
                     .then((text) => {
                         // Remover espaços em branco adicionais
-                        const cleanedText = text.replace(/\s+/g, ' ').trim();
-                        expect(cleanedText).to.equal(valorFinal)
+                        const cleanedText = text.replace(/\s+/g, ' ').trim()
+                        expect(cleanedText).to.equal(valorConcatenado)
                     })
                 break
             case 'button':
@@ -297,17 +307,27 @@ class formCuponsVouchers {
             if (tipoDesconto === 'Cupom') {
                 valorEsperado = `${valor}%`
             } else if (tipoDesconto === 'Voucher') {
-                valorEsperado = `R$ ${valor}`
+                valorEsperado = `R$ ${Number(valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
             }
         } else {
             valorEsperado = valor
         }
     
         // Valida o valor na tabela
-        cy.get(seletor)
-            .should('have.text', valorEsperado)
-            .should('exist')
-            .should('be.visible')
+        if (nomeCampo === 'itens') {
+            // Concatenar itens se valor for um array
+            const valorConcatenado = Array.isArray(valorEsperado) ? valorEsperado.join('') : valorEsperado
+
+            cy.get(seletor)
+                .should('have.text', valorConcatenado)
+                .should('exist')
+                .should('be.visible')
+        } else {
+            cy.get(seletor)
+                .should('have.text', valorEsperado)
+                .should('exist')
+                .should('be.visible')
+        }
     }
 }
 export default new formCuponsVouchers

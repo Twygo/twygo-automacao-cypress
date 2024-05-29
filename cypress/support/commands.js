@@ -3410,12 +3410,12 @@ Cypress.Commands.add('preencherDadosCupomVoucher', (dados, opcoes = { limpar: fa
   })
 }) 
 
-Cypress.Commands.add('validarDadosCupomVoucher', (dados, tipoDesconto) => {   
+Cypress.Commands.add('validarDadosCupomVoucher', (dados, tipoDesconto) => {
   Object.keys(dados).forEach(nomeCampo => {
-    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
-    formCuponsVouchers.validarCampo(nomeCampo, valor, tipoDesconto)
-  })
-})
+      const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : formCuponsVouchers.elementos[nomeCampo].default
+      formCuponsVouchers.validarCampo(nomeCampo, valor, tipoDesconto);
+  });
+});
 
 Cypress.Commands.add('validarTabelaCupomVoucher', (dados, tipoDesconto) => {    
   Object.keys(dados).forEach(nomeCampo => {
