@@ -57,16 +57,25 @@ describe('Integrações com API', () => {
             email: emailUsuario
         }
 
+        const nomeCompleto = {usuarioAssociado: `${body.first_name} ${body.last_name} <${body.email}>`}
+        const valorChaveApi = {chaveDeApi: true}
+
         //CREATE
         cy.criarUsuarioViaApi(body)
         cy.acessarPgIntegracoes()
-        cy.criarIntegracaoApi(dadosChave)
+        cy.adicionarChaveApi()
+        cy.preencherIntegracaoApi(dadosChave, { limpar: true })
+        cy.salvarChaveApi()
 
         //READ
-        cy.validarChave(dadosChave, 'Ativada', 'Criação')
+        cy.validarTabelaIntegracoes(dadosChave, 'Ativada', 'Criação')
+        cy.editarChave(dadosChave)
+
+        let dadosParaValidar = { ...nomeCompleto, ...dadosChave, ...valorChaveApi}
+        cy.validarDadosIntegracoes(dadosParaValidar)
 
         //UPDATE
-        cy.editarNomeChave(dadosChave, dadosChaveEditada)
+        cy.editarChave(dadosChave, dadosChaveEditada, nomeCompleto, { limpar: true })
         cy.validarChave(dadosChaveEditada, 'Ativada', 'Criação')
         cy.alterarSituacaoChave(dadosChaveEditada, 'Desativar')
         cy.validarChave(dadosChaveEditada, 'Desativada', 'Criação')

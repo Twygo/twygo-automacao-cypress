@@ -297,6 +297,7 @@
         }
     },
     "integracoes": {
-        "breadcrumb": "Integrações > Chave de API"
+        "breadcrumb": "Integrações > Chave de API",
+        "msgSucesso": "Chave de API criada com sucesso"
     }
 }

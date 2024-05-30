@@ -13,6 +13,7 @@ import formAmbientesAdicionais from "./pageObjects/formAmbientesAdicionais"
 import formConfigOrganizacao from "./pageObjects/formConfigOrganizacao"
 import formTrial from "./pageObjects/formTrial"
 import formConteudosAmbienteAdicional from "./pageObjects/formConteudosAmbienteAdicional"
+import formIntegracoes from "./pageObjects/formIntegracoes"
 import { fakerPT_BR } from "@faker-js/faker"
 import 'cypress-real-events/support'
 
@@ -3291,3 +3292,70 @@ Cypress.Commands.add('acessarPgIntegracoes', function() {
   cy.contains('#page-breadcrumb', breadcrumb)
     .should('be.visible')
 })
+
+Cypress.Commands.add('adicionarChaveApi', function() {
+  const formulario = new formIntegracoes()
+  formulario.adicionarChave()
+})
+
+Cypress.Commands.add('preencherIntegracaoApi', (dadosChave, opcoes = { limpar: true }) => {
+  const formulario = new formIntegracoes()
+  Object.keys(dadosChave).forEach(nomeCampo => {
+      const valor = dadosChave[nomeCampo]
+      formulario.preencherCampo(nomeCampo, valor, opcoes)
+  })
+}) 
+
+Cypress.Commands.add('salvarChaveApi', function() {
+  const formulario = new formIntegracoes()
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { msgSucesso } = labels.integracoes
+
+  formulario.salvarChave()
+  cy.contains('#toast-success-toast-title', msgSucesso, { timeout: TIMEOUT_PADRAO })
+        .should('be.visible')
+})
+
+Cypress.Commands.add('validarTabelaIntegracoes', (dadosChave, situacao, acao) => {
+  switch (acao) {
+    case 'Exclusão':
+      cy.contains(`tr[data-item-name="${dadosChave.nome}"`).should('not.exist')
+      break
+    case 'Criação':
+      switch (situacao) {
+        case 'Ativada':
+          cy.contains(`tr[data-item-name="${dadosChave.nome}"`).should('be.visible')
+          cy.get(`tr[data-item-name="${dadosChave.nome}"`)
+            .find('span[data-checked]').should('exist')
+          break
+        case 'Desativada':
+          cy.contains(`tr[data-item-name="${dadosChave.nome}"`).should('be.visible')
+          cy.get(`tr[data-item-name="${dadosChave.nome}"`)
+            .find('span[data-checked]').should('not.exist')
+          break
+      }
+  }    
+})
+
+Cypress.Commands.add('editarChave', (dadosChave) => {
+  const formulario = new formIntegracoes()
+  cy.get(`tr[data-item-name="${dadosChave.nome}"`)
+    formulario.editarChave()
+  formulario.expandirSelectUsuario()
+})
+
+Cypress.Commands.add('validarDadosIntegracoes', (dados) => {
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+    formIntegracoes.validarCampo(nomeCampo, valor)
+  })
+})
+
+Cypress.Commands.add('armazenarValorChave', function () {
+  cy.get('input[name="token"]')
+    .invoke('val')
+    .as('valorDaChave')
+})
+
+Cypress.Commands.add('alterarDadosChave', )

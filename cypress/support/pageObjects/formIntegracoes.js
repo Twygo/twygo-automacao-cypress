@@ -35,7 +35,25 @@ class formIntegracoes {
         confirmarExclusao: {
             seletor: '#tokens-delete-confirm-button',
             tipo: 'button'
+        },
+        chaveDeApi: {
+            seletor: 'input[name="token"]',
+            tipo: 'input'
+        },
+        usuarioAssociado: {
+            seletor: 'div[class$="singleValue"]',
+            tipo: 'select'
         }
+    }
+
+    expandirSelectUsuario() {
+        cy.get(this.elementos.usuarioAssociado.seletor)
+            .click()
+    }
+
+    editarchave() {
+        cy.get(this.elementos.editar.seletor)
+            .click()
     }
 
     adicionarChave() {
@@ -81,6 +99,40 @@ class formIntegracoes {
 		} else {
 			throw new Error(`Campo ${nomeCampo} não pode ser preenchido com valor ${valorFinal}`)
 		}
+	}
+
+
+    validarCampo(nomeCampo, valor) {		
+		const campo = this.elementos[nomeCampo]
+
+			if (!campo) {
+				throw new Error(`Campo ${nomeCampo} não encontrado`)
+			}
+
+			const { seletor, seletorThumb, tipo, default: valorDefault } = campo
+				
+			const valorFinal = valor !== undefined ? valor : valorDefault
+		
+			switch (tipo) {
+			case 'input':
+				cy.get(seletor)
+					.should('have.value', valorFinal)
+				break
+			case 'select':
+                cy.get(seletor)
+                    .should('have.text', valor)
+                    .should('be.visible')
+                break
+            case 'inputChave':
+                if (valor === true) {           
+                    cy.get(seletor)
+                        .invoke('val')
+                        .should('not.be.empty')
+                }
+                break
+            default:
+                throw new Error(`Tipo de campo desconhecido: ${tipo}`)
+			}
 	}
 }
 export default formIntegracoes
