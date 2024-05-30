@@ -51,6 +51,16 @@ class formIntegracoes {
             .click()
     }
 
+    exclusaoDeChave() {
+        cy.get(this.elementos.excluir.seletor)
+            .click()
+    }
+    
+    confirmacaoExclusaoDeChave() {
+        cy.get(this.elementos.confirmarExclusao.seletor)
+            .click()
+    }
+
     editarchave() {
         cy.get(this.elementos.editar.seletor)
             .click()

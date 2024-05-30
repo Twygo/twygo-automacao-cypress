@@ -58,6 +58,7 @@ describe('Integrações com API', () => {
         }
 
         const nomeCompleto = {usuarioAssociado: `${body.first_name} ${body.last_name} <${body.email}>`}
+        const nomeCompletoEditado = {usuarioAssociado: `${body.first_name} ${body.last_name} <${body.email}>`}
         const valorChaveApi = {chaveDeApi: true}
 
         //CREATE
@@ -75,8 +76,9 @@ describe('Integrações com API', () => {
         cy.validarDadosIntegracoes(dadosParaValidar)
 
         //UPDATE
-        cy.editarChave(dadosChave, dadosChaveEditada, nomeCompleto, { limpar: true })
-        cy.validarChave(dadosChaveEditada, 'Ativada', 'Criação')
+        cy.alterarDadosChave(dadosChave, dadosChaveEditada, nomeCompletoEditado, { limpar: true })
+        cy.validarDadosIntegracoes(dadosParaValidar)
+        cy.salvarChaveApi()
         cy.alterarSituacaoChave(dadosChaveEditada, 'Desativar')
         cy.validarChave(dadosChaveEditada, 'Desativada', 'Criação')
 

@@ -3358,4 +3358,16 @@ Cypress.Commands.add('armazenarValorChave', function () {
     .as('valorDaChave')
 })
 
-Cypress.Commands.add('alterarDadosChave', )
+Cypress.Commands.add('alterarDadosChave', (dadosChaveEditada, nomeCompleto) => {
+  cy.preencherIntegracaoApi(dadosChaveEditada, { limpar: true })
+  formIntegracoes.expandirSelectUsuario()
+  cy.get('div[class$="option"]')
+    .contains(nomeCompleto)
+    .click()
+})
+
+Cypress.Commands.add('excluirChave', (dadosChave) => {
+  cy.get(`tr[data-item-name="${dadosChave.nome}"`)
+    formIntegracoes.exclusaoDeChave()
+  formIntegracoes.confirmarExclusaoDeChave()
+})
