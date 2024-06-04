@@ -13,12 +13,9 @@ import formAmbientesAdicionais from "./pageObjects/formAmbientesAdicionais"
 import formConfigOrganizacao from "./pageObjects/formConfigOrganizacao"
 import formTrial from "./pageObjects/formTrial"
 import formConteudosAmbienteAdicional from "./pageObjects/formConteudosAmbienteAdicional"
-<<<<<<< HEAD
-import formIntegracoes from "./pageObjects/formIntegracoes"
-=======
 import formCobrancaAutomatica from "./pageObjects/formCobrancaAutomatica"
 import formCuponsVouchers from "./pageObjects/formCuponsVouchers"
->>>>>>> b7e6a8b67b9daa0c4da5b387028c3390d97d41ea
+import formIntegracoes from "./pageObjects/formIntegracoes"
 import { fakerPT_BR } from "@faker-js/faker"
 import 'cypress-real-events/support'
 import moment from 'moment'
