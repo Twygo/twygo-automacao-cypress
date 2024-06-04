@@ -28,7 +28,7 @@
  * @version 1.1.0
  * @since 1.0.0
  */
-export function gerarData(dias = 0, meses = 0, anos = 0) {
+export function gerarData(dias = 0, meses = 0, anos = 0, formato = 'DD/MM/YYYY') {
     let dataAtual = new Date()
   
     // Adiciona ou subtrai dias, meses e anos da data atual
@@ -43,7 +43,13 @@ export function gerarData(dias = 0, meses = 0, anos = 0) {
     dia = dia < 10 ? '0' + dia : dia.toString()
     mes = mes < 10 ? '0' + mes : mes.toString()
   
-    let dataFormatada = `${dia}/${mes}/${ano}`
+    let dataFormatada
+    if (formato === 'YYYY-MM-DD') {
+        dataFormatada = `${ano}-${mes}-${dia}`
+    } else {
+        dataFormatada = `${dia}/${mes}/${ano}`
+    }
+    
     return dataFormatada
 }
 

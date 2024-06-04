@@ -296,6 +296,32 @@
 
         }
     },
+    "cobrancaInscricao": {
+        "breadcrumb": "Cobrança de inscrição",
+        "cobrancaAutomatica": {
+            "msgSucesso": "Configurações salvas com sucesso"
+        }
+    },
+    "cuponsVouchers": {
+        "breadcrumb": "Cobrança de inscrição > Novo cupom",
+        "tituloPg": "Novo cupom ou voucher",
+        "breadcrumbTipo": "Cobrança de inscrição > Novo {{ tipo }}",
+        "breadcrumbEdicao": "Cobrança de inscrição > {{ nome }}",
+        "tituloPgEdicao": "{{ nome }}",
+        "msgSucesso": "{{ tipo }} salvo com sucesso",
+        "msgSucessoEdicao": "{{ tipo }} alterado com sucesso",
+        "msgNenhumResultado": "Nenhum resultado para mostrar",
+        "modalAplicadoItem": { 
+            "tituloModal": "{{ tipo }} aplicado aos itens",
+            "descricaoModal": "Esse {{ tipo }} está aplicado aos itens abaixo. Para adicionar novos, digite para pesquisar.",
+            "msgSucesso": "{{ tipo }} aplicado aos itens"
+        },
+        "modalExclusao": {
+            "tituloModal": "Confirmação de exclusão",
+            "descricaoModal": "Caso o desconto esteja ativo alunos que tenham o código não poderão mais utilizar. Tem certeza que deseja excluir?",
+            "msgSucesso": "{{ tipo }} excluído com sucesso"
+        }
+    },
     "integracoes": {
         "breadcrumb": "Integrações > Chave de API",
         "breadcrumbAdicionar": "Integrações > Chave de API > Adicionar",
