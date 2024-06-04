@@ -298,6 +298,19 @@
     },
     "integracoes": {
         "breadcrumb": "Integrações > Chave de API",
-        "msgSucesso": "Chave de API criada com sucesso"
+        "breadcrumbAdicionar": "Integrações > Chave de API > Adicionar",
+        "tituloAdicionar": "Chave de API",
+        "msgSucessoCriacao": "Chave de API criada com sucesso",
+        "tituloEditar": "Chave de API",
+        "breadcrumbEditar": "Integrações > Chave de API > Editar",
+        "msgSucessoEdicao": "Chave de API atualizada com sucesso",
+        "tituloModalExclusao": "Confirmação de exclusão",
+        "textoModalExclusao": "Todas as consultas que usam essa chave de API serão interrompidas. Tem certeza que deseja excluir?",
+        "msgSucessoExclusao": "Chave de api excluída com sucesso",
+        "nenhumResultado": "Nenhum resultado para mostrar",
+        "tituloModalInativar": "Confirmação de inativação",
+        "textoModalInativar": "Todas as consultas que usam essa chave de API serão interrompidas. Tem certeza que deseja continuar?",
+        "msgSucessoInativar": "Chave de API inativada com sucesso",
+        "msgSucessoAtivar": "Chave de API ativada com sucesso"
     }
 }

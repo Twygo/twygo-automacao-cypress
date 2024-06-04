@@ -5,7 +5,7 @@ class formIntegracoes {
             tipo: 'button'
         },
         voltar: {
-            seletor: '#payments-add-discount-back-button', //é, não faz sentido
+            seletor: '#payments-add-discount-back-button', 
             tipo: 'button'
         },
         nome: {
@@ -17,7 +17,8 @@ class formIntegracoes {
             tipo: 'button'
         },
         situacao: {
-            seletor: 'span[class^="chakra-switch__track"]',
+            seletor: '.chakra-switch',
+            seletorValor: 'span[class^="chakra-switch__track"]',
             tipo: 'button'
         },
         editar: {
@@ -38,11 +39,20 @@ class formIntegracoes {
         },
         chaveDeApi: {
             seletor: 'input[name="token"]',
-            tipo: 'input'
+            tipo: 'inputRandom'
         },
         usuarioAssociado: {
-            seletor: 'div[class$="singleValue"]',
+            seletor: '.select-input',
+            seletorOption: 'div[class$="option"]',
+            seletorSelected: 'div[class$="singleValue"]',
             tipo: 'select'
+        },
+        linhaTabela: {
+            seletor: (nome) => `tr[data-item-name="${nome}"]`
+        },
+        confirmarInativar: {
+            seletor: 'button:contains("Inativar")',
+            tipo: 'button'
         }
     }
 
@@ -61,7 +71,7 @@ class formIntegracoes {
             .click()
     }
 
-    editarchave() {
+    editarChave() {
         cy.get(this.elementos.editar.seletor)
             .click()
     }
@@ -70,8 +80,14 @@ class formIntegracoes {
         cy.get(this.elementos.adicionar.seletor)
             .click()
     }
+
     salvarChave() {
         cy.get(this.elementos.salvar.seletor)
+            .click()
+    }
+
+    confirmarInativacao() {
+        cy.get(this.elementos.confirmarInativar.seletor)
             .click()
     }
 
@@ -82,7 +98,7 @@ class formIntegracoes {
 			throw new Error(`Campo ${nomeCampo} não encontrado`)
 		}
 
-		const { seletor, tipo, default: valorDefault } = campo
+		const { seletor, tipo, default: valorDefault, seletorOption } = campo
 
 		let valorFinal = valor !== undefined ? valor : valorDefault
 
@@ -103,6 +119,15 @@ class formIntegracoes {
                     cy.get(seletor)
                         .type(valorFinal)
                     break
+                case 'inputRandom':
+                    // Gera um valor aleatório para a chave de API, nada a fazer
+                    break
+                case 'select':
+                    cy.get(seletor)
+                        .click()
+                    cy.get(seletorOption).contains(valorFinal)
+                        .click()
+                    break
 				default:
 					throw new Error(`Tipo de campo ${tipo} não suportado`)
 			}
@@ -119,7 +144,7 @@ class formIntegracoes {
 				throw new Error(`Campo ${nomeCampo} não encontrado`)
 			}
 
-			const { seletor, seletorThumb, tipo, default: valorDefault } = campo
+			const { seletor, seletorSelected, tipo, default: valorDefault } = campo
 				
 			const valorFinal = valor !== undefined ? valor : valorDefault
 		
@@ -129,11 +154,11 @@ class formIntegracoes {
 					.should('have.value', valorFinal)
 				break
 			case 'select':
-                cy.get(seletor)
+                cy.get(seletorSelected)
                     .should('have.text', valor)
                     .should('be.visible')
                 break
-            case 'inputChave':
+            case 'inputRandom':
                 if (valor === true) {           
                     cy.get(seletor)
                         .invoke('val')
@@ -145,4 +170,4 @@ class formIntegracoes {
 			}
 	}
 }
-export default formIntegracoes
+export default new formIntegracoes

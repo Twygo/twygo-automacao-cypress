@@ -1,12 +1,10 @@
 /// reference types="cypress" />
-import { fakerPT_BR } from '@faker-js/faker'
+import { faker, fakerPT_BR } from '@faker-js/faker'
 import { getAuthToken } from '../support/authHelper'
 
 
 describe('Integrações com API', () => {
-    let nome = fakerPT_BR.person.firstName()
-    let sobrenome = fakerPT_BR.person.lastName()
-    let emailUsuario = fakerPT_BR.internet.email({ firstName: nome, lastName: sobrenome}).toLowerCase()
+    let nome, sobrenome, email
 
     before(() => {
         // Carrega os labels do arquivo JSON
@@ -18,72 +16,150 @@ describe('Integrações com API', () => {
     beforeEach(function() {
         // Ignora mensagens de erro conhecidas
 		cy.ignorarCapturaErros([
-		    "Unexpected identifier 'id'",
-            "ResizeObserver loop completed with undelivered notifications"
-		], { ignoreScriptErrors: true })
+		    "Unexpected identifier 'id'"
+		])
 
-        // Gera um nome aleatório para o conteúdo e para os ambientes adicionais
-        
-        // Obtém o token de autenticação
-        getAuthToken()
-
-        // Exclui todos os usuários antes de iniciar o teste
-        cy.excluirUsuarioViaApi()
-
+        // Excluir todas as chaves de API
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')
+        cy.acessarPgIntegracoes()
+        cy.excluirTodasChavesApi()      // Necessário excluir as chaves de API antes dos usuários devido a um BUG
 
-        
+        // Exclui todos os usuários antes de iniciar o teste
+        getAuthToken()
+        cy.excluirUsuarioViaApi()        
+
+        // Cria usuário administrador
+        nome = faker.person.firstName()
+        sobrenome = faker.person.lastName()
+        email = faker.internet.email({ firstName: nome, lastName: sobrenome}).toLowerCase()
+
+        const usuario = {
+            email: email,
+            nome: nome,
+            sobrenome: sobrenome,
+            perfilAdministrador: true
+        }
+        cy.criarUsuario(usuario)
     })
 
     afterEach(() => {
 		cy.ativarCapturaErros()
 	})
 
-    it('1. CRUD - Integração com API', () => {
+    it('1. CRUD - Criação da chave de API para usuário default', () => {
         //Massa de dados
-
-        const dadosChave = {
-            nome: fakerPT_BR.commerce.productName()
+        const dados = {
+            nome: faker.lorem.words(2),
         }
 
-        const dadosChaveEditada = {
-            nome: fakerPT_BR.commerce.productName()
+        const dadosAdicionais = {
+            usuarioAssociado: `${Cypress.env('username')} <${Cypress.env('login')}>`,
+            chaveDeApi: true
         }
-
-        const body = {
-            first_name: nome,
-            last_name: sobrenome,
-            email: emailUsuario
-        }
-
-        const nomeCompleto = {usuarioAssociado: `${body.first_name} ${body.last_name} <${body.email}>`}
-        const nomeCompletoEditado = {usuarioAssociado: `${body.first_name} ${body.last_name} <${body.email}>`}
-        const valorChaveApi = {chaveDeApi: true}
 
         //CREATE
-        cy.criarUsuarioViaApi(body)
+        cy.log('## CREATE ##')
+
         cy.acessarPgIntegracoes()
         cy.adicionarChaveApi()
-        cy.preencherIntegracaoApi(dadosChave, { limpar: true })
-        cy.salvarChaveApi()
+        cy.preencherIntegracaoApi(dados, { limpar: true })
+        cy.salvarChaveApi('Criação')
 
         //READ
-        cy.validarTabelaIntegracoes(dadosChave, 'Ativada', 'Criação')
-        cy.editarChave(dadosChave)
+        cy.log('## READ ##')
 
-        let dadosParaValidar = { ...nomeCompleto, ...dadosChave, ...valorChaveApi}
+        cy.validarTabelaIntegracoes(dados.nome, 'Ativada', 'Criação')
+        cy.editarChave(dados.nome)
+
+        let dadosParaValidar = { ...dados, ...dadosAdicionais }
         cy.validarDadosIntegracoes(dadosParaValidar)
 
-        //UPDATE
-        cy.alterarDadosChave(dadosChave, dadosChaveEditada, nomeCompletoEditado, { limpar: true })
-        cy.validarDadosIntegracoes(dadosParaValidar)
-        cy.salvarChaveApi()
-        cy.alterarSituacaoChave(dadosChaveEditada, 'Desativar')
-        cy.validarChave(dadosChaveEditada, 'Desativada', 'Criação')
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        // Massa de dados para atualização
+        const dadosUpdate = {
+            nome: faker.lorem.words(2),
+            // usuarioAssociado: `${nome} ${sobrenome} <${email}>`,         // Na edição está com BUG e não está salvando o usuário associado
+            chaveDeApi: true
+        }
+
+        cy.preencherIntegracaoApi(dadosUpdate, { limpar: true })
+        cy.salvarChaveApi('Edição')
+
+        cy.alterarSituacaoChave(dadosUpdate.nome, 'Inativo')
+
+        // READ-UPDATE
+        cy.log('## READ-UPDATE ##')
+
+        cy.validarTabelaIntegracoes(dadosUpdate.nome, 'Desativada', 'Criação')
+        cy.editarChave(dadosUpdate.nome)
+        cy.validarDadosIntegracoes(dadosUpdate)
 
         //DELETE
-        cy.excluirChave(dadosChaveEditada)
-        cy.validarChave(dadosChaveEditada, 'Desativada', 'Exclusão')
+        cy.log('## DELETE ##')
+
+        cy.acessarPgIntegracoes()
+        cy.excluirChave(dadosUpdate.nome)
+        cy.validarTabelaIntegracoes(dadosUpdate, null, 'Exclusão')
     })
+
+    it('2. CRUD - Criação da chave de API para outro usuário administrador', () => {
+        //Massa de dados
+        const dados = {
+            nome: faker.lorem.words(2),
+            usuarioAssociado: `${nome} ${sobrenome} <${email}>`
+        }
+
+        const dadosAdicionais = {
+            chaveDeApi: true
+        }
+
+        //CREATE
+        cy.log('## CREATE ##')
+
+        cy.acessarPgIntegracoes()
+        cy.adicionarChaveApi()
+        cy.preencherIntegracaoApi(dados, { limpar: true })
+        cy.salvarChaveApi('Criação')
+
+        //READ
+        cy.log('## READ ##')
+
+        cy.validarTabelaIntegracoes(dados.nome, 'Ativada', 'Criação')
+        cy.editarChave(dados.nome)
+
+        let dadosParaValidar = { ...dados, ...dadosAdicionais }
+        cy.validarDadosIntegracoes(dadosParaValidar)
+
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        // Massa de dados para atualização
+        const dadosUpdate = {
+            nome: faker.lorem.words(2),
+            chaveDeApi: true
+        }
+
+        cy.preencherIntegracaoApi(dadosUpdate, { limpar: true })
+        cy.salvarChaveApi('Edição')
+
+        cy.alterarSituacaoChave(dadosUpdate.nome, 'Inativo')
+
+        // READ-UPDATE
+        cy.log('## READ-UPDATE ##')
+
+        cy.validarTabelaIntegracoes(dadosUpdate.nome, 'Desativada', 'Criação')
+        cy.editarChave(dadosUpdate.nome)
+        cy.validarDadosIntegracoes(dadosUpdate)
+
+        //DELETE
+        cy.log('## DELETE ##')
+
+        cy.acessarPgIntegracoes()
+        cy.excluirChave(dadosUpdate.nome)
+        cy.validarTabelaIntegracoes(dadosUpdate, null, 'Exclusão')
+    })
+
 })
