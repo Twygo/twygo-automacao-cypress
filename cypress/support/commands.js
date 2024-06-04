@@ -15,6 +15,7 @@ import formTrial from "./pageObjects/formTrial"
 import formConteudosAmbienteAdicional from "./pageObjects/formConteudosAmbienteAdicional"
 import formCobrancaAutomatica from "./pageObjects/formCobrancaAutomatica"
 import formCuponsVouchers from "./pageObjects/formCuponsVouchers"
+import formIntegracoes from "./pageObjects/formIntegracoes"
 import { fakerPT_BR } from "@faker-js/faker"
 import 'cypress-real-events/support'
 import moment from 'moment'
@@ -3555,5 +3556,194 @@ Cypress.Commands.add('excluirTodosCuponsVouchers', () => {
 
       cy.get('div[role="alert"]#success-toast button[aria-label="Close"]').click()
     })
+  })
+})
+
+Cypress.Commands.add('acessarPgIntegracoes', function() {
+  cy.visit(`/o/${Cypress.env('orgId')}/integrations?tab=api_tokens`)
+
+  const labels = Cypress.env('labels')
+  const { breadcrumb } = labels.integracoes
+
+  // Verificar se a página de integrações foi acessada com sucesso
+  cy.contains('#page-breadcrumb', breadcrumb)
+    .should('be.visible')
+})
+
+Cypress.Commands.add('adicionarChaveApi', function() {
+  const labels = Cypress.env('labels')
+  const { breadcrumbAdicionar, tituloAdicionar } = labels.integracoes
+
+  formIntegracoes.adicionarChave()
+
+  // Verificar se a página de adicionar chave foi acessada com sucesso
+  cy.contains('#page-breadcrumb', breadcrumbAdicionar)
+    .should('be.visible')
+
+  cy.contains('h2.chakra-heading', tituloAdicionar)
+    .should('be.visible')
+})
+
+Cypress.Commands.add('preencherIntegracaoApi', (dados, opcoes = { limpar: true }) => {
+  Object.keys(dados).forEach(nomeCampo => {
+      const valor = dados[nomeCampo]
+      formIntegracoes.preencherCampo(nomeCampo, valor, opcoes)
+  })
+}) 
+
+Cypress.Commands.add('salvarChaveApi', function(acao) {
+  const TIMEOUT_PADRAO = 5000
+  const labels = Cypress.env('labels')
+  const { msgSucessoCriacao, msgSucessoEdicao } = labels.integracoes
+
+  formIntegracoes.salvarChave()
+
+  if (acao === 'Criação') {
+    cy.contains('#toast-success-toast-title', msgSucessoCriacao, { timeout: TIMEOUT_PADRAO })
+      .should('be.visible')
+  } else if (acao === 'Edição') {
+    cy.contains('#toast-success-toast-title', msgSucessoEdicao, { timeout: TIMEOUT_PADRAO })
+      .should('be.visible')
+  }
+})
+
+Cypress.Commands.add('validarTabelaIntegracoes', (nome, situacao, acao) => {
+  const seletor = formIntegracoes.elementos.linhaTabela.seletor(nome)
+
+  switch (acao) {
+    case 'Exclusão':
+      cy.get('body').then($body => {
+        if ($body.find(seletor).length > 0) {
+          cy.get(seletor).should('not.exist')
+        }
+      })
+      break
+
+    case 'Criação':
+      cy.get(seletor).should('exist').and('be.visible')
+      switch (situacao) {
+        case 'Ativada':
+          cy.get(seletor).find('span[data-checked]').should('exist')
+          break
+
+        case 'Desativada':
+          cy.get(seletor).find('span[data-checked]').should('not.exist')
+          break
+
+        default:
+          throw new Error(`Situação desconhecida: ${situacao}`)
+      }
+      break
+
+    default:
+      throw new Error(`Ação desconhecida: ${acao}`)
+  }
+})
+
+Cypress.Commands.add('editarChave', (nomeChave) => {
+  const labels = Cypress.env('labels')
+  const { breadcrumbEditar, tituloEditar } = labels.integracoes
+
+  cy.get(formIntegracoes.elementos.linhaTabela.seletor(nomeChave)).within(() => {
+    formIntegracoes.editarChave()
+  })
+
+  // Verificar se a página de edição de chave foi acessada com sucesso
+  cy.contains('#page-breadcrumb', breadcrumbEditar)
+    .should('be.visible')
+
+  cy.contains('h2.chakra-heading', tituloEditar)
+    .should('be.visible')
+  // formIntegracoes.expandirSelectUsuario()
+})
+
+Cypress.Commands.add('validarDadosIntegracoes', (dados) => {
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+    formIntegracoes.validarCampo(nomeCampo, valor)
+  })
+})
+
+Cypress.Commands.add('excluirChave', (nomeChave) => {
+  const labels = Cypress.env('labels')
+  const { tituloModalExclusao, textoModalExclusao, msgSucessoExclusao} = labels.integracoes
+  
+  cy.get(formIntegracoes.elementos.linhaTabela.seletor(nomeChave)).within(() => {
+    formIntegracoes.exclusaoDeChave()
+  })
+
+  // Validar modal de confirmação de exclusão
+  cy.contains('.chakra-modal__header', tituloModalExclusao)
+    .should('be.visible')
+
+  cy.contains('.chakra-modal__body', textoModalExclusao)
+    .should('be.visible')
+
+  formIntegracoes.confirmacaoExclusaoDeChave()
+
+  // Validar mensagem de sucesso
+  cy.contains('.chakra-alert__desc', msgSucessoExclusao)
+    .should('be.visible')
+})
+
+Cypress.Commands.add('alterarSituacaoChave', (nomeChave, situacao) => {
+  const labels = Cypress.env('labels')
+  const { msgChaveAtivada, tituloModalInativar, textoModalInativar, msgChaveInativada } = labels.integracoes
+  
+  cy.get(formIntegracoes.elementos.linhaTabela.seletor(nomeChave)).within(() => {
+    cy.get(formIntegracoes.elementos.situacao.seletor).find('input[type="checkbox"]').then($checkbox => {
+      const isChecked = $checkbox.is(':checked')
+      const estadoAtual = isChecked ? 'Ativo' : 'Inativo'
+  
+      // Comparar o estado atual com o estado desejado
+      if (estadoAtual !== situacao) {
+        // Clicar no toggle switch para alterar o estado
+        cy.get(formIntegracoes.elementos.situacao.seletorValor)
+          .click()
+        
+        if (situacao === 'Ativo') {
+          // Validar mensagem de sucesso
+          cy.contains('#activate-toast', msgChaveAtivada)
+            .should('be.visible')
+        } else if (situacao === 'Inativo') {
+          // Validar modal de confirmação de inativação
+          cy.contains('.chakra-modal__header', tituloModalInativar)
+            .should('be.visible')
+      
+          cy.contains('.chakra-modal__body', textoModalInativar)
+            .should('be.visible')
+      
+          formIntegracoes.confirmacaoInativacao()
+      
+          // Validar mensagem de sucesso
+          cy.contains('.chakra-alert__desc', msgChaveInativada)
+            .should('be.visible')
+        }
+      }
+  })
+
+  })
+})
+
+Cypress.Commands.add('excluirTodasChavesApi', () => {
+  const labels = Cypress.env('labels')
+  const { nenhumResultado } = labels.integracoes
+  const nomesChavesIntegracao = []
+
+  // Verifica se a página não contém resultados
+  cy.get('body').then(($body) => {
+    if ($body.find(`p:contains("${nenhumResultado}")`).length > 0) {
+      // Se não houver resultados, não há chaves para excluir
+    } else {
+      // Seleciona todos os elementos que contêm os nomes das chaves
+      cy.get('.tokens-name-data').each(($el) => {
+        nomesChavesIntegracao.push($el.text())
+      }).then(() => {
+        // Após coletar todos os nomes das chaves, iterar sobre eles para exclusão
+        Cypress._.each(nomesChavesIntegracao, (nome) => {
+          cy.excluirChave(nome)
+        })
+      })
+    }
   })
 })
