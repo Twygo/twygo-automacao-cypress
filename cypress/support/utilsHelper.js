@@ -1,3 +1,5 @@
+import { faker } from '@faker-js/faker'
+
 /** DOCUMENTAÇÃO
  * @name gerarData
  * 
@@ -133,4 +135,35 @@ export function gerarTelefone(tipo) {
     } else {
     throw new Error(`Tipo de telefone inválido: ${tipo}. Utilize 'celular' ou 'fixo'`)
     }
+}
+
+export function gerarCEP(regiao = null) {
+    // Definindo as regiões postais e seus respectivos intervalos de CEP
+    const regioesPostais = {
+        0: '0', // Grande São Paulo
+        1: '1', // Interior de São Paulo
+        2: '2', // Rio de Janeiro e Espírito Santo
+        3: '3', // Minas Gerais
+        4: '4', // Bahia e Sergipe
+        5: '5', // Pernambuco, Alagoas, Paraíba e Rio Grande do Norte
+        6: '6', // Ceará, Piauí, Maranhão, Pará, Amazonas, Acre, Amapá e Roraima
+        7: '7', // Distrito Federal, Goiás, Tocantins, Mato Grosso, Mato Grosso do Sul e Rondônia
+        8: '8', // Paraná e Santa Catarina
+        9: '9'  // Rio Grande do Sul
+    }
+
+    // Se uma região específica for fornecida, use-a; caso contrário, escolha uma aleatória
+    const regiaoEscolhida = regiao !== null ? regiao : faker.helpers.arrayElement(Object.keys(regioesPostais))
+
+    // Gerando os outros dígitos do CEP
+    const subRegiao = faker.number.int({ min: 0, max: 9 })
+    const setor = faker.number.int({ min: 0, max: 9 })
+    const subSetor = faker.number.int({ min: 0, max: 9 })
+    const divisorSubSetor = faker.number.int({ min: 0, max: 9 })
+    const identificadorDistribuicao = faker.number.int({ min: 0, max: 999 }).toString().padStart(3, '0')
+    
+    // Montando o CEP completo
+    const cep = `${regioesPostais[regiaoEscolhida]}${subRegiao}${setor}${subSetor}${divisorSubSetor}-${identificadorDistribuicao}`
+
+    return cep
 }

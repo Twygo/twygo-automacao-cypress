@@ -16,6 +16,7 @@ import formConteudosAmbienteAdicional from "./pageObjects/formConteudosAmbienteA
 import formCobrancaAutomatica from "./pageObjects/formCobrancaAutomatica"
 import formCuponsVouchers from "./pageObjects/formCuponsVouchers"
 import formIntegracoes from "./pageObjects/formIntegracoes"
+import formRegistreSe from "./pageObjects/formRegistreSe"
 import { fakerPT_BR } from "@faker-js/faker"
 import 'cypress-real-events/support'
 import moment from 'moment'
@@ -3746,4 +3747,29 @@ Cypress.Commands.add('excluirTodasChavesApi', () => {
       })
     }
   })
+})
+
+Cypress.Commands.add('preencherDadosRegistreSe', (dados, opcoes = { limpar: false }) => {
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo]
+    formRegistreSe.preencherCampo(nomeCampo, valor, opcoes)
+  })
+})
+
+Cypress.Commands.add('validarDadosRegistreSe', (dados) => {
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+    formRegistreSe.validarCampo(nomeCampo, valor)
+  })
+})
+
+Cypress.Commands.add('salvarRegistreSe', () => {
+  const labels = Cypress.env('labels')
+  const { msgSucesso } = labels.registreSe
+
+  formRegistreSe.salvar()
+
+  // Valida a mensagem de sucesso
+  cy.contains('.flash.notice', msgSucesso)
+    .should('be.visible')
 })
