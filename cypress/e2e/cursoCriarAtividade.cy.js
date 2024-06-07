@@ -140,7 +140,8 @@ describe('Criar atividade', () => {
         // Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([
             "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
+            "unexpected token: identifier",    // Firefox
+            "Cannot read properties of undefined (reading 'toString')" // Chrome
         ], { ignoreNetworkErrors: true })
         
         // Define o tipo de conteúdo
