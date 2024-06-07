@@ -1,11 +1,13 @@
 ///reference types="cypress" />
 import { faker, fakerPT_BR } from '@faker-js/faker'
 import { gerarTelefone, gerarCEP } from '../support/utilsHelper'
-import formLogin from '../support/pageObjects/formLogin'
+import { gerarDados } from '../support/helpers/geradorDados'
+import { getAuthToken } from '../support/authHelper'
+import formSuperAdmin from '../support/pageObjects/formSuperAdmin'
 let fakerbr = require('faker-br')
 
 describe('Registre-se', () => {
-    let senha, nome, sobrenome
+    let gerarSenha, nome, sobrenome
 
     let formDefault = {
         email: '',
@@ -52,15 +54,24 @@ describe('Registre-se', () => {
             "Unexpected identifier 'id'"
         ])
 
-        // SuperAdmin - Marcar campos como obrigatórios para serem exibidos no formulário
+        // Configura todos os campos omo obrigatórios
+        cy.configTodosCamposObrigatorios()
+
+        // Obtém token autenticação, lista e exclui os usuários
+        getAuthToken()
+        cy.excluirUsuarioViaApi()
        
         // Gerar senha, nome e sobrenome
-        senha = faker.internet.password()
-        nome = faker.person.firstName()
-        sobrenome = faker.person.lastName()
+        gerarSenha = gerarDados('senha')
+        nome = gerarDados('nome')
+        sobrenome = gerarDados('sobrenome')
     })
 
     afterEach(() => {
+        // Desabilita todos os campos customizados
+        cy.configNenhumCampoHabilitado()
+
+        // Ativa captura de erros
         cy.ativarCapturaErros()
     })
 
@@ -70,25 +81,25 @@ describe('Registre-se', () => {
             nome: nome,
             sobrenome: sobrenome,
             idioma: 'Português',
-            email: faker.internet.email({ firstName: nome, lastName: sobrenome, provider: 'teste.automatizado.com' }).toLowerCase(),
-            cpf: fakerbr.br.cpf(),
+            email: gerarDados('email', nome, sobrenome),
+            cpf: gerarDados('cpf'),
             telPessoal: gerarTelefone('fixo'),
             celular: gerarTelefone('celular'),
-            rg: faker.number.int( { min: 100000000, max: 999999999 } ),
+            rg: gerarDados('rg'),
             cep: gerarCEP(),
-            endereco: fakerPT_BR.location.streetAddress(),
-            numero: faker.number.int( { min: 1, max: 9999 } ),
-            complemento: faker.word.words(2),
-            cidade: fakerPT_BR.location.city(),
-            bairro: fakerPT_BR.word.words(1),
-            estado: fakerPT_BR.location.state(),
-            pais: fakerPT_BR.location.country(),
-            empresa: faker.company.name(),
-            ramo: faker.commerce.department(),
-            nrColaboradores: faker.number.int( { min: 1, max: 9999 } ),
-            cargo: faker.commerce.department(),
-            senha: senha,
-            confirmarSenha: senha,
+            endereco: gerarDados('endereco'),
+            numero: gerarDados('numero'),
+            complemento: gerarDados('complemento'),
+            cidade: gerarDados('cidade'),
+            bairro: gerarDados('bairro'),
+            estado: gerarDados('estado'),
+            pais: gerarDados('pais'),
+            empresa: gerarDados('empresa'),
+            ramo: gerarDados('ramo'),
+            nrColaboradores: gerarDados('nrColaboradores'),
+            cargo: gerarDados('cargo'),
+            senha: gerarSenha,
+            confirmarSenha: gerarSenha,
             aceiteTermosPolitica: true
         }
 
@@ -110,8 +121,9 @@ describe('Registre-se', () => {
 
         cy.editarUsuario(`${dados.nome} ${dados.sobrenome}`)
 
-        let dadosParaValidar = { ...formDefault, ...dados }
-        cy.validarDadosUsuario(dados)
+        // Combina formDefault e dados em um novo objeto dadosParaValidar, removendo 'idioma'
+        let { idioma, senha, confirmarSenha, aceiteTermosPolitica, ...dadosParaValidar } = { ...formDefault, ...dados }
+        cy.validarDadosUsuario(dadosParaValidar)
 
         // Alterar senha do usuário
         senha = fakerPT_BR.internet.password()
@@ -130,27 +142,30 @@ describe('Registre-se', () => {
         // UPDATE
         cy.log('## UPDATE ##')
 
+        const nomeUpdate = gerarDados('nome')
+        const sobrenomeUpdate = gerarDados('sobrenome')
+
         const dadosUpdate = {
-            nome: fakerPT_BR.person.firstName(),
-            sobrenome: fakerPT_BR.person.lastName(),
-            rg: fakerPT_BR.number.int({ min: 100000, max: 999999999 }),
-            telPessoal: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
-            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
-            cep: fakerPT_BR.string.numeric(8),
-            endereco: fakerPT_BR.location.streetAddress(),
-            numero: fakerPT_BR.number.int( { min: 1, max: 9999 } ),
-            complemento: `Andar: ${fakerPT_BR.number.int( { min: 1, max: 20 } )}, Sala: ${fakerPT_BR.number.int( { min: 1, max: 20 } )}`,
-            bairro: fakerPT_BR.lorem.words(1),
-            cidade: fakerPT_BR.location.city(),
-            estado: fakerPT_BR.location.state(),
-            pais: 'Bósnia-Herzegovina',
-            empresa: fakerPT_BR.company.name(),
-            ramo: fakerPT_BR.lorem.words(1),
-            nrColaboradores: '31 - 100',
-            site: fakerPT_BR.internet.url(),
-            telComercial: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
-            cargo: fakerPT_BR.person.jobTitle(),
-            area: fakerPT_BR.person.jobArea(),
+            nome: nomeUpdate,
+            sobrenome: sobrenomeUpdate,
+            rg: gerarDados('rg'),
+            telPessoal: gerarTelefone('fixo'),
+            celular: gerarTelefone('celular'),
+            cep: gerarCEP(),
+            endereco: gerarDados('endereco'),
+            numero: gerarDados('numero'),
+            complemento: gerarDados('complemento'),
+            bairro: gerarDados('bairro'),
+            cidade: gerarDados('cidade'),
+            estado: gerarDados('estado'),
+            pais: gerarDados('pais'),
+            empresa: gerarDados('empresa'),
+            ramo: gerarDados('ramo'),
+            nrColaboradores: gerarDados('nrColaboradores'),
+            site: gerarDados('site'),
+            telComercial: gerarDados('telefone', 'fixo'),
+            cargo: gerarDados('cargo'),
+            area: gerarDados('area'),
             perfilColaborador: false,
             perfilAdministrador: false,
             perfilInstrutor: false,

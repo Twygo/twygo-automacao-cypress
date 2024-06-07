@@ -1,19 +1,23 @@
-//TODO em andamento em paralelo 
-const { faker } = require('@faker-js/faker')
+const { faker, fakerPT_BR } = require('@faker-js/faker')
+const fakerbr = require('faker-br')
 
-function gerarDados(tipo) {
-    switch (tipo) {
+function gerarDados(dado, nome = '', sobrenome = '', dominio = 'automacao.com', regiao = null, tipo = 'celular') {
+    switch (dado) {
         case 'nome':
-            return faker.person.firstName();
+            return faker.person.firstName()
         case 'sobrenome':
-            return faker.person.lastName();
+            return faker.person.lastName()
         case 'nomeCompleto':
-            return `${faker.person.firstName()} ${faker.person.lastName()}`;
-        case 'email'(nome, sobrenome, dominio = 'automacao.com'):
-            const nome = nome.toLowerCase()
-            const sobrenome = sobrenome.toLowerCase()
-            return `${nome}.${sobrenome}@${dominio}`
-        case 'celular'(tipo):
+            return `${faker.person.firstName()} ${faker.person.lastName()}`
+        case 'email':
+            if (nome && sobrenome) {
+                const nomeLower = nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f']/g, '')
+                const sobrenomeLower = sobrenome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f']/g, '')
+                return `${nomeLower}.${sobrenomeLower}@${dominio}`
+            } else {
+                return faker.internet.email()
+            }
+        case 'telefone':
             const dddsValidos = [
                 '11', '12', '13', '14', '15', '16', '17', '18', '19', // São Paulo
                 '21', '22', '24', // Rio de Janeiro
@@ -43,13 +47,19 @@ function gerarDados(tipo) {
             throw new Error(`Tipo de telefone inválido: ${tipo}. Utilize 'celular' ou 'fixo'`)
             }
         case 'endereco':
-            return faker.location.streetAddress();
+            return fakerPT_BR.location.streetAddress()
+        case 'numero':
+            return faker.number.int( { min: 1, max: 9999 } )
+        case 'complemento':
+            return `Andar: ${faker.number.int( { min: 1, max: 20 } )}, Apto: ${faker.number.int( { min: 100, max: 200 } )}`
+        case 'bairro':
+            return fakerPT_BR.location.streetAddress()
         case 'cidade':
-            return faker.location.city();
+            return fakerPT_BR.location.city()
         case 'estado':
-            return faker.location.state();
+            return fakerPT_BR.location.state()
         case 'pais':
-            return faker.location.country();
+            return faker.location.country()
         case 'cep':
             // Definindo as regiões postais e seus respectivos intervalos de CEP
             const regioesPostais = {
@@ -78,9 +88,27 @@ function gerarDados(tipo) {
             // Montando o CEP completo
             const cep = `${regioesPostais[regiaoEscolhida]}${subRegiao}${setor}${subSetor}${divisorSubSetor}-${identificadorDistribuicao}`
 
-            return cep        
+            return cep
+        case 'senha':
+            return faker.internet.password()
+        case 'cpf':
+            return fakerbr.br.cpf()
+        case 'rg':
+            return faker.number.int( { min: 100000000, max: 999999999 } )  
+        case 'empresa':
+            return faker.company.name()
+        case 'ramo':
+            return faker.person.jobArea()
+        case 'cargo':
+            return faker.person.jobTitle()
+        case 'area':
+            return faker.person.jobType()
+        case 'nrColaboradores':
+            return faker.number.int( { min: 1, max: 9999 } )
+        case 'site':
+            return faker.internet.url()
         default:
-            throw new Error(`Tipo de dado não suportado: ${tipo}`);
+            throw new Error(`Tipo de dado não suportado: ${dado}`)
     }
 }
 

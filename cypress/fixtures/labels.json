@@ -341,5 +341,10 @@
     },
     "registreSe": {
         "msgSucesso": "Uma mensagem com o link de confirmação foi enviada para seu email. Por favor abra o link para ativar a sua conta."
+    },
+    "superAdmin": {
+        "boasVindas": "bem vindo",
+        "msgOrientacao": "Selecione uma das opções no menu superior!",
+        "tituloPgCamposCustomizados": "Campos customizados da organização"
     }
 }

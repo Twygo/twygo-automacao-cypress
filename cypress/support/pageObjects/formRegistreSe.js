@@ -143,7 +143,7 @@ class formRegistreSe {
                         .click()
                         .clear()
                         .wait(2000)
-                        .type(valorFinal, {delay: 200})
+                        .type(valorFinal, {delay: 100})
                     break
                 case 'checkbox':
 					if (valorFinal === true) {
