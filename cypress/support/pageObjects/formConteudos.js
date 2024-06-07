@@ -275,7 +275,7 @@ class formConteudos {
 						})
 					break
 				case 'iframeText':
-					cy.get(seletor, { timeout: 5000 }).then($iframe => {
+					cy.get(seletor).then($iframe => {
 						const doc = $iframe.contents()
 						cy.wrap(doc).find('body.cke_editable').click({ force: true }).clear().type(valorFinal, { force: true })
 					})
@@ -296,7 +296,7 @@ class formConteudos {
 				case 'delTag':
 					if (Array.isArray(valorFinal)) {
 						valorFinal.forEach(val => {
-							cy.contains(seletor, `${val}`, { timeout: 5000})
+							cy.contains(seletor, `${val}`)
 								.find('a.as-close')
 								.click()
 						})
@@ -364,7 +364,7 @@ class formConteudos {
 					})
 				break
 			case 'iframeText':
-				cy.get(seletor, { timeout: 5000 }).then($iframe => {
+				cy.get(seletor).then($iframe => {
 					const doc = $iframe.contents()
 				
 					cy.wrap(doc).find('body.cke_editable').then($body => {
@@ -373,7 +373,7 @@ class formConteudos {
 				})
 				break      
 			case 'iframeStatus':
-				cy.get(seletor, { timeout: 5000 }).then($iframe => {
+				cy.get(seletor).then($iframe => {
 					cy.wait(3000)
 					const doc = $iframe.contents()
 
@@ -411,7 +411,7 @@ class formConteudos {
 	// Função para clicar no botão "Criar Curso" de um catálogo liberado conforme o nome do conteúdo
 	criarCursoViaCatalogo(nomeConteudo) {
 		cy.get(`tr.event-row[name='${nomeConteudo}']`)
-			.find('a[title="Criar  Curso"]', { timeout: 5000 })
+			.find('a[title="Criar  Curso"]')
 			.click()
 	}
 }

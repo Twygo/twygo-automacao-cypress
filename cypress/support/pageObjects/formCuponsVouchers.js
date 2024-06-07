@@ -145,7 +145,6 @@ class formCuponsVouchers {
     }
 
     preencherCampo(nomeCampo, valor, opcoes = { limpar: false }) {
-        const timeoutPadrao = 5000
         const campo = this.elementos[nomeCampo]
         
         if (!campo) {
@@ -189,7 +188,7 @@ class formCuponsVouchers {
                 break
             case 'button':
                 if (valorFinal === true) {
-                    cy.get(seletor, { timeout: timeoutPadrao })
+                    cy.get(seletor)
                         .click({ force: true })
                     } else {
                         throw new Error(`Botão ${nomeCampo} não pode ser clicado`)

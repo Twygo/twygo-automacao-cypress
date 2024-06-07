@@ -418,9 +418,6 @@ Cypress.Commands.add('addConteudo', function(tipoConteudo) {
 })
 
 Cypress.Commands.add('editarConteudo', function(nomeConteudo, tipoConteudo) {
-  // Define o timeout padrão para validação das páginas
-  const timeoutPadrao = 5000
-
   // Acessa o arquivo de labels
   const labels = Cypress.env('labels')
   const { breadcrumbEdicao, tituloPgEdicao } = labels.conteudo[tipoConteudo]
@@ -433,18 +430,18 @@ Cypress.Commands.add('editarConteudo', function(nomeConteudo, tipoConteudo) {
     case 'curso':        
         seletor = `tr[tag-name='${nomeConteudo}']`    
         // Clica em 'Opções' e 'Editar'
-        cy.get(seletor, { timeout: timeoutPadrao})
+        cy.get(seletor)
           .find('svg[aria-label="Options"]')
           .click()
 
-        cy.get(seletor, { timeout: timeoutPadrao})
+        cy.get(seletor)
           .contains('button', 'Editar')
           .click()
       break
     case 'catalogo':
         seletor = `tr.event-row[name='${nomeConteudo}']`
         // Clica em editar
-        cy.get(seletor, { timeout: timeoutPadrao})
+        cy.get(seletor)
           .find('a[title="Editar"]')
           .click()
       break
@@ -460,17 +457,14 @@ Cypress.Commands.add('editarConteudo', function(nomeConteudo, tipoConteudo) {
   }
   
   // Valida se a página foi carregada corretamente conforme o tipo de conteúdo
-  cy.contains('#page-breadcrumb', breadcrumbEdicao, { timeout: timeoutPadrao})
+  cy.contains('#page-breadcrumb', breadcrumbEdicao)
     .should('be.visible')
 
-  cy.contains('.detail_title', tituloPgEdicao, { timeout: timeoutPadrao})
+  cy.contains('.detail_title', tituloPgEdicao)
     .should('be.visible')
 })
 
 Cypress.Commands.add('salvarConteudo', function(nomeConteudo, tipoConteudo) {
-  // Define o timeout para validação das páginas
-  const timeoutPadrao = 5000
-
   // Acessa o arquivo de labels
   const labels = Cypress.env('labels')
   const { breadcrumb, msgSucesso } = labels.conteudo[tipoConteudo]
@@ -484,11 +478,11 @@ Cypress.Commands.add('salvarConteudo', function(nomeConteudo, tipoConteudo) {
     .click()  
   
   // Valida a mensagem
-  cy.contains('.flash.notice', msgSucesso, { timeout: timeoutPadrao })
+  cy.contains('.flash.notice', msgSucesso)
     .should('be.visible')
 
   // Valida o redirecionamento
-  cy.contains('#page-breadcrumb', breadcrumb, { timeout: timeoutPadrao })
+  cy.contains('#page-breadcrumb', breadcrumb)
     .should('be.visible')
 
   switch (tipoConteudo) {
@@ -509,7 +503,7 @@ Cypress.Commands.add('salvarConteudo', function(nomeConteudo, tipoConteudo) {
 
   // Verifica se o conteúdo foi criado e é exibido na listagem
   if (seletor) {
-    cy.get(seletor, { timeout: timeoutPadrao })
+    cy.get(seletor)
       .should('be.visible')
       .should('have.length', 1)
   }
@@ -525,14 +519,11 @@ Cypress.Commands.add('cancelarFormularioConteudo', function(tipoConteudo) {
     .click()
 
   // Validar redirecionamento
-  cy.contains('#page-breadcrumb', breadcrumb, { timeout: 5000})
+  cy.contains('#page-breadcrumb', breadcrumb)
     .should('be.visible')
 })
 
 Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo, listaConteudos = []) {
-  // Define o timeout para validação das páginas
-  const timeoutPadrao = 8000
-
   // Acessa o arquivo de labels
   const labels = Cypress.env('labels')
 
@@ -549,17 +540,17 @@ Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo, lis
         seletor = `tr[tag-name='${nomeConteudo}']`  
 
         // Clica em 'Opções' e 'Excluir'
-        cy.get(seletor, { timeout: timeoutPadrao})
+        cy.get(seletor)
           .find('svg[aria-label="Options"]')
           .click()
 
-        cy.get(seletor, { timeout: timeoutPadrao})
+        cy.get(seletor)
           .wait(2000)	
           .contains('button', 'Excluir')
           .click({ force: true })
 
         // Valida o modal de exclusão
-        cy.contains('.chakra-modal__header', tituloModalExclusao, { timeout: timeoutPadrao })
+        cy.contains('.chakra-modal__header', tituloModalExclusao)
           .should('be.visible')
 
         cy.contains('.chakra-text', nomeConteudo)
@@ -572,17 +563,17 @@ Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo, lis
         seletor = `tr[tag-name='${nomeConteudo}']`
 
         // Clica em 'Opções' e 'Excluir'
-        cy.get(seletor, { timeout: timeoutPadrao })
+        cy.get(seletor)
           .find('svg[aria-label="Options"]')
           .click()
 
-        cy.get(seletor, { timeout: timeoutPadrao })
+        cy.get(seletor)
           .wait(2000)
           .contains('button', 'Excluir')
           .click({ force: true })
 
         // Valida o modal de exclusão
-        cy.contains('.chakra-modal__header', tituloModalExclusao, { timeout: timeoutPadrao })
+        cy.contains('.chakra-modal__header', tituloModalExclusao)
           .should('be.visible')
 
         cy.contains('.chakra-heading', nomeConteudo)
@@ -596,7 +587,7 @@ Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo, lis
         break
       case 'catalogo':
         seletor = `tr.event-row[name='${nomeConteudo}']`
-        cy.get(seletor, { timeout: timeoutPadrao })
+        cy.get(seletor)
           .find('a[title="Excluir"]')
           .click()
 
@@ -651,20 +642,20 @@ Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo, lis
     // Valida a mensagem de sucesso da exclusão
     if (nomeConteudo) {
       if (tipoConteudo === 'catalogo' || tipoConteudo === 'biblioteca') {
-        cy.contains('.flash.notice', msgSucessoExclusao, { timeout: timeoutPadrao })
+        cy.contains('.flash.notice', msgSucessoExclusao)
           .should('be.visible')
       } else {
-        cy.contains('.chakra-alert__desc', msgSucessoExclusao, { timeout: timeoutPadrao })
+        cy.contains('.chakra-alert__desc', msgSucessoExclusao)
           .should('be.visible')
       }  
     }
 
     // Verifica se o conteúdo foi excluído e não é exibido na listagem
     if (tipoConteudo === 'biblioteca') {
-      cy.get(`td.event-name[title='${nomeConteudo}']`, { timeout: timeoutPadrao })
+      cy.get(`td.event-name[title='${nomeConteudo}']`)
         .should('not.exist')
     } else {
-      cy.get(seletor, { timeout: timeoutPadrao })
+      cy.get(seletor)
         .should('not.exist')
     }
   }
@@ -683,8 +674,6 @@ Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo, lis
 })
 
 Cypress.Commands.add('addAtividadeConteudo', function(nomeConteudo, tipoConteudo) {
-  const timeoutPadrao = 5000
-  
   const labels = Cypress.env('labels')
   const { breadcrumb, tituloPg } = labels.atividades
 
@@ -695,28 +684,28 @@ Cypress.Commands.add('addAtividadeConteudo', function(nomeConteudo, tipoConteudo
     case 'curso':
       seletor = `tr[tag-name='${nomeConteudo}']`    
       // Clica em 'Opções' e 'Atividades'
-      cy.get(seletor, { timeout: timeoutPadrao})
+      cy.get(seletor)
         .find('svg[aria-label="Options"]')
         .click()
 
-      cy.get(seletor, { timeout: timeoutPadrao})
+      cy.get(seletor)
         .contains('button', 'Atividades')
         .click( {force: true} )
       break
     case 'catalogo':
       seletor = `tr.event-row[name='${nomeConteudo}']`
       // Clica para expandir opções
-      cy.get(seletor, { timeout: timeoutPadrao})
+      cy.get(seletor)
         .find('.div-table-arrow-down')
         .click()
       // Clica em 'Atividades'
-      cy.get('#content-link', { timeout: timeoutPadrao})
+      cy.get('#content-link')
         .click()
       break
     case 'biblioteca':
       seletor = `tr.event-name[title='${nomeConteudo}']`
       // Clica em 'Atividades'
-      cy.contains('button', 'Atividades', { timeout: timeoutPadrao})
+      cy.contains('button', 'Atividades')
         .click()
       break
     default:
@@ -748,7 +737,6 @@ Cypress.Commands.add('salvarAtividades', () => {
 })
 
 Cypress.Commands.add('editarAtividade', (nomeConteudo, nomeAtividade) => {
-  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { breadcrumb, tituloPgEdicao } = labels.atividades
 
@@ -759,7 +747,7 @@ Cypress.Commands.add('editarAtividade', (nomeConteudo, nomeAtividade) => {
     .click( )
 
   // Validar se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb, { timeout: timeoutPadrao})
+  cy.contains('#page-breadcrumb', breadcrumb)
     .should('be.visible')
 
   cy.contains('#breadcrumb', `> ${nomeConteudo}`)
@@ -788,14 +776,12 @@ Cypress.Commands.add('validarDadosAtividade', (dados) => {
 })
 
 Cypress.Commands.add('verificarProcessamentoScorm', (nomeConteudo, nomeAtividade, tipoConteudo) => {
-  const timeoutPadrao = 5000
-
   function verificar() {
     cy.get('body').then($body => {
       if ($body.find('span[style="font-style:italic;opacity:50%;font-size:11px;margin-left:20px;color:black;"]:contains("Processando scorm")').length > 0) {
         cy.log('Arquivo Scorm ainda está sendo processado. Aguardando...')
 
-        cy.wait(timeoutPadrao)
+        cy.wait(10000)
 
         if (tipoConteudo === 'trilha' || tipoConteudo === 'curso') {
           cy.acessarPgListaConteudos()
@@ -999,9 +985,6 @@ Cypress.Commands.add('listaQuestionarios', (listaQuestionarios) => {
 })
 
 Cypress.Commands.add('excluirQuestionarios', (nomeQuestionario, listaQuestionario) => {
-  // Define o timeout para validação das páginas
-  const timeoutPadrao = 8000
-  
   // Acessa o arquivo de labels
   const labels = Cypress.env('labels')
 
@@ -1015,7 +998,7 @@ Cypress.Commands.add('excluirQuestionarios', (nomeQuestionario, listaQuestionari
     const seletor = `tr[name='${nomeQuestionario}']`
 
     // Clica em 'Excluir'
-    cy.get(seletor, { timeout: timeoutPadrao })
+    cy.get(seletor)
       .wait(2000)
       .find(formulario.elementos.btnExcluir.seletor, formulario.elementos.btnExcluir.title)
       .click({ force: true })
@@ -1039,11 +1022,11 @@ Cypress.Commands.add('excluirQuestionarios', (nomeQuestionario, listaQuestionari
       .click({ force: true })
 
     // Valida a mensagem de sucesso da exclusão
-    cy.contains('.flash.notice', msgSucessoExclusao, { timeout: timeoutPadrao })
+    cy.contains('.flash.notice', msgSucessoExclusao)
       .should('be.visible')
 
     // Verifica se o questionário foi excluído e não é exibido na listagem
-    cy.get(seletor, { timeout: timeoutPadrao })
+    cy.get(seletor)
       .should('not.exist')
   }
 
@@ -1061,7 +1044,6 @@ Cypress.Commands.add('excluirQuestionarios', (nomeQuestionario, listaQuestionari
 })
 
 Cypress.Commands.add('salvarQuestionario', (nomeQuestionario) => {
-  const timeoutPadrao = 5000
   const formulario = new formQuestionarios()
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.questionario
@@ -1074,23 +1056,22 @@ Cypress.Commands.add('salvarQuestionario', (nomeQuestionario) => {
     .should('be.visible')
 
   // Verifica se o questionário foi salvo
-  cy.get(`tr[name='${nomeQuestionario}']`, { timeout: timeoutPadrao })
+  cy.get(`tr[name='${nomeQuestionario}']`)
     .should('be.visible')
 })
 
 Cypress.Commands.add('editarQuestionario', (nomeQuestionario) => {
-  const timeoutPadrao = 5000
   const formulario = new formQuestionarios()
   const labels = Cypress.env('labels')
   const { breadcrumb, tituloPgEdicao } = labels.questionario
 
   // Edita o questionário
-  cy.get(`tr[name='${nomeQuestionario}']`, { timeout: timeoutPadrao })
+  cy.get(`tr[name='${nomeQuestionario}']`)
     .find(formulario.elementos.btnEditar.seletor, formulario.elementos.btnEditar.title)
     .click()
 
   // Validar se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb, { timeout: timeoutPadrao })
+  cy.contains('#page-breadcrumb', breadcrumb)
     .should('be.visible')
 
   cy.contains('.detail_title', tituloPgEdicao)
@@ -1111,21 +1092,20 @@ Cypress.Commands.add('criarQuestionarioDefault', (nomeQuestionario) => {
 })
 
 Cypress.Commands.add('acessarPerguntasQuestionario', (nomeQuestionario) => {
-  const timeoutPadrao = 5000
   const form = new formQuestionarios()
   const labels = Cypress.env('labels')
   const { breadcrumb, tituloPg } = labels.perguntas
 
   // Acessa as perguntas do questionário
-  cy.get(`tr[name='${nomeQuestionario}']`, { timeout: timeoutPadrao })
+  cy.get(`tr[name='${nomeQuestionario}']`)
     .find(form.elementos.btnPerguntas.seletor)
     .click()
 
   // Valida se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb, { timeout: timeoutPadrao })
+  cy.contains('#page-breadcrumb', breadcrumb)
     .should('be.visible')
 
-  cy.contains('#breadcrumb', `> ${nomeQuestionario}`, { timeout: timeoutPadrao })
+  cy.contains('#breadcrumb', `> ${nomeQuestionario}`)
     .should('be.visible')
 
   cy.contains('.detail_title', tituloPg)
@@ -1151,13 +1131,12 @@ Cypress.Commands.add('validarDadosPergunta', (conteudo) => {
 })
 
 Cypress.Commands.add('salvarPergunta', (descPergunta, index) => {
-  const timeoutPadrao = 5000
   const formulario = new formPerguntas()
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.perguntas
 
   // Salva a pergunta
-  cy.get(`tr[id='question-new-${index}']`, { timeout: timeoutPadrao })
+  cy.get(`tr[id='question-new-${index}']`)
     .parent('tbody')
     .within(() => {
       formulario.salvar()
@@ -1168,15 +1147,14 @@ Cypress.Commands.add('salvarPergunta', (descPergunta, index) => {
     .should('be.visible')
 
   // Verifica se a pergunta foi salva
-  cy.get(`tr[title*='${descPergunta.slice(0, 1000)}']`, { timeout: timeoutPadrao })
+  cy.get(`tr[title*='${descPergunta.slice(0, 1000)}']`)
     .should('be.visible')
 })
 
 Cypress.Commands.add('excluirPergunta', (descPergunta) => {
-  const timeoutPadrao = 5000
   const formulario = new formPerguntas()
 
-  cy.get(`tr[title*='${descPergunta.slice(0, 30)}']`, { timeout: timeoutPadrao })
+  cy.get(`tr[title*='${descPergunta.slice(0, 30)}']`)
     .parent('tbody')
     .within(() => {
       formulario.remover()
@@ -1189,15 +1167,14 @@ Cypress.Commands.add('excluirPergunta', (descPergunta) => {
   })
 
   // Verifica se a pergunta foi excluída e não é exibida na listagem
-  cy.get(`tr[title*='${descPergunta.slice(0, 30)}']`, { timeout: timeoutPadrao })
+  cy.get(`tr[title*='${descPergunta.slice(0, 30)}']`)
     .should('not.exist')
 })
 
 Cypress.Commands.add('expandirPergunta', (descPergunta) => {
-  const timeoutPadrao = 5000
   const formulario = new formPerguntas()
 
-  cy.get(`tr[title*='${descPergunta.slice(0, 30)}']`, { timeout: timeoutPadrao })
+  cy.get(`tr[title*='${descPergunta.slice(0, 30)}']`)
     .parent('tbody')
     .within(() => {
       formulario.expandirPergunta()
@@ -1205,13 +1182,12 @@ Cypress.Commands.add('expandirPergunta', (descPergunta) => {
 })
 
 Cypress.Commands.add('salvarEdicaoPergunta', (oldDescPergunta, newDescPergunta) => {
-  const timeoutPadrao = 5000
   const formulario = new formPerguntas()
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.perguntas
 
   // Salva a pergunta
-  cy.get(`tr[title*='${oldDescPergunta.slice(0, 30)}']`, { timeout: timeoutPadrao })
+  cy.get(`tr[title*='${oldDescPergunta.slice(0, 30)}']`)
     .parent('tbody')
     .within(() => {
       formulario.salvar()
@@ -1222,7 +1198,7 @@ Cypress.Commands.add('salvarEdicaoPergunta', (oldDescPergunta, newDescPergunta) 
     .should('be.visible')
 
   // Verifica se a pergunta foi salva
-  cy.get(`tr[title*='${newDescPergunta.slice(0, 1000)}']`, { timeout: timeoutPadrao })
+  cy.get(`tr[title*='${newDescPergunta.slice(0, 1000)}']`)
     .should('be.visible')
 })
 
@@ -1245,7 +1221,6 @@ Cypress.Commands.add('validarDadosUsuario', (dados) => {
 })
 
 Cypress.Commands.add('salvarUsuario', (nomeUsuario) => {
-  const timeoutPadrao = 5000
   const formulario = new formUsuarios()
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.usuarios
@@ -1254,7 +1229,7 @@ Cypress.Commands.add('salvarUsuario', (nomeUsuario) => {
   formulario.salvar()
 
   // Confirma a mensagem de sucesso
-  cy.contains('.flash.success', msgSucesso, { timeout: timeoutPadrao })
+  cy.contains('.flash.success', msgSucesso)
     .should('be.visible')
 
   // Verifica se o usuário foi criado com sucesso
@@ -1264,7 +1239,6 @@ Cypress.Commands.add('salvarUsuario', (nomeUsuario) => {
 })
 
 Cypress.Commands.add('excluirUsuario', (nomeUsuario) => {
-  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { tituloModalExclusao, texto1ModalExclusao, texto2ModalExclusao, btnConfirmar, msgSucessoExclusao } = labels.usuarios
 
@@ -1309,17 +1283,16 @@ Cypress.Commands.add('excluirUsuario', (nomeUsuario) => {
     .click()
 
   // Valida a mensagem de sucesso após a exclusão
-  cy.contains('.flash.success', msgSucessoExclusao, { timeout: timeoutPadrao })
+  cy.contains('.flash.success', msgSucessoExclusao)
     .should('be.visible')
 
   // Verifica se o usuário foi excluído e não é exibido na listagem
   cy.get('tr.professional-row')
-    .contains(nomeUsuario, { timeout: timeoutPadrao })
+    .contains(nomeUsuario)
     .should('not.exist')
 })
 
 Cypress.Commands.add('editarUsuario', (nomeUsuario) => {
-  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { breadcrumb, tituloPgEdicao } = labels.usuarios
 
@@ -1331,7 +1304,7 @@ Cypress.Commands.add('editarUsuario', (nomeUsuario) => {
     })
 
   // Valida se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb, { timeout: timeoutPadrao })
+  cy.contains('#page-breadcrumb', breadcrumb)
     .should('be.visible')
 
   cy.contains('.detail_title', tituloPgEdicao)
@@ -1373,19 +1346,17 @@ Cypress.Commands.add('excluirUsuarioViaApi', function() {
 })
 
 Cypress.Commands.add('acessarPgUsuarios', () => {
-  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { breadcrumb } = labels.usuarios
 
   cy.visit(`/o/${Cypress.env('orgId')}/users`)
   
   // Valida se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb, { timeout: timeoutPadrao })
+  cy.contains('#page-breadcrumb', breadcrumb)
     .should('be.visible')
 })
 
 Cypress.Commands.add('addUsuario', () => {
-  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { breadcrumb, tituloPgAdicionar } = labels.usuarios
 
@@ -1393,10 +1364,10 @@ Cypress.Commands.add('addUsuario', () => {
     .click()
 
   // Valida se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb, { timeout: timeoutPadrao })
+  cy.contains('#page-breadcrumb', breadcrumb)
     .should('be.visible')
 
-  cy.contains('.detail_title', tituloPgAdicionar, { timeout: timeoutPadrao })
+  cy.contains('.detail_title', tituloPgAdicionar)
     .should('be.visible')
 })
 
@@ -1410,12 +1381,11 @@ Cypress.Commands.add('cancelarFormularioUsuario', function() {
     .click()
 
   // Validar redirecionamento
-  cy.contains('#page-breadcrumb', breadcrumb, { timeout: 5000})
+  cy.contains('#page-breadcrumb', breadcrumb)
     .should('be.visible')
 })
 
 Cypress.Commands.add('resetSenhaUsuario', function(nomeUsuario, senha) {
-  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { tituloAlterarSenha, aguardandoSenha, senhasDiferentes, senhasIguais, msgSucessoSenha } = labels.usuarios
 
@@ -1458,12 +1428,11 @@ Cypress.Commands.add('resetSenhaUsuario', function(nomeUsuario, senha) {
     .click()
 
   // Valida a mensagem de sucesso
-  cy.contains('.flash.notice', msgSucessoSenha, { timeout: timeoutPadrao })
+  cy.contains('.flash.notice', msgSucessoSenha)
     .should('be.visible')
 })
 
 Cypress.Commands.add('inativarUsuario', function(nomeUsuario) {
-  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { tituloModalInativar, textoModalInativar, msgSucessoInativar } = labels.usuarios
 
@@ -1492,7 +1461,7 @@ Cypress.Commands.add('inativarUsuario', function(nomeUsuario) {
     .click()
 
   // Valida a mensagem de sucesso após a inativação
-  cy.contains('.flash.notice', msgSucessoInativar, { timeout: timeoutPadrao })
+  cy.contains('.flash.notice', msgSucessoInativar)
     .should('be.visible')
 
   // Verifica se o usuário foi inativado
@@ -1504,27 +1473,26 @@ Cypress.Commands.add('inativarUsuario', function(nomeUsuario) {
         .should('be.visible')
 
       // Verifica se o elemento de alteração de senha não está visível
-      cy.get('a.user-password-change', { timeout: timeoutPadrao})
+      cy.get('a.user-password-change')
         .should('not.exist')
 
       // Verifica se o elemento de edição não está visível
-      cy.get('td.professional-progress[title="Editar"]', { timeout: timeoutPadrao})
+      cy.get('td.professional-progress[title="Editar"]')
         .find('a.professional-edit')
         .should('not.exist')
 
       // Verifica se o elemento de exclusão não está visível
-      cy.get('td.professional-progress[title="Excluir"]', { timeout: timeoutPadrao})
+      cy.get('td.professional-progress[title="Excluir"]')
         .find('a.professional-delete')
         .should('not.exist')
 
       // Verifica se o status do usuário é "Inativo"
-      cy.get('td.ellipsis', { timeout: timeoutPadrao})
+      cy.get('td.ellipsis')
         .should('contain', 'Inativo')
     })
 })
 
 Cypress.Commands.add('ativarUsuario', function(nomeUsuario) {
-  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { tituloModalAtivar, textoModalAtivar, msgSucessoAtivar } = labels.usuarios
 
@@ -1553,7 +1521,7 @@ Cypress.Commands.add('ativarUsuario', function(nomeUsuario) {
     .click()
 
   // Valida a mensagem de sucesso após a ativação
-  cy.contains('.flash.notice', msgSucessoAtivar, { timeout: timeoutPadrao })
+  cy.contains('.flash.notice', msgSucessoAtivar)
     .should('be.visible')
 
   // Verifica se o usuário foi ativado
@@ -1565,48 +1533,46 @@ Cypress.Commands.add('ativarUsuario', function(nomeUsuario) {
         .should('be.visible')
 
       // Verifica se o elemento de alteração de senha não está visível
-      cy.get('a.user-password-change', { timeout: timeoutPadrao})
+      cy.get('a.user-password-change')
         .should('be.visible')
 
       // Verifica se o elemento de edição não está visível
-      cy.get('td.professional-progress[title="Editar"]', { timeout: timeoutPadrao})
+      cy.get('td.professional-progress[title="Editar"]')
         .find('a.professional-edit')
         .should('be.visible')
 
       // Verifica se o elemento de exclusão não está visível
-      cy.get('td.professional-progress[title="Excluir"]', { timeout: timeoutPadrao})
+      cy.get('td.professional-progress[title="Excluir"]')
         .find('a.professional-delete')
         .should('be.visible')
 
       // Verifica se o status do usuário é "Ativo"
-      cy.get('td.ellipsis', { timeout: timeoutPadrao})
+      cy.get('td.ellipsis')
         .should('contain', 'Ativo')
     })
 })
 
 Cypress.Commands.add('addParticipanteConteudo', function(nomeConteudo, tipoConteudo) {
-  const timeoutPadrao = 5000
-  
   const labels = Cypress.env('labels')
   const { breadcrumb, tituloPg, breadcrumbTrilha } = labels.participantes
 
   // Clica em 'Opções' e 'Atividades'
-  cy.get(`tr[tag-name='${nomeConteudo}']`, { timeout: timeoutPadrao})
+  cy.get(`tr[tag-name='${nomeConteudo}']`)
     .find('svg[aria-label="Options"]')
     .click()
 
-  cy.get(`tr[tag-name='${nomeConteudo}']`, { timeout: timeoutPadrao})
+  cy.get(`tr[tag-name='${nomeConteudo}']`)
     .contains('button', 'Inscrição')
     .click( {force: true} )
 
   // Validar se a página foi carregada corretamente
   switch (tipoConteudo) {
     case 'Trilha':
-      cy.contains('#page-breadcrumb', breadcrumbTrilha, { timeout: timeoutPadrao })
+      cy.contains('#page-breadcrumb', breadcrumbTrilha)
         .should('be.visible')
       break
     case 'curso':
-      cy.contains('#page-breadcrumb', breadcrumb, { timeout: timeoutPadrao })
+      cy.contains('#page-breadcrumb', breadcrumb)
         .should('be.visible')
       break
   }
@@ -1634,7 +1600,6 @@ Cypress.Commands.add('validarDadosParticipante', (conteudo) => {
 })
 
 Cypress.Commands.add('salvarNovoParticipante', (nomeParticipante) => {
-  const timeoutPadrao = 5000
   const formulario = new formParticipantes()
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.participantes
@@ -1643,16 +1608,15 @@ Cypress.Commands.add('salvarNovoParticipante', (nomeParticipante) => {
   formulario.salvar()
 
   // Confirma a mensagem de sucesso
-  cy.contains('.flash.notice', msgSucesso, { timeout: timeoutPadrao })
+  cy.contains('.flash.notice', msgSucesso)
     .should('be.visible')
 
   // Verifica se o usuário foi criado com sucesso
-  cy.contains('td', nomeParticipante, { timeout: timeoutPadrao })
+  cy.contains('td', nomeParticipante)
     .should('be.visible')
 })
 
 Cypress.Commands.add('salvarEdicaoParticipante', (nomeParticipante, status = 'Confirmados') => {
-  const timeoutPadrao = 5000
   const formulario = new formParticipantes()
   const labels = Cypress.env('labels')
   const { msgSucessoEdicao } = labels.participantes
@@ -1661,7 +1625,7 @@ Cypress.Commands.add('salvarEdicaoParticipante', (nomeParticipante, status = 'Co
   formulario.salvar()
 
   // Confirma a mensagem de sucesso
-  cy.contains('.flash.notice', msgSucessoEdicao, { timeout: timeoutPadrao })
+  cy.contains('.flash.notice', msgSucessoEdicao)
     .should('be.visible')
 
   // Mapeia a aba esperada para o seletor correspondente
@@ -1686,12 +1650,11 @@ Cypress.Commands.add('salvarEdicaoParticipante', (nomeParticipante, status = 'Co
 
   // Verifica se o usuário foi editado com sucesso na aba esperada
   cy.get(abaSeletor[status])
-    .contains('td', nomeParticipante, { timeout: timeoutPadrao })
+    .contains('td', nomeParticipante)
     .should('be.visible')
 })
 
 Cypress.Commands.add('editarParticipante', (nomeParticipante, tipoConteudo) => {
-  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { breadcrumbEdicao, tituloPgEdicao, breadcrumbTrilha } = labels.participantes
 
@@ -1708,11 +1671,11 @@ Cypress.Commands.add('editarParticipante', (nomeParticipante, tipoConteudo) => {
   // Valida se a página foi carregada corretamente [obs. adicionado tipoConteudo devido BUG no breadcrumb da trilha]
   switch (tipoConteudo) {
     case 'trilha':
-      cy.contains('#page-breadcrumb', breadcrumbTrilha, { timeout: timeoutPadrao })
+      cy.contains('#page-breadcrumb', breadcrumbTrilha)
         .should('be.visible')
       break
     case 'curso':
-      cy.contains('#page-breadcrumb', breadcrumbEdicao, { timeout: timeoutPadrao })
+      cy.contains('#page-breadcrumb', breadcrumbEdicao)
         .should('be.visible')
       break
   }
@@ -1722,7 +1685,6 @@ Cypress.Commands.add('editarParticipante', (nomeParticipante, tipoConteudo) => {
 })
 
 Cypress.Commands.add('addParticipante', (tipoConteudo) => {
-  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { breadcrumbAdicionar, tituloPgAdicionar, breadcrumbTrilha } = labels.participantes
 
@@ -1732,21 +1694,21 @@ Cypress.Commands.add('addParticipante', (tipoConteudo) => {
   // Valida se a página foi carregada corretamente [obs. adicionado tipoConteudo devido BUG no breadcrumb da trilha]
   switch (tipoConteudo) {
     case 'trilha':
-      cy.contains('#page-breadcrumb', breadcrumbTrilha, { timeout: timeoutPadrao })
+      cy.contains('#page-breadcrumb', breadcrumbTrilha)
         .should('be.visible')
       break
     case 'curso':
-      cy.contains('#page-breadcrumb', breadcrumbAdicionar, { timeout: timeoutPadrao })
+      cy.contains('#page-breadcrumb', breadcrumbAdicionar)
         .should('be.visible')
       break
   }
 
-  cy.contains('.detail_title', tituloPgAdicionar, { timeout: timeoutPadrao })
+  cy.contains('.detail_title', tituloPgAdicionar)
     .should('be.visible')
 })
 
 Cypress.Commands.add('alteraStatus', function(nomeParticipantes, status) {
-  const timeoutPadrao = 20000
+  const timeout = 20000
   const labels = Cypress.env('labels')
   const { msgAlteraConfirmado, msgAlteraPendente, msgAlteraCancelado, msgSucessoAlteraStatus } = labels.participantes
 
@@ -1795,17 +1757,17 @@ Cypress.Commands.add('alteraStatus', function(nomeParticipantes, status) {
   // Problemas na validação das demais mensagens, validando apenas a última mensagem de sucesso (por isso a inclusão do wait de 3 segundos)
   // switch (status) {
   //   case 'Confirmado':
-  //     cy.contains('.flash.success', msgAlteraConfirmado, { timeout: timeoutPadrao }).should('be.visible')
+  //     cy.contains('.flash.success', msgAlteraConfirmado, { timeout: timeout }).should('be.visible')
   //     break
   //   case 'Pendente':
-  //     cy.contains('.flash.success', msgAlteraPendente, { timeout: timeoutPadrao }).should('be.visible')
+  //     cy.contains('.flash.success', msgAlteraPendente, { timeout: timeout }).should('be.visible')
   //     break
   //   case 'Cancelado':
-  //     cy.contains('.flash.success', msgAlteraCancelado, { timeout: timeoutPadrao }).should('be.visible')
+  //     cy.contains('.flash.success', msgAlteraCancelado, { timeout: timeout }).should('be.visible')
   //     break
   // }
   cy.wait(2000)
-  cy.contains('.flash.success', msgSucessoAlteraStatus, { timeout: timeoutPadrao }).should('be.visible')
+  cy.contains('.flash.success', msgSucessoAlteraStatus, { timeout: timeout }).should('be.visible')
 
   // Medida de contorno para atualizar a página e validar o status do(s) participante(s)
   cy.addParticipante()
@@ -1833,7 +1795,7 @@ Cypress.Commands.add('alteraStatus', function(nomeParticipantes, status) {
     }
 
     cy.get(`#${statusSeletor[status]}`)
-      .find('td', nomeParticipante, { timeout: timeoutPadrao })
+      .find('td', nomeParticipante, { timeout: timeout })
       .should('be.visible')
   })
 })
@@ -1854,7 +1816,6 @@ Cypress.Commands.add('abaCancelados', function() {
 })
 
 Cypress.Commands.add('cancelarFormularioParticipante', function(tipoConteudo) {
-  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { breadcrumb, tituloPg, breadcrumbTrilha } = labels.participantes
 
@@ -1863,22 +1824,22 @@ Cypress.Commands.add('cancelarFormularioParticipante', function(tipoConteudo) {
     .should('be.visible')
     .as('btnCancelar')
 
-  cy.get('@btnCancelar', { timeout: timeoutPadrao })
+  cy.get('@btnCancelar')
     .click()
 
   // Validar redirecionamento [obs. adicionado tipoConteudo devido BUG no breadcrumb da trilha]
   switch (tipoConteudo) {
     case 'trilha':
-      cy.contains('#page-breadcrumb', breadcrumbTrilha, { timeout: timeoutPadrao })
+      cy.contains('#page-breadcrumb', breadcrumbTrilha)
         .should('be.visible')
       break
     case 'curso':
-      cy.contains('#page-breadcrumb', breadcrumb, { timeout: timeoutPadrao })
+      cy.contains('#page-breadcrumb', breadcrumb)
         .should('be.visible')
       break
   }
 
-  cy.contains('.detail_title', tituloPg, { timeout: timeoutPadrao })
+  cy.contains('.detail_title', tituloPg)
     .should('be.visible')
 })
 
@@ -1908,7 +1869,6 @@ Cypress.Commands.add('criarUsuarioViaApi', function(body) {
 })
 
 Cypress.Commands.add('associarParticipante', function(emailParticipante, nomeParticipante) {
-  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.participantes
 
@@ -1929,12 +1889,12 @@ Cypress.Commands.add('associarParticipante', function(emailParticipante, nomePar
   cy.salvarNovoParticipante(nomeParticipante)
 
   // Valida a mensagem de sucesso
-  cy.contains('.flash.notice', msgSucesso, { timeout: timeoutPadrao })
+  cy.contains('.flash.notice', msgSucesso)
     .should('be.visible')
 })
 
 Cypress.Commands.add('alterarStatusTodosParticipantes', function(status, novoStatus, listaParticipantes) {
-  const timeoutPadrao = 20000
+  const timeout = 20000
   const labels = Cypress.env('labels')
   const { msgAlteraConfirmado, msgAlteraPendente, msgAlteraCancelado, msgSucessoAlteraStatus } = labels.participantes
 
@@ -2007,17 +1967,17 @@ Cypress.Commands.add('alterarStatusTodosParticipantes', function(status, novoSta
   // Problemas ao validar demais mensagens, validando apenas a última mensagem de sucesso (por isso a inclusão do wait de 3 segundos)
   // switch (novoStatus) {
   //   case 'Confirmado':
-  //     cy.contains('.flash.success', msgAlteraConfirmado, { timeout: timeoutPadrao }).should('be.visible')
+  //     cy.contains('.flash.success', msgAlteraConfirmado, { timeout: timeout }).should('be.visible')
   //     break
   //   case 'Pendente':
-  //     cy.contains('.flash.success', msgAlteraPendente, { timeout: timeoutPadrao }).should('be.visible')
+  //     cy.contains('.flash.success', msgAlteraPendente, { timeout: timeout }).should('be.visible')
   //     break
   //   case 'Cancelado':
-  //     cy.contains('.flash.success', msgAlteraCancelado, { timeout: timeoutPadrao }).should('be.visible')
+  //     cy.contains('.flash.success', msgAlteraCancelado, { timeout: timeout }).should('be.visible')
   //     break
   // }
   cy.wait(2000)
-  cy.contains('.flash.success', msgSucessoAlteraStatus, { timeout: timeoutPadrao }).should('be.visible')
+  cy.contains('.flash.success', msgSucessoAlteraStatus, { timeout: timeout }).should('be.visible')
 
   // Medida de contorno para atualizar a página e validar o status do(s) participante(s)
   cy.addParticipante()
@@ -2045,13 +2005,12 @@ Cypress.Commands.add('alterarStatusTodosParticipantes', function(status, novoSta
     }
 
     cy.get(`#${statusSeletor[novoStatus]}`)
-      .find('td', nomeParticipante, { timeout: timeoutPadrao })
+      .find('td', nomeParticipante, { timeout: timeout })
       .should('be.visible')
   })
 })
 
 Cypress.Commands.add('importarParticipante', function(arquivo) {
-  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { msgUploadImportacao, msgImportacaoEmAndamento, msgImportacaoConcluida } = labels.participantes
 
@@ -2061,7 +2020,7 @@ Cypress.Commands.add('importarParticipante', function(arquivo) {
 
   // Clica em 'Enviar arquivo'
   cy.get('#file-name-container')
-    .contains('a', 'Enviar arquivo', { timeout: timeoutPadrao })
+    .contains('a', 'Enviar arquivo')
     .click( { force: true } )
 
   // Seleciona o arquivo a ser importado
@@ -2073,7 +2032,7 @@ Cypress.Commands.add('importarParticipante', function(arquivo) {
     .click( { force: true } )
 
   // Valida a mensagem de sucesso do upload do arquivo
-  cy.contains('.flash.success', msgUploadImportacao, { timeout: timeoutPadrao })
+  cy.contains('.flash.success', msgUploadImportacao)
     .should('be.visible')
 
   // Valida modal de campos para importar
@@ -2094,7 +2053,7 @@ Cypress.Commands.add('importarParticipante', function(arquivo) {
     .click( { force: true } )
 
   // Valida a mensagem de sucesso após a importação
-  cy.contains('.flash.success', msgImportacaoEmAndamento, { timeout: timeoutPadrao })
+  cy.contains('.flash.success', msgImportacaoEmAndamento)
     .should('be.visible')
 
   // Valida a mensagem de sucesso da importação com espera de até 2 minutos
@@ -2103,7 +2062,6 @@ Cypress.Commands.add('importarParticipante', function(arquivo) {
 })
 
 Cypress.Commands.add('validarStatusImportacao', (tipo, statusEsperado) => {
-  const timeoutPadrao = 5000
   const TIMEOUT_IMPORTACAO = 180000
 
   const labels = Cypress.env('labels')
@@ -2146,7 +2104,7 @@ Cypress.Commands.add('validarStatusImportacao', (tipo, statusEsperado) => {
       if (status === 'Execução' || status === 'Pendente') {
         cy.log('Arquivo de importação ainda está sendo processado. Aguardando...')
         cy.get('#twygo-modal-close').click()
-        cy.wait(timeoutPadrao)
+        cy.wait(10000)
         cy.get(seletor).click()
         verificarStatus()
       } else if (status === statusEsperado) {
@@ -2176,8 +2134,6 @@ Cypress.Commands.add('criarUsuario', function(dados) {
 })
 
 Cypress.Commands.add('configUsuario', (idioma = 'pt') => {
-  const timeoutPadrao = 5000
-  
   const labels = Cypress.env('labels')[idioma]
   const { breadcrumb, tituloPg } = labels.configUsuario
   
@@ -2188,10 +2144,10 @@ Cypress.Commands.add('configUsuario', (idioma = 'pt') => {
     .click()
 
   // Valida se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb, { timeout: timeoutPadrao })
+  cy.contains('#page-breadcrumb', breadcrumb)
     .should('be.visible')
 
-  cy.contains('.detail_title', tituloPg, { timeout: timeoutPadrao })
+  cy.contains('.detail_title', tituloPg)
     .should('be.visible')
 })
 
@@ -2230,14 +2186,13 @@ Cypress.Commands.add('validarVinculoInstrutor', (nomeInstrutor) => {
 })
 
 Cypress.Commands.add('validarVinculoGestor', (nomeGestor, status) => {
-  const TIMEOUT_PADRAO = 5000
   const labels = Cypress.env('labels')
   const { msgSucessoVinculo } = labels.gestores
   const { msgSucessoRemocao } = labels.gestores
 
   switch(status) {
     case 'Vinculado':
-      cy.contains('.flash.success', msgSucessoVinculo, { timeout: TIMEOUT_PADRAO })
+      cy.contains('.flash.success', msgSucessoVinculo)
         .should('be.visible')
 
       cy.get(`td:contains('${nomeGestor}')`)
@@ -2245,7 +2200,7 @@ Cypress.Commands.add('validarVinculoGestor', (nomeGestor, status) => {
         .find('.icon-check-circle.on')
       break
     case 'Desvinculado':
-      cy.contains('.flash.success', msgSucessoRemocao, { timeout: TIMEOUT_PADRAO })
+      cy.contains('.flash.success', msgSucessoRemocao)
         .should('be.visible')
   
       cy.get(`td:contains('${nomeGestor}')`)
@@ -2300,8 +2255,6 @@ Cypress.Commands.add('validarDadosConfigUsuario', (dados) => {
 
 Cypress.Commands.add('logout', (idioma = 'pt') => {
   // obs.: a msgLogout só é alterada após logout, ou seja em uma mudança de idioma, a msgLogout será a do idioma anterior
-  const timeoutPadrao = 5000
-  
   const labels = Cypress.env('labels')[idioma]
   const { msgLogout } = labels.configUsuario
   
@@ -2312,7 +2265,7 @@ Cypress.Commands.add('logout', (idioma = 'pt') => {
     .click( { force: true } )
 
   // Validar mensagem de sucesso do logout
-  cy.contains('.flash.notice', msgLogout, { timeout: timeoutPadrao })
+  cy.contains('.flash.notice', msgLogout)
     .should('be.visible')
 })
 
@@ -2440,9 +2393,7 @@ Cypress.Commands.add('login', function(login, password, username, idioma = 'pt')
 })
 
 Cypress.Commands.add('salvarConfigUsuario', (idioma = 'pt') => {
-  // obs.: a msgSucesso só é alterada após salvar, ou seja em uma mudança de idioma, a msgSucesso será a do idioma anterior
-  const timeoutPadrao = 5000
-  
+  // obs.: a msgSucesso só é alterada após salvar, ou seja em uma mudança de idioma, a msgSucesso será a do idioma anterior 
   const labels = Cypress.env('labels')[idioma]
   const { msgSucesso, pgInicialAluno, btnSalvar } = labels.configUsuario
 
@@ -2451,11 +2402,11 @@ Cypress.Commands.add('salvarConfigUsuario', (idioma = 'pt') => {
   .click()  
 
   // Valida a mensagem
-  cy.contains('.flash.notice', msgSucesso, { timeout: timeoutPadrao })
+  cy.contains('.flash.notice', msgSucesso)
     .should('be.visible')
 
   // Valida o redirecionamento
-  cy.contains('#page-breadcrumb', pgInicialAluno, { timeout: timeoutPadrao })
+  cy.contains('#page-breadcrumb', pgInicialAluno)
     .should('be.visible')
 })
 
@@ -2466,7 +2417,6 @@ Cypress.Commands.add('voltar', () => {
 })
 
 Cypress.Commands.add('importarUsuarios', function(arquivo, opcao = 'Cancelar') {
-  const timeoutPadrao = 5000
   const labels = Cypress.env('labels')
   const { msgUploadImportacao, msgImportacaoEmAndamento } = labels.usuarios
 
@@ -2476,7 +2426,7 @@ Cypress.Commands.add('importarUsuarios', function(arquivo, opcao = 'Cancelar') {
 
   // Clica em 'Enviar arquivo'
   cy.get('#file-name-container')
-    .contains('a', 'Enviar arquivo', { timeout: timeoutPadrao })
+    .contains('a', 'Enviar arquivo')
     .click( { force: true } )
 
   // Seleciona o arquivo a ser importado
@@ -2492,7 +2442,7 @@ Cypress.Commands.add('importarUsuarios', function(arquivo, opcao = 'Cancelar') {
     .click( { force: true } )
 
   // Valida a mensagem de sucesso do upload do arquivo
-  cy.contains('.flash.success', msgUploadImportacao, { timeout: timeoutPadrao })
+  cy.contains('.flash.success', msgUploadImportacao)
     .should('be.visible')
 
   // Valida modal de campos para importar
@@ -2516,12 +2466,11 @@ Cypress.Commands.add('importarUsuarios', function(arquivo, opcao = 'Cancelar') {
     .click( { force: true } )
 
   // Valida a mensagem de sucesso após o upload do arquivo
-  cy.contains('.flash.success', msgImportacaoEmAndamento, { timeout: timeoutPadrao })
+  cy.contains('.flash.success', msgImportacaoEmAndamento)
     .should('be.visible')
 })
 
 Cypress.Commands.add('limparDadosOrg', function() {
-  const timeoutPadrao = 5000
   const TIMEOUT_EXCLUSAO = 300000
   const labels = Cypress.env('labels')
   const { exclusaoEmAndamento, exclusaoConcluida } = labels.menuSophia
@@ -2546,7 +2495,7 @@ Cypress.Commands.add('limparDadosOrg', function() {
   cy.realType('{enter}')
 
   // Confirmar a ação de exclusão
-  cy.contains('.flash.success', exclusaoEmAndamento, { timeout: timeoutPadrao })
+  cy.contains('.flash.success', exclusaoEmAndamento)
     .should('be.visible')	
 
   // Aguardar mensagem de confirmação de exclusão	
@@ -2576,7 +2525,6 @@ Cypress.Commands.add('ativarCapturaErros', function() {
 
 Cypress.Commands.add('criarAmbienteAdicional', (acao, dadosAmbiente, opcoes = { limpar: true }) => {
   const formulario = new formAmbientesAdicionais()
-  const TIMEOUT_PADRAO = 5000
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.ambientesAdicionais
   
@@ -2592,7 +2540,7 @@ Cypress.Commands.add('criarAmbienteAdicional', (acao, dadosAmbiente, opcoes = { 
   })
 
   formulario.salvarAmbiente()
-  cy.contains('#success-toast', msgSucesso, { timeout: TIMEOUT_PADRAO })
+  cy.contains('#success-toast', msgSucesso)
         .should('be.visible')
 }) 
 
@@ -2614,7 +2562,6 @@ Cypress.Commands.add('validarAmbienteAdicional', (dadosAmbiente, acao) => {
 
 Cypress.Commands.add('inativarAmbienteAdicional', (nomeAmbiente) => {
   const formulario = new formAmbientesAdicionais()
-  const TIMEOUT_PADRAO = 5000
   const labels = Cypress.env('labels')
   const { msgInativacao } = labels.ambientesAdicionais
 
@@ -2627,7 +2574,7 @@ Cypress.Commands.add('inativarAmbienteAdicional', (nomeAmbiente) => {
   formulario.confirmarInativacaoAmbiente()
   
   // Valida a mensagem de sucesso
-  cy.contains('.chakra-alert__desc.css-zycdy9', msgInativacao, { timeout: TIMEOUT_PADRAO })
+  cy.contains('.chakra-alert__desc.css-zycdy9', msgInativacao)
     .should('be.visible')
 }) 
 
@@ -3073,7 +3020,7 @@ Cypress.Commands.add('excluirUrlWebhook', (nomeFuncao, url) => {
     if (webhookEspecifico.length) {
       // Assume que o botão de excluir está sempre no último `.col-md-1`
       cy.wrap(webhookEspecifico).find('.col-md-1 .url_webhook_destroy').click()
-      cy.contains('.flash.success', 'URL deletada com sucesso', { timeout: 5000 })
+      cy.contains('.flash.success', 'URL deletada com sucesso')
         .should('be.visible')
     } else {
       cy.log(`Configuração com nome ${nomeFuncao} e URL ${url} não encontrada.`)
@@ -3595,17 +3542,16 @@ Cypress.Commands.add('preencherIntegracaoApi', (dados, opcoes = { limpar: true }
 }) 
 
 Cypress.Commands.add('salvarChaveApi', function(acao) {
-  const TIMEOUT_PADRAO = 5000
   const labels = Cypress.env('labels')
   const { msgSucessoCriacao, msgSucessoEdicao } = labels.integracoes
 
   formIntegracoes.salvarChave()
 
   if (acao === 'Criação') {
-    cy.contains('#toast-success-toast-title', msgSucessoCriacao, { timeout: TIMEOUT_PADRAO })
+    cy.contains('#toast-success-toast-title', msgSucessoCriacao)
       .should('be.visible')
   } else if (acao === 'Edição') {
-    cy.contains('#toast-success-toast-title', msgSucessoEdicao, { timeout: TIMEOUT_PADRAO })
+    cy.contains('#toast-success-toast-title', msgSucessoEdicao)
       .should('be.visible')
   }
 })
