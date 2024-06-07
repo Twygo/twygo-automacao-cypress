@@ -16,9 +16,12 @@ import formConteudosAmbienteAdicional from "./pageObjects/formConteudosAmbienteA
 import formCobrancaAutomatica from "./pageObjects/formCobrancaAutomatica"
 import formCuponsVouchers from "./pageObjects/formCuponsVouchers"
 import formIntegracoes from "./pageObjects/formIntegracoes"
+import formRegistreSe from "./pageObjects/formRegistreSe"
+import formSuperAdmin from "./pageObjects/formSuperAdmin"
 import { fakerPT_BR } from "@faker-js/faker"
 import 'cypress-real-events/support'
 import moment from 'moment'
+import { verificarPerfilENomeUsuario } from "./utilsHelper.js"
 
 Cypress.Commands.add('loginTwygoAutomacao', (idioma = 'pt') => {
   const labels = Cypress.env('labels')[idioma]
@@ -3746,4 +3749,130 @@ Cypress.Commands.add('excluirTodasChavesApi', () => {
       })
     }
   })
+})
+
+Cypress.Commands.add('preencherDadosRegistreSe', (dados, opcoes = { limpar: false }) => {
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo]
+    formRegistreSe.preencherCampo(nomeCampo, valor, opcoes)
+  })
+})
+
+Cypress.Commands.add('validarDadosRegistreSe', (dados) => {
+  Object.keys(dados).forEach(nomeCampo => {
+    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+    formRegistreSe.validarCampo(nomeCampo, valor)
+  })
+})
+
+Cypress.Commands.add('salvarRegistreSe', () => {
+  const labels = Cypress.env('labels')
+  const { msgSucesso } = labels.registreSe
+
+  formRegistreSe.salvar()
+
+  // Valida a mensagem de sucesso
+  cy.contains('.flash.notice', msgSucesso)
+    .should('be.visible')
+})
+
+Cypress.Commands.add('acessarSuperAdmin', (opcao) => {
+  const labels = Cypress.env('labels')
+  const { boasVindas, msgOrientacao, tituloPgCamposCustomizados } = labels.superAdmin
+
+  cy.visit('/admin')
+
+  // Validar a página de super admin
+  cy.contains('h1', boasVindas)
+    .should('be.visible')
+  
+  cy.contains('p', msgOrientacao)
+    .should('be.visible')
+  
+  switch (opcao) {
+    case 'Campos customizados':
+      formSuperAdmin.acessarCamposCustomizados()
+
+      // Validar a página de campos customizados
+      cy.contains('.page-header h1', tituloPgCamposCustomizados)
+        .should('be.visible')
+      break
+    default:
+      throw new Error(`Opção inválida: ${opcao}. Utilize 'Campos customizados'`)
+  }
+})
+
+Cypress.Commands.add('configTodosCamposCustomizados', (acao) => {
+  const labels = Cypress.env('labels')
+  const { msgSucesso } = labels.superAdmin
+
+  // Função para gerar a configuração dos campos customizados
+  function gerarConfiguracaoCampos(campos, acoes) {
+    return campos.reduce((config, campo) => {
+      config[campo] = acoes
+      return config
+    }, {})
+  }
+
+  // Definir os campos customizados
+  const todosCampos = [
+    'phone', 'cpf', 'rg', 'address', 'address2', 'city', 'district', 
+    'address_number', 'zip_code', 'state', 'country', 'manager', 'team', 
+    'department', 'enterprise', 'business_line', 'number_of_employees', 'role'
+  ]
+
+  const camposSemObrigatorio = [
+    'manager', 'team'
+  ]
+
+  const camposComObrigatorio = todosCampos.filter(campo => !camposSemObrigatorio.includes(campo))
+
+  // Validar perfil de administrador
+  verificarPerfilENomeUsuario().then((resultado) => {
+    if (resultado.acao === 'logout') {
+      cy.logout()
+      cy.loginTwygoAutomacao()
+      cy.alterarPerfil('administrador')
+    } else if (resultado.acao === 'login') {
+      cy.loginTwygoAutomacao()
+      cy.alterarPerfil('administrador')
+    } else if (resultado.acao === 'perfil') {
+      cy.alterarPerfil('administrador')
+    }
+  })
+
+  // Acessar SuperAdmin
+  cy.acessarSuperAdmin('Campos customizados')
+  formSuperAdmin.preencherCamposCustomizados(Cypress.env('orgId'))
+
+  // Executar a ação de acordo com o parâmetro
+  const habilitarTodosCampos = gerarConfiguracaoCampos(todosCampos, 'habilitar')
+  const desabilitarTodosCampos = gerarConfiguracaoCampos(todosCampos, 'desabilitar')
+  const todosObrigatorios = gerarConfiguracaoCampos(camposComObrigatorio, 'obrigatório')
+
+  switch (acao) {
+    case 'Habilitado':
+      formSuperAdmin.configurarCamposCustomizados(habilitarTodosCampos)    
+      break
+    case 'Obrigatório':
+      formSuperAdmin.configurarCamposCustomizados(todosObrigatorios)   
+      break
+    case 'Habilitado e Obrigatório':
+      formSuperAdmin.configurarCamposCustomizados(habilitarTodosCampos)    
+      formSuperAdmin.configurarCamposCustomizados(todosObrigatorios)
+      break
+    case 'Desabilitado':
+      formSuperAdmin.configurarCamposCustomizados(desabilitarTodosCampos)    
+      break
+    default:
+      throw new Error(`Ação inválida: ${acao}. Utilize 'Habilitado', 'Obrigatório', 'Habilitado e Obrigatório' ou 'Desabilitado'`)
+  }
+
+  // Salvar as configurações e validar a mensagem de sucesso
+  formSuperAdmin.salvar()
+  cy.get('.flash.success').should('contain.text', msgSucesso)
+
+  // Logout
+  cy.acessarPgListaConteudos()
+  cy.logout()
 })
