@@ -18,6 +18,8 @@ import formCuponsVouchers from "./pageObjects/formCuponsVouchers"
 import formIntegracoes from "./pageObjects/formIntegracoes"
 import formRegistreSe from "./pageObjects/formRegistreSe"
 import formSuperAdmin from "./pageObjects/formSuperAdmin"
+import formLogin from "./pageObjects/formLogin"
+import listaConteudos from "./pageObjects/listaConteudos"
 import { fakerPT_BR } from "@faker-js/faker"
 import 'cypress-real-events/support'
 import moment from 'moment'
@@ -2286,7 +2288,7 @@ Cypress.Commands.add('gestorConteudo', (nomeConteudo) => {
   })
 })
 
-Cypress.Commands.add('login', function(login, password, username, idioma = 'pt') {
+Cypress.Commands.add('primeiroLogin', function(login, password, username, idioma = 'pt') {
   const labels = Cypress.env('labels')[idioma]
   const { pgInicialAluno, btnProfile } = labels.configUsuario
   
@@ -3748,4 +3750,36 @@ Cypress.Commands.add('configTodosCamposCustomizados', (acao) => {
   // Logout
   cy.acessarPgListaConteudos()
   cy.logout()
+})
+
+Cypress.Commands.add('login', (login, senha) => {
+  cy.get(formLogin.elementos.login.seletor)
+    .type(login)
+  
+  cy.get(formLogin.elementos.senha.seletor)
+    .type(senha)
+  
+  formLogin.entrar()
+})
+
+Cypress.Commands.add('listaCursoViaApi', function() {
+  return cy.request({
+    method: 'GET',
+    url: `/api/v1/o/${Cypress.env('orgId')}/courses?page=1&per_page=99999`,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': `Bearer ${Cypress.env('token')}`
+    },
+    failOnStatusCode: false
+  }).then((response) => {
+    if (response.status !== 200) {
+      throw new Error(`Erro ao obter a listagem de cursos: ${response.statusText}`)
+    }
+    
+    return response.body.courses.contents
+  })
+})
+
+Cypress.Commands.add('pesquisarConteudo', (nomeConteudo) => { 
+  listaConteudos.pesquisarConteudo(nomeConteudo)
 })
