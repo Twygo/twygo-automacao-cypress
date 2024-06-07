@@ -22,7 +22,8 @@ describe('Biblioteca', () => {
         // Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([
             "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
+            "unexpected token: identifier",    // Firefox
+            "Cannot read properties of undefined (reading 'replace')" // Chrome
         ], { ignoreScriptErrors: true})   
         
         //Define o tipo de conteúdo

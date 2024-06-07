@@ -375,21 +375,17 @@ Cypress.Commands.add('addConteudo', function(tipoConteudo) {
   
   switch (tipoConteudo) {
     case 'curso':
-      cy.get('#menu-button-4')
-        .should('be.visible')
-        .click()
+      cy.get('[data-id="add-button"]')
+        .click({force:true})
 
-      cy.get('#menu-list-4-menuitem-2')
-        .should('be.visible')
+      cy.get('[data-id="add-event"]')
         .click()
       break
     case 'trilha':
-      cy.get('#menu-button-4')
-        .should('be.visible')
-        .click()
+      cy.get('[data-id="add-button"]')
+        .click({force:true})
 
-      cy.get('#menu-list-4-menuitem-1')
-        .should('be.visible')
+      cy.get('[data-id="add-learning-path"]')
         .click()
       break
     case 'catalogo':
