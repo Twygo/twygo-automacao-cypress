@@ -192,7 +192,6 @@ Cypress.Commands.add('acessarPgQuestionarios', function() {
 })
 
 Cypress.Commands.add('acessarPgConfigOrganizacao', function(aba) {
-  const formulario = new formConfigOrganizacao()
   const labels = Cypress.env('labels')
   const { breadcrumb } = labels.configOrganizacao
   
@@ -205,22 +204,22 @@ Cypress.Commands.add('acessarPgConfigOrganizacao', function(aba) {
   if (aba) {
     switch (aba) {
       case 'dados':
-        formulario.abaDados()
+        formConfigOrganizacao.abaDados()
         break
       case 'customizacoes':
-        formulario.abaCustomizacoes()
+        formConfigOrganizacao.abaCustomizacoes()
         break
       case 'certificado':
-        formulario.abaCertificado()
+        formConfigOrganizacao.abaCertificado()
         break
       case 'integracoes':
-        formulario.abaIntegracoes()
+        formConfigOrganizacao.abaIntegracoes()
         break
       case 'termos':
-        formulario.abaTermos()
+        formConfigOrganizacao.abaTermos()
         break
       case 'urlWebhooks':
-        formulario.abaUrlWebhooks()
+        formConfigOrganizacao.abaUrlWebhooks()
         break
       default:
         throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
@@ -347,11 +346,9 @@ Cypress.Commands.add('excluirCursoViaApi', function() {
 })
 
 Cypress.Commands.add('preencherDadosConteudo', (conteudo, opcoes = { limpar: false }) => {
-  const formulario = new formConteudos()
-  
   Object.keys(conteudo).forEach(nomeCampo => {
       const valor = conteudo[nomeCampo]
-      formulario.preencherCampo(nomeCampo, valor, opcoes)
+      formConteudos.preencherCampo(nomeCampo, valor, opcoes)
   })
 }) 
 
@@ -364,11 +361,9 @@ Cypress.Commands.add('validarDadosConteudo', (conteudo, categoria) => {
     throw new Error('O parâmetro "categoria" é obrigatório.')
   }
 
-  const formulario = new formConteudos()
-
   Object.keys(conteudo).forEach(nomeCampo => {
     const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
-    formulario.validarCampo(nomeCampo, valor, categoria)
+    formConteudos.validarCampo(nomeCampo, valor, categoria)
   })
 })
 
@@ -758,20 +753,16 @@ Cypress.Commands.add('editarAtividade', (nomeConteudo, nomeAtividade) => {
 })
 
 Cypress.Commands.add('preencherDadosAtividade', (dados, opcoes = { limpar: false }) => {
-  const formulario = new formAtividades()
-  
   Object.keys(dados).forEach(nomeCampo => {
       const valor = dados[nomeCampo]
-      formulario.preencherCampo(nomeCampo, valor, opcoes)
+      formAtividades.preencherCampo(nomeCampo, valor, opcoes)
   })
 })
 
 Cypress.Commands.add('validarDadosAtividade', (dados) => {
-  const formulario = new formAtividades()
-
   Object.keys(dados).forEach(nomeCampo => {
     const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
-    formulario.validarCampo(nomeCampo, valor)
+    formAtividades.validarCampo(nomeCampo, valor)
   })
 })
 
@@ -851,20 +842,16 @@ Cypress.Commands.add("criarCursoViaApi", (body, attempt = 1) => {
 })
 
 Cypress.Commands.add('preencherDadosBiblioteca', (conteudo, opcoes = { limpar: false }) => {
-  const formulario = new formBiblioteca()
-  
   Object.keys(conteudo).forEach(nomeCampo => {
       const valor = conteudo[nomeCampo]
-      formulario.preencherCampo(nomeCampo, valor, opcoes)
+      formBiblioteca.preencherCampo(nomeCampo, valor, opcoes)
   })
 }) 
 
 Cypress.Commands.add('validarDadosBiblioteca', (conteudo) => {
-  const formulario = new formBiblioteca()
-
   Object.keys(conteudo).forEach(nomeCampo => {
     const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
-    formulario.validarCampo(nomeCampo, valor)
+    formBiblioteca.validarCampo(nomeCampo, valor)
   })
 })
 
@@ -943,20 +930,16 @@ Cypress.Commands.add('criarTrilhaDefault', (nomeConteudo) => {
 })
 
 Cypress.Commands.add('preencherDadosQuestionario', (dados, opcoes = { limpar: false }) => {
-  const formulario = new formQuestionarios()
-  
   Object.keys(dados).forEach(nomeCampo => {
       const valor = dados[nomeCampo]
-      formulario.preencherCampo(nomeCampo, valor, opcoes)
+      formQuestionarios.preencherCampo(nomeCampo, valor, opcoes)
   })
 })
 
 Cypress.Commands.add('validarDadosQuestionario', (dados) => {
-  const formulario = new formQuestionarios()
-
   Object.keys(dados).forEach(nomeCampo => {
     const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
-    formulario.validarCampo(nomeCampo, valor)
+    formQuestionarios.validarCampo(nomeCampo, valor)
   })
 })
 
@@ -988,9 +971,6 @@ Cypress.Commands.add('excluirQuestionarios', (nomeQuestionario, listaQuestionari
   // Acessa o arquivo de labels
   const labels = Cypress.env('labels')
 
-  // Inicializa formulário de questionários
-  const formulario = new formQuestionarios()
-
   // Função para excluir um questionário específico
   const excluirQuestionarioEspecifico = (nomeQuestionario) => {
     const { tituloModalExclusao, textoModalExclusao, msgSucessoExclusao } = labels.questionario
@@ -1000,7 +980,7 @@ Cypress.Commands.add('excluirQuestionarios', (nomeQuestionario, listaQuestionari
     // Clica em 'Excluir'
     cy.get(seletor)
       .wait(2000)
-      .find(formulario.elementos.btnExcluir.seletor, formulario.elementos.btnExcluir.title)
+      .find(formQuestionarios.elementos.btnExcluir.seletor, formQuestionarios.elementos.btnExcluir.title)
       .click({ force: true })
 
     // Valida o título do modal de exclusão
@@ -1018,7 +998,7 @@ Cypress.Commands.add('excluirQuestionarios', (nomeQuestionario, listaQuestionari
       })    
       
     // Confirma a exclusão
-    cy.contains(formulario.elementos.btnConfirmarExclusao.seletor, 'Confirmar')
+    cy.contains(formQuestionarios.elementos.btnConfirmarExclusao.seletor, 'Confirmar')
       .click({ force: true })
 
     // Valida a mensagem de sucesso da exclusão
@@ -1044,12 +1024,11 @@ Cypress.Commands.add('excluirQuestionarios', (nomeQuestionario, listaQuestionari
 })
 
 Cypress.Commands.add('salvarQuestionario', (nomeQuestionario) => {
-  const formulario = new formQuestionarios()
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.questionario
 
   // Salva o questionário
-  formulario.salvarQuestionario()
+  formQuestionarios.salvarQuestionario()
 
   // Confirma a mensagem de sucesso
   cy.contains('.flash.notice', msgSucesso)
@@ -1061,13 +1040,12 @@ Cypress.Commands.add('salvarQuestionario', (nomeQuestionario) => {
 })
 
 Cypress.Commands.add('editarQuestionario', (nomeQuestionario) => {
-  const formulario = new formQuestionarios()
   const labels = Cypress.env('labels')
   const { breadcrumb, tituloPgEdicao } = labels.questionario
 
   // Edita o questionário
   cy.get(`tr[name='${nomeQuestionario}']`)
-    .find(formulario.elementos.btnEditar.seletor, formulario.elementos.btnEditar.title)
+    .find(formQuestionarios.elementos.btnEditar.seletor, formQuestionarios.elementos.btnEditar.title)
     .click()
 
   // Validar se a página foi carregada corretamente
@@ -1079,14 +1057,12 @@ Cypress.Commands.add('editarQuestionario', (nomeQuestionario) => {
 })
 
 Cypress.Commands.add('criarQuestionarioDefault', (nomeQuestionario) => {
-  const formulario = new formQuestionarios()
-  
   const dados = {
     nome: nomeQuestionario
   }
 
   cy.acessarPgQuestionarios()
-  formulario.addQuestionario()
+  formQuestionarios.addQuestionario()
   cy.preencherDadosQuestionario(dados)
   cy.salvarQuestionario(dados.nome)
 })
@@ -1113,25 +1089,20 @@ Cypress.Commands.add('acessarPerguntasQuestionario', (nomeQuestionario) => {
 })
 
 Cypress.Commands.add('preencherDadosPergunta', (conteudo, opcoes = { limpar: false }) => {
-  const formulario = new formPerguntas()
-  
   Object.keys(conteudo).forEach(nomeCampo => {
       const valor = conteudo[nomeCampo]
-      formulario.preencherCampo(nomeCampo, valor, opcoes)
+      formPerguntas.preencherCampo(nomeCampo, valor, opcoes)
   })
 }) 
 
 Cypress.Commands.add('validarDadosPergunta', (conteudo) => {
-  const formulario = new formPerguntas()
-
   Object.keys(conteudo).forEach(nomeCampo => {
     const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
-    formulario.validarCampo(nomeCampo, valor)
+    formPerguntas.validarCampo(nomeCampo, valor)
   })
 })
 
 Cypress.Commands.add('salvarPergunta', (descPergunta, index) => {
-  const formulario = new formPerguntas()
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.perguntas
 
@@ -1139,7 +1110,7 @@ Cypress.Commands.add('salvarPergunta', (descPergunta, index) => {
   cy.get(`tr[id='question-new-${index}']`)
     .parent('tbody')
     .within(() => {
-      formulario.salvar()
+      formPerguntas.salvar()
     })  
 
   // Confirma a mensagem de sucesso
@@ -1152,13 +1123,10 @@ Cypress.Commands.add('salvarPergunta', (descPergunta, index) => {
 })
 
 Cypress.Commands.add('excluirPergunta', (descPergunta) => {
-  const formulario = new formPerguntas()
-
   cy.get(`tr[title*='${descPergunta.slice(0, 30)}']`)
     .parent('tbody')
     .within(() => {
-      formulario.remover()
-    
+      formPerguntas    
       // Lida com a mensagem de confirmação do navegador
       cy.on('window:confirm', (message) => {
         expect(message).to.equal('Você tem certeza que deseja remover esta pergunta?')
@@ -1172,17 +1140,14 @@ Cypress.Commands.add('excluirPergunta', (descPergunta) => {
 })
 
 Cypress.Commands.add('expandirPergunta', (descPergunta) => {
-  const formulario = new formPerguntas()
-
   cy.get(`tr[title*='${descPergunta.slice(0, 30)}']`)
     .parent('tbody')
     .within(() => {
-      formulario.expandirPergunta()
+      formPerguntas.expandirPergunta()
     })  
 })
 
 Cypress.Commands.add('salvarEdicaoPergunta', (oldDescPergunta, newDescPergunta) => {
-  const formulario = new formPerguntas()
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.perguntas
 
@@ -1190,7 +1155,7 @@ Cypress.Commands.add('salvarEdicaoPergunta', (oldDescPergunta, newDescPergunta) 
   cy.get(`tr[title*='${oldDescPergunta.slice(0, 30)}']`)
     .parent('tbody')
     .within(() => {
-      formulario.salvar()
+      formPerguntas.salvar()
     })  
 
   // Confirma a mensagem de sucesso
@@ -1202,31 +1167,26 @@ Cypress.Commands.add('salvarEdicaoPergunta', (oldDescPergunta, newDescPergunta) 
     .should('be.visible')
 })
 
-Cypress.Commands.add('preencherDadosUsuario', (dados, opcoes = { limpar: false }) => {
-  const formulario = new formUsuarios()
-  
+Cypress.Commands.add('preencherDadosUsuario', (dados, opcoes = { limpar: false }) => { 
   Object.keys(dados).forEach(nomeCampo => {
       const valor = dados[nomeCampo]
-      formulario.preencherCampo(nomeCampo, valor, opcoes)
+      formUsuarios.preencherCampo(nomeCampo, valor, opcoes)
   })
 }) 
 
 Cypress.Commands.add('validarDadosUsuario', (dados) => {
-  const formulario = new formUsuarios()
-
   Object.keys(dados).forEach(nomeCampo => {
     const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
-    formulario.validarCampo(nomeCampo, valor)
+    formUsuarios.validarCampo(nomeCampo, valor)
   })
 })
 
 Cypress.Commands.add('salvarUsuario', (nomeUsuario) => {
-  const formulario = new formUsuarios()
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.usuarios
 
   // Salva o usuário
-  formulario.salvar()
+  formUsuarios.salvar()
 
   // Confirma a mensagem de sucesso
   cy.contains('.flash.success', msgSucesso)
@@ -1582,30 +1542,25 @@ Cypress.Commands.add('addParticipanteConteudo', function(nomeConteudo, tipoConte
 })
 
 Cypress.Commands.add('preencherDadosParticipante', (conteudo, opcoes = { limpar: false }) => {
-  const formulario = new formParticipantes()
-  
   Object.keys(conteudo).forEach(nomeCampo => {
       const valor = conteudo[nomeCampo]
-      formulario.preencherCampo(nomeCampo, valor, opcoes)
+      formParticipantes.preencherCampo(nomeCampo, valor, opcoes)
   })
 }) 
 
 Cypress.Commands.add('validarDadosParticipante', (conteudo) => {
-  const formulario = new formParticipantes()
-
   Object.keys(conteudo).forEach(nomeCampo => {
     const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
-    formulario.validarCampo(nomeCampo, valor)
+    formParticipantes.validarCampo(nomeCampo, valor)
   })
 })
 
 Cypress.Commands.add('salvarNovoParticipante', (nomeParticipante) => {
-  const formulario = new formParticipantes()
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.participantes
 
   // Salva o usuário
-  formulario.salvar()
+  formParticipantes.salvar()
 
   // Confirma a mensagem de sucesso
   cy.contains('.flash.notice', msgSucesso)
@@ -1617,12 +1572,11 @@ Cypress.Commands.add('salvarNovoParticipante', (nomeParticipante) => {
 })
 
 Cypress.Commands.add('salvarEdicaoParticipante', (nomeParticipante, status = 'Confirmados') => {
-  const formulario = new formParticipantes()
   const labels = Cypress.env('labels')
   const { msgSucessoEdicao } = labels.participantes
 
   // Salva o usuário
-  formulario.salvar()
+  formParticipantes.salvar()
 
   // Confirma a mensagem de sucesso
   cy.contains('.flash.notice', msgSucessoEdicao)
@@ -2152,30 +2106,23 @@ Cypress.Commands.add('configUsuario', (idioma = 'pt') => {
 })
 
 Cypress.Commands.add('preencherDadosConfigUsuario', (dados, opcoes = { limpar: false }) => {
-  const formulario = new formConfigUsuario()
-  
   Object.keys(dados).forEach(nomeCampo => {
       const valor = dados[nomeCampo]
-      formulario.preencherCampo(nomeCampo, valor, opcoes)
+      formConfigUsuario.preencherCampo(nomeCampo, valor, opcoes)
   })
 })
 
 Cypress.Commands.add('vincularInstrutor', (nomeInstrutor) => {
-  const formulario = new formInstrutor()
-
-  formulario.associarInstrutor(nomeInstrutor)
-
+  formInstrutor.associarInstrutor(nomeInstrutor)
 })
 
 Cypress.Commands.add('vinculoGestao', (nomeGestor, acao) => {
-  const formulario = new formGestor()
-
   switch(acao) {
     case 'Vincular':
-      formulario.vincularGestor(nomeGestor)
+      formGestor.vincularGestor(nomeGestor)
       break
     case  'Desvincular':
-      formulario.desvincularGestor(nomeGestor)
+      formGestor.desvincularGestor(nomeGestor)
       break
   }
 })
@@ -2245,11 +2192,9 @@ Cypress.Commands.add('criarInstrutor', (nomeInstrutor, sobrenomeInstrutor) => {
 })
 
 Cypress.Commands.add('validarDadosConfigUsuario', (dados) => {
-  const formulario = new formConfigUsuario()
-
   Object.keys(dados).forEach(nomeCampo => {
     const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
-    formulario.validarCampo(nomeCampo, valor)
+    formConfigUsuario.validarCampo(nomeCampo, valor)
   })
 })
 
@@ -2524,22 +2469,21 @@ Cypress.Commands.add('ativarCapturaErros', function() {
 })
 
 Cypress.Commands.add('criarAmbienteAdicional', (acao, dadosAmbiente, opcoes = { limpar: true }) => {
-  const formulario = new formAmbientesAdicionais()
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.ambientesAdicionais
   
   if (acao === 'Criar') {
-    formulario.criarAmbienteAdicional()
+    formAmbientesAdicionais.criarAmbienteAdicional()
   } else if (acao === 'Adicionar') {
-    formulario.adicionarAmbienteAdicional()
+    formAmbientesAdicionais.adicionarAmbienteAdicional()
   }
   
   Object.keys(dadosAmbiente).forEach(nomeCampo => {
       const valor = dadosAmbiente[nomeCampo]
-      formulario.preencherCampo(nomeCampo, valor, opcoes)
+      formAmbientesAdicionais.preencherCampo(nomeCampo, valor, opcoes)
   })
 
-  formulario.salvarAmbiente()
+  formAmbientesAdicionais.salvarAmbiente()
   cy.contains('#success-toast', msgSucesso)
         .should('be.visible')
 }) 
@@ -2561,17 +2505,16 @@ Cypress.Commands.add('validarAmbienteAdicional', (dadosAmbiente, acao) => {
 })
 
 Cypress.Commands.add('inativarAmbienteAdicional', (nomeAmbiente) => {
-  const formulario = new formAmbientesAdicionais()
   const labels = Cypress.env('labels')
   const { msgInativacao } = labels.ambientesAdicionais
 
   cy.contains('div', nomeAmbiente).within(() => {
-    cy.get(formulario.elementos.inativar.seletor)
+    cy.get(formAmbientesAdicionais.elementos.inativar.seletor)
     .click()
   })   
 
   // Confirmar a inativação do ambiente
-  formulario.confirmarInativacaoAmbiente()
+  formAmbientesAdicionais.confirmarInativacaoAmbiente()
   
   // Valida a mensagem de sucesso
   cy.contains('.chakra-alert__desc.css-zycdy9', msgInativacao)
@@ -2619,11 +2562,10 @@ Cypress.Commands.add('compartilharComAmbienteAdicional', (nomeAmbiente, acao) =>
 })
 
 Cypress.Commands.add('salvarCompartilhamentoAmbienteAdicional', () => {
-  const formulario = new formConteudosAmbienteAdicional()
   const labels = Cypress.env('labels')
   const { msgCompartilhamento } = labels.ambientesAdicionais
 
-  formulario.salvarCompartilhamento()
+  formConteudosAmbienteAdicional.salvarCompartilhamento()
 
   // Valida a mensagem de sucesso
   cy.contains('.chakra-alert__desc', msgCompartilhamento)
@@ -2672,27 +2614,25 @@ Cypress.Commands.add('inativarTodosAmbientesAdicionais', () => {
 })
 
 Cypress.Commands.add('preencherDadosConfigOrganizacao', (dados, aba, opcoes = { limpar: false }) => {
-  const formulario = new formConfigOrganizacao()
-
   if (aba) {
     switch (aba) {
       case 'dados':
-        formulario.abaDados()
+        formConfigOrganizacao.abaDados()
         break
       case 'customizacoes':
-        formulario.abaCustomizacoes()
+        formConfigOrganizacao.abaCustomizacoes()
         break
       case 'certificado':
-        formulario.abaCertificado()
+        formConfigOrganizacao.abaCertificado()
         break
       case 'integracoes':
-        formulario.abaIntegracoes()
+        formConfigOrganizacao.abaIntegracoes()
         break
       case 'termos':
-        formulario.abaTermos()
+        formConfigOrganizacao.abaTermos()
         break
       case 'urlWebhooks':
-        formulario.abaUrlWebhooks()
+        formConfigOrganizacao.abaUrlWebhooks()
         break
       default:
         throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
@@ -2701,31 +2641,29 @@ Cypress.Commands.add('preencherDadosConfigOrganizacao', (dados, aba, opcoes = { 
   
   Object.keys(dados).forEach(nomeCampo => {
       const valor = dados[nomeCampo]
-      formulario.preencherCampo(nomeCampo, valor, opcoes)
+      formConfigOrganizacao.preencherCampo(nomeCampo, valor, opcoes)
   })
 }) 
 
 Cypress.Commands.add('validarDadosConfigOrganizacao', (dados, aba) => {
-  const formulario = new formConfigOrganizacao()
-
   switch (aba) {
     case 'dados':
-      formulario.abaDados()
+      formConfigOrganizacao.abaDados()
       break
     case 'customizacoes':
-      formulario.abaCustomizacoes()
+      formConfigOrganizacao.abaCustomizacoes()
       break
     case 'certificado':
-      formulario.abaCertificado()
+      formConfigOrganizacao.abaCertificado()
       break
     case 'integracoes':
-      formulario.abaIntegracoes()
+      formConfigOrganizacao.abaIntegracoes()
       break
     case 'termos':
-      formulario.abaTermos()
+      formConfigOrganizacao.abaTermos()
       break
     case 'urlWebhooks':
-      formulario.abaUrlWebhooks()
+      formConfigOrganizacao.abaUrlWebhooks()
       break
     default:
       throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
@@ -2733,7 +2671,7 @@ Cypress.Commands.add('validarDadosConfigOrganizacao', (dados, aba) => {
 
   Object.keys(dados).forEach(nomeCampo => {
     const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
-    formulario.validarCampo(nomeCampo, valor)
+    formConfigOrganizacao.validarCampo(nomeCampo, valor)
   })
 })
 
@@ -3046,20 +2984,16 @@ Cypress.Commands.add('editarUrlWebhook', (nomeFuncao, url) => {
 })
 
 Cypress.Commands.add('preencherDadosTrial', (dados, opcoes = { limpar: false }) => {
-  const formulario = new formTrial()
-
   Object.keys(dados).forEach(nomeCampo => {
     const valor = dados[nomeCampo]
-    formulario.preencherCampo(nomeCampo, valor, opcoes)
+    formTrial.preencherCampo(nomeCampo, valor, opcoes)
   })
 })
 
 Cypress.Commands.add('validarDadosTrial', (dados) => {
-  const formulario = new formTrial()
-  
   Object.keys(dados).forEach(nomeCampo => {
     const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
-    formulario.validarCampo(nomeCampo, valor)
+    formTrial.validarCampo(nomeCampo, valor)
   })
 })
 
@@ -3265,29 +3199,24 @@ Cypress.Commands.add('validarMsgTrial', (step, objetivo, nomeUsuario) => {
 })
 
 Cypress.Commands.add('preencherDadosCobrancaAutomatica', (conteudo, opcoes = { limpar: false }) => {
-  const formulario = new formCobrancaAutomatica()
-  
   Object.keys(conteudo).forEach(nomeCampo => {
       const valor = conteudo[nomeCampo]
-      formulario.preencherCampo(nomeCampo, valor, opcoes)
+      formCobrancaAutomatica.preencherCampo(nomeCampo, valor, opcoes)
   })
 }) 
 
 Cypress.Commands.add('validarDadosCobrancaAutomatica', (conteudo) => {
-  const formulario = new formCobrancaAutomatica()
-
   Object.keys(conteudo).forEach(nomeCampo => {
     const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
-    formulario.validarCampo(nomeCampo, valor)
+    formCobrancaAutomatica.validarCampo(nomeCampo, valor)
   })
 })
 
 Cypress.Commands.add('salvarCobrancaAutomatica', () => {
-  const formulario = new formCobrancaAutomatica()
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.cobrancaInscricao.cobrancaAutomatica
 
-  formulario.salvar()
+  formCobrancaAutomatica.salvar()
   validarModalSubstCobranca()
   
   // Valida a mensagem de sucesso
@@ -3296,8 +3225,6 @@ Cypress.Commands.add('salvarCobrancaAutomatica', () => {
 })
 
 Cypress.Commands.add('resetCobrancaAutomatica', () => {
-  const formulario = new formCobrancaAutomatica()
-
   const dados = {
     radioAsaas: true,
     chaveAsaas: 'a',
@@ -3315,7 +3242,7 @@ Cypress.Commands.add('resetCobrancaAutomatica', () => {
   // Desabilitar o "Pix e boleto"
   cy.preencherDadosCobrancaAutomatica({ checkPixBoleto: false})
 
-  formulario.salvar()
+  formCobrancaAutomatica.salvar()
   validarModalSubstCobranca()
 
   // Desabilitar a cobrança automática

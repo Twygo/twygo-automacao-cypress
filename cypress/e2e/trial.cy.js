@@ -2,8 +2,6 @@
 import { faker, fakerPT_BR } from '@faker-js/faker'
 import formTrial from '../support/pageObjects/formTrial'
 
-const formulario = new formTrial()
-
 describe('Criar organização "Trial"', () => {
     let senha
 
@@ -91,7 +89,7 @@ describe('Criar organização "Trial"', () => {
 
         // Voltar ao primeiro step para validar que os dados não foram perdidos
         for (let i = 0; i < 4; i++) {
-            formulario.voltarStep()
+            formTrial.voltarStep()
         }
 
         // Valida os dados preenchidos aba "Seus dados"
@@ -126,7 +124,7 @@ describe('Criar organização "Trial"', () => {
 
         // Voltar ao primeiro step para alterar os dados
         for (let i = 0; i < 4; i++) {
-            formulario.voltarStep()
+            formTrial.voltarStep()
         }
 
         // Massa de dados
@@ -184,7 +182,7 @@ describe('Criar organização "Trial"', () => {
 
         // Voltar ao primeiro step para validar que os dados não foram perdidos
         for (let i = 0; i < 4; i++) {
-            formulario.voltarStep()
+            formTrial.voltarStep()
         }
 
         // Valida os dados preenchidos aba "Seus dados"
@@ -287,7 +285,7 @@ describe('Criar organização "Trial"', () => {
 
         // Voltar ao primeiro step para validar que os dados não foram perdidos
         for (let i = 0; i < 4; i++) {
-            formulario.voltarStep()
+            formTrial.voltarStep()
         }
 
         // Valida os dados preenchidos aba "Seus dados"
@@ -322,7 +320,7 @@ describe('Criar organização "Trial"', () => {
 
         // Voltar ao primeiro step para alterar os dados
         for (let i = 0; i < 4; i++) {
-            formulario.voltarStep()
+            formTrial.voltarStep()
         }
 
         // Massa de dados
@@ -380,7 +378,7 @@ describe('Criar organização "Trial"', () => {
 
         // Voltar ao primeiro step para validar que os dados não foram perdidos
         for (let i = 0; i < 4; i++) {
-            formulario.voltarStep()
+            formTrial.voltarStep()
         }
 
         // Valida os dados preenchidos aba "Seus dados"
@@ -483,7 +481,7 @@ describe('Criar organização "Trial"', () => {
 
         // Voltar ao primeiro step para validar que os dados não foram perdidos
         for (let i = 0; i < 4; i++) {
-            formulario.voltarStep()
+            formTrial.voltarStep()
         }
 
         // Valida os dados preenchidos aba "Seus dados"
@@ -518,7 +516,7 @@ describe('Criar organização "Trial"', () => {
 
         // Voltar ao primeiro step para alterar os dados
         for (let i = 0; i < 4; i++) {
-            formulario.voltarStep()
+            formTrial.voltarStep()
         }
 
         // Massa de dados
@@ -576,7 +574,7 @@ describe('Criar organização "Trial"', () => {
 
         // Voltar ao primeiro step para validar que os dados não foram perdidos
         for (let i = 0; i < 4; i++) {
-            formulario.voltarStep()
+            formTrial.voltarStep()
         }
 
         // Valida os dados preenchidos aba "Seus dados"
@@ -679,7 +677,7 @@ describe('Criar organização "Trial"', () => {
 
         // Voltar ao primeiro step para validar que os dados não foram perdidos
         for (let i = 0; i < 4; i++) {
-            formulario.voltarStep()
+            formTrial.voltarStep()
         }
 
         // Valida os dados preenchidos aba "Seus dados"
@@ -714,7 +712,7 @@ describe('Criar organização "Trial"', () => {
 
         // Voltar ao primeiro step para alterar os dados
         for (let i = 0; i < 4; i++) {
-            formulario.voltarStep()
+            formTrial.voltarStep()
         }
 
         // Massa de dados
@@ -772,7 +770,7 @@ describe('Criar organização "Trial"', () => {
 
         // Voltar ao primeiro step para validar que os dados não foram perdidos
         for (let i = 0; i < 4; i++) {
-            formulario.voltarStep()
+            formTrial.voltarStep()
         }
 
         // Valida os dados preenchidos aba "Seus dados"
@@ -875,7 +873,7 @@ describe('Criar organização "Trial"', () => {
 
         // Voltar ao primeiro step para validar que os dados não foram perdidos
         for (let i = 0; i < 4; i++) {
-            formulario.voltarStep()
+            formTrial.voltarStep()
         }
 
         // Valida os dados preenchidos aba "Seus dados"
@@ -910,7 +908,7 @@ describe('Criar organização "Trial"', () => {
 
         // Voltar ao primeiro step para alterar os dados
         for (let i = 0; i < 4; i++) {
-            formulario.voltarStep()
+            formTrial.voltarStep()
         }
 
         // Massa de dados
@@ -968,7 +966,7 @@ describe('Criar organização "Trial"', () => {
 
         // Voltar ao primeiro step para validar que os dados não foram perdidos
         for (let i = 0; i < 4; i++) {
-            formulario.voltarStep()
+            formTrial.voltarStep()
         }
 
         // Valida os dados preenchidos aba "Seus dados"

@@ -113,4 +113,4 @@ class formBiblioteca {
             .click()
     }
 }
-export default formBiblioteca
+export default new formBiblioteca

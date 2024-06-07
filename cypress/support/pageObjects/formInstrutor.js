@@ -104,4 +104,4 @@ class formInstrutor{
 		}
 	}
 }
-export default formInstrutor
+export default new formInstrutor

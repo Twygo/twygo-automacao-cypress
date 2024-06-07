@@ -4,9 +4,6 @@ import formQuestionarios from '../support/pageObjects/formQuestionarios'
 import formPerguntas from '../support/pageObjects/formPerguntas'
 
 describe('Perguntas', () => {
-    const formulario = new formPerguntas()
-    const formQuest = new formQuestionarios()
-
     let titulo, novoTitulo, tipoPergunta, nomeQuestionario, listaQuestionarios, categorias1, categorias2
 
     before(() => {
@@ -46,7 +43,7 @@ describe('Perguntas', () => {
         cy.excluirQuestionarios(null, listaQuestionarios)
 
         // Criar questionário
-        formQuest.addQuestionario()
+        formQuestionarios.addQuestionario()
         cy.preencherDadosQuestionario(dadosQuest)
         cy.salvarQuestionario(dadosQuest.nome)
 
@@ -77,7 +74,7 @@ describe('Perguntas', () => {
         cy.log('## CREATE ##')
         
         cy.acessarPerguntasQuestionario(nomeQuestionario)
-        formulario.addPergunta()
+        formPerguntas.addPergunta()
 
         // Preencher os campos da pergunta
         cy.preencherDadosPergunta(dados, { limpar: true })
@@ -137,7 +134,7 @@ describe('Perguntas', () => {
         cy.log('## CREATE ##')
         
         cy.acessarPerguntasQuestionario(nomeQuestionario)
-        formulario.addPergunta()
+        formPerguntas.addPergunta()
 
         // Preencher os campos da pergunta
         cy.preencherDadosPergunta(dados, { limpar: true })
@@ -197,7 +194,7 @@ describe('Perguntas', () => {
         cy.log('## CREATE ##')
         
         cy.acessarPerguntasQuestionario(nomeQuestionario)
-        formulario.addPergunta()
+        formPerguntas.addPergunta()
 
         // Preencher os campos da pergunta
         cy.preencherDadosPergunta(dados, { limpar: true })
@@ -257,7 +254,7 @@ describe('Perguntas', () => {
         cy.log('## CREATE ##')
         
         cy.acessarPerguntasQuestionario(nomeQuestionario)
-        formulario.addPergunta()
+        formPerguntas.addPergunta()
 
         // Preencher os campos da pergunta
         cy.preencherDadosPergunta(dados, { limpar: true })
@@ -317,7 +314,7 @@ describe('Perguntas', () => {
         cy.log('## CREATE ##')
         
         cy.acessarPerguntasQuestionario(nomeQuestionario)
-        formulario.addPergunta()
+        formPerguntas.addPergunta()
 
         // Preencher os campos da pergunta
         cy.preencherDadosPergunta(dados, { limpar: true })
@@ -377,7 +374,7 @@ describe('Perguntas', () => {
         cy.log('## CREATE ##')
         
         cy.acessarPerguntasQuestionario(nomeQuestionario)
-        formulario.addPergunta()
+        formPerguntas.addPergunta()
 
         // Preencher os campos da pergunta
         cy.preencherDadosPergunta(dados, { limpar: true })
@@ -407,7 +404,7 @@ describe('Perguntas', () => {
         }
 
         cy.expandirPergunta(dados.descricao)
-        formulario.addResposta()
+        formPerguntas.addResposta()
         cy.preencherDadosPergunta(dadosUpdate, { limpar: true })
         cy.salvarEdicaoPergunta(dados.descricao, dadosUpdate.descricao)
 
@@ -441,7 +438,7 @@ describe('Perguntas', () => {
         cy.log('## CREATE ##')
         
         cy.acessarPerguntasQuestionario(nomeQuestionario)
-        formulario.addPergunta()
+        formPerguntas.addPergunta()
 
         // Preencher os campos da pergunta
         cy.preencherDadosPergunta(dados, { limpar: true })
@@ -503,7 +500,7 @@ describe('Perguntas', () => {
         cy.log('## CREATE ##')
         
         cy.acessarPerguntasQuestionario(nomeQuestionario)
-        formulario.addPergunta()
+        formPerguntas.addPergunta()
 
         // Preencher os campos da pergunta
         cy.preencherDadosPergunta(dados, { limpar: true })
@@ -531,7 +528,7 @@ describe('Perguntas', () => {
         }
 
         cy.expandirPergunta(dados.descricao)
-        formulario.addResposta()
+        formPerguntas.addResposta()
         cy.preencherDadosPergunta(dadosUpdate, { limpar: true })
         cy.salvarEdicaoPergunta(dados.descricao, dadosUpdate.descricao)
 
@@ -565,7 +562,7 @@ describe('Perguntas', () => {
         cy.log('## CREATE ##')
         
         cy.acessarPerguntasQuestionario(nomeQuestionario)
-        formulario.addPergunta()
+        formPerguntas.addPergunta()
 
         // Preencher os campos da pergunta
         cy.preencherDadosPergunta(dados, { limpar: true })
@@ -623,7 +620,7 @@ describe('Perguntas', () => {
         cy.log('## CREATE ##')
         
         cy.acessarPerguntasQuestionario(nomeQuestionario)
-        formulario.addPergunta()
+        formPerguntas.addPergunta()
 
         // Preencher os campos da pergunta
         cy.preencherDadosPergunta(dados, { limpar: true })

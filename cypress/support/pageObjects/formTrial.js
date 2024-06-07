@@ -263,4 +263,4 @@ class formTrial {
 			}
 	}
 }
-export default formTrial
+export default new formTrial

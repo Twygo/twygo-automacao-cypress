@@ -195,4 +195,4 @@ class formConfigUsuario {
         }
     }
 }
-export default formConfigUsuario
+export default new formConfigUsuario

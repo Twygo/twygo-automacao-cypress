@@ -67,4 +67,4 @@ class formGestor{
             .click()
     }
 }
-export default formGestor
+export default new formGestor

@@ -415,4 +415,4 @@ class formConteudos {
 			.click()
 	}
 }
-export default formConteudos
+export default new formConteudos

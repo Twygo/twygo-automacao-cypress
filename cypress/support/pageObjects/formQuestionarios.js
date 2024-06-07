@@ -277,4 +277,4 @@ class formQuestionarios {
             .click()
     }
 }
-export default formQuestionarios
+export default new formQuestionarios

@@ -335,4 +335,4 @@ class formUsuarios {
 		}
 	}
 }
-export default formUsuarios
+export default new formUsuarios
