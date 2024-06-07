@@ -48,7 +48,7 @@ class formBiblioteca {
                     .select(valorFinal)
                 break
             case 'iframe_text':
-                cy.get(seletor, { timeout: 5000 }).then($iframe => {
+                cy.get(seletor).then($iframe => {
                     const doc = $iframe.contents()
                     cy.wrap(doc).find('body.cke_editable').click({ force: true }).clear().type(valorFinal, { force: true })
                 })
@@ -82,7 +82,7 @@ class formBiblioteca {
                 .should('have.text', valorFinal)
             break
         case 'iframe_text':
-            cy.get(seletor, { timeout: 5000 }).then($iframe => {
+            cy.get(seletor).then($iframe => {
                 const doc = $iframe.contents()
             
                 cy.wrap(doc).find('body.cke_editable').then($body => {
