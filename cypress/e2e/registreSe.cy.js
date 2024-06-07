@@ -41,13 +41,6 @@ describe('Registre-se', () => {
         notificacoes: true
     }
 
-    before(() => {
-        // Carrega os labels do arquivo JSON
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
-
     beforeEach(() => {
         // Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([
@@ -55,7 +48,7 @@ describe('Registre-se', () => {
         ])
 
         // Configura todos os campos omo obrigatórios
-        cy.configTodosCamposObrigatorios()
+        cy.configTodosCamposCustomizados('Habilitado e Obrigatório')
 
         // Obtém token autenticação, lista e exclui os usuários
         getAuthToken()
@@ -65,14 +58,6 @@ describe('Registre-se', () => {
         gerarSenha = gerarDados('senha')
         nome = gerarDados('nome')
         sobrenome = gerarDados('sobrenome')
-    })
-
-    afterEach(() => {
-        // Desabilita todos os campos customizados
-        cy.configNenhumCampoHabilitado()
-
-        // Ativa captura de erros
-        cy.ativarCapturaErros()
     })
 
     it('1. Registre-se', () => {
@@ -107,7 +92,6 @@ describe('Registre-se', () => {
         cy.log('## CREATE ##')
 
         cy.visit('/users/sign_up')
-
         cy.preencherDadosRegistreSe(dados)
         cy.validarDadosRegistreSe(dados)        // Validação no formulário antes de salvar
         cy.salvarRegistreSe()               

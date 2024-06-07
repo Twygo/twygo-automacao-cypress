@@ -167,3 +167,24 @@ export function gerarCEP(regiao = null) {
 
     return cep
 }
+
+export function verificarPerfilENomeUsuario() {
+    return cy.get('body').then(($body) => {
+      const nomeUsuario = $body.find('.name').text().trim()
+      const perfilAtual = $body.find('#btn-profile').text().trim()
+  
+      if (!nomeUsuario && !perfilAtual) {
+        return { acao: 'login' }
+      }
+  
+      if (nomeUsuario !== Cypress.env('username')) {
+        return { acao: 'logout' }
+      }
+  
+      if (nomeUsuario === Cypress.env('username') && perfilAtual !== 'Administrador') {
+        return { acao: 'alterarPerfil' }
+      }
+  
+      return { acao: 'N/A' }
+    })
+}

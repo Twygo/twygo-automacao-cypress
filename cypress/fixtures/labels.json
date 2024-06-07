@@ -345,6 +345,7 @@
     "superAdmin": {
         "boasVindas": "bem vindo",
         "msgOrientacao": "Selecione uma das opções no menu superior!",
-        "tituloPgCamposCustomizados": "Campos customizados da organização"
+        "tituloPgCamposCustomizados": "Campos customizados da organização",
+        "msgSucesso": "Alteração realizada com sucesso"
     }
 }

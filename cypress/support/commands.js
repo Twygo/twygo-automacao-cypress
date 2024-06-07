@@ -21,6 +21,7 @@ import formSuperAdmin from "./pageObjects/formSuperAdmin"
 import { fakerPT_BR } from "@faker-js/faker"
 import 'cypress-real-events/support'
 import moment from 'moment'
+import { verificarPerfilENomeUsuario } from "./utilsHelper.js"
 
 Cypress.Commands.add('loginTwygoAutomacao', (idioma = 'pt') => {
   const labels = Cypress.env('labels')[idioma]
@@ -3796,73 +3797,82 @@ Cypress.Commands.add('acessarSuperAdmin', (opcao) => {
       cy.contains('.page-header h1', tituloPgCamposCustomizados)
         .should('be.visible')
       break
-
     default:
       throw new Error(`Opção inválida: ${opcao}. Utilize 'Campos customizados'`)
   }
 })
 
-Cypress.Commands.add('configTodosCamposObrigatorios', () => {
-  const habilitarTodosCampos = {
-    phone: ['habilitar', 'obrigatório'],
-    cpf: ['habilitar', 'obrigatório'],
-    rg: ['habilitar', 'obrigatório'],
-    address: ['habilitar', 'obrigatório'],
-    address2: ['habilitar', 'obrigatório'],
-    city: ['habilitar', 'obrigatório'],
-    district: ['habilitar', 'obrigatório'],
-    address_number: ['habilitar', 'obrigatório'],
-    zip_code: ['habilitar', 'obrigatório'],
-    state: ['habilitar', 'obrigatório'],
-    country: ['habilitar', 'obrigatório'],
-    manager: 'habilitar',
-    team: 'habilitar',
-    department: ['habilitar', 'obrigatório'],
-    enterprise: ['habilitar', 'obrigatório'],
-    business_line: ['habilitar', 'obrigatório'],
-    number_of_employees: ['habilitar', 'obrigatório'],
-    role: ['habilitar', 'obrigatório'],
+Cypress.Commands.add('configTodosCamposCustomizados', (acao) => {
+  const labels = Cypress.env('labels')
+  const { msgSucesso } = labels.superAdmin
+
+  // Função para gerar a configuração dos campos customizados
+  function gerarConfiguracaoCampos(campos, acoes) {
+    return campos.reduce((config, campo) => {
+      config[campo] = acoes
+      return config
+    }, {})
   }
 
-  cy.loginTwygoAutomacao()
-  cy.alterarPerfil('administrador')
+  // Definir os campos customizados
+  const todosCampos = [
+    'phone', 'cpf', 'rg', 'address', 'address2', 'city', 'district', 
+    'address_number', 'zip_code', 'state', 'country', 'manager', 'team', 
+    'department', 'enterprise', 'business_line', 'number_of_employees', 'role'
+  ]
+
+  const camposSemObrigatorio = [
+    'manager', 'team'
+  ]
+
+  const camposComObrigatorio = todosCampos.filter(campo => !camposSemObrigatorio.includes(campo))
+
+  // Validar perfil de administrador
+  verificarPerfilENomeUsuario().then((resultado) => {
+    if (resultado.acao === 'logout') {
+      cy.logout()
+      cy.loginTwygoAutomacao()
+      cy.alterarPerfil('administrador')
+    } else if (resultado.acao === 'login') {
+      cy.loginTwygoAutomacao()
+      cy.alterarPerfil('administrador')
+    } else if (resultado.acao === 'perfil') {
+      cy.alterarPerfil('administrador')
+    }
+  })
+
+  // Acessar SuperAdmin
   cy.acessarSuperAdmin('Campos customizados')
   formSuperAdmin.preencherCamposCustomizados(Cypress.env('orgId'))
-  formSuperAdmin.configurarCamposCustomizados(habilitarTodosCampos)    
+
+  // Executar a ação de acordo com o parâmetro
+  const habilitarTodosCampos = gerarConfiguracaoCampos(todosCampos, 'habilitar')
+  const desabilitarTodosCampos = gerarConfiguracaoCampos(todosCampos, 'desabilitar')
+  const todosObrigatorios = gerarConfiguracaoCampos(camposComObrigatorio, 'obrigatório')
+
+  switch (acao) {
+    case 'Habilitado':
+      formSuperAdmin.configurarCamposCustomizados(habilitarTodosCampos)    
+      break
+    case 'Obrigatório':
+      formSuperAdmin.configurarCamposCustomizados(todosObrigatorios)   
+      break
+    case 'Habilitado e Obrigatório':
+      formSuperAdmin.configurarCamposCustomizados(habilitarTodosCampos)    
+      formSuperAdmin.configurarCamposCustomizados(todosObrigatorios)
+      break
+    case 'Desabilitado':
+      formSuperAdmin.configurarCamposCustomizados(desabilitarTodosCampos)    
+      break
+    default:
+      throw new Error(`Ação inválida: ${acao}. Utilize 'Habilitado', 'Obrigatório', 'Habilitado e Obrigatório' ou 'Desabilitado'`)
+  }
+
+  // Salvar as configurações e validar a mensagem de sucesso
   formSuperAdmin.salvar()
-  cy.get('.flash.success').should('contain.text', 'Alteração realizada com sucesso')
+  cy.get('.flash.success').should('contain.text', msgSucesso)
+
+  // Logout
   cy.acessarPgListaConteudos()
   cy.logout()
-})
-
-Cypress.Commands.add('configNenhumCampoHabilitado', () => {
-  const desabilitarTodosCampos = {
-    phone: 'desabilitar',
-    cpf: 'desabilitar',
-    rg: 'desabilitar',
-    address: 'desabilitar',
-    address2: 'desabilitar',
-    city: 'desabilitar',
-    district: 'desabilitar',
-    address_number: 'desabilitar',
-    zip_code: 'desabilitar',
-    state: 'desabilitar',
-    country: 'desabilitar',
-    manager: 'desabilitar',
-    team: 'desabilitar',
-    department: 'desabilitar',
-    enterprise: 'desabilitar',
-    business_line: 'desabilitar',
-    number_of_employees: 'desabilitar',
-    role: 'desabilitar'
-  }
-
-  cy.logout()
-  cy.loginTwygoAutomacao()
-  cy.alterarPerfil('administrador')
-  cy.acessarSuperAdmin('Campos customizados')
-  formSuperAdmin.preencherCamposCustomizados(Cypress.env('orgId'))
-  formSuperAdmin.configurarCamposCustomizados(desabilitarTodosCampos)    
-  formSuperAdmin.salvar()
-  cy.get('.flash.success').should('contain.text', 'Alteração realizada com sucesso')
 })

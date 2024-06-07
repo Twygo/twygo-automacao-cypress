@@ -182,46 +182,48 @@ class formSuperAdmin {
     preencherCamposCustomizados(idOrg) {
         cy.get(this.elementos.idOrg.seletor)
             .type(idOrg)
+
         cy.get(this.elementos.btnPreencher.seletor)
             .click()
-        cy.wait(500); // Aguarda um pouco para garantir que a ação seja processada
+            
+        cy.wait(500)
     }
 
     configurarCamposCustomizados(camposOrg) {
         Object.keys(camposOrg).forEach(campo => {
-            const acoes = Array.isArray(camposOrg[campo]) ? camposOrg[campo] : [camposOrg[campo]];
-            const elemento = this.elementos[campo];
+            const acoes = Array.isArray(camposOrg[campo]) ? camposOrg[campo] : [camposOrg[campo]]
+            const elemento = this.elementos[campo]
     
             if (!elemento) {
-                throw new Error(`Campo ${campo} não encontrado nos elementos.`);
+                throw new Error(`Campo ${campo} não encontrado nos elementos.`)
             }
     
             acoes.forEach(acao => {
                 if (acao === 'habilitar' || acao === 'desabilitar') {
                     cy.get(elemento.seletorHabilitar).then($el => {
-                        const estadoAtual = $el.prop('checked');
-                        const estadoDesejado = acao === 'habilitar';
+                        const estadoAtual = $el.prop('checked')
+                        const estadoDesejado = acao === 'habilitar'
     
                         if (estadoAtual !== estadoDesejado) {
-                            cy.wrap($el).click({ force: true });
-                            cy.wait(250); // Aguarda um pouco para garantir que a ação seja processada
+                            cy.wrap($el).click({ force: true })
+                            cy.wait(250)
                         }
-                    });
+                    })
                 } else if (acao === 'obrigatório' || acao === 'não obrigatório') {
                     cy.get(elemento.seletorObrigatorio).then($el => {
-                        const estadoAtual = $el.prop('checked');
-                        const estadoDesejado = acao === 'obrigatório';
+                        const estadoAtual = $el.prop('checked')
+                        const estadoDesejado = acao === 'obrigatório'
     
                         if (estadoAtual !== estadoDesejado) {
-                            cy.wrap($el).click({ force: true });
-                            cy.wait(250); // Aguarda um pouco para garantir que a ação seja processada
+                            cy.wrap($el).click({ force: true })
+                            cy.wait(250)
                         }
-                    });
+                    })
                 } else {
-                    throw new Error(`Ação ${acao} não reconhecida para o campo ${campo}.`);
+                    throw new Error(`Ação ${acao} não reconhecida para o campo ${campo}.`)
                 }
-            });
-        });
+            })
+        })
     }
 
     salvar() {
