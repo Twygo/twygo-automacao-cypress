@@ -125,4 +125,4 @@ class formAmbientesAdicionais {
             .click()
     }
 }
-export default formAmbientesAdicionais
+export default new formAmbientesAdicionais

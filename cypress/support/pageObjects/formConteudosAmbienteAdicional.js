@@ -20,4 +20,4 @@ class formConteudosAmbienteAdicional {
             .click()
     }
 }
-export default formConteudosAmbienteAdicional
+export default new formConteudosAmbienteAdicional

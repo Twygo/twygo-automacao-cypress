@@ -440,4 +440,4 @@ class formAtividades {
 			.click()
 	}
 }
-export default formAtividades
+export default new formAtividades

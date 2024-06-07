@@ -537,4 +537,4 @@ class formConfigOrganizacao {
 			}
 	}
 }
-export default formConfigOrganizacao
+export default new formConfigOrganizacao

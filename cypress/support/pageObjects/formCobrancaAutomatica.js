@@ -207,4 +207,4 @@ class formCobrancaAutomatica {
 			}
 	}
 }
-export default formCobrancaAutomatica
+export default new formCobrancaAutomatica

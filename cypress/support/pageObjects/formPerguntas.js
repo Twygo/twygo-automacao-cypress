@@ -215,4 +215,4 @@ class formPerguntas {
 		}
 	}
 }
-export default formPerguntas
+export default new formPerguntas

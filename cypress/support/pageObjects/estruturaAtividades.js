@@ -17,4 +17,4 @@ class estruturaAtividades {
         this.elementos.btnCopiarAtividade().click()
     }
 }
-export default estruturaAtividades
+export default new estruturaAtividades
