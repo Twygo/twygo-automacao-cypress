@@ -338,5 +338,14 @@
         "textoModalInativar": "Todas as consultas que usam essa chave de API serão interrompidas. Tem certeza que deseja continuar?",
         "msgSucessoInativar": "Chave de API inativada com sucesso",
         "msgSucessoAtivar": "Chave de API ativada com sucesso"
+    },
+    "registreSe": {
+        "msgSucesso": "Uma mensagem com o link de confirmação foi enviada para seu email. Por favor abra o link para ativar a sua conta."
+    },
+    "superAdmin": {
+        "boasVindas": "bem vindo",
+        "msgOrientacao": "Selecione uma das opções no menu superior!",
+        "tituloPgCamposCustomizados": "Campos customizados da organização",
+        "msgSucesso": "Alteração realizada com sucesso"
     }
 }

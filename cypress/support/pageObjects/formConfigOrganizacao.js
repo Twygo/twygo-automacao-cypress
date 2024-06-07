@@ -398,7 +398,6 @@ class formConfigOrganizacao {
     }
 
     preencherCampo(nomeCampo, valor, opcoes = { limpar: false }) {
-        const timeoutPadrao = 5000
         const campo = this.elementos[nomeCampo]
         
         if (!campo) {
@@ -413,7 +412,7 @@ class formConfigOrganizacao {
             if (tipo === 'input') {
                 cy.get(seletor).clear()
             } else if (tipo === 'iframeText') {
-                cy.get(seletor, { timeout: timeoutPadrao }).then($iframe => {
+                cy.get(seletor).then($iframe => {
                     const doc = $iframe.contents()
                     cy.wrap(doc).find('body.cke_editable').invoke('text', '').type(' ', { force: true })
                 })
@@ -445,7 +444,7 @@ class formConfigOrganizacao {
                 })
                 break      
             case 'iframeText':
-                cy.get(seletor, { timeout: timeoutPadrao }).then($iframe => {
+                cy.get(seletor).then($iframe => {
                     const doc = $iframe.contents()
                     const body = cy.wrap(doc.find('body.cke_editable'))
                     body.click({ force: true }).clear({ force: true }).then(() => {
@@ -459,7 +458,7 @@ class formConfigOrganizacao {
                 if (valorFinal === true) {
                     cy.get('body').then($body => {
                         if ($body.find(seletor).length) {
-                            cy.get(seletor, { timeout: 10000, log: false }).click({ force: true })
+                            cy.get(seletor, { log: false }).click({ force: true })
                         }
                         // Nenhuma ação é realizada se o botão não for encontrado
                     })
@@ -521,7 +520,7 @@ class formConfigOrganizacao {
 				}
 				break
 			case 'iframeText':
-				cy.get(seletor, { timeout: 5000 }).then($iframe => {
+				cy.get(seletor).then($iframe => {
 					const doc = $iframe.contents()
 				
 					cy.wrap(doc).find('body.cke_editable').then($body => {
@@ -538,4 +537,4 @@ class formConfigOrganizacao {
 			}
 	}
 }
-export default formConfigOrganizacao
+export default new formConfigOrganizacao

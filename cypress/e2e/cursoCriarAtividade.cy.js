@@ -5,7 +5,7 @@ import estruturaAtividades from '../support/pageObjects/estruturaAtividades'
 import formAtividades from '../support/pageObjects/formAtividades'
 
 describe('Criar atividade', () => {
-    const timeoutPadrao = 5000
+    const esperaExplicita = 5000
     const atividades = new estruturaAtividades()
     const formAtividade = new formAtividades()
 
@@ -183,7 +183,7 @@ describe('Criar atividade', () => {
         cy.log('## READ ##')
         
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, atividadeDefault)
         cy.validarDadosAtividade(formAtividadeDefault)
     })
@@ -210,7 +210,7 @@ describe('Criar atividade', () => {
         cy.salvarAtividades()
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, atividadeDefault)
         cy.preencherDadosAtividade(dados, {limpar: true})
         formAtividade.salvar()
@@ -219,7 +219,7 @@ describe('Criar atividade', () => {
         cy.log('## READ ##')
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, dados.titulo)
 
         let dadosParaValidar = { ...formAtividadeDefault, ...dados }
@@ -245,7 +245,7 @@ describe('Criar atividade', () => {
         cy.log('## READ - UPDATE ##')
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
 
         let dadosAtualizados = { ...formAtividadeGames, ...dadosUpdate }
@@ -286,7 +286,7 @@ describe('Criar atividade', () => {
         cy.salvarAtividades()
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, atividadeDefault)
         cy.preencherDadosAtividade(dados, {limpar: true})
         formAtividade.salvar()
@@ -295,7 +295,7 @@ describe('Criar atividade', () => {
         cy.log('## READ ##')
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, dados.titulo)
 
         let dadosParaValidar = { ...formAtividadePdf, ...dados }
@@ -328,7 +328,7 @@ describe('Criar atividade', () => {
         cy.log('## READ - UPDATE ##')
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
 
         let dadosAtualizados = { ...formAtividadeVideo, ...dadosUpdate }
@@ -371,7 +371,7 @@ describe('Criar atividade', () => {
         cy.salvarAtividades()
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, atividadeDefault)
         cy.preencherDadosAtividade(dados, {limpar: true})
         formAtividade.salvar()
@@ -380,7 +380,7 @@ describe('Criar atividade', () => {
         cy.log('## READ ##')
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, dados.titulo)
 
         let dadosParaValidar = { ...formAtividadeVideo, ...dados }
@@ -410,7 +410,7 @@ describe('Criar atividade', () => {
         cy.log('## READ - UPDATE ##')
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
         cy.verificarProcessamentoScorm(nomeConteudo, dadosUpdate.titulo, tipoConteudo)
 
@@ -454,7 +454,7 @@ describe('Criar atividade', () => {
         cy.salvarAtividades()
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, atividadeDefault)
         cy.preencherDadosAtividade(dados, {limpar: true})
         formAtividade.salvar()
@@ -463,7 +463,7 @@ describe('Criar atividade', () => {
         cy.log('## READ ##')
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, dados.titulo)
 
         let dadosParaValidar = { ...formAtividadeVideoExterno, ...dados }
@@ -490,7 +490,7 @@ describe('Criar atividade', () => {
         cy.log('## READ - UPDATE ##')
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
 
         let dadosAtualizados = { ...formAtividadeDefault, ...dadosUpdate }
@@ -533,7 +533,7 @@ describe('Criar atividade', () => {
         cy.salvarAtividades()
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, atividadeDefault)
         cy.preencherDadosAtividade(dados, {limpar: true})
         formAtividade.salvar()
@@ -542,7 +542,7 @@ describe('Criar atividade', () => {
         cy.log('## READ ##')
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, dados.titulo)
 
         let dadosParaValidar = { ...formAtividadeVideoExterno, ...dados }
@@ -584,7 +584,7 @@ describe('Criar atividade', () => {
         cy.log('## READ - UPDATE ##')
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
 
         let dadosAtualizados = { ...formAtividadeQuestionario, ...dadosUpdate }
@@ -626,7 +626,7 @@ describe('Criar atividade', () => {
         cy.salvarAtividades()
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, atividadeDefault)
         cy.preencherDadosAtividade(dados, {limpar: true})
         formAtividade.salvar()
@@ -635,7 +635,7 @@ describe('Criar atividade', () => {
         cy.log('## READ ##')
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, dados.titulo)
 
         let dadosParaValidar = { ...formAtividadeVideoExterno, ...dados }
@@ -656,7 +656,7 @@ describe('Criar atividade', () => {
         cy.log('## READ - UPDATE ##')
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, dados.titulo)
 
         // Atualização específica para o chat "Eventials" que não é exibido na tela de edição quando habilitado chat Twygo
@@ -706,7 +706,7 @@ describe('Criar atividade', () => {
         cy.salvarAtividades()
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, atividadeDefault)
         cy.preencherDadosAtividade(dados, {limpar: true})
         formAtividade.salvar()
@@ -715,7 +715,7 @@ describe('Criar atividade', () => {
         cy.log('## READ ##')
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, dados.titulo)
 
         let dadosParaValidar = { ...formAtividadeArquivos, ...dados }
@@ -741,7 +741,7 @@ describe('Criar atividade', () => {
         cy.log('## READ - UPDATE ##')
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, dados.titulo)
 
         // Dados não alterados para a atividade
@@ -799,7 +799,7 @@ describe('Criar atividade', () => {
         cy.salvarAtividades()
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, atividadeDefault)
         cy.preencherDadosAtividade(dados, {limpar: true})
         formAtividade.salvar()
@@ -808,7 +808,7 @@ describe('Criar atividade', () => {
         cy.log('## READ ##')
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, dados.titulo)
 
         let dadosParaValidar = { ...formAtividadeQuestionario, ...dados }
@@ -836,7 +836,7 @@ describe('Criar atividade', () => {
         cy.log('## READ - UPDATE ##')
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
 
         const dadosNaoAlterados = {
@@ -882,7 +882,7 @@ describe('Criar atividade', () => {
         cy.salvarAtividades()
 
         // Espera explícita devido ao tempo de atualização da página e do processamento do scorm após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, atividadeDefault)
         cy.preencherDadosAtividade(dados, {limpar: true})
         formAtividade.salvar()
@@ -891,7 +891,7 @@ describe('Criar atividade', () => {
         cy.log('## READ ##')
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, dados.titulo)
         cy.verificarProcessamentoScorm(nomeConteudo, dados.titulo, tipoConteudo)
         
@@ -918,7 +918,7 @@ describe('Criar atividade', () => {
         cy.log('## READ - UPDATE ##')
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
 
         let dadosAtualizados = { ...formAtividadeDefault, ...dadosUpdate }
@@ -953,7 +953,7 @@ describe('Criar atividade', () => {
         cy.salvarAtividades()
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, atividadeDefault)
         cy.preencherDadosAtividade(dados, {limpar: true})
         formAtividade.salvar()
@@ -962,7 +962,7 @@ describe('Criar atividade', () => {
         cy.log('## READ ##')
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, dados.titulo)
 
         let dadosParaValidar = { ...formAtividadeGames, ...dados }
@@ -990,7 +990,7 @@ describe('Criar atividade', () => {
         cy.log('## READ - UPDATE ##')
 
         // Espera explícita devido ao tempo de atualização da página após salvar
-        cy.wait(timeoutPadrao)
+        cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, dados.titulo)
 
         const dadosNaoAlterados = {

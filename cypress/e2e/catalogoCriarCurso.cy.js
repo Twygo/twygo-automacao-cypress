@@ -5,9 +5,7 @@ import { getAuthToken } from '../support/authHelper'
 import { converterDataEHoraParaISO } from '../support/utilsHelper'
 import formConteudos from "../support/pageObjects/formConteudos"
 
-describe('criar curso via catálogo', () => {
-	const formulario = new formConteudos()
-	
+describe('criar curso via catálogo', () => {	
 	let nome, tipoConteudo, categorias, novasCategorias, delCategorias
 
 	// Campos e dados default do formulário de criar curso via catálogo
@@ -142,7 +140,7 @@ describe('criar curso via catálogo', () => {
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
-		formulario.criarCursoViaCatalogo(catalogo.nome)
+		formConteudos.criarCursoViaCatalogo(catalogo.nome)
 		cy.salvarConteudo(catalogo.nome, tipoConteudo)
 
 		// READ
@@ -270,7 +268,7 @@ describe('criar curso via catálogo', () => {
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
-		formulario.criarCursoViaCatalogo(catalogo.nome)
+		formConteudos.criarCursoViaCatalogo(catalogo.nome)
 		cy.salvarConteudo(catalogo.nome, tipoConteudo)
 
 		// READ
@@ -386,7 +384,7 @@ describe('criar curso via catálogo', () => {
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
-		formulario.criarCursoViaCatalogo(catalogo.nome)
+		formConteudos.criarCursoViaCatalogo(catalogo.nome)
 		cy.salvarConteudo(catalogo.nome, tipoConteudo)
 
 		// READ
@@ -477,7 +475,7 @@ describe('criar curso via catálogo', () => {
 		cy.loginTwygoAutomacao()
 		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
-		formulario.criarCursoViaCatalogo(catalogo.nome)
+		formConteudos.criarCursoViaCatalogo(catalogo.nome)
 		cy.salvarConteudo(catalogo.nome, tipoConteudo)
 
 		// READ
@@ -570,7 +568,7 @@ describe('criar curso via catálogo', () => {
 		cy.preencherDadosConteudo(conteudoEdit1, { limpar: true })
 		cy.salvarConteudo(catalogo.nome, 'catalogo')
 
-		formulario.criarCursoViaCatalogo(catalogo.nome)
+		formConteudos.criarCursoViaCatalogo(catalogo.nome)
 		// Preencher com novos dados do curso
 		const novoNome = fakerPT_BR.commerce.productName()
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
@@ -709,7 +707,7 @@ describe('criar curso via catálogo', () => {
 		cy.salvarConteudo(catalogo.nome, 'catalogo')
 
 		// Clicar em "Criar curso" do catálogo
-		formulario.criarCursoViaCatalogo(catalogo.nome)
+		formConteudos.criarCursoViaCatalogo(catalogo.nome)
 
 		// Preencher com novos dados do curso
 		let novoNome = fakerPT_BR.commerce.productName()
@@ -943,7 +941,7 @@ describe('criar curso via catálogo', () => {
 		cy.preencherDadosConteudo(conteudo, { limpar: true })
 		cy.salvarConteudo(conteudo.nome, 'catalogo')
 
-		formulario.criarCursoViaCatalogo(conteudo.nome)
+		formConteudos.criarCursoViaCatalogo(conteudo.nome)
 		cy.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ

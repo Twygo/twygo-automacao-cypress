@@ -257,7 +257,7 @@ class formAtividades {
 						.click()
 					break
 				case 'iframeText':
-					cy.get(seletor, { timeout: 5000 }).then($iframe => {
+					cy.get(seletor).then($iframe => {
 						const doc = $iframe.contents()
 						cy.wrap(doc).find('body.cke_editable').click({ force: true }).clear().type(valorFinal, { force: true })
 					})
@@ -368,7 +368,7 @@ class formAtividades {
 					.should('have.text', valorFinal)
 				break
 			case 'iframeText':
-				cy.get(seletor, { timeout: 5000 }).then($iframe => {
+				cy.get(seletor).then($iframe => {
 					const doc = $iframe.contents()
 
 					cy.wrap(doc).find('body.cke_editable').then($body => {
@@ -440,4 +440,4 @@ class formAtividades {
 			.click()
 	}
 }
-export default formAtividades
+export default new formAtividades

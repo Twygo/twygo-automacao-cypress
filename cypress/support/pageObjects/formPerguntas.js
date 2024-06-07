@@ -158,7 +158,7 @@ class formPerguntas {
                     }
                     break
 				case 'iframe':
-					cy.get(seletor, { timeout: 5000 }).then($iframe => {
+					cy.get(seletor).then($iframe => {
 						const doc = $iframe.contents()
 						cy.wrap(doc).find('body.cke_editable').click({ force: true }).clear().type(valorFinal, { force: true })
 					})
@@ -202,7 +202,7 @@ class formPerguntas {
 					.should('have.text', valorFinal)
 				break
 			case 'iframe':
-				cy.get(seletor, { timeout: 5000 }).then($iframe => {
+				cy.get(seletor).then($iframe => {
 					const doc = $iframe.contents()
 
 					cy.wrap(doc).find('body.cke_editable').then($body => {
@@ -215,4 +215,4 @@ class formPerguntas {
 		}
 	}
 }
-export default formPerguntas
+export default new formPerguntas

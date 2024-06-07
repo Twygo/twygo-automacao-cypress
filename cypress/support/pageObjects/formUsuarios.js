@@ -22,11 +22,11 @@ class formUsuarios {
         },
         telPessoal: {
             seletor: '#professional_phone1',
-            tipo: 'input'
+            tipo: 'input-fone'
         },
         celular: {
             seletor: '#professional_cell_phone',
-            tipo: 'input'
+            tipo: 'input-fone'
         },
         cep: {
             seletor: '#professional_zip_code',
@@ -70,7 +70,7 @@ class formUsuarios {
         },
         nrColaboradores: {
             seletor: '#professional_number_of_employees',
-            tipo: 'select'
+            tipo: 'input'
         },
         site: {
             seletor: '#professional_site',
@@ -78,7 +78,7 @@ class formUsuarios {
         },
         telComercial: {
             seletor: '#professional_phone2',
-            tipo: 'input'
+            tipo: 'input-fone'
         },
         cargo: {
             seletor: '#professional_role',
@@ -188,7 +188,7 @@ class formUsuarios {
 
 		let valorFinal = valor !== undefined ? valor : valorDefault
 
-		if (opcoes.limpar && tipo === 'input') {
+		if (opcoes.limpar && ( tipo === 'input' || tipo === 'input-fone')) {
 			cy.get(seletor)
 				.clear()
 			if (valorFinal === '') {
@@ -216,6 +216,7 @@ class formUsuarios {
                         .type(valorFinal, {delay: 200})
                     break
                 case 'input':
+                case 'input-fone':
                     cy.get(seletor)
                         .type(valorFinal)
                     break
@@ -301,7 +302,21 @@ class formUsuarios {
                         )
                     })
                 break
-            case 'checkbox':
+            case 'input-fone':
+                cy.get(seletor)
+                    .invoke('val')
+                    .then((telefoneSalvo) => {
+                        // Remove caracteres não numéricos do telefone
+                        const telefoneEsperado = valorFinal.replace(/\D/g, '')
+                        const telefoneEncontrado = telefoneSalvo.replace(/\D/g, '')
+            
+                        // Verifica se ambos os telefones têm a mesma quantidade de dígitos
+                        expect(telefoneEncontrado.length, 'Quantidade de dígitos').to.equal(telefoneEsperado.length);
+            
+                        // Verifica se os telefones são iguais
+                        expect(telefoneEncontrado, 'Telefone encontrado').to.equal(telefoneEsperado);
+                    });
+                break;            case 'checkbox':
             case 'checkbox2':
 				cy.get(seletor)
 					.should(valor ? 'be.checked' : 'not.be.checked')
@@ -320,4 +335,4 @@ class formUsuarios {
 		}
 	}
 }
-export default formUsuarios
+export default new formUsuarios

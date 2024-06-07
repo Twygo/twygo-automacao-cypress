@@ -290,4 +290,4 @@ class formParticipantes {
 		}
 	}
 }
-export default formParticipantes
+export default new formParticipantes

@@ -86,7 +86,7 @@ describe('Configuração de Usuário', () => {
         }
 
         cy.logout()
-		cy.login(email, senha, nomeCompleto)
+		cy.primeiroLogin(email, senha, nomeCompleto)
         cy.configUsuario()
         cy.preencherDadosConfigUsuario(dadosUpdate, { limpar: true } )
         cy.salvarConfigUsuario()
@@ -173,7 +173,7 @@ describe('Configuração de Usuário', () => {
         }
 
         cy.logout()
-		cy.login(email, senha, nomeCompleto)
+		cy.primeiroLogin(email, senha, nomeCompleto)
         cy.configUsuario()
         cy.preencherDadosConfigUsuario(dadosUpdate, { limpar: true } )
         cy.salvarConfigUsuario()
@@ -262,7 +262,7 @@ describe('Configuração de Usuário', () => {
         }
 
         cy.logout()
-		cy.login(email, senha, nomeCompleto)
+		cy.primeiroLogin(email, senha, nomeCompleto)
         cy.configUsuario()
         cy.preencherDadosConfigUsuario(dadosUpdate, { limpar: true } )
         cy.salvarConfigUsuario()
@@ -354,7 +354,7 @@ describe('Configuração de Usuário', () => {
         }
 
         cy.logout()
-		cy.login(email, senha, nomeCompleto)
+		cy.primeiroLogin(email, senha, nomeCompleto)
         cy.configUsuario()
         cy.preencherDadosConfigUsuario(dadosUpdate, { limpar: true } )
         cy.salvarConfigUsuario()

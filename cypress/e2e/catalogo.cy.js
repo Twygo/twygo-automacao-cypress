@@ -6,8 +6,6 @@ import { gerarData } from '../support/utilsHelper'
 import formConteudos from "../support/pageObjects/formConteudos"
 
 describe('catálogo', () => {
-	const formulario = new formConteudos()
-
 	let nome, tipoConteudo, categorias, novasCategorias, delCategorias
 
 	// Campos e dados default do formulário de catálogo

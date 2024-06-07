@@ -3,9 +3,6 @@ import { fakerPT_BR } from '@faker-js/faker'
 import formQuestionarios from '../support/pageObjects/formQuestionarios'
 
 describe('Questionário', () => {
-    const timeoutPadrao = 5000
-    const formulario = new formQuestionarios()
-
     let nomeQuestionario, nomeCategoria1, nomeCategoria2, addCategoria1, addCategoria2, categoriasAtualizadas, listaQuestionarios
     
     // Campos e dados default do formulário de questionário
@@ -76,7 +73,7 @@ describe('Questionário', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        formulario.addQuestionario()
+        formQuestionarios.addQuestionario()
         cy.preencherDadosQuestionario(dados, { limpar: true })
         cy.salvarQuestionario(dados.nome)
 
@@ -113,7 +110,7 @@ describe('Questionário', () => {
         // DELETE
         cy.log('## DELETE ##')
 
-        formulario.voltarQuestionario()
+        formQuestionarios.voltarQuestionario()
         cy.excluirQuestionarios(dadosUpdate.nome)
     })
 
@@ -134,7 +131,7 @@ describe('Questionário', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        formulario.addQuestionario()
+        formQuestionarios.addQuestionario()
         cy.preencherDadosQuestionario(dados, { limpar: true })
         cy.salvarQuestionario(dados.nome)
 
@@ -171,7 +168,7 @@ describe('Questionário', () => {
         // DELETE
         cy.log('## DELETE ##')
 
-        formulario.voltarQuestionario()
+        formQuestionarios.voltarQuestionario()
         cy.excluirQuestionarios(dadosUpdate.nome)
     })
 
@@ -192,7 +189,7 @@ describe('Questionário', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        formulario.addQuestionario()
+        formQuestionarios.addQuestionario()
         cy.preencherDadosQuestionario(dados, { limpar: true })
         cy.salvarQuestionario(dados.nome)
 
@@ -229,7 +226,7 @@ describe('Questionário', () => {
         // DELETE
         cy.log('## DELETE ##')
 
-        formulario.voltarQuestionario()
+        formQuestionarios.voltarQuestionario()
         cy.excluirQuestionarios(dadosUpdate.nome)
     })
 
@@ -250,7 +247,7 @@ describe('Questionário', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        formulario.addQuestionario()
+        formQuestionarios.addQuestionario()
         cy.preencherDadosQuestionario(dados, { limpar: true })
         cy.salvarQuestionario(dados.nome)
 
@@ -287,7 +284,7 @@ describe('Questionário', () => {
         // DELETE
         cy.log('## DELETE ##')
 
-        formulario.voltarQuestionario()
+        formQuestionarios.voltarQuestionario()
         cy.excluirQuestionarios(dadosUpdate.nome)
     })
 
@@ -308,7 +305,7 @@ describe('Questionário', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        formulario.addQuestionario()
+        formQuestionarios.addQuestionario()
         cy.preencherDadosQuestionario(dados, { limpar: true })
         cy.salvarQuestionario(dados.nome)
 
@@ -362,7 +359,7 @@ describe('Questionário', () => {
         // DELETE
         cy.log('## DELETE ##')
 
-        formulario.voltarQuestionario()
+        formQuestionarios.voltarQuestionario()
         cy.excluirQuestionarios(dadosUpdate.nome)
     })
 
@@ -383,7 +380,7 @@ describe('Questionário', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        formulario.addQuestionario()
+        formQuestionarios.addQuestionario()
         cy.preencherDadosQuestionario(dados, { limpar: true })
         cy.salvarQuestionario(dados.nome)
 
@@ -437,7 +434,7 @@ describe('Questionário', () => {
         // DELETE
         cy.log('## DELETE ##')
 
-        formulario.voltarQuestionario()
+        formQuestionarios.voltarQuestionario()
         cy.excluirQuestionarios(dadosUpdate.nome)
     })
 
@@ -450,7 +447,7 @@ describe('Questionário', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        formulario.addQuestionario()
+        formQuestionarios.addQuestionario()
         cy.preencherDadosQuestionario(dados, { limpar: true })
         cy.salvarQuestionario(dados.nome)
 
@@ -489,7 +486,7 @@ describe('Questionário', () => {
         // DELETE
         cy.log('## DELETE ##')
 
-        formulario.voltarQuestionario()
+        formQuestionarios.voltarQuestionario()
         cy.excluirQuestionarios(dadosUpdate.nome)
     })
 })
