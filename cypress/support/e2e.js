@@ -19,24 +19,6 @@ import './commands'
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-before(() => {
-  // Define resolução padrão
-  cy.viewport(1920, 1080)
-
-  // Carrega os labels do arquivo JSON
-  cy.fixture('labels.json').then((labels) => {
-    Cypress.env('labels', labels)
-  })
-
-  // Ignora mensagens de erro conhecidas
-  cy.ignorarCapturaErros([
-    "Unexpected identifier 'id'"
-  ])
-
-  cy.configTodosCamposCustomizados('Desabilitado')
-})
-
-afterEach(() => {
-  // Ativa captura de erros
-  cy.ativarCapturaErros()
-})
+// before(() => {
+//   cy.configTodosCamposCustomizados('Desabilitado')
+// })
