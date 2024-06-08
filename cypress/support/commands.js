@@ -20,6 +20,7 @@ import formRegistreSe from "./pageObjects/formRegistreSe"
 import formSuperAdmin from "./pageObjects/formSuperAdmin"
 import formLogin from "./pageObjects/formLogin"
 import listaConteudos from "./pageObjects/listaConteudos"
+import comunicacao from "./pageObjects/comunicacao"
 import { fakerPT_BR } from "@faker-js/faker"
 import 'cypress-real-events/support'
 import moment from 'moment'
@@ -3778,4 +3779,45 @@ Cypress.Commands.add('listaCursoViaApi', function() {
 
 Cypress.Commands.add('pesquisarConteudo', (nomeConteudo) => { 
   listaConteudos.pesquisarConteudo(nomeConteudo)
+})
+
+Cypress.Commands.add('acessarPgConfigComunicacao', () => {
+  const labels = Cypress.env('labels')
+  const { breadcrumb } = labels.configComunicacao
+
+  cy.visit(`/o/${Cypress.env('orgId')}/communication`)
+
+  // Verificar se a página de configuração de comunicação foi acessada com sucesso
+  cy.contains('#page-breadcrumb', breadcrumb)
+    .should('be.visible')
+})
+
+Cypress.Commands.add('salvarConfigComunicacao', () => {
+  const labels = Cypress.env('labels')
+  const { msgSucesso } = labels.configComunicacao
+
+  comunicacao.salvar()
+
+  // Valida a mensagem de sucesso
+  cy.contains('.flash.notice', msgSucesso)
+    .should('be.visible')
+})
+
+Cypress.Commands.add('resetConfigComunicacao', () => {
+  const todasSecoes = ['comunidades', 'participantes', 'discussoes', 'noticias']
+  const todasPermissoes = ['ver', 'editar', 'criar', 'excluir']
+  const todosPerfis = ['instrutor', 'gestor', 'liderEquipe', 'aluno']
+  const acao = 'desabilitar'
+
+  const combinacoes = comunicacao.gerarCombinacoes(todasSecoes, todosPerfis, todasPermissoes, acao)
+  combinacoes.forEach(combinacao => {
+    comunicacao.configurarCombinacoes(combinacao)
+  })
+
+  const combinacaoLogs = comunicacao.gerarCombinacoes(['logs'], todosPerfis, ['ver'], acao)
+  combinacaoLogs.forEach(combinacao => {
+    comunicacao.configurarCombinacoes(combinacao)
+  })
+  
+  cy.salvarConfigComunicacao()
 })

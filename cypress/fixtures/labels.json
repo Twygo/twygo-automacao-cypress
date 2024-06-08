@@ -200,6 +200,10 @@
         "msgSucessoTermos": "Informações salvas com sucesso!",
         "msgSucessoUrlWebhooks": "URL criada com sucesso"
     },
+    "configComunicacao": {
+        "breadcrumb": "Comunicação",
+        "msgSucesso": "Permissões atualizadas"
+    },
     "trial": {
         "stepSeusDados": {
             "nomeStep": "Seus dados",
