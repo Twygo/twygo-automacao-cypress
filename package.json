@@ -9,16 +9,26 @@
   "devDependencies": {
     "@cypress/xvfb": "^1.2.4",
     "@faker-js/faker": "^8.4.1",
-    "@shelex/cypress-allure-plugin": "^2.40.2",
     "@types/cypress": "^1.1.3",
     "allure-commandline": "^2.29.0",
+    "allure-cypress": "^3.0.0-beta.3",
     "cypress": "13.6.6",
-    "cypress-iframe": "^1.0.1",
     "faker-br": "^0.4.1",
     "http-server": "^14.1.1"
   },
   "dependencies": {
+    "archiver": "^7.0.1",
     "cypress-real-events": "^1.12.0",
     "moment": "^2.30.1"
+  },
+  "scripts": {
+    "test:chrome:allure": "yarn cypress run --browser chrome && yarn allure:zip",
+    "test:firefox:allure": "yarn cypress run --browser firefox && yarn allure:zip",
+    "test:chrome": "yarn cypress run --browser chrome",
+    "test:firefox": "yarn cypress run --browser firefox",
+    "allure:generate": "yarn allure generate allure-results --clean",
+    "allure:serve": "yarn allure serve allure-results",
+    "allure:open": "yarn allure:generate && yarn allure:serve",
+    "allure:zip": "yarn allure:open && zip -r reports/allure-report-$(date +%Y%m%d%H%M%S).zip allure-report"
   }
 }
