@@ -70,7 +70,7 @@ class formUsuarios {
         },
         nrColaboradores: {
             seletor: '#professional_number_of_employees',
-            tipo: 'input'
+            tipo: 'select'
         },
         site: {
             seletor: '#professional_site',
@@ -322,10 +322,21 @@ class formUsuarios {
 					.should(valor ? 'be.checked' : 'not.be.checked')
 				break
 			case 'select':
-				cy.get(seletor)
-					.find('option:selected')
-					.should('have.text', valorFinal)
-				break
+                cy.get(seletor, { multiple: true }).then(elements => {
+                    if (elements.is('select')) {
+                        // Se for um select
+                        cy.wrap(elements)
+                            .find('option:selected')
+                            .should('have.text', valorFinal)
+                    } else if (elements.is('input')) {
+                        // Se for um input
+                        cy.wrap(elements)
+                            .should('have.value', valorFinal)
+                    } else {
+                        throw new Error('Elemento não é nem select nem input')
+                    }
+                })
+                break
             case 'search':
                 cy.get(seletorValor)
                     .should('have.text', valorFinal)

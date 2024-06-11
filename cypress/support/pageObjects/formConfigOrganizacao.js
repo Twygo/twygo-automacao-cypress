@@ -118,7 +118,7 @@ class formConfigOrganizacao {
         },
         nrColaboradores: {
             seletor: '#number_of_employees',
-            tipo: 'input' 
+            tipo: 'input-line' 
         },
         ramoAtuacao: {
             seletor: '#business_line',
@@ -469,6 +469,18 @@ class formConfigOrganizacao {
                     .click()    
                     .selectFile(`cypress/fixtures/${valorFinal}`)
                 break
+            case 'input-line':
+                const valores = valorFinal.split('\n') // Supondo que os valores estejam separados por quebras de linha
+                cy.get(seletor)
+                    .clear()
+                    .click() // Foca no campo de entrada
+            
+                valores.forEach(valor => {
+                    cy.get(seletor)
+                        .type(valor) // Digita o valor
+                        .type('{enter}') // Pressiona Enter para transformar o valor em uma opção do select
+                })
+                break         
             default:
                 throw new Error(`Tipo de campo desconhecido: ${tipo}`)
         }
@@ -488,6 +500,7 @@ class formConfigOrganizacao {
 		
 			switch (tipo) {
 			case 'input':
+            case 'input-line':
 				cy.get(seletor)
 					.should('have.value', valorFinal)
 				break

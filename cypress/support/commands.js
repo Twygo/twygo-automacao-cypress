@@ -718,12 +718,11 @@ Cypress.Commands.add('addAtividadeConteudo', function(nomeConteudo, tipoConteudo
 })
 
 Cypress.Commands.add('salvarAtividades', () => {
-  const atividades = new estruturaAtividades()
   const labels = Cypress.env('labels')
   const { msgSucesso } = labels.atividades
 
   // Salva a atividade
-  atividades.salvarAtividade()
+  estruturaAtividades.salvarAtividade()
 
   // Confirma a mensagem de sucesso
   cy.contains('.flash.notice', msgSucesso)
@@ -1067,13 +1066,12 @@ Cypress.Commands.add('criarQuestionarioDefault', (nomeQuestionario) => {
 })
 
 Cypress.Commands.add('acessarPerguntasQuestionario', (nomeQuestionario) => {
-  const form = new formQuestionarios()
   const labels = Cypress.env('labels')
   const { breadcrumb, tituloPg } = labels.perguntas
 
   // Acessa as perguntas do questionário
   cy.get(`tr[name='${nomeQuestionario}']`)
-    .find(form.elementos.btnPerguntas.seletor)
+    .find(formQuestionarios.elementos.btnPerguntas.seletor)
     .click()
 
   // Valida se a página foi carregada corretamente
@@ -1125,7 +1123,7 @@ Cypress.Commands.add('excluirPergunta', (descPergunta) => {
   cy.get(`tr[title*='${descPergunta.slice(0, 30)}']`)
     .parent('tbody')
     .within(() => {
-      formPerguntas    
+      formPerguntas.remover()    
       // Lida com a mensagem de confirmação do navegador
       cy.on('window:confirm', (message) => {
         expect(message).to.equal('Você tem certeza que deseja remover esta pergunta?')
@@ -3216,10 +3214,10 @@ Cypress.Commands.add('salvarCobrancaAutomatica', () => {
   const { msgSucesso } = labels.cobrancaInscricao.cobrancaAutomatica
 
   formCobrancaAutomatica.salvar()
-  validarModalSubstCobranca()
+  cy.validarModalSubstCobranca()
   
   // Valida a mensagem de sucesso
-  cy.contains('.chakra-alert__desc', msgSucesso)
+  cy.contains('#toast-payments-success-toast-description', msgSucesso)
     .should('be.visible')
 })
 
@@ -3242,7 +3240,7 @@ Cypress.Commands.add('resetCobrancaAutomatica', () => {
   cy.preencherDadosCobrancaAutomatica({ checkPixBoleto: false})
 
   formCobrancaAutomatica.salvar()
-  validarModalSubstCobranca()
+  cy.validarModalSubstCobranca()
 
   // Desabilitar a cobrança automática
   cy.preencherDadosCobrancaAutomatica({ habilitarCobrancaAutomatica: false })  
@@ -3820,4 +3818,40 @@ Cypress.Commands.add('resetConfigComunicacao', () => {
   })
   
   cy.salvarConfigComunicacao()
+})
+
+Cypress.Commands.add('configurarNrColaboradores', () => {
+  const dados = {
+    nrColaboradores: '1 - 10\n11 - 30\n31 - 100\n101 - 500\n> 500',
+    salvarDados: true
+  }
+
+  cy.loginTwygoAutomacao()
+  cy.alterarPerfil('administrador')
+  cy.acessarPgConfigOrganizacao()
+  cy.preencherDadosConfigOrganizacao(dados, 'dados', { limpar: true })
+
+  // Logout
+  cy.acessarPgListaConteudos()
+  cy.logout()
+})
+
+Cypress.Commands.add('configurarBtnRegistreSe', () => {
+  const visualizacao = {
+    visualizacao: 'Pública',
+    salvarDados: true
+  }
+
+  const registreSe = {
+    mostrarBotaoRegistrar: true,
+    salvarCustomizacaoInterface: true
+  }
+
+  cy.loginTwygoAutomacao()
+  cy.alterarPerfil('administrador')
+  cy.acessarPgConfigOrganizacao()
+  cy.preencherDadosConfigOrganizacao(visualizacao, 'dados')
+  cy.preencherDadosConfigOrganizacao(registreSe, 'customizacoes')
+
+  cy.logout()
 })

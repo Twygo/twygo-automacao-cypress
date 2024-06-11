@@ -11,6 +11,16 @@ describe('Integrações com API', () => {
         cy.fixture('labels.json').then((labels) => {
             Cypress.env('labels', labels)
         })
+
+        // Ignora mensagens de erro conhecidas
+        cy.ignorarCapturaErros([
+            "Unexpected identifier 'id'",    // Chrome
+            "unexpected token: identifier"    // Firefox
+        ], { ignoreScriptErrors: true })        
+
+        // Configuração de campos customizados
+        cy.configTodosCamposCustomizados('Desabilitado')
+        cy.configTodosCamposCustomizados('Habilitado')
     })
 
     beforeEach(function() {

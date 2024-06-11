@@ -4,7 +4,6 @@ import { getAuthToken } from '../support/authHelper'
 let faker = require('faker-br')
 
 describe('Gestor', () => {
-
     let nomeConteudo, nomeGestor1, nomeGestor2, sobrenomeGestor1, sobrenomeGestor2 
 
     before(() => {
@@ -12,6 +11,16 @@ describe('Gestor', () => {
         cy.fixture('labels.json').then((labels) => {
             Cypress.env('labels', labels)
         })
+
+        // Ignora mensagens de erro conhecidas
+        cy.ignorarCapturaErros([
+            "Unexpected identifier 'id'",    // Chrome
+            "unexpected token: identifier"    // Firefox
+        ], { ignoreScriptErrors: true })        
+
+        // Configuração de campos customizados
+        cy.configTodosCamposCustomizados('Desabilitado')
+        cy.configTodosCamposCustomizados('Habilitado')
     })
 
     beforeEach(() => {

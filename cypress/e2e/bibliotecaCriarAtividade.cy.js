@@ -5,8 +5,6 @@ import formAtividades from '../support/pageObjects/formAtividades'
 
 describe('Criar atividade', () => {
     const esperaExplicita = 5000
-    const atividades = new estruturaAtividades()
-    const formAtividade = new formAtividades()
 
     let nomeConteudo, tipoConteudo, nomeAtividade, listaConteudos
 
@@ -172,7 +170,7 @@ describe('Criar atividade', () => {
 		cy.log('## CREATE ##')
 
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
-        atividades.adicionarAtividade()
+        estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
         
         //READ
@@ -189,13 +187,13 @@ describe('Criar atividade', () => {
         cy.log('## CREATE ##')
 
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
-        atividades.adicionarAtividade()
+        estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
 
         // Espera explícita devido ao tempo de atualização da página após salvar
         cy.wait(esperaExplicita)
         cy.editarAtividade(nomeConteudo, atividadeDefault)
-        formAtividade.salvar()
+        formAtividades.salvar()
 
         //READ
         cy.log('## READ ##')
@@ -215,7 +213,7 @@ describe('Criar atividade', () => {
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
-        formAtividade.salvar()
+        formAtividades.salvar()
 
         // READ - UPDATE
         cy.log('## READ - UPDATE ##')
@@ -230,7 +228,7 @@ describe('Criar atividade', () => {
         // DELETE
         cy.log('## DELETE ##')
 
-        formAtividade.cancelar()
+        formAtividades.cancelar()
         cy.excluirAtividade(dadosUpdate.titulo)
     })
 
@@ -244,7 +242,7 @@ describe('Criar atividade', () => {
         cy.log('## CREATE ##')
 
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
-        atividades.adicionarAtividade()
+        estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
 
         // Espera explícita devido ao tempo de atualização da página após salvar
@@ -252,7 +250,7 @@ describe('Criar atividade', () => {
         cy.editarAtividade(nomeConteudo, atividadeDefault)
 
         cy.preencherDadosAtividade(dados, {limpar: true})
-        formAtividade.salvar()
+        formAtividades.salvar()
 
         //READ
         cy.log('## READ ##')
@@ -276,7 +274,7 @@ describe('Criar atividade', () => {
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
-        formAtividade.salvar()
+        formAtividades.salvar()
 
         // READ - UPDATE
         cy.log('## READ - UPDATE ##')
@@ -291,7 +289,7 @@ describe('Criar atividade', () => {
         // DELETE
         cy.log('## DELETE ##')
 
-        formAtividade.cancelar()
+        formAtividades.cancelar()
         cy.excluirAtividade(dadosUpdate.titulo)
     })
 
@@ -305,7 +303,7 @@ describe('Criar atividade', () => {
         cy.log('## CREATE ##')
 
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
-        atividades.adicionarAtividade()
+        estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
 
         // Espera explícita devido ao tempo de atualização da página após salvar
@@ -313,7 +311,7 @@ describe('Criar atividade', () => {
         cy.editarAtividade(nomeConteudo, atividadeDefault)
 
         cy.preencherDadosAtividade(dados, {limpar: true})
-        formAtividade.salvar()
+        formAtividades.salvar()
 
         //READ
         cy.log('## READ ##')
@@ -337,7 +335,7 @@ describe('Criar atividade', () => {
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
-        formAtividade.salvar()
+        formAtividades.salvar()
 
         // READ - UPDATE
         cy.log('## READ - UPDATE ##')
@@ -352,7 +350,7 @@ describe('Criar atividade', () => {
         // DELETE
         cy.log('## DELETE ##')
 
-        formAtividade.cancelar()
+        formAtividades.cancelar()
         cy.excluirAtividade(dadosUpdate.titulo)
     })
 
@@ -366,7 +364,7 @@ describe('Criar atividade', () => {
         cy.log('## CREATE ##')
 
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
-        atividades.adicionarAtividade()
+        estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
 
         // Espera explícita devido ao tempo de atualização da página após salvar
@@ -374,7 +372,7 @@ describe('Criar atividade', () => {
         cy.editarAtividade(nomeConteudo, atividadeDefault)
 
         cy.preencherDadosAtividade(dados, {limpar: true})
-        formAtividade.salvar()
+        formAtividades.salvar()
 
         //READ
         cy.log('## READ ##')
@@ -399,7 +397,7 @@ describe('Criar atividade', () => {
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
-        formAtividade.salvar()
+        formAtividades.salvar()
 
         // READ - UPDATE
         cy.log('## READ - UPDATE ##')
@@ -414,7 +412,7 @@ describe('Criar atividade', () => {
         // DELETE
         cy.log('## DELETE ##')
 
-        formAtividade.cancelar()
+        formAtividades.cancelar()
         cy.excluirAtividade(dadosUpdate.titulo)  
     })
 
@@ -428,7 +426,7 @@ describe('Criar atividade', () => {
         cy.log('## CREATE ##')
 
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
-        atividades.adicionarAtividade()
+        estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
 
         // Espera explícita devido ao tempo de atualização da página após salvar
@@ -436,7 +434,7 @@ describe('Criar atividade', () => {
         cy.editarAtividade(nomeConteudo, atividadeDefault)
 
         cy.preencherDadosAtividade(dados, {limpar: true})
-        formAtividade.salvar()
+        formAtividades.salvar()
 
         //READ
         cy.log('## READ ##')
@@ -460,7 +458,7 @@ describe('Criar atividade', () => {
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
-        formAtividade.salvar()
+        formAtividades.salvar()
 
         // READ - UPDATE
         cy.log('## READ - UPDATE ##')
@@ -474,7 +472,7 @@ describe('Criar atividade', () => {
         // DELETE
         cy.log('## DELETE ##')
 
-        formAtividade.cancelar()
+        formAtividades.cancelar()
         cy.excluirAtividade(dadosUpdate.titulo)
     })
 
@@ -493,7 +491,7 @@ describe('Criar atividade', () => {
 
         cy.acessarPgBiblioteca()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
-        atividades.adicionarAtividade()
+        estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
 
         // Espera explícita devido ao tempo de atualização da página após salvar
@@ -501,7 +499,7 @@ describe('Criar atividade', () => {
         cy.editarAtividade(nomeConteudo, atividadeDefault)
 
         cy.preencherDadosAtividade(dados, {limpar: true})
-        formAtividade.salvar()
+        formAtividades.salvar()
 
         //READ
         cy.log('## READ ##')
@@ -522,7 +520,7 @@ describe('Criar atividade', () => {
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
-        formAtividade.salvar()
+        formAtividades.salvar()
 
         // READ - UPDATE
         cy.log('## READ - UPDATE ##')
@@ -537,7 +535,7 @@ describe('Criar atividade', () => {
         // DELETE
         cy.log('## DELETE ##')
 
-        formAtividade.cancelar()
+        formAtividades.cancelar()
         cy.excluirAtividade(dadosUpdate.titulo)
     })
 
@@ -556,7 +554,7 @@ describe('Criar atividade', () => {
         cy.log('## CREATE ##')
 
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
-        atividades.adicionarAtividade()
+        estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
 
         // Espera explícita devido ao tempo de atualização da página e do processamento do scorm após salvar
@@ -564,7 +562,7 @@ describe('Criar atividade', () => {
         cy.editarAtividade(nomeConteudo, atividadeDefault)
 
         cy.preencherDadosAtividade(dados, {limpar: true})
-        formAtividade.salvar()
+        formAtividades.salvar()
 
         //READ
         cy.log('## READ ##')
@@ -591,7 +589,7 @@ describe('Criar atividade', () => {
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
-        formAtividade.salvar()
+        formAtividades.salvar()
 
         // READ - UPDATE
         cy.log('## READ - UPDATE ##')
@@ -607,7 +605,7 @@ describe('Criar atividade', () => {
         // DELETE
         cy.log('## DELETE ##')
 
-        formAtividade.cancelar()
+        formAtividades.cancelar()
         cy.excluirAtividade(dadosUpdate.titulo)
     })
 
@@ -621,7 +619,7 @@ describe('Criar atividade', () => {
         cy.log('## CREATE ##')
 
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
-        atividades.adicionarAtividade()
+        estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
 
         // Espera explícita devido ao tempo de atualização da página após salvar
@@ -629,7 +627,7 @@ describe('Criar atividade', () => {
         cy.editarAtividade(nomeConteudo, atividadeDefault)
 
         cy.preencherDadosAtividade(dados, {limpar: true})
-        formAtividade.salvar()
+        formAtividades.salvar()
 
         //READ
         cy.log('## READ ##')
@@ -649,7 +647,7 @@ describe('Criar atividade', () => {
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
-        formAtividade.salvar()
+        formAtividades.salvar()
 
         // READ - UPDATE
         cy.log('## READ - UPDATE ##')
@@ -664,7 +662,7 @@ describe('Criar atividade', () => {
         // DELETE
         cy.log('## DELETE ##')
 
-        formAtividade.cancelar()
+        formAtividades.cancelar()
         cy.excluirAtividade(dadosUpdate.titulo)
     })
 })

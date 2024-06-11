@@ -34,7 +34,7 @@ describe('trilha', () => {
 		removerCategoria: '',
 		removerBanner: false,
 		situacao: 'Em desenvolvimento',
-		exigeConfirmacao: 'Habilitado'
+		exigeConfirmacao: 'Desabilitado'
 	}
 
 	before(() => {
@@ -132,7 +132,7 @@ describe('trilha', () => {
 			addCategoria: categorias,
 			removerBanner: true,
 			situacao: 'Liberado',
-			exigeConfirmacao: 'Desabilitado'
+			exigeConfirmacao: 'Habilitado'
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
@@ -271,8 +271,7 @@ describe('trilha', () => {
 			emailResponsavel: fakerPT_BR.internet.email(),
 			notificarResponsavel: false,
 			addCategoria: categorias,
-			situacao: 'Liberado',
-			exigeConfirmacao: 'Desabilitado'
+			situacao: 'Liberado'
 		}
 
 		// CREATE
@@ -417,8 +416,7 @@ describe('trilha', () => {
 			local: 'Twygo',
 			emailResponsavel: fakerPT_BR.internet.email(),
 			addCategoria: categorias,
-			situacao: 'Suspenso',
-			exigeConfirmacao: 'Desabilitado'
+			situacao: 'Suspenso'
 		}
 
 		// CREATE
@@ -476,8 +474,7 @@ describe('trilha', () => {
 			emailResponsavel: fakerPT_BR.internet.email(),
 			notificarResponsavel: false,
 			addCategoria: categorias,
-			situacao: 'Em desenvolvimento',
-			exigeConfirmacao: 'Desabilitado'
+			situacao: 'Em desenvolvimento'
 		}
 
 		// CREATE

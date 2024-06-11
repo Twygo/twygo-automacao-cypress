@@ -190,6 +190,8 @@ class formSuperAdmin {
     }
 
     configurarCamposCustomizados(camposOrg) {
+        const camposEspeciais = ['enterprise', 'business_line', 'number_of_employees', 'role']
+        
         Object.keys(camposOrg).forEach(campo => {
             const acoes = Array.isArray(camposOrg[campo]) ? camposOrg[campo] : [camposOrg[campo]]
             const elemento = this.elementos[campo]
@@ -207,6 +209,17 @@ class formSuperAdmin {
                         if (estadoAtual !== estadoDesejado) {
                             cy.wrap($el).click({ force: true })
                             cy.wait(250)
+                        }
+
+                        // Verifica se o campo é especial e ajusta o seletorAdministracao
+                        if (camposEspeciais.includes(campo)) {
+                            cy.get(elemento.seletorAdministracao).then($adminEl => {
+                                const estadoAdminAtual = $adminEl.prop('checked')
+                                if (estadoAdminAtual !== estadoDesejado) {
+                                    cy.wrap($adminEl).click({ force: true })
+                                    cy.wait(250)
+                                }
+                            })
                         }
                     })
                 } else if (acao === 'obrigatório' || acao === 'não obrigatório') {

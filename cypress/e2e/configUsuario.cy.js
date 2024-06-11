@@ -10,6 +10,17 @@ describe('Configuração de Usuário', () => {
         cy.fixture('labels.json').then((labels) => {
             Cypress.env('labels', labels)
         })
+
+        // Ignora mensagens de erro conhecidas
+        cy.ignorarCapturaErros([
+            "Unexpected identifier 'id'",    // Chrome
+            "unexpected token: identifier"    // Firefox
+        ], { ignoreScriptErrors: true })        
+
+        // Configuração de campos customizados
+        cy.configTodosCamposCustomizados('Desabilitado')
+        cy.configTodosCamposCustomizados('Habilitado')
+        cy.configurarNrColaboradores()
     })
 
     beforeEach(() => {
@@ -18,7 +29,7 @@ describe('Configuração de Usuário', () => {
             "Unexpected identifier 'id'",    // Chrome
             "unexpected token: identifier"    // Firefox
         ], { ignoreScriptErrors: true })
-        
+
         // Gerar dados aleatórios para o usuário
         nome = faker.person.firstName()
         sobrenome = faker.person.lastName()
