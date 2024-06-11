@@ -48,7 +48,7 @@ describe('catálogo', () => {
 		notificarUsuarios: 'Não',
 		diasTeste: '0',
 		habilitarDiasTeste: false,
-		exigeConfirmacao: 'Habilitado',
+		exigeConfirmacao: 'Desabilitado',
 		valorInscricao: '0,00',
 		habilitarPagamento: false,
 		nrParcelas: '1',
@@ -160,7 +160,7 @@ describe('catálogo', () => {
 			notificarUsuarios: 'Sim',
 			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			habilitarDiasTeste: true,
-			exigeConfirmacao: 'Desabilitado',
+			exigeConfirmacao: 'Habilitado',
 			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
 			habilitarPagamento: true,
 			nrParcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
@@ -347,7 +347,6 @@ describe('catálogo', () => {
 			notificarUsuarios: 'Sim',
 			diasTeste: fakerPT_BR.number.int({ min: 10, max: 99 }),
 			habilitarDiasTeste: true,
-			exigeConfirmacao: 'Desabilitado',
 			valorInscricao: fakerPT_BR.commerce.price({ min: 10, max: 99 }),
 			habilitarPagamento: true,
 			nrParcelas: fakerPT_BR.number.int({ min: 10, max: 12 }),
@@ -408,7 +407,6 @@ describe('catálogo', () => {
 			notificarConcluirPrimeiraAula: 'Não',
 			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			habilitarDiasTeste: false,
-			exigeConfirmacao: 'Desabilitado',
 			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
 			habilitarPagamento: false
 		}
@@ -456,6 +454,7 @@ describe('catálogo', () => {
 			addCategoria: categorias,
 			visualizacao: 'Colaborador',
 			situacao: 'Suspenso',
+			exigeConfirmacao: 'Habilitado',
 			diasTeste: fakerPT_BR.number.int({ min: 100, max: 999 }),
 			exigeConfirmacao: 'Habilitado'
 		}
@@ -601,8 +600,7 @@ describe('catálogo', () => {
 			visualizacao: 'Público',
 			situacao: 'Liberado',
 			notificarConcluirPrimeiraAula: 'Sim',
-			notificarUsuarios: 'Sim',
-			exigeConfirmacao: 'Desabilitado'
+			notificarUsuarios: 'Sim'
 		}
 
 		// CREATE

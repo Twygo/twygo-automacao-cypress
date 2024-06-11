@@ -47,7 +47,7 @@ describe('curso', () => {
 		notificarUsuarios: 'Não',
 		diasTeste: '0',
 		habilitarDiasTeste: false,
-		exigeConfirmacao: 'Habilitado',
+		exigeConfirmacao: 'Desabilitado',
 		valorInscricao: '0,00',
 		habilitarPagamento: false,
 		nrParcelas: '1',
@@ -158,8 +158,8 @@ describe('curso', () => {
 			notificarUsuarios: 'Sim',
 			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			habilitarDiasTeste: true,
-			exigeConfirmacao: 'Desabilitado',
-			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			exigeConfirmacao: 'Habilitado',
+			valorInscricao: fakerPT_BR.commerce.price({ min: 60, max: 100 }),
 			habilitarPagamento: true,
 			nrParcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			valorAcrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 }),
@@ -224,7 +224,7 @@ describe('curso', () => {
 			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			habilitarDiasTeste: true,
 			exigeConfirmacao: 'Habilitado',
-			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			valorInscricao: fakerPT_BR.commerce.price({ min: 60, max: 100 }),
 			habilitarPagamento: true,
 			nrParcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			habilitarChat: true
@@ -284,7 +284,7 @@ describe('curso', () => {
 			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			habilitarDiasTeste: false,
 			exigeConfirmacao: 'Desabilitado',
-			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			valorInscricao: fakerPT_BR.commerce.price({ min: 5, max: 9 }),
 			habilitarPagamento: false,
 			habilitarChat: false
 		}
@@ -348,8 +348,7 @@ describe('curso', () => {
 			notificarUsuarios: 'Sim',
 			diasTeste: fakerPT_BR.number.int({ min: 10, max: 99 }),
 			habilitarDiasTeste: true,
-			exigeConfirmacao: 'Desabilitado',
-			valorInscricao: fakerPT_BR.commerce.price({ min: 10, max: 99 }),
+			valorInscricao: fakerPT_BR.commerce.price({ min: 100, max: 999 }),
 			habilitarPagamento: true,
 			nrParcelas: fakerPT_BR.number.int({ min: 10, max: 12 }),
 			valorAcrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 }),
@@ -408,7 +407,7 @@ describe('curso', () => {
 			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			habilitarDiasTeste: false,
 			exigeConfirmacao: 'Desabilitado',
-			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			valorInscricao: fakerPT_BR.commerce.price({ min: 5, max: 9 }),
 			habilitarPagamento: false,
 			habilitarChat: false
 		}
@@ -614,7 +613,6 @@ describe('curso', () => {
 			notificarConcluirPrimeiraAula: 'Sim',
 			habilitarDiasTeste: false,
 			notificarUsuarios: 'Sim',
-			exigeConfirmacao: 'Desabilitado',
 			habilitarPagamento: false,
 			habilitarChat: true
 		}

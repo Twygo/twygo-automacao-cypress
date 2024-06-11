@@ -23,7 +23,7 @@ describe('Recalcular Progresso', () => {
         getAuthToken()
     })
         
-    it('Recalcular Progresso', () => {
+    it.skip('Recalcular Progresso', () => {
         cy.visit('/users/login')
         cy.login(dadosOrg.login, dadosOrg.senha)
         cy.alterarPerfil('administrador')

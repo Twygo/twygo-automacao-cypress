@@ -41,13 +41,21 @@ describe('Registre-se', () => {
         notificacoes: true
     }
 
+    before(() => {
+		// Carrega os labels do arquivo JSON
+		cy.fixture('labels.json').then((labels) => {
+			Cypress.env('labels', labels)
+		})
+	})
+
     beforeEach(() => {
         // Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([
             "Unexpected identifier 'id'"
         ])
 
-        // Configura todos os campos omo obrigatórios
+        // Configura organização como pública e todos os campos omo obrigatórios
+        cy.configurarBtnRegistreSe()
         cy.configTodosCamposCustomizados('Habilitado e Obrigatório')
 
         // Obtém token autenticação, lista e exclui os usuários
