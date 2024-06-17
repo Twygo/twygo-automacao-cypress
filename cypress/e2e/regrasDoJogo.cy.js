@@ -9,7 +9,7 @@ describe('Regras do Jogo', () => {
     FormRegrasDoJogo.marcarNuncaExpirar();
     FormRegrasDoJogo.preencherPontuacoesExpirar(30);
     FormRegrasDoJogo.marcarReplicarConfiguracoes();
-    FormRegrasDoJogo.clicarSalvar();
+    FormRegrasDoJogo.clicarSalvarPeriodoParaExpiracao();
     
     // Adicione asserções para verificar se as configurações foram salvas corretamente
   });
@@ -25,5 +25,23 @@ describe('Regras do Jogo', () => {
     FormRegrasDoJogo.removerPerfil('gestorDeTurma');
     
     // Adicione asserções para verificar se os perfis foram adicionados e removidos corretamente
+  });
+
+  it('deve exibir ranking completo na visão do aluno', () => {
+    FormRegrasDoJogo.marcarExibirRanking();
+    // Adicione asserções para verificar se a configuração foi aplicada corretamente
+  });
+
+  it('deve configurar customização do troféu', () => {
+    FormRegrasDoJogo.selecionarTipoTrofeu('Por colocação');
+    FormRegrasDoJogo.trocarImagemSemPontuacao('caminho/para/imagem1.png');
+    FormRegrasDoJogo.preencherPontosRequeridos1(100);
+    FormRegrasDoJogo.trocarImagemPontosRequeridos1('caminho/para/imagem2.png');
+    FormRegrasDoJogo.preencherPontosRequeridos2(500);
+    FormRegrasDoJogo.trocarImagemPontosRequeridos2('caminho/para/imagem3.png');
+    FormRegrasDoJogo.trocarImagemPontosRequeridos3('caminho/para/imagem4.png');
+    FormRegrasDoJogo.clicarSalvarCustomizacaoTrofeu();
+
+    // Adicione asserções para verificar se a customização foi salva corretamente
   });
 });
