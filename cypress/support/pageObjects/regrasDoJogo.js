@@ -121,4 +121,16 @@ class FormRegrasDoJogo {
   }
 }
 
+// Adiciona comando customizado para acessar a página de configuração de Regras do jogo
+Cypress.Commands.add('acessarPgConfigRegrasDoJogo', () => {
+  const labels = Cypress.env('labels')
+  const { breadcrumb } = labels.configComunicacao
+
+  cy.visit(`/o/${Cypress.env('orgId')}/game_rules`)
+
+  // Verificar se a página de configuração de Regras do jogo foi acessada com sucesso
+  cy.contains('#page-breadcrumb', breadcrumb)
+    .should('be.visible')
+})
+
 export default new FormRegrasDoJogo();
