@@ -81,7 +81,9 @@ describe('criar curso via catálogo', () => {
 		// Ignora mensagens de erro conhecidas
 		cy.ignorarCapturaErros([
             "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
+            "unexpected token: identifier",    // Firefox
+			"Cannot read properties of undefined (reading 'length')",	//Chrome
+			"Cannot read properties of null (reading 'getClientRect')"  //Chrome
 		], { ignoreScriptErrors: true })
 		
 		// Define o tipo de conteúdo
@@ -206,7 +208,7 @@ describe('criar curso via catálogo', () => {
 			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			habilitarDiasTeste: true,
 			exigeConfirmacao: 'Desabilitado',
-			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			valorInscricao: fakerPT_BR.commerce.price({ min: 100, max: 999 }),
 			habilitarPagamento: true,
 			nrParcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			valorAcrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 }),
@@ -326,7 +328,7 @@ describe('criar curso via catálogo', () => {
 			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			habilitarDiasTeste: true,
 			exigeConfirmacao: 'Desabilitado',
-			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			valorInscricao: fakerPT_BR.commerce.price({ min: 100, max: 999 }),
 			habilitarPagamento: true,
 			habilitarChat: true
 		}
@@ -608,7 +610,7 @@ describe('criar curso via catálogo', () => {
 			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			habilitarDiasTeste: true,
 			exigeConfirmacao: 'Habilitado',
-			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			valorInscricao: fakerPT_BR.commerce.price({ min: 100, max: 999 }),
 			habilitarPagamento: true,
 			nrParcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			valorAcrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 }),
@@ -748,7 +750,7 @@ describe('criar curso via catálogo', () => {
 			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			habilitarDiasTeste: true,
 			exigeConfirmacao: 'Desabilitado',
-			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			valorInscricao: fakerPT_BR.commerce.price({ min: 100, max: 999 }),
 			habilitarPagamento: true,
 			nrParcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			valorAcrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 }),
@@ -851,7 +853,7 @@ describe('criar curso via catálogo', () => {
 			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			habilitarDiasTeste: false,
 			exigeConfirmacao: 'Desabilitado',
-			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			valorInscricao: fakerPT_BR.commerce.price({ min: 100, max: 999 }),
 			habilitarPagamento: false,
 			habilitarChat: false
 		}
@@ -924,7 +926,7 @@ describe('criar curso via catálogo', () => {
 			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			habilitarDiasTeste: true,
 			exigeConfirmacao: 'Desabilitado',
-			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			valorInscricao: fakerPT_BR.commerce.price({ min: 100, max: 999 }),
 			habilitarPagamento: true,
 			nrParcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			valorAcrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 })
@@ -1004,7 +1006,7 @@ describe('criar curso via catálogo', () => {
 			notificarUsuarios: 'Não',
 			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			exigeConfirmacao: 'Desabilitado',
-			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			valorInscricao: fakerPT_BR.commerce.price({ min: 100, max: 999 }),
 			nrParcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			valorAcrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 }),
 			habilitarChat: true

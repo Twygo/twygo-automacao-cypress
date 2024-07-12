@@ -88,7 +88,7 @@ describe('Configurações > Organização > Dados', () => {
             abaSobre: true,
             abaPlanos: true,
             listaEmpresas: faker.lorem.word(),
-            nrColaboradores: faker.number.int({ min: 1, max: 1000 }),
+            nrColaboradores: faker.number.int({ min: 1, max: 1000 }).toString(),
             ramoAtuacao: faker.lorem.word(),
             cargo: faker.person.jobTitle(),
             salvarDados: true
@@ -226,7 +226,7 @@ describe('Configurações > Organização > Customizações', () => {
             salvarCustomizacaoInterface: true
         }
         
-        const envioEmails = {
+        const envioEmails = {                        
             // Envio de E-mails
             nomeEmail: 'Nome para teste de e-mail',
             emailEmail: 'teste@mazepa.com.br',

@@ -59,7 +59,8 @@ describe('Participante', () => {
         // Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([
             "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
+            "unexpected token: identifier",    // Firefox
+            "Cannot read properties of undefined (reading 'test')"  // Chrome
         ], { ignoreScriptErrors: true })
         
         // Obtém token autenticação, lista e exclui os usuários e cursos

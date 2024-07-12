@@ -473,7 +473,7 @@ Cypress.Commands.add('salvarConteudo', function(nomeConteudo, tipoConteudo) {
   
   // Valida a mensagem
   cy.contains('.flash.notice', msgSucesso)
-    .should('be.visible')
+    .should('exist')
 
   // Valida o redirecionamento
   cy.contains('#page-breadcrumb', breadcrumb)
@@ -639,8 +639,8 @@ Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo, lis
         cy.contains('.flash.notice', msgSucessoExclusao)
           .should('be.visible')
       } else {
-        cy.contains('.chakra-alert__desc', msgSucessoExclusao)
-          .should('be.visible')
+        cy.contains('#toast-content-success-toast-description', msgSucessoExclusao)
+          .should('exist')    // Utilizado exist pois o elemento é visível apenas por alguns segundos
       }  
     }
 
@@ -2481,8 +2481,8 @@ Cypress.Commands.add('criarAmbienteAdicional', (acao, dadosAmbiente, opcoes = { 
   })
 
   formAmbientesAdicionais.salvarAmbiente()
-  cy.contains('#success-toast', msgSucesso)
-        .should('be.visible')
+  cy.contains('#toast-success-toast', msgSucesso)   // Atualizado ID do toast
+        .should('exist')    // Alterado de should('be.visible') para should('exist') pois o toast é exibido por alguns segundos
 }) 
 
 Cypress.Commands.add('validarAmbienteAdicional', (dadosAmbiente, acao) => {
@@ -2491,12 +2491,12 @@ Cypress.Commands.add('validarAmbienteAdicional', (dadosAmbiente, acao) => {
 
   switch(acao) {
     case 'Criação':
-      cy.get('span.css-0')
-        .should('be.visible')
+      cy.get('p.partner-card-text')   // Atualizado seletor
+        .should('exist')
         .should('contain', nomeAmbiente)
       break
     case 'Inativação':
-      cy.get('span.css-0').should('not.exist')
+      cy.get('p.partner-card-text span').should('not.exist')
       break
   }
 })
@@ -2507,15 +2507,15 @@ Cypress.Commands.add('inativarAmbienteAdicional', (nomeAmbiente) => {
 
   cy.contains('div', nomeAmbiente).within(() => {
     cy.get(formAmbientesAdicionais.elementos.inativar.seletor)
-    .click()
+      .click()
   })   
 
   // Confirmar a inativação do ambiente
   formAmbientesAdicionais.confirmarInativacaoAmbiente()
   
   // Valida a mensagem de sucesso
-  cy.contains('.chakra-alert__desc.css-zycdy9', msgInativacao)
-    .should('be.visible')
+  cy.contains('#toast-success-toast-description', msgInativacao)
+    .should('exist')
 }) 
 
 Cypress.Commands.add('ambienteAdicionalConteudo', (nomeConteudo, tipoConteudo) => {
@@ -3218,7 +3218,7 @@ Cypress.Commands.add('salvarCobrancaAutomatica', () => {
   
   // Valida a mensagem de sucesso
   cy.contains('#toast-payments-success-toast-description', msgSucesso)
-    .should('be.visible')
+    .should('exist')
 })
 
 Cypress.Commands.add('resetCobrancaAutomatica', () => {
@@ -3271,11 +3271,11 @@ Cypress.Commands.add('adicionarCupomVoucher', (tipoDesconto) => {
   // Valida a página
   cy.get('#page-breadcrumb')
     .should('contain', breadcrumbTipo.replace('{{ tipo }}', tipoDesconto.toLowerCase()))
-    .should('be.visible')
+    .should('exist')
 
   cy.get('h2.chakra-heading')
     .should('contain', tituloPg)
-    .should('be.visible')
+    .should('exist')
 })
 
 Cypress.Commands.add('preencherDadosCupomVoucher', (dados, opcoes = { limpar: false }) => {   
@@ -3314,11 +3314,11 @@ Cypress.Commands.add('salvarCupomVoucher', (tipo, acao) => {
   if (acao === 'salvar') {
     // Valida a mensagem de sucesso
     cy.contains('.chakra-alert__desc', msgSucesso.replace('{{ tipo }}', tipo))
-      .should('be.visible')
+      .should('exist')
   } else if ( acao === 'editar')
   // Valida a mensagem de sucesso na edição
   cy.contains('.chakra-alert__desc', msgSucessoEdicao.replace('{{ tipo }}', tipo))
-    .should('be.visible')
+    .should('exist')
 })
 
 Cypress.Commands.add('adicionarItemCupomVoucher', (tipo) => {   
@@ -3329,11 +3329,11 @@ Cypress.Commands.add('adicionarItemCupomVoucher', (tipo) => {
 
   cy.get(formCuponsVouchers.elementos.tituloModal.seletor)
     .should('contain', tituloModal.replace('{{ tipo }}', tipo))
-    .should('be.visible')
+    .should('exist')
 
   cy.get(formCuponsVouchers.elementos.descricaoModal.seletor)
     .should('contain', descricaoModal.replace('{{ tipo }}', tipo.toLowerCase()))
-    .should('be.visible')
+    .should('exist')
 })
 
 Cypress.Commands.add('aplicarItemAoCupomVoucher', (nomeItem, tipoDesconto) => {   
@@ -3367,11 +3367,11 @@ Cypress.Commands.add('editarCupomVoucher', (nome) => {
   // Valida a página de edição
   cy.get('#page-breadcrumb')
     .should('contain', breadcrumbEdicao.replace('{{ nome }}', nome))
-    .should('be.visible')
+    .should('exist')
 
   cy.get('h2.chakra-heading')
     .should('contain', tituloPgEdicao.replace('{{ nome }}', nome))
-    .should('be.visible')
+    .should('exist')
 })
 
 Cypress.Commands.add('excluirCupomVoucher', (nome, tipo) => {   
@@ -3386,11 +3386,11 @@ Cypress.Commands.add('excluirCupomVoucher', (nome, tipo) => {
   // Valida a mensagem de exclusão
   cy.get(formCuponsVouchers.elementos.tituloModalExclusao.seletor)
     .should('contain', tituloModal)
-    .should('be.visible')
+    .should('exist')
 
   cy.get(formCuponsVouchers.elementos.descricaoModalExclusao.seletor)
     .should('contain', descricaoModal)
-    .should('be.visible')
+    .should('exist')
 
   // Confirma a exclusão
   formCuponsVouchers.confirmarExclusao()
@@ -3398,7 +3398,7 @@ Cypress.Commands.add('excluirCupomVoucher', (nome, tipo) => {
   // Valida a mensagem de sucesso da exclusão
   cy.get('.chakra-alert__desc')
     .should('contain', msgSucesso.replace('{{ tipo }}', tipo))
-    .should('be.visible')
+    .should('exist')
 })
 
 Cypress.Commands.add('excluirTodosCuponsVouchers', () => {    

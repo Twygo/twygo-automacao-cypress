@@ -152,7 +152,7 @@
         "configUsuario": {
             "breadcrumb": "Settings",
             "tituloPg": "Edit my Data",
-            "msgSucesso": "Your account has been updated successfully.",
+            "msgSucesso": "You updated your account successfully.",
             "pgInicialAluno": "Dashboard",
             "btnProfile": "Student",
             "msgLogout": "Signed out successfully.",
