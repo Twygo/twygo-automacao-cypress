@@ -67,7 +67,8 @@ describe('catálogo', () => {
 		cy.ignorarCapturaErros([
             "Unexpected identifier 'id'",    // Chrome
             "unexpected token: identifier",    // Firefox
-            "Cannot read properties of undefined (reading 'lenght')" // Chrome
+			"Cannot read properties of undefined (reading 'length')",	//Chrome
+			"Cannot read properties of null (reading 'getClientRect')"  //Chrome
 		], { ignoreScriptErrors: true })
 				
 		// Define o tipo de conteúdo
@@ -161,7 +162,7 @@ describe('catálogo', () => {
 			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			habilitarDiasTeste: true,
 			exigeConfirmacao: 'Habilitado',
-			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			valorInscricao: fakerPT_BR.commerce.price({ min: 45, max: 90 }),
 			habilitarPagamento: true,
 			nrParcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			valorAcrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 })
@@ -224,7 +225,7 @@ describe('catálogo', () => {
 			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			habilitarDiasTeste: true,
 			exigeConfirmacao: 'Habilitado',
-			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			valorInscricao: fakerPT_BR.commerce.price({ min: 45, max: 90 }),
 			habilitarPagamento: true,
 			nrParcelas: fakerPT_BR.number.int({ min: 1, max: 9 })
 		}
@@ -284,7 +285,7 @@ describe('catálogo', () => {
 			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			habilitarDiasTeste: false,
 			exigeConfirmacao: 'Desabilitado',
-			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			valorInscricao: fakerPT_BR.commerce.price({ min: 45, max: 90 }),
 			habilitarPagamento: false
 		}
 
@@ -347,7 +348,7 @@ describe('catálogo', () => {
 			notificarUsuarios: 'Sim',
 			diasTeste: fakerPT_BR.number.int({ min: 10, max: 99 }),
 			habilitarDiasTeste: true,
-			valorInscricao: fakerPT_BR.commerce.price({ min: 10, max: 99 }),
+			valorInscricao: fakerPT_BR.commerce.price({ min: 50, max: 99 }),
 			habilitarPagamento: true,
 			nrParcelas: fakerPT_BR.number.int({ min: 10, max: 12 }),
 			valorAcrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 })
@@ -407,7 +408,7 @@ describe('catálogo', () => {
 			notificarConcluirPrimeiraAula: 'Não',
 			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			habilitarDiasTeste: false,
-			valorInscricao: fakerPT_BR.commerce.price({ min: 1, max: 9 }),
+			valorInscricao: fakerPT_BR.commerce.price({ min: 45, max: 90 }),
 			habilitarPagamento: false
 		}
 

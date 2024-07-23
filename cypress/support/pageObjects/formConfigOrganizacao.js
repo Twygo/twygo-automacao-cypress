@@ -409,7 +409,7 @@ class formConfigOrganizacao {
         let valorFinal = valor !== undefined ? valor : valorDefault
         
         if (opcoes.limpar || valorFinal === '') {
-            if (tipo === 'input') {
+            if (tipo === 'input' || tipo === 'input-line') {
                 cy.get(seletor).clear()
             } else if (tipo === 'iframeText') {
                 cy.get(seletor).then($iframe => {
@@ -480,7 +480,7 @@ class formConfigOrganizacao {
                         .type(valor) // Digita o valor
                         .type('{enter}') // Pressiona Enter para transformar o valor em uma opção do select
                 })
-                break         
+                break   
             default:
                 throw new Error(`Tipo de campo desconhecido: ${tipo}`)
         }

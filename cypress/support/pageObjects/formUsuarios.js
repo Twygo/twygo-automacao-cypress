@@ -287,9 +287,6 @@ class formUsuarios {
 			case 'input':
             case 'input-email':
             case 'input-endereco':
-				if (nomeCampo === 'empresa' && valorFinal === '') {
-                    valorFinal = Cypress.env('orgName')
-                }
                 cy.get(seletor)
 					.should('have.value', valorFinal)
 				break

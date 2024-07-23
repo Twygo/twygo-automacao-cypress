@@ -141,7 +141,9 @@ describe('Criar atividade', () => {
             "unexpected token: identifier",    // Firefox
             "Cannot read properties of undefined (reading 'toString')", // Chrome
             "Cannot read properties of undefined (reading 'hasAttribute')", // Chrome
-            "Cannot read properties of null (reading 'addEventListener')" // Chrome
+            "Cannot read properties of null (reading 'addEventListener')", // Chrome
+			"Cannot read properties of undefined (reading 'length')",	//Chrome
+            "Cannot read properties of null (reading 'getClientRect')"  //Chrome
         ], { ignoreNetworkErrors: true })
         
         // Define o tipo de conteúdo

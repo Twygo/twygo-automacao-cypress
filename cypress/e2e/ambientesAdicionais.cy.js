@@ -1,5 +1,6 @@
 /// reference types="cypress" />
 import { faker } from '@faker-js/faker'
+import { gerarDados } from '../support/helpers/geradorDados'
 
 describe('ambientesAdicionais', () => {
 
@@ -33,7 +34,7 @@ describe('ambientesAdicionais', () => {
         const dadosAmbiente = {
             nome: faker.commerce.productName(),
             email: faker.internet.email().toLowerCase(),
-            telefone: `(${faker.string.numeric(2)}) ${faker.string.numeric(5)}-${faker.string.numeric(4)}`,
+            telefone: gerarDados('telefone', 'celular'),
             site: faker.internet.url()
         }
 

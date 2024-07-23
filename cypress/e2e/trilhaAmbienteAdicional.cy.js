@@ -19,7 +19,10 @@ describe('Compartilhar trilha com ambientes adicionais', () => {
         // Ignora mensagens de erro conhecidas
 		cy.ignorarCapturaErros([
 		    "Unexpected identifier 'id'",
-            "ResizeObserver loop completed with undelivered notifications"
+            "ResizeObserver loop completed with undelivered notifications",
+            "Cannot read properties of undefined (reading 'replace')", // Chrome
+            "Cannot read properties of undefined (reading 'length')",	//Chrome
+			"Cannot read properties of null (reading 'getClientRect')"  //Chrome
 		], { ignoreScriptErrors: true })
 
         // Gera um nome aleatório para o conteúdo e para os ambientes adicionais

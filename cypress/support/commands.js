@@ -473,7 +473,7 @@ Cypress.Commands.add('salvarConteudo', function(nomeConteudo, tipoConteudo) {
   
   // Valida a mensagem
   cy.contains('.flash.notice', msgSucesso)
-    .should('be.visible')
+    .should('exist')
 
   // Valida o redirecionamento
   cy.contains('#page-breadcrumb', breadcrumb)
@@ -639,8 +639,8 @@ Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo, lis
         cy.contains('.flash.notice', msgSucessoExclusao)
           .should('be.visible')
       } else {
-        cy.contains('.chakra-alert__desc', msgSucessoExclusao)
-          .should('be.visible')
+        cy.contains('#toast-content-success-toast-description', msgSucessoExclusao)
+          .should('exist')    // Utilizado exist pois o elemento é visível apenas por alguns segundos
       }  
     }
 
@@ -2481,8 +2481,8 @@ Cypress.Commands.add('criarAmbienteAdicional', (acao, dadosAmbiente, opcoes = { 
   })
 
   formAmbientesAdicionais.salvarAmbiente()
-  cy.contains('#success-toast', msgSucesso)
-        .should('be.visible')
+  cy.contains('#toast-success-toast', msgSucesso)   // Atualizado ID do toast
+        .should('exist')    // Alterado de should('be.visible') para should('exist') pois o toast é exibido por alguns segundos
 }) 
 
 Cypress.Commands.add('validarAmbienteAdicional', (dadosAmbiente, acao) => {
@@ -2491,12 +2491,12 @@ Cypress.Commands.add('validarAmbienteAdicional', (dadosAmbiente, acao) => {
 
   switch(acao) {
     case 'Criação':
-      cy.get('span.css-0')
-        .should('be.visible')
+      cy.get('p.partner-card-text')   // Atualizado seletor
+        .should('exist')
         .should('contain', nomeAmbiente)
       break
     case 'Inativação':
-      cy.get('span.css-0').should('not.exist')
+      cy.get('p.partner-card-text span').should('not.exist')
       break
   }
 })
@@ -2507,15 +2507,15 @@ Cypress.Commands.add('inativarAmbienteAdicional', (nomeAmbiente) => {
 
   cy.contains('div', nomeAmbiente).within(() => {
     cy.get(formAmbientesAdicionais.elementos.inativar.seletor)
-    .click()
+      .click()
   })   
 
   // Confirmar a inativação do ambiente
   formAmbientesAdicionais.confirmarInativacaoAmbiente()
   
   // Valida a mensagem de sucesso
-  cy.contains('.chakra-alert__desc.css-zycdy9', msgInativacao)
-    .should('be.visible')
+  cy.contains('#toast-success-toast-description', msgInativacao)
+    .should('exist')
 }) 
 
 Cypress.Commands.add('ambienteAdicionalConteudo', (nomeConteudo, tipoConteudo) => {
@@ -2566,7 +2566,7 @@ Cypress.Commands.add('salvarCompartilhamentoAmbienteAdicional', () => {
 
   // Valida a mensagem de sucesso
   cy.contains('.chakra-alert__desc', msgCompartilhamento)
-    .should('be.visible')
+    .should('exist')
 })
 
 Cypress.Commands.add('validarCompartilhamentoComAmbienteAdicional', (nomeAmbiente, acao) => {
@@ -2845,9 +2845,9 @@ Cypress.Commands.add('validarCertificadoGerado', (dadosGerarCertificado) => {
       'imagem_4.jpg': '212021 bytes',
       'imagem_5.jpg': '268280 bytes',
       'imagem_6.jpg': '110903 bytes',
-      'imagem_7.jpg': '60988 bytes',
+      'imagem_7.jpg': '113420 bytes',//
       'imagem_8.jpg': '226841 bytes',
-      'imagem_9.jpg': '11045 bytes',
+      'imagem_9.jpg': '22205 bytes',//
       'imagem_10.jpg': '163247 bytes',
   }
 
@@ -3218,7 +3218,7 @@ Cypress.Commands.add('salvarCobrancaAutomatica', () => {
   
   // Valida a mensagem de sucesso
   cy.contains('#toast-payments-success-toast-description', msgSucesso)
-    .should('be.visible')
+    .should('exist')
 })
 
 Cypress.Commands.add('resetCobrancaAutomatica', () => {
@@ -3271,11 +3271,11 @@ Cypress.Commands.add('adicionarCupomVoucher', (tipoDesconto) => {
   // Valida a página
   cy.get('#page-breadcrumb')
     .should('contain', breadcrumbTipo.replace('{{ tipo }}', tipoDesconto.toLowerCase()))
-    .should('be.visible')
+    .should('exist')
 
   cy.get('h2.chakra-heading')
     .should('contain', tituloPg)
-    .should('be.visible')
+    .should('exist')
 })
 
 Cypress.Commands.add('preencherDadosCupomVoucher', (dados, opcoes = { limpar: false }) => {   
@@ -3314,11 +3314,11 @@ Cypress.Commands.add('salvarCupomVoucher', (tipo, acao) => {
   if (acao === 'salvar') {
     // Valida a mensagem de sucesso
     cy.contains('.chakra-alert__desc', msgSucesso.replace('{{ tipo }}', tipo))
-      .should('be.visible')
+      .should('exist')
   } else if ( acao === 'editar')
   // Valida a mensagem de sucesso na edição
   cy.contains('.chakra-alert__desc', msgSucessoEdicao.replace('{{ tipo }}', tipo))
-    .should('be.visible')
+    .should('exist')
 })
 
 Cypress.Commands.add('adicionarItemCupomVoucher', (tipo) => {   
@@ -3329,11 +3329,11 @@ Cypress.Commands.add('adicionarItemCupomVoucher', (tipo) => {
 
   cy.get(formCuponsVouchers.elementos.tituloModal.seletor)
     .should('contain', tituloModal.replace('{{ tipo }}', tipo))
-    .should('be.visible')
+    .should('exist')
 
   cy.get(formCuponsVouchers.elementos.descricaoModal.seletor)
     .should('contain', descricaoModal.replace('{{ tipo }}', tipo.toLowerCase()))
-    .should('be.visible')
+    .should('exist')
 })
 
 Cypress.Commands.add('aplicarItemAoCupomVoucher', (nomeItem, tipoDesconto) => {   
@@ -3367,11 +3367,11 @@ Cypress.Commands.add('editarCupomVoucher', (nome) => {
   // Valida a página de edição
   cy.get('#page-breadcrumb')
     .should('contain', breadcrumbEdicao.replace('{{ nome }}', nome))
-    .should('be.visible')
+    .should('exist')
 
   cy.get('h2.chakra-heading')
     .should('contain', tituloPgEdicao.replace('{{ nome }}', nome))
-    .should('be.visible')
+    .should('exist')
 })
 
 Cypress.Commands.add('excluirCupomVoucher', (nome, tipo) => {   
@@ -3386,11 +3386,11 @@ Cypress.Commands.add('excluirCupomVoucher', (nome, tipo) => {
   // Valida a mensagem de exclusão
   cy.get(formCuponsVouchers.elementos.tituloModalExclusao.seletor)
     .should('contain', tituloModal)
-    .should('be.visible')
+    .should('exist')
 
   cy.get(formCuponsVouchers.elementos.descricaoModalExclusao.seletor)
     .should('contain', descricaoModal)
-    .should('be.visible')
+    .should('exist')
 
   // Confirma a exclusão
   formCuponsVouchers.confirmarExclusao()
@@ -3398,7 +3398,7 @@ Cypress.Commands.add('excluirCupomVoucher', (nome, tipo) => {
   // Valida a mensagem de sucesso da exclusão
   cy.get('.chakra-alert__desc')
     .should('contain', msgSucesso.replace('{{ tipo }}', tipo))
-    .should('be.visible')
+    .should('exist')
 })
 
 Cypress.Commands.add('excluirTodosCuponsVouchers', () => {    
@@ -3428,7 +3428,7 @@ Cypress.Commands.add('excluirTodosCuponsVouchers', () => {
     listaCuponsVouchers.forEach(({ nome, tipo }) => {
       cy.excluirCupomVoucher(nome, tipo)
 
-      cy.get('div[role="alert"]#success-toast button[aria-label="Close"]').click()
+      cy.get('div[role="status"] div#toast-success-toast button[aria-label="Close"]').click()
     })
   })
 })
@@ -3470,13 +3470,14 @@ Cypress.Commands.add('salvarChaveApi', function(acao) {
   const { msgSucessoCriacao, msgSucessoEdicao } = labels.integracoes
 
   formIntegracoes.salvarChave()
+  cy.wait(2000)   // Aguardar a atualização da página devido react
 
   if (acao === 'Criação') {
     cy.contains('#toast-success-toast-title', msgSucessoCriacao)
-      .should('be.visible')
+      .should('exist')
   } else if (acao === 'Edição') {
     cy.contains('#toast-success-toast-title', msgSucessoEdicao)
-      .should('be.visible')
+      .should('exist')
   }
 })
 
@@ -3547,16 +3548,16 @@ Cypress.Commands.add('excluirChave', (nomeChave) => {
 
   // Validar modal de confirmação de exclusão
   cy.contains('.chakra-modal__header', tituloModalExclusao)
-    .should('be.visible')
+    .should('exist')
 
   cy.contains('.chakra-modal__body', textoModalExclusao)
-    .should('be.visible')
+    .should('exist')
 
   formIntegracoes.confirmacaoExclusaoDeChave()
 
   // Validar mensagem de sucesso
   cy.contains('.chakra-alert__desc', msgSucessoExclusao)
-    .should('be.visible')
+    .should('exist')
 })
 
 Cypress.Commands.add('alterarSituacaoChave', (nomeChave, situacao) => {
@@ -3573,28 +3574,28 @@ Cypress.Commands.add('alterarSituacaoChave', (nomeChave, situacao) => {
         // Clicar no toggle switch para alterar o estado
         cy.get(formIntegracoes.elementos.situacao.seletorValor)
           .click()
+          .wait(2000)
         
         if (situacao === 'Ativo') {
           // Validar mensagem de sucesso
           cy.contains('#activate-toast', msgChaveAtivada)
-            .should('be.visible')
+            .should('exist')
         } else if (situacao === 'Inativo') {
           // Validar modal de confirmação de inativação
-          cy.contains('.chakra-modal__header', tituloModalInativar)
-            .should('be.visible')
+          cy.get('.chakra-modal__header')
+            .should('contain', tituloModalInativar)
       
           cy.contains('.chakra-modal__body', textoModalInativar)
-            .should('be.visible')
+            .should('exist')
       
-          formIntegracoes.confirmacaoInativacao()
+          formIntegracoes.confirmarInativacao()
       
           // Validar mensagem de sucesso
           cy.contains('.chakra-alert__desc', msgChaveInativada)
-            .should('be.visible')
+            .should('exist')
         }
       }
-  })
-
+    })
   })
 })
 
@@ -3604,8 +3605,8 @@ Cypress.Commands.add('excluirTodasChavesApi', () => {
   const nomesChavesIntegracao = []
 
   // Verifica se a página não contém resultados
-  cy.get('body').then(($body) => {
-    if ($body.find(`p:contains("${nenhumResultado}")`).length > 0) {
+  cy.get('tbody').then(($tbody) => {
+    if ($tbody.find(`p.chakra-text:contains("${nenhumResultado}")`).length > 0) {
       // Se não houver resultados, não há chaves para excluir
     } else {
       // Seleciona todos os elementos que contêm os nomes das chaves

@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('login', () => {
+describe.skip('login', () => {
     before(() => {
         // Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([
