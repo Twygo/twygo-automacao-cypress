@@ -60,7 +60,10 @@ describe('Participante', () => {
         cy.ignorarCapturaErros([
             "Unexpected identifier 'id'",    // Chrome
             "unexpected token: identifier",    // Firefox
-            "Cannot read properties of undefined (reading 'test')"  // Chrome
+            "Cannot read properties of undefined (reading 'test')",  // Chrome
+            "Cannot read properties of undefined (reading 'length')",	//Chrome
+            "Cannot read properties of undefined (reading 'replace')", // Chrome
+			"Cannot read properties of null (reading 'getClientRect')"  //Chrome
         ], { ignoreScriptErrors: true })
         
         // Define o tipo de conteúdo

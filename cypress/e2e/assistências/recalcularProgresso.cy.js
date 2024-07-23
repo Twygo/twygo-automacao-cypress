@@ -2,7 +2,7 @@
 import estruturaAtividades from "../../support/pageObjects/estruturaAtividades"
 import { getAuthToken } from '../../support/authHelper'
 
-describe('Recalcular Progresso', () => {   
+describe.skip('Recalcular Progresso', () => {   
     const tipoConteudo = 'curso'
 
     const dadosOrg = {

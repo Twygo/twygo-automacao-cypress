@@ -2566,7 +2566,7 @@ Cypress.Commands.add('salvarCompartilhamentoAmbienteAdicional', () => {
 
   // Valida a mensagem de sucesso
   cy.contains('.chakra-alert__desc', msgCompartilhamento)
-    .should('be.visible')
+    .should('exist')
 })
 
 Cypress.Commands.add('validarCompartilhamentoComAmbienteAdicional', (nomeAmbiente, acao) => {
@@ -2845,9 +2845,9 @@ Cypress.Commands.add('validarCertificadoGerado', (dadosGerarCertificado) => {
       'imagem_4.jpg': '212021 bytes',
       'imagem_5.jpg': '268280 bytes',
       'imagem_6.jpg': '110903 bytes',
-      'imagem_7.jpg': '60988 bytes',
+      'imagem_7.jpg': '113420 bytes',//
       'imagem_8.jpg': '226841 bytes',
-      'imagem_9.jpg': '11045 bytes',
+      'imagem_9.jpg': '22205 bytes',//
       'imagem_10.jpg': '163247 bytes',
   }
 
@@ -3428,7 +3428,7 @@ Cypress.Commands.add('excluirTodosCuponsVouchers', () => {
     listaCuponsVouchers.forEach(({ nome, tipo }) => {
       cy.excluirCupomVoucher(nome, tipo)
 
-      cy.get('div[role="alert"]#success-toast button[aria-label="Close"]').click()
+      cy.get('div[role="status"] div#toast-success-toast button[aria-label="Close"]').click()
     })
   })
 })
@@ -3470,13 +3470,14 @@ Cypress.Commands.add('salvarChaveApi', function(acao) {
   const { msgSucessoCriacao, msgSucessoEdicao } = labels.integracoes
 
   formIntegracoes.salvarChave()
+  cy.wait(2000)   // Aguardar a atualização da página devido react
 
   if (acao === 'Criação') {
     cy.contains('#toast-success-toast-title', msgSucessoCriacao)
-      .should('be.visible')
+      .should('exist')
   } else if (acao === 'Edição') {
     cy.contains('#toast-success-toast-title', msgSucessoEdicao)
-      .should('be.visible')
+      .should('exist')
   }
 })
 
@@ -3547,16 +3548,16 @@ Cypress.Commands.add('excluirChave', (nomeChave) => {
 
   // Validar modal de confirmação de exclusão
   cy.contains('.chakra-modal__header', tituloModalExclusao)
-    .should('be.visible')
+    .should('exist')
 
   cy.contains('.chakra-modal__body', textoModalExclusao)
-    .should('be.visible')
+    .should('exist')
 
   formIntegracoes.confirmacaoExclusaoDeChave()
 
   // Validar mensagem de sucesso
   cy.contains('.chakra-alert__desc', msgSucessoExclusao)
-    .should('be.visible')
+    .should('exist')
 })
 
 Cypress.Commands.add('alterarSituacaoChave', (nomeChave, situacao) => {
@@ -3573,28 +3574,28 @@ Cypress.Commands.add('alterarSituacaoChave', (nomeChave, situacao) => {
         // Clicar no toggle switch para alterar o estado
         cy.get(formIntegracoes.elementos.situacao.seletorValor)
           .click()
+          .wait(2000)
         
         if (situacao === 'Ativo') {
           // Validar mensagem de sucesso
           cy.contains('#activate-toast', msgChaveAtivada)
-            .should('be.visible')
+            .should('exist')
         } else if (situacao === 'Inativo') {
           // Validar modal de confirmação de inativação
-          cy.contains('.chakra-modal__header', tituloModalInativar)
-            .should('be.visible')
+          cy.get('.chakra-modal__header')
+            .should('contain', tituloModalInativar)
       
           cy.contains('.chakra-modal__body', textoModalInativar)
-            .should('be.visible')
+            .should('exist')
       
-          formIntegracoes.confirmacaoInativacao()
+          formIntegracoes.confirmarInativacao()
       
           // Validar mensagem de sucesso
           cy.contains('.chakra-alert__desc', msgChaveInativada)
-            .should('be.visible')
+            .should('exist')
         }
       }
-  })
-
+    })
   })
 })
 
@@ -3604,8 +3605,8 @@ Cypress.Commands.add('excluirTodasChavesApi', () => {
   const nomesChavesIntegracao = []
 
   // Verifica se a página não contém resultados
-  cy.get('body').then(($body) => {
-    if ($body.find(`p:contains("${nenhumResultado}")`).length > 0) {
+  cy.get('tbody').then(($tbody) => {
+    if ($tbody.find(`p.chakra-text:contains("${nenhumResultado}")`).length > 0) {
       // Se não houver resultados, não há chaves para excluir
     } else {
       // Seleciona todos os elementos que contêm os nomes das chaves

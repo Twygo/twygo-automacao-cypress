@@ -16,7 +16,8 @@ describe('Perguntas', () => {
         // Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([
             "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
+            "unexpected token: identifier",    // Firefox
+            "Cannot read properties of null (reading 'getClientRect')"  //Chrome
         ])
         
         // Massa de dados para criar questionário

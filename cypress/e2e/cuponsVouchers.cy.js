@@ -24,8 +24,8 @@ describe('Criar e vincular cupom à curso', () => {
         ])
 
         // Gera um nome aleatório para o conteúdo e para o nome e código do desconto
-        nomeConteudo1 = faker.commerce.productName()
-        nomeConteudo2 = faker.commerce.productName()
+        nomeConteudo1 = faker.lorem.words(2)
+        nomeConteudo2 = faker.lorem.words(2)
         nomeDesconto = faker.word.words(1)
         codigoDesconto = `${(tipoDesconto).toUpperCase()}-${(nomeDesconto).toUpperCase().trim().replace(' ', '')}${faker.number.int({ max: 100 })}`
 
