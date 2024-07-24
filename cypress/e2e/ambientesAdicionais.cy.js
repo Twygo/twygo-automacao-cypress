@@ -4,13 +4,6 @@ import { gerarDados } from '../support/helpers/geradorDados'
 
 describe('ambientesAdicionais', () => {
 
-    before(() => {
-        // Carrega os labels do arquivo JSON
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
-
     beforeEach(() => {
         // Ignora mensagens de erro conhecidas
 		cy.ignorarCapturaErros([
@@ -21,7 +14,6 @@ describe('ambientesAdicionais', () => {
         // Exclui todos os ambientes adicionais 
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')
-        cy.acessarPgAmbientesAdicionais()
         cy.inativarTodosAmbientesAdicionais() 
     })
 

@@ -2585,29 +2585,40 @@ Cypress.Commands.add('validarCompartilhamentoComAmbienteAdicional', (nomeAmbient
   })
 })
 
+// Comando para listar os nomes dos ambientes adicionais
 Cypress.Commands.add('listaAmbientesAdicionais', () => {
-  const nomesAmbientesAdicionais = []
+  cy.log(':: Gerando lista de ambientes adicionais ::')
+  
+  return cy.get('body').then(($body) => {
+    const nomesAmbientesAdicionais = []
 
-  cy.get('body').then(($body) => {
     if ($body.find('.chakra-text.partner-card-text span').length > 0) {
       cy.get('.chakra-text.partner-card-text span').each(($el) => {
         nomesAmbientesAdicionais.push($el.text())
       }).then(() => {
-        return nomesAmbientesAdicionais
+        cy.wrap(nomesAmbientesAdicionais).as('nomesAmbientesAdicionais')
       })
     } else {
-      return nomesAmbientesAdicionais
-    } 
+      cy.wrap(nomesAmbientesAdicionais).as('nomesAmbientesAdicionais')
+    }
   })
 })
 
+// Comando para inativar todos os ambientes adicionais
 Cypress.Commands.add('inativarTodosAmbientesAdicionais', () => {
-  cy.listaAmbientesAdicionais().then((nomesAmbientesAdicionais) => {
-    nomesAmbientesAdicionais.forEach((nome) => {
-      cy.inativarAmbienteAdicional(nome)
-    })
-  })
+  cy.log(':: Acessando a página de ambientes adicionais para listar e inativar ::')
+  
   cy.acessarPgAmbientesAdicionais()
+  cy.listaAmbientesAdicionais().then(() => {
+    cy.get('@nomesAmbientesAdicionais').then((nomesAmbientesAdicionais) => {
+      nomesAmbientesAdicionais.forEach((nome) => {
+        cy.inativarAmbienteAdicional(nome)
+        cy.log(`:: Ambiente adicional >> '${nome}' << inativado com sucesso ::`)
+      })
+    })
+  }).then(() => {
+    cy.acessarPgAmbientesAdicionais()
+  })
 })
 
 Cypress.Commands.add('preencherDadosConfigOrganizacao', (dados, aba, opcoes = { limpar: false }) => {

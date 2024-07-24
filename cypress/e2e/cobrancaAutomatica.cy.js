@@ -2,11 +2,6 @@
 import { faker } from '@faker-js/faker'
 
 describe('Cobrança de inscrição', () => {
-    before(() => {
-        cy.fixture('labels').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
 
     beforeEach(() => {
         // Ignora mensagens de erro conhecidas

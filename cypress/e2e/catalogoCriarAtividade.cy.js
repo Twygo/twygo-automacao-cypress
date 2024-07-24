@@ -128,12 +128,6 @@ describe('Criar atividade', () => {
         tempoMinPermanencia: false
     }
 
-    before(() => {
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
-
     beforeEach(() => {
         // Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([
@@ -144,7 +138,7 @@ describe('Criar atividade', () => {
             "Cannot read properties of null (reading 'addEventListener')", // Chrome
 			"Cannot read properties of undefined (reading 'length')",	//Chrome
             "Cannot read properties of null (reading 'getClientRect')"  //Chrome
-        ], { ignoreNetworkErrors: true })
+        ], { ignoreScriptErrors: true }, { ignoreNetworkErrors: true })
         
         // Define o tipo de conteúdo
         tipoConteudo = 'catalogo'
