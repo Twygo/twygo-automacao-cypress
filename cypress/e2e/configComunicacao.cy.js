@@ -3,11 +3,6 @@ import comunicacao from '../support/pageObjects/comunicacao'
 
 describe('Configuração de Comunicação', () => {
     before(() => {
-        // Carrega os labels do arquivo JSON
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-        
         // Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([
             "Unexpected identifier 'id'"

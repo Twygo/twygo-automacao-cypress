@@ -14,7 +14,7 @@ describe('Configurações > Organização > Dados', () => {
         cidade: '',
         estado: '',
         pais: '',
-        telefone: '(45) 99999-9999',
+        telefone: '45999999999',
         email: Cypress.env('login'),
         site: '',
         converterEscalaBranco: false,
@@ -34,12 +34,6 @@ describe('Configurações > Organização > Dados', () => {
         ramoAtuacao: '',
         cargo: ''
     }
-
-    before(() => {
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
 
     beforeEach(() => {
         //Ignora mensagens de erro conhecidas
@@ -72,7 +66,7 @@ describe('Configurações > Organização > Dados', () => {
             cidade: faker.location.city(),
             estado: faker.location.state(),
             pais: faker.location.country(),
-            telefone: '(45) 3 0303-030',
+            telefone: '(45) 3 0303030',
             email: faker.internet.email(),
             site: faker.internet.url(),
             converterEscalaBranco: true,
@@ -111,7 +105,7 @@ describe('Configurações > Organização > Dados', () => {
         const dadosUpdate = {
             descricao: faker.lorem.sentence(50),
             resumoIndexacao: '',
-            telefone: '(45) 9 8888-777',
+            telefone: '(45) 9 8888777',
             converterEscalaBranco: false,
             personalizarLinkLogotipo: false,
             usarGestaoCompetencias: false,
@@ -174,13 +168,6 @@ describe('Configurações > Organização > Customizações', () => {
         nomeEmail: '',
         emailEmail: ''
     }
-
-    
-    before(() => {
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
 
     beforeEach(() => {
         //Ignora mensagens de erro conhecidas
@@ -319,11 +306,6 @@ describe('Configurações > Organização > Customizações', () => {
 })
 
 describe('Configurações > Organização > Certificado', () => {
-    before(() => {
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
 
     beforeEach(() => {
         //Ignora mensagens de erro conhecidas
@@ -413,11 +395,6 @@ describe('Configurações > Organização > Certificado', () => {
 })
 
 describe('Configurações > Organização > Integrações', () => {
-    before(() => {
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
 
     beforeEach(() => {
         //Ignora mensagens de erro conhecidas
@@ -529,11 +506,6 @@ describe('Configurações > Organização > Integrações', () => {
 })
 
 describe('Configurações > Organização > Termos', () => {
-    before(() => {
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
 
     beforeEach(() => {
         //Ignora mensagens de erro conhecidas
@@ -715,11 +687,6 @@ describe('Configurações > Organização > Termos', () => {
 })
 
 describe('Configurações > Organização > Url Webhooks', () => {
-    before(() => {
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
 
     beforeEach(() => {
         //Ignora mensagens de erro conhecidas
