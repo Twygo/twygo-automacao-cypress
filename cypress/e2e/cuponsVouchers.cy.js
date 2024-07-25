@@ -8,10 +8,6 @@ describe('Criar e vincular cupom à curso', () => {
     let nomeConteudo1, nomeConteudo2, situacaoCurso, nomeTesteAtual, listaConteudos, tipoDesconto, nomeDesconto, codigoDesconto
     
     before(() => {
-        cy.fixture('labels').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-
         // Define o tipo de desconto
         tipoDesconto = 'Cupom'
     })
@@ -283,10 +279,6 @@ describe('Criar e vincular voucher à curso', () => {
     let nomeConteudo1, nomeConteudo2, situacaoCurso, nomeTesteAtual, listaConteudos, tipoDesconto, nomeDesconto, codigoDesconto
     
     before(() => {
-        cy.fixture('labels').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-
         // Define o tipo de desconto
         tipoDesconto = 'Voucher'
     })

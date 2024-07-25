@@ -41,13 +41,6 @@ describe('Registre-se', () => {
         notificacoes: true
     }
 
-    before(() => {
-		// Carrega os labels do arquivo JSON
-		cy.fixture('labels.json').then((labels) => {
-			Cypress.env('labels', labels)
-		})
-	})
-
     beforeEach(() => {
         // Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([

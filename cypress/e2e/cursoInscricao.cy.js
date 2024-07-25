@@ -39,10 +39,6 @@ describe('Participante', () => {
     let body = {}
     
     before(() => {
-		// Carrega os labels do arquivo JSON
-		cy.fixture('labels.json').then((labels) => {
-			Cypress.env('labels', labels)
-		})
 
         // Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([

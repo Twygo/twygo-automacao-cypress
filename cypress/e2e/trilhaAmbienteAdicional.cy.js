@@ -8,13 +8,6 @@ describe('Compartilhar trilha com ambientes adicionais', () => {
     let nomeConteudo, tipoConteudo, dadosAmbiente1, dadosAmbiente2, nomeAmbienteAdicional1, nomeAmbienteAdicional2, 
     situacaoTrilha, nomeTesteAtual, listaConteudos, celular, fixo
 
-    before(() => {
-        // Carrega os labels do arquivo JSON
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
-
     beforeEach(function() {
         // Ignora mensagens de erro conhecidas
 		cy.ignorarCapturaErros([

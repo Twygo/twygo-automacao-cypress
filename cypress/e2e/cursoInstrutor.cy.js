@@ -7,10 +7,6 @@ describe('Instrutor', () => {
     let nomeConteudo, nomeInstrutor1, nomeInstrutor2, sobrenomeInstrutor1, sobrenomeInstrutor2 
 
     before(() => {
-        // Carrega os labels do arquivo JSON
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
 
         // Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([

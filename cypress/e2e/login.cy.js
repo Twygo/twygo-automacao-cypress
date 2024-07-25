@@ -7,11 +7,6 @@ describe.skip('login', () => {
             "Unexpected identifier 'id'",    // Chrome
             "unexpected token: identifier"    // Firefox
         ])
-        
-        // Carrega os labels do arquivo JSON
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
     })
 
     afterEach(() => {

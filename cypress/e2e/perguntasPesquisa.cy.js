@@ -6,12 +6,6 @@ import formPerguntas from '../support/pageObjects/formPerguntas'
 describe('Perguntas', () => {
     let titulo, novoTitulo, tipoPergunta, nomeQuestionario, listaQuestionarios, categorias1, categorias2
 
-    before(() => {
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
-
     beforeEach(() => { 
         // Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([

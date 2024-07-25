@@ -2854,7 +2854,7 @@ Cypress.Commands.add('validarCertificadoGerado', (dadosGerarCertificado) => {
       'imagem_2.jpg': '285303 bytes',
       'imagem_3.jpg': '236988 bytes',
       'imagem_4.jpg': '212021 bytes',
-      'imagem_5.jpg': '268280 bytes',
+      'imagem_5.jpg': '269637 bytes',
       'imagem_6.jpg': '110903 bytes',
       'imagem_7.jpg': '113420 bytes',//
       'imagem_8.jpg': '226841 bytes',

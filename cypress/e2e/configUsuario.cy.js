@@ -7,9 +7,6 @@ describe('Configuração de Usuário', () => {
     let nome, sobrenome, email, senha, nomeCompleto
 
     before(() => {
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
 
         // Ignora mensagens de erro conhecidas
         cy.ignorarCapturaErros([
