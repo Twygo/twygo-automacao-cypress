@@ -71,14 +71,6 @@ describe('criar curso via catálogo', () => {
 	}
 
 	beforeEach( () => {
-		// Ignora mensagens de erro conhecidas
-		cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier",    // Firefox
-			"Cannot read properties of undefined (reading 'length')",	//Chrome
-			"Cannot read properties of null (reading 'getClientRect')"  //Chrome
-		], { ignoreScriptErrors: true })
-		
 		// Define o tipo de conteúdo
 		tipoConteudo = 'criarCurso'
 
@@ -98,10 +90,6 @@ describe('criar curso via catálogo', () => {
 		cy.excluirCatalogoViaApi()
 	})
 
-	afterEach(() => {
-		cy.ativarCapturaErros()
-	})
-	
 	it('1. CRUD deve criar um curso via catálogo com visualização para inscritos', () => {    
         // Massa de dados para criar um curso via catálogo
 		const catalogo = {

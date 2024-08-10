@@ -129,17 +129,6 @@ describe('Criar atividade', () => {
     }
 
     beforeEach(() => {
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier",    // Firefox
-            "Cannot read properties of undefined (reading 'toString')", // Chrome
-            "Cannot read properties of undefined (reading 'hasAttribute')", // Chrome
-            "Cannot read properties of null (reading 'addEventListener')", // Chrome
-			"Cannot read properties of undefined (reading 'length')",	//Chrome
-            "Cannot read properties of null (reading 'getClientRect')"  //Chrome
-        ], { ignoreScriptErrors: true }, { ignoreNetworkErrors: true })
-        
         // Define o tipo de conteúdo
         tipoConteudo = 'catalogo'
 
@@ -159,10 +148,6 @@ describe('Criar atividade', () => {
             description: fakerPT_BR.lorem.sentence(5)
         }
         cy.criarCatalogoViaApi(body)
-    })
-
-    afterEach(() => {
-        cy.ativarCapturaErros()
     })
 
     it('1. Criar uma atividade default', () => {

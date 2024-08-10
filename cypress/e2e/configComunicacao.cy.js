@@ -3,11 +3,6 @@ import comunicacao from '../support/pageObjects/comunicacao'
 
 describe('Configuração de Comunicação', () => {
     before(() => {
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'"
-        ])
-
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')
         cy.acessarPgConfigComunicacao()
@@ -16,11 +11,6 @@ describe('Configuração de Comunicação', () => {
     })
 
     beforeEach(() => {
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'"
-        ])
-        
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')
     })

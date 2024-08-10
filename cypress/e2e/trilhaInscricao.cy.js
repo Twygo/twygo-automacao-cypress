@@ -38,13 +38,6 @@ describe('Participante', () => {
     let nomeTrilha, tipoConteudo, listaConteudos, nome = ''
     
     before(() => {
-
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ], { ignoreScriptErrors: true })        
-
         // Configuração de campos customizados
         cy.configTodosCamposCustomizados('Desabilitado')
         cy.configTodosCamposCustomizados('Habilitado')
@@ -52,16 +45,6 @@ describe('Participante', () => {
 	})
     
     beforeEach(() => {
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier",    // Firefox
-            "Cannot read properties of undefined (reading 'test')",  // Chrome
-            "Cannot read properties of undefined (reading 'length')",	//Chrome
-            "Cannot read properties of undefined (reading 'replace')", // Chrome
-			"Cannot read properties of null (reading 'getClientRect')"  //Chrome
-        ], { ignoreScriptErrors: true })
-        
         // Define o tipo de conteúdo
 		tipoConteudo = 'trilha'
 
@@ -91,10 +74,6 @@ describe('Participante', () => {
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)        
-    })
-
-    afterEach(() => {
-        cy.ativarCapturaErros()
     })
 
     it('1. CRUD participante default', () => {

@@ -13,12 +13,6 @@ describe('Criar e vincular cupom à curso', () => {
     })
 
     beforeEach(function() {
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",       // Chrome
-            "unexpected token: identifier"     // Firefox
-        ])
-
         // Gera um nome aleatório para o conteúdo e para o nome e código do desconto
         nomeConteudo1 = faker.lorem.words(2)
         nomeConteudo2 = faker.lorem.words(2)
@@ -73,10 +67,6 @@ describe('Criar e vincular cupom à curso', () => {
         }
         
         cy.criarCursoViaApi(body)        
-    })
-
-    afterEach(() => {
-        cy.ativarCapturaErros()
     })
     
     it('1. CRUD cupom associado a um curso liberado', () => {
@@ -284,12 +274,6 @@ describe('Criar e vincular voucher à curso', () => {
     })
 
     beforeEach(function() {
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",       // Chrome
-            "unexpected token: identifier"     // Firefox
-        ])
-
         // Gera um nome aleatório para o conteúdo e para o nome e código do desconto
         nomeConteudo1 = faker.commerce.productName()
         nomeConteudo2 = faker.commerce.productName()
@@ -346,10 +330,6 @@ describe('Criar e vincular voucher à curso', () => {
         cy.criarCursoViaApi(body)        
     })
 
-    afterEach(() => {
-        cy.ativarCapturaErros()
-    })
-    
     it('1. CRUD voucher associado a um curso liberado', () => {
         // Massa de dados
         const dados = {

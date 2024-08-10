@@ -38,15 +38,6 @@ describe('trilha', () => {
 	}
 
 	beforeEach(() => {
-		// Ignora mensagens de erro conhecidas
-		cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier",    // Firefox
-			"Cannot read properties of undefined (reading 'replace')", // Chrome
-            "Cannot read properties of undefined (reading 'length')",	//Chrome
-			"Cannot read properties of null (reading 'getClientRect')"  //Chrome
-		], { ignoreScriptErrors: true })
-		
 		// Define o tipo de conteúdo
 		tipoConteudo = 'trilha'
 
@@ -71,10 +62,6 @@ describe('trilha', () => {
 		cy.excluirConteudo(null, tipoConteudo, listaConteudos)		
 	})
 
-	afterEach(() => {
-		cy.ativarCapturaErros()
-	})
-	
 	it('1. CRUD trilha com dados default', () =>{
 		// Massa de dados para criação da trilha
         const conteudo = {

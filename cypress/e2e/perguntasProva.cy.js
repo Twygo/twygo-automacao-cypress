@@ -7,13 +7,6 @@ describe('Perguntas', () => {
     let titulo, novoTitulo, tipoPergunta, nomeQuestionario, listaQuestionarios, categorias1, categorias2
 
     beforeEach(() => {  
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier",    // Firefox
-            "Cannot read properties of null (reading 'getClientRect')"  //Chrome
-        ])
-        
         // Massa de dados para criar questionário
         nomeQuestionario = fakerPT_BR.commerce.productName()
         categorias1 = ['Atualidades', 'Entretenimento', 'Esportes', 'Tecnologia']
@@ -44,10 +37,6 @@ describe('Perguntas', () => {
         // Gera um título aleatório para a pergunta
         titulo = fakerPT_BR.commerce.productName()
         novoTitulo = fakerPT_BR.commerce.productName()
-    })
-
-    afterEach(() => {
-        cy.ativarCapturaErros()
     })
 
     it('1. CRUD pergunta do tipo "Texto"', () => {

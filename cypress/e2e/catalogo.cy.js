@@ -56,14 +56,6 @@ describe('catálogo', () => {
 	}
 
 	beforeEach(() => {
-		// Ignora mensagens de erro conhecidas
-		cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier",    // Firefox
-			"Cannot read properties of undefined (reading 'length')",	//Chrome
-			"Cannot read properties of null (reading 'getClientRect')"  //Chrome
-		], { ignoreScriptErrors: true })
-				
 		// Define o tipo de conteúdo
 		tipoConteudo = 'catalogo'
 
@@ -80,10 +72,6 @@ describe('catálogo', () => {
 
 		// Exclui todos os catálogos antes de iniciar o teste
 		cy.excluirCatalogoViaApi()
-	})
-
-	afterEach(() => {
-		cy.ativarCapturaErros()
 	})
 	
 	it('1. CRUD catalogo com dados default', () => {

@@ -7,13 +7,6 @@ describe('Configuração de Usuário', () => {
     let nome, sobrenome, email, senha, nomeCompleto
 
     before(() => {
-
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ], { ignoreScriptErrors: true })        
-
         // Configuração de campos customizados
         cy.configTodosCamposCustomizados('Desabilitado')
         cy.configTodosCamposCustomizados('Habilitado')
@@ -21,12 +14,6 @@ describe('Configuração de Usuário', () => {
     })
 
     beforeEach(() => {
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ], { ignoreScriptErrors: true })
-
         // Gerar dados aleatórios para o usuário
         nome = faker.person.firstName()
         sobrenome = faker.person.lastName()
@@ -37,11 +24,7 @@ describe('Configuração de Usuário', () => {
         getAuthToken()
         cy.excluirUsuarioViaApi()
     })
-
-    afterEach(() => {
-        cy.ativarCapturaErros()
-    })
-
+    
     it('1. CRUD alterar os dados de usuário aluno e idioma para inglês', () => {
         // Massa de dados para criação do usuário
         const dados = {

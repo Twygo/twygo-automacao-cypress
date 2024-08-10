@@ -36,20 +36,10 @@ describe('Configurações > Organização > Dados', () => {
     }
 
     beforeEach(() => {
-        //Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ], { ignoreScriptErrors: true })
-
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')      
 
         cy.resetConfigOrganizacao('dados')
-    })
-
-    afterEach(() => {
-        cy.ativarCapturaErros()
     })
 
     it('1. CRUD aba Dados', () => {
@@ -170,22 +160,12 @@ describe('Configurações > Organização > Customizações', () => {
     }
 
     beforeEach(() => {
-        //Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ], { ignoreScriptErrors: true })
-
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')      
 
         cy.resetConfigOrganizacao('customizacoes')
     })
 
-    afterEach(() => {
-        cy.ativarCapturaErros()
-    })
-    
     it('2. CRUD aba Customizações', () => {
         // Massa de dados
         const alterarDadosUsuario = {
@@ -308,22 +288,12 @@ describe('Configurações > Organização > Customizações', () => {
 describe('Configurações > Organização > Certificado', () => {
 
     beforeEach(() => {
-        //Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ], { ignoreScriptErrors: true })
-
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')
         
         cy.resetConfigOrganizacao('certificado')
     })
 
-    afterEach(() => {
-        cy.ativarCapturaErros()
-    })  
-    
     it('3. CRUD aba Certificado', () => {      
         // Massa de dados
         const dadosGerarCertificado = {
@@ -397,22 +367,12 @@ describe('Configurações > Organização > Certificado', () => {
 describe('Configurações > Organização > Integrações', () => {
 
     beforeEach(() => {
-        //Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ], { ignoreScriptErrors: true })
-
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')
         
         cy.resetConfigOrganizacao('integracoes')
     })
 
-    afterEach(() => {
-        cy.ativarCapturaErros()
-    })  
-    
     it('4. CRUD aba Integrações', () => {
         // Massa de dados
         const dadosPixel = {
@@ -508,12 +468,6 @@ describe('Configurações > Organização > Integrações', () => {
 describe('Configurações > Organização > Termos', () => {
 
     beforeEach(() => {
-        //Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ], { ignoreScriptErrors: true })
-
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')
         
@@ -529,10 +483,6 @@ describe('Configurações > Organização > Termos', () => {
         cy.wait(2000)
         cy.alterarPerfil('administrador')
     })
-
-    afterEach(() => {
-        cy.ativarCapturaErros()
-    })  
 
     it('5. CRUD aba Termos com editor de texto', () => {
         // Massa de dados
@@ -689,22 +639,12 @@ describe('Configurações > Organização > Termos', () => {
 describe('Configurações > Organização > Url Webhooks', () => {
 
     beforeEach(() => {
-        //Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ], { ignoreScriptErrors: true })
-
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')
         
         cy.resetConfigOrganizacao('urlWebhooks')
     })
 
-    afterEach(() => {
-        cy.ativarCapturaErros()
-    })
-    
     it('7. CRUD aba Url Webhooks - Ao completar o curso', () => {
         // Massa de dados
         const dados = {

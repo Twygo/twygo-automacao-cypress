@@ -5,21 +5,11 @@ import { gerarDados } from '../support/helpers/geradorDados'
 describe('ambientesAdicionais', () => {
 
     beforeEach(() => {
-        // Ignora mensagens de erro conhecidas
-		cy.ignorarCapturaErros([
-		    "Unexpected identifier 'id'",
-            "ResizeObserver loop completed with undelivered notifications"
-		], { ignoreScriptErrors: true })
-
         // Exclui todos os ambientes adicionais 
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')
         cy.inativarTodosAmbientesAdicionais() 
     })
-
-    afterEach(() => {
-		cy.ativarCapturaErros()
-	})
 
     it('1. CRUD - Ambiente adicional', () => {
     //Massa de dados para criação do ambiente

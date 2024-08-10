@@ -42,11 +42,6 @@ describe('Registre-se', () => {
     }
 
     beforeEach(() => {
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'"
-        ])
-
         // Configura organização como pública e todos os campos omo obrigatórios
         cy.configurarBtnRegistreSe()
         cy.configTodosCamposCustomizados('Habilitado e Obrigatório')

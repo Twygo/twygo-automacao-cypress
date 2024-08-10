@@ -19,12 +19,6 @@ describe('Questionário', () => {
     }
 
     beforeEach(() => { 
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ])
-        
         // Gerar um nome aleatório para o questionário
         nomeQuestionario = fakerPT_BR.commerce.productName()
         nomeCategoria1 = 'Assunto'
@@ -43,10 +37,6 @@ describe('Questionário', () => {
         listaQuestionarios = []
         cy.listaQuestionarios(listaQuestionarios)
         cy.excluirQuestionarios(null, listaQuestionarios)
-    })
-
-    afterEach(() => {
-        cy.ativarCapturaErros()
     })
 
     it('1. CRUD questionário tipo "Prova" com comentário aluno e parecer instrutor', () => {

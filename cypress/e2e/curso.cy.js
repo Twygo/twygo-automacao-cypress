@@ -56,14 +56,6 @@ describe('curso', () => {
 	}
 
 	beforeEach( () => {
-		// Ignora mensagens de erro conhecidas
-		cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier",    // Firefox
-			"Cannot read properties of undefined (reading 'length')",	//Chrome
-			"Cannot read properties of null (reading 'getClientRect')"  //Chrome
-		], { ignoreScriptErrors: true })
-		
 		// Define o tipo de conteúdo
 		tipoConteudo = 'curso'
 
@@ -82,10 +74,6 @@ describe('curso', () => {
 		cy.excluirCursoViaApi()
 	})
 
-	afterEach(() => {
-		cy.ativarCapturaErros()
-	})
-	
 	it('1. CRUD curso com dados default', () =>{
 		// Massa de dados para criação do curso
         const conteudo = {

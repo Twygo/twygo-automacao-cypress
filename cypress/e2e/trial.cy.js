@@ -5,20 +5,7 @@ import formTrial from '../support/pageObjects/formTrial'
 describe('Criar organização "Trial"', () => {
     let senha
 
-    before(() => {
-        cy.fixture('labels').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
-
     beforeEach(() => {
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "Unexpected token 'else'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ], { ignoreScriptErrors: true })
-
         // Defina a URL base
         const baseUrl = Cypress.env('baseUrlPadrao')
         Cypress.config('baseUrl', baseUrl)

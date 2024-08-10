@@ -129,14 +129,6 @@ describe('Criar atividade', () => {
     }
 
     beforeEach(() => {
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier",    // Firefox
-            "Cannot read properties of undefined (reading 'toString')", // Chrome
-            "Cannot read properties of null (reading 'getClientRect')"  // Chrome
-        ], { ignoreNetworkErrors: true, ignoreScriptErrors: true })
-        
         // Define o tipo de conteúdo
         tipoConteudo = 'curso'
 
@@ -156,10 +148,6 @@ describe('Criar atividade', () => {
             description: fakerPT_BR.lorem.sentence(5)
         }
         cy.criarCursoViaApi(body)
-    })
-
-    afterEach(() => {
-        cy.ativarCapturaErros()
     })
 
     it('1. Criar uma atividade default', () => {

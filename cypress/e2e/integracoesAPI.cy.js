@@ -7,24 +7,12 @@ describe('Integrações com API', () => {
     let nome, sobrenome, email
 
     before(() => {
-
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ], { ignoreScriptErrors: true })        
-
         // Configuração de campos customizados
         cy.configTodosCamposCustomizados('Desabilitado')
         cy.configTodosCamposCustomizados('Habilitado')
     })
 
     beforeEach(function() {
-        // Ignora mensagens de erro conhecidas
-		cy.ignorarCapturaErros([
-		    "Unexpected identifier 'id'"
-		])
-
         // Excluir todas as chaves de API
         cy.loginTwygoAutomacao()
         cy.alterarPerfil('administrador')
@@ -48,10 +36,6 @@ describe('Integrações com API', () => {
         }
         cy.criarUsuario(usuario)
     })
-
-    afterEach(() => {
-		cy.ativarCapturaErros()
-	})
 
     it('1. CRUD - Criação da chave de API para usuário default', () => {
         //Massa de dados

@@ -9,12 +9,6 @@ describe('Compartilhar curso com ambientes adicionais', () => {
     celular, fixo
 
     beforeEach(function() {
-        // Ignora mensagens de erro conhecidas
-		cy.ignorarCapturaErros([
-		    "Unexpected identifier 'id'",
-            "ResizeObserver loop completed with undelivered notifications"
-		], { ignoreScriptErrors: true })
-
         // Gera um nome aleatório para o conteúdo e para os ambientes adicionais
         nomeConteudo = faker.commerce.productName()
         nomeAmbienteAdicional1 = faker.commerce.productName()
@@ -80,10 +74,6 @@ describe('Compartilhar curso com ambientes adicionais', () => {
         // Define tipo de conteúdo
         tipoConteudo = 'curso'
     })
-
-    afterEach(() => {
-		cy.ativarCapturaErros()
-	})
 
     it('1. CRUD - Curso liberado compartilhado com ambiente adicional', () => {
             // CREATE

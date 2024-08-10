@@ -9,15 +9,6 @@ describe('Compartilhar trilha com ambientes adicionais', () => {
     situacaoTrilha, nomeTesteAtual, listaConteudos, celular, fixo
 
     beforeEach(function() {
-        // Ignora mensagens de erro conhecidas
-		cy.ignorarCapturaErros([
-		    "Unexpected identifier 'id'",
-            "ResizeObserver loop completed with undelivered notifications",
-            "Cannot read properties of undefined (reading 'replace')", // Chrome
-            "Cannot read properties of undefined (reading 'length')",	//Chrome
-			"Cannot read properties of null (reading 'getClientRect')"  //Chrome
-		], { ignoreScriptErrors: true })
-
         // Gera um nome aleatório para o conteúdo e para os ambientes adicionais
         nomeConteudo = faker.commerce.productName()
         nomeAmbienteAdicional1 = faker.commerce.productName()
@@ -91,10 +82,6 @@ describe('Compartilhar trilha com ambientes adicionais', () => {
         cy.criarAmbienteAdicional('Criar', dadosAmbiente1, { limpar: true })
         cy.criarAmbienteAdicional('Adicionar', dadosAmbiente2, { limpar: true })
     })
-
-    afterEach(() => {
-		cy.ativarCapturaErros()
-	})
 
     it('1. CRUD - Trilha com situação liberado compartilhada com ambiente adicional', () => {
             // CREATE
