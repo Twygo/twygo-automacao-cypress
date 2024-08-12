@@ -16,4 +16,5 @@ require('cypress-terminal-report/src/installLogsCollector')(options);
 
 // :: Arquivos de suporte ::
 import './commands';
+import './preCondicoesCommands';
 import './index';
