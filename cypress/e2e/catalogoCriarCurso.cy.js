@@ -120,8 +120,6 @@ describe('criar curso via catálogo', () => {
 		cy.log('## CREATE ##')
 
 		cy.criarCatalogoViaApi(body)
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		formConteudos.criarCursoViaCatalogo(catalogo.nome)
 		cy.salvarConteudo(catalogo.nome, tipoConteudo)
@@ -248,8 +246,6 @@ describe('criar curso via catálogo', () => {
 		cy.log('## CREATE ##')
 
         cy.criarCatalogoViaApi(body)
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		formConteudos.criarCursoViaCatalogo(catalogo.nome)
 		cy.salvarConteudo(catalogo.nome, tipoConteudo)
@@ -364,8 +360,6 @@ describe('criar curso via catálogo', () => {
 		cy.log('## CREATE ##')
 
 		cy.criarCatalogoViaApi(body)
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		formConteudos.criarCursoViaCatalogo(catalogo.nome)
 		cy.salvarConteudo(catalogo.nome, tipoConteudo)
@@ -455,8 +449,6 @@ describe('criar curso via catálogo', () => {
 		cy.log('## CREATE ##')
 
         cy.criarCatalogoViaApi(body)
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		formConteudos.criarCursoViaCatalogo(catalogo.nome)
 		cy.salvarConteudo(catalogo.nome, tipoConteudo)
@@ -533,8 +525,6 @@ describe('criar curso via catálogo', () => {
 		cy.log('## CREATE ##')
 
 		cy.criarCatalogoViaApi(body)
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()
 		
 		// Não deve ser possível criar um curso com base em um catálogo em desenvolvimento
@@ -671,8 +661,6 @@ describe('criar curso via catálogo', () => {
 		cy.log('## CREATE ##')
 
 		cy.criarCatalogoViaApi(body)
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()
 
 		// Não deve ser possível criar um curso com base em um catálogo em desenvolvimento
@@ -916,8 +904,6 @@ describe('criar curso via catálogo', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()
 
 		cy.addConteudo('catalogo')

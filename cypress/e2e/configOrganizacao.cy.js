@@ -36,9 +36,6 @@ describe('Configurações > Organização > Dados', () => {
     }
 
     beforeEach(() => {
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')      
-
         cy.resetConfigOrganizacao('dados')
     })
 
@@ -160,9 +157,6 @@ describe('Configurações > Organização > Customizações', () => {
     }
 
     beforeEach(() => {
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')      
-
         cy.resetConfigOrganizacao('customizacoes')
     })
 
@@ -288,9 +282,6 @@ describe('Configurações > Organização > Customizações', () => {
 describe('Configurações > Organização > Certificado', () => {
 
     beforeEach(() => {
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
-        
         cy.resetConfigOrganizacao('certificado')
     })
 
@@ -367,9 +358,6 @@ describe('Configurações > Organização > Certificado', () => {
 describe('Configurações > Organização > Integrações', () => {
 
     beforeEach(() => {
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
-        
         cy.resetConfigOrganizacao('integracoes')
     })
 
@@ -468,9 +456,6 @@ describe('Configurações > Organização > Integrações', () => {
 describe('Configurações > Organização > Termos', () => {
 
     beforeEach(() => {
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
-        
         cy.resetConfigOrganizacao('termos')
 
         // Aguardar 2 segundos para que o aceite seja salvo
@@ -639,9 +624,6 @@ describe('Configurações > Organização > Termos', () => {
 describe('Configurações > Organização > Url Webhooks', () => {
 
     beforeEach(() => {
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
-        
         cy.resetConfigOrganizacao('urlWebhooks')
     })
 

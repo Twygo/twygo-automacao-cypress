@@ -3,16 +3,10 @@ import comunicacao from '../support/pageObjects/comunicacao'
 
 describe('Configuração de Comunicação', () => {
     before(() => {
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
+        cy.loginTwygoAutomacaoAdm()
         cy.acessarPgConfigComunicacao()
         cy.resetConfigComunicacao()
         cy.logout()
-    })
-
-    beforeEach(() => {
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
     })
     
     it('1. CRUD - Comunidades', () => {

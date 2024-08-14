@@ -5,9 +5,7 @@ import { gerarDados } from '../support/helpers/geradorDados'
 describe('ambientesAdicionais', () => {
 
     beforeEach(() => {
-        // Exclui todos os ambientes adicionais 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
+        // Exclui todos os ambientes adicionais         
         cy.inativarTodosAmbientesAdicionais() 
     })
 

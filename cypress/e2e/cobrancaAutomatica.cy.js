@@ -5,8 +5,6 @@ describe('Cobrança de inscrição', () => {
 
     beforeEach(() => {
         // Desabilitar cobrança de inscrições
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.resetCobrancaAutomatica()
     })
 

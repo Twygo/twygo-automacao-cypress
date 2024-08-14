@@ -136,8 +136,6 @@ describe('Criar atividade', () => {
         nomeAtividade = fakerPT_BR.commerce.productName()
 
         // Acessa página de biblioteca e gera uma lista com os conteúdos para serem excluídos
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.acessarPgBiblioteca()
         
         listaConteudos = []

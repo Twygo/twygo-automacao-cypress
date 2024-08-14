@@ -84,8 +84,6 @@ describe('catálogo', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		cy.addConteudo(tipoConteudo)
 		cy.preencherDadosConteudo(conteudo, { limpar: true })
@@ -214,8 +212,6 @@ describe('catálogo', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		cy.addConteudo(tipoConteudo)
 		cy.preencherDadosConteudo(conteudo, { limpar: true })
@@ -338,8 +334,6 @@ describe('catálogo', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		cy.addConteudo(tipoConteudo)
 		cy.preencherDadosConteudo(conteudo, { limpar: true })
@@ -444,8 +438,6 @@ describe('catálogo', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		cy.addConteudo(tipoConteudo)
 		cy.preencherDadosConteudo(conteudo, { limpar: true })
@@ -521,8 +513,6 @@ describe('catálogo', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		cy.addConteudo(tipoConteudo)
 		cy.preencherDadosConteudo(conteudo, { limpar: true })
@@ -588,8 +578,6 @@ describe('catálogo', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		cy.addConteudo(tipoConteudo)
 		cy.preencherDadosConteudo(conteudo, { limpar: true })
@@ -651,8 +639,6 @@ describe('catálogo', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		cy.addConteudo(tipoConteudo)
 		cy.preencherDadosConteudo(conteudo, { limpar: true })
