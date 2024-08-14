@@ -36,9 +36,6 @@ describe('Configuração de Usuário', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')      
-
         cy.criarUsuario(dados)
         cy.resetSenhaUsuario(nomeCompleto, senha)        
 
@@ -99,8 +96,7 @@ describe('Configuração de Usuário', () => {
         cy.log('## INATIVAR ##')
 
         cy.logout('en')
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
+        cy.loginTwygoAutomacaoAdm()
         cy.acessarPgUsuarios()
         cy.inativarUsuario(`${dadosUpdate.nome} ${dadosUpdate.sobrenome}`)
     })
@@ -131,9 +127,6 @@ describe('Configuração de Usuário', () => {
 
         // CREATE
 		cy.log('## CREATE ##')
-
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')      
 
         cy.criarUsuario(dados)
         cy.resetSenhaUsuario(nomeCompleto, senha)        
@@ -188,8 +181,7 @@ describe('Configuração de Usuário', () => {
         cy.log('## INATIVAR ##')
 
         cy.logout('es')
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
+        cy.loginTwygoAutomacaoAdm()
         cy.acessarPgUsuarios()
         cy.inativarUsuario(`${dados.nome} ${dados.sobrenome}`)
     })
@@ -220,9 +212,6 @@ describe('Configuração de Usuário', () => {
 
         // CREATE
 		cy.log('## CREATE ##')
-
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')      
 
         cy.criarUsuario(dados)
         cy.resetSenhaUsuario(nomeCompleto, senha)        
@@ -285,8 +274,7 @@ describe('Configuração de Usuário', () => {
         cy.log('## INATIVAR ##')
 
         cy.logout()
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
+        cy.loginTwygoAutomacaoAdm()
         cy.acessarPgUsuarios()
         cy.inativarUsuario(`${dados.nome} ${dados.sobrenome}`)
     })
@@ -317,9 +305,6 @@ describe('Configuração de Usuário', () => {
 
         // CREATE
 		cy.log('## CREATE ##')
-
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')      
 
         cy.criarUsuario(dados)
         cy.resetSenhaUsuario(nomeCompleto, senha)        
@@ -368,9 +353,8 @@ describe('Configuração de Usuário', () => {
         // INATIVAR
         cy.log('## INATIVAR ##')
 
-        cy.logout()
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
+        cy.logout()        
+        cy.loginTwygoAutomacaoAdm()
         cy.acessarPgUsuarios()
         cy.inativarUsuario(`${dados.nome} ${dados.sobrenome}`)
     })

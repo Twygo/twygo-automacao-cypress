@@ -84,8 +84,6 @@ describe('curso', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
@@ -216,8 +214,6 @@ describe('curso', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
@@ -341,8 +337,6 @@ describe('curso', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
@@ -453,8 +447,6 @@ describe('curso', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
@@ -531,8 +523,6 @@ describe('curso', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.addConteudo(tipoConteudo)
 		cy.preencherDadosConteudo(conteudo, { limpar: true })
 		cy.salvarConteudo(conteudo.nome, tipoConteudo)
@@ -603,8 +593,6 @@ describe('curso', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
@@ -662,8 +650,6 @@ describe('curso', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
