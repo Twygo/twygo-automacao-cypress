@@ -37,7 +37,6 @@ describe('curso', () => {
 		hashtag: '',
 		addCategoria: '',
 		removerCategoria: '',
-		removerBanner: false,
 		permiteAnexo: 'Desabilitado',
 		mensagemAnexo: '',
 		statusIframeAnexo: false,
@@ -129,7 +128,6 @@ describe('curso', () => {
 			rotuloContato: 'Contato',
 			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
-			removerBanner: true,
 			permiteAnexo: 'Habilitado',
 			mensagemAnexo: `Insira o anexo do Curso: ${novoNome}`,
 			statusIframeAnexo: true,
@@ -253,7 +251,6 @@ describe('curso', () => {
 			rotuloContato: 'Contato',
 			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: novasCategorias,
-			removerBanner: true,
 			permiteAnexo: 'Desabilitado',
 			statusIframeAnexo: false,
 			visualizacao: 'Público',
@@ -670,7 +667,6 @@ describe('curso', () => {
 			vigencia: '0',
 			atualizarInscritos: true,
 			removerCategoria: delCategorias,
-			removerBanner: true,
 			habilitarChat: false
 		}
 

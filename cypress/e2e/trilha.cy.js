@@ -32,7 +32,6 @@ describe('trilha', () => {
 		notificarResponsavel: false,
 		addCategoria: '',
 		removerCategoria: '',
-		removerBanner: false,
 		situacao: 'Em desenvolvimento',
 		exigeConfirmacao: 'Desabilitado'
 	}
@@ -112,7 +111,6 @@ describe('trilha', () => {
 			emailResponsavel: fakerPT_BR.internet.email(),
 			notificarResponsavel: true,
 			addCategoria: categorias,
-			removerBanner: true,
 			situacao: 'Liberado',
 			exigeConfirmacao: 'Habilitado'
 		}
@@ -202,7 +200,6 @@ describe('trilha', () => {
 			emailResponsavel: fakerPT_BR.internet.email(),
 			notificarResponsavel: false,
 			addCategoria: novasCategorias,
-			removerBanner: true,
 			situacao: 'Suspenso',
 			exigeConfirmacao: 'Desabilitado',
 		}
@@ -540,8 +537,7 @@ describe('trilha', () => {
 		const conteudoEdit = {
 			vigencia: '0',
 			atualizarInscritos: true,
-			removerCategoria: delCategorias,
-			removerBanner: true
+			removerCategoria: delCategorias
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
