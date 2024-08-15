@@ -48,8 +48,6 @@ describe('Compartilhar curso com ambientes adicionais', () => {
         cy.criarCursoViaApi(body)
 
         // Excluir todos os ambientes adicionais
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.acessarPgAmbientesAdicionais()
         cy.inativarTodosAmbientesAdicionais()
         

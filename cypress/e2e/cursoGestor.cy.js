@@ -31,8 +31,6 @@ describe('Gestor', () => {
         // Exclui todos os usuários antes de iniciar o teste
         cy.excluirUsuarioViaApi()
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         // Cria os gestores
         cy.criarGestor(nomeGestor1, sobrenomeGestor1)
         cy.criarGestor(nomeGestor2, sobrenomeGestor2)

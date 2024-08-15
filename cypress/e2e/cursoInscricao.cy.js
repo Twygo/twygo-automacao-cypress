@@ -60,6 +60,7 @@ describe('Participante', () => {
         }
         
         cy.criarCursoViaApi(body)
+        cy.acessarPgListaConteudos()
     })
 
     it('1. CRUD participante default', () => {
@@ -77,8 +78,6 @@ describe('Participante', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addParticipanteConteudo(nomeCurso)
         cy.addParticipante()
         cy.preencherDadosParticipante(dados, { limpar: true })
@@ -179,8 +178,6 @@ describe('Participante', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addParticipanteConteudo(nomeCurso)
         cy.addParticipante()
         cy.preencherDadosParticipante(dados, { limpar: true })
@@ -277,8 +274,6 @@ describe('Participante', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addParticipanteConteudo(nomeCurso)
         cy.addParticipante()
         cy.preencherDadosParticipante(dados, { limpar: true })
@@ -344,8 +339,6 @@ describe('Participante', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addParticipanteConteudo(nomeCurso)
         cy.addParticipante()
         cy.preencherDadosParticipante(dados, { limpar: true })
@@ -404,8 +397,6 @@ describe('Participante', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addParticipanteConteudo(nomeCurso)
         cy.addParticipante()
         cy.preencherDadosParticipante(dados, { limpar: true })
@@ -467,8 +458,6 @@ describe('Participante', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addParticipanteConteudo(nomeCurso)
         cy.addParticipante()
         cy.preencherDadosParticipante(dados, { limpar: true })
@@ -538,8 +527,6 @@ describe('Participante', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addParticipanteConteudo(nomeCurso)
         cy.addParticipante()
         cy.preencherDadosParticipante(dados, { limpar: true })
@@ -611,8 +598,6 @@ describe('Participante', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addParticipanteConteudo(nomeCurso)
         cy.addParticipante()
         cy.preencherDadosParticipante(dados, { limpar: true })
@@ -701,8 +686,6 @@ describe('Participante', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addParticipanteConteudo(nomeCurso)
         cy.addParticipante()
         cy.preencherDadosParticipante(dados, { limpar: true })
@@ -784,8 +767,6 @@ describe('Participante', () => {
         // CREATE
         cy.log('## CREATE ##')
         
-        cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addParticipanteConteudo(nomeCurso)
 
         for (let i = 0; i < 5; i++) {
@@ -920,8 +901,6 @@ describe('Participante', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addParticipanteConteudo(nomeCurso)
 
         cy.importarParticipante('participantes.csv')

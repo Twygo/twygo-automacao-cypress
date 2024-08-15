@@ -148,14 +148,13 @@ describe('Criar atividade', () => {
             description: fakerPT_BR.lorem.sentence(5)
         }
         cy.criarCursoViaApi(body)
+        cy.acessarPgListaConteudos()
     })
 
     it('1. Criar uma atividade default', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
@@ -184,8 +183,6 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
@@ -260,8 +257,6 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
@@ -345,8 +340,6 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
@@ -428,8 +421,6 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
@@ -503,9 +494,6 @@ describe('Criar atividade', () => {
 
         // CREATE
         cy.log('## CREATE ##')
-
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
 
         // Criar atividade
         cy.acessarPgListaConteudos()
@@ -600,8 +588,6 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
@@ -680,8 +666,6 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
@@ -768,9 +752,6 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
-
         // Criar questionário
         cy.criarQuestionarioDefault(nomeQuestionario)
         
@@ -856,8 +837,6 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
@@ -927,8 +906,6 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
