@@ -2,14 +2,16 @@
 
 // :: Hooks globais ::
 before(() => {
-    // Carrega os labels do arquivo JSON
+    // :: Carrega os labels do arquivo JSON ::
+    cy.log(':: Carrega os labels do arquivo JSON ::')
+
     cy.fixture('labels.json').then((labels) => {
         Cypress.env('labels', labels)
     })
 })
 
 beforeEach(() => {
-    // Ignora mensagens de erro conhecidas
+    // :: Ignora mensagens de erro conhecidas ::
     cy.ignorarCapturaErros([
         // Chrome
         //"ResizeObserver loop completed with undelivered notifications",
@@ -23,8 +25,12 @@ beforeEach(() => {
         "Unexpected token 'else'",
         "Cannot read properties of null (reading 'style')"
     ], { ignoreScriptErrors: true, ignoreNetworkErrors: true })
+
+    // :: Realiza o login na Twygo com o usuário de automação e altera para perfil administrador ::
+    cy.loginTwygoAutomacaoAdm()
 })
 
 afterEach(() => {
+    // :: Ativa a captura de erros ::
     cy.ativarCapturaErros()
 })

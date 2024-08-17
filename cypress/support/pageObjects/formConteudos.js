@@ -129,11 +129,6 @@ class formConteudos {
 			seletor: 'li.as-selection-item.blur',
 			tipo: 'delTag'
 		},
-		removerBanner: { 
-			seletor: '#remove_banner', 
-			tipo: 'checkbox-action', 
-			default: false 
-		},
 		permiteAnexo: {
 			seletor: 'div.col-md-6.col-lg-4:contains("Permitir envio de anexos na inscrição?")',
 			tipo: 'radio',

@@ -314,7 +314,7 @@
         "tituloPgEdicao": "{{ nome }}",
         "msgSucesso": "{{ tipo }} salvo com sucesso",
         "msgSucessoEdicao": "{{ tipo }} alterado com sucesso",
-        "msgNenhumResultado": "Nenhum resultado para mostrar",
+        "msgNenhumResultado": "Não há dados para exibir",
         "modalAplicadoItem": { 
             "tituloModal": "{{ tipo }} aplicado aos itens",
             "descricaoModal": "Esse {{ tipo }} está aplicado aos itens abaixo. Para adicionar novos, digite para pesquisar.",
@@ -337,7 +337,7 @@
         "tituloModalExclusao": "Confirmação de exclusão",
         "textoModalExclusao": "Todas as consultas que usam essa chave de API serão interrompidas. Tem certeza que deseja excluir?",
         "msgSucessoExclusao": "Chave de api excluída com sucesso",
-        "nenhumResultado": "Nenhum resultado para mostrar",
+        "nenhumResultado": "Não há dados para exibir",
         "tituloModalInativar": "Confirmação de inativação",
         "textoModalInativar": "Todas as consultas que usam essa chave de API serão interrompidas. Tem certeza que deseja continuar?",
         "msgSucessoInativar": "Chave de API inativada com sucesso",

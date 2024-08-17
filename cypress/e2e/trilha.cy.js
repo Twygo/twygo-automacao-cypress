@@ -53,8 +53,6 @@ describe('trilha', () => {
 		cy.excluirCursoViaApi()
 
 		// Exclui todos os conteúdos do tipo trilha antes de iniciar o teste
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		
 		listaConteudos = []
 		cy.listaConteudo(tipoConteudo, listaConteudos)

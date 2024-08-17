@@ -9,6 +9,13 @@ module.exports = (on, config) => {
     printLogsToFile: 'never'     // Não salva logs em arquivos
   })
 
-  // Certifique-se de retornar a configuração modificada
+  // Tentativa de configuração para evitar crash do Cypress, aumentando o limite de memória do navegador
+  on("before:browser:launch", (browser = {}, launchOptions) => {
+    if (browser.family === "chromium") {
+      launchOptions.args.push('--js-flags="--max_old_space_size=4096 --max_semi_space_size=1024"')
+    }
+    return launchOptions
+  })
+  
   return config
 }

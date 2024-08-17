@@ -30,8 +30,6 @@ describe('Questionário', () => {
         categoriasAtualizadas = []
         
         // Acessar a página de questionários, listar e excluir todos os questionários antes do teste
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.acessarPgQuestionarios()
 
         listaQuestionarios = []

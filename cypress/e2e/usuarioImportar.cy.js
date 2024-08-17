@@ -287,8 +287,6 @@ describe('Importar Usuários', () => {
         cy.excluirUsuarioViaApi()
 
         // Acessa o sistema com o usuário administrador
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.acessarPgUsuarios()
     })
 

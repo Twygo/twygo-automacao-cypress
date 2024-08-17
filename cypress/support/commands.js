@@ -26,110 +26,118 @@ import 'cypress-real-events/support'
 import moment from 'moment'
 import { verificarPerfilENomeUsuario } from "./utilsHelper.js"
 
-Cypress.Commands.add('loginTwygoAutomacao', (idioma = 'pt') => {
-  const labels = Cypress.env('labels')[idioma]
-  const { pgInicialAluno, btnProfile } = labels.configUsuario
+import formHome from "./pageObjects/formHome.js"
 
-  cy.visit('/users/login')
+Cypress.Commands.add('login', (login, senha, nome, idioma = 'pt') => {
+	const labels = Cypress.env('labels')[idioma]
+  	const { pgInicialAluno, btnProfile } = labels.configUsuario
 
-  cy.get('#user_email')
-    .type(Cypress.env('login'))
-  
-  cy.get('#user_password')
-    .type(Cypress.env('password'))
+  	// :: Verifica se já está na página de login ::
+  	cy.url().then((currentUrl) => {
+		if (!currentUrl.includes('/users/login')) {
+          	cy.log(':: Redirecionando para a página de login ::')
+          	formLogin.login()
+      	}
+  	})
 
-  cy.contains('button', 'Entrar')
-    .should('be.visible')  
-    .click()
+	// :: Login ::
+	cy.log(':: Realiza login ::')
 
-  // Verificar se o login foi realizado com sucesso
-  cy.contains('#page-breadcrumb', pgInicialAluno)
-    .should('be.visible')
+	cy.get(formLogin.elementos.login.seletor)
+		.type(login)
+	
+	cy.get(formLogin.elementos.senha.seletor)
+		.type(senha)
 
-    switch (idioma) {
-      case 'pt':
-      case 'es':
-        cy.contains('.name', Cypress.env('username'))
-          .should('be.visible')
-        break
-      case 'en':
-        const nomeCompleto = Cypress.env('username')
-        const palavras = nomeCompleto.split(' ')
+	formLogin.entrar()
 
-        const nome = palavras[0]
-        const sobrenome = palavras.slice(1).join(' ')
+	// :: Verifica se o login foi realizado com sucesso ::
+	cy.log(':: Verifica se o login foi realizado com sucesso ::')
 
-        cy.contains('.name', `${sobrenome}, ${nome}`)
-          .should('be.visible')
-        break
-      default:
-        throw new Error(`Idioma inválido: ${idioma}. Utilize 'pt', 'en' ou 'es'`)
-    }
+	cy.contains(formHome.elementos.breadcrumb.seletor, pgInicialAluno)
+		.should('be.visible')
 
-  cy.contains('#btn-profile', btnProfile)
-    .should('be.visible')
+	cy.contains(formHome.elementos.btnProfile.seletor, btnProfile)
+		.should('be.visible')
+
+	switch (idioma) {
+		case 'pt':
+		case 'es':
+			cy.contains(formHome.elementos.name.seletor, nome)
+				.should('be.visible')
+			break
+		case 'en':
+			const nomeFormatado = nome.split(' ').reverse().join(', ')
+
+            cy.contains(formHome.elementos.name.seletor, nomeFormatado)
+                .should('be.visible')
+			break
+		default:
+			throw new Error(`Idioma inválido: ${idioma}. Utilize 'pt', 'en' ou 'es'`)
+	}
 })
 
 Cypress.Commands.add('alterarPerfil', function(perfil) {
-  cy.get('#btn-profile')
-    .should('be.visible')
-    .click()
+	const labels = Cypress.env('labels')
+	const { administrador, instrutor, gestor, aluno, pgInicial, pgInicialAluno } = labels.perfil
 
-  const labels = Cypress.env('labels')
-  const { administrador, instrutor, gestor, aluno, pgInicial, pgInicialAluno } = labels.perfil
+	// :: Altera perfil ::
+    cy.log(`:: Altera perfil para ${perfil} ::`)
+
+	formHome.clicarPerfil()
   
-  switch (perfil) {
-    case 'administrador':
-      cy.get('#admin-profile')
-        .should('be.visible')
-        .click()
+	switch (perfil) {
+		case 'administrador':
+			formHome.alterarPerfil('admin')
 
-      // Verificar se o perfil foi alterado com sucesso
-      cy.contains('#btn-profile', administrador)
-        .should('be.visible')
+			// :: Verifica se o perfil foi alterado com sucesso ::
+			cy.log(':: Verifica se o perfil foi alterado com sucesso ::')
 
-      cy.contains('#page-breadcrumb', pgInicial)
-        .should('be.visible')
-      break
-    case 'instrutor':
-      cy.get('#instructor-profile')
-        .should('be.visible')
-        .click()
-      
-      // Verificar se o perfil foi alterado com sucesso
-      cy.contains('#btn-profile', instrutor)
-        .should('be.visible')
+			cy.contains(formHome.elementos.btnProfile.seletor, administrador)
+				.should('be.visible')
 
-      cy.contains('#page-breadcrumb', pgInicial)
-        .should('be.visible')
-      break
-    case 'gestor':
-      cy.get('#manager-profile')
-        .should('be.visible')
-        .click()
-      
-      // Verificar se o perfil foi alterado com sucesso
-      cy.contains('#btn-profile', gestor)
-        .should('be.visible')
+			cy.contains(formHome.elementos.breadcrumb.seletor, pgInicial)
+				.should('be.visible')
+			break
+		case 'instrutor':
+			formHome.alterarPerfil('instructor')
+		
+			// :: Verifica se o perfil foi alterado com sucesso ::
+			cy.log(':: Verifica se o perfil foi alterado com sucesso ::')
 
-      cy.contains('#page-breadcrumb', pgInicial)
-        .should('be.visible')
-      break
-    case 'aluno':
-      cy.get('#student-profile')
-        .should('be.visible')
-        .click()
+			cy.contains(formHome.elementos.btnProfile.seletor, instrutor)
+				.should('be.visible')
 
-      // Verificar se o perfil foi alterado com sucesso
-      cy.contains('#btn-profile', aluno)
-        .should('be.visible')
+			cy.contains(formHome.elementos.breadcrumb.seletor, pgInicial)
+				.should('be.visible')
+			break
+		case 'gestor':
+			formHome.alterarPerfil('manager')
+		
+			// :: Verifica se o perfil foi alterado com sucesso ::
+			cy.log(':: Verifica se o perfil foi alterado com sucesso ::')
 
-      cy.contains('#page-breadcrumb', pgInicialAluno)
-        .should('be.visible')
-      break
-    default:
-      throw new Error(`Perfil inválido: ${perfil}. Utilize 'administrador', 'instrutor', 'gestor' ou 'aluno'`)
-  }
+			cy.contains(formHome.elementos.btnProfile.seletor, gestor)
+				.should('be.visible')
+
+			cy.contains(formHome.elementos.breadcrumb.seletor, pgInicial)
+				.should('be.visible')
+			break
+		case 'aluno':
+			formHome.alterarPerfil('student')
+		
+			// :: Verifica se o perfil foi alterado com sucesso ::
+			cy.log(':: Verifica se o perfil foi alterado com sucesso ::')
+
+			cy.contains(formHome.elementos.btnProfile.seletor, aluno)
+				.should('be.visible')
+
+			cy.contains(formHome.elementos.breadcrumb.seletor, pgInicialAluno)
+				.should('be.visible')
+			break
+		default:
+			throw new Error(`Perfil inválido: ${perfil}. Utilize 'administrador', 'instrutor', 'gestor' ou 'aluno'`)
+	}
 })
 
 Cypress.Commands.add('acessarPgCatalogo', function() {
@@ -2446,6 +2454,8 @@ Cypress.Commands.add('limparDadosOrg', function() {
 })
 
 Cypress.Commands.add('ignorarCapturaErros', (errorsToIgnore, options = { ignoreScriptErrors: false, ignoreNetworkErrors: false }) => {
+  cy.log(':: Ignora a captura de erros já mapeados ::')
+
   Cypress.on('uncaught:exception', (err, runnable) => {
     const shouldIgnoreError = errorsToIgnore.some(errorToIgnore => err.message.includes(errorToIgnore))
     
@@ -2462,6 +2472,8 @@ Cypress.Commands.add('ignorarCapturaErros', (errorsToIgnore, options = { ignoreS
 })
 
 Cypress.Commands.add('ativarCapturaErros', function() {
+  cy.log(':: Ativando captura de erros ::')
+
   Cypress.removeAllListeners('uncaught:exception')
 })
 
@@ -2765,7 +2777,8 @@ Cypress.Commands.add('resetConfigOrganizacao', (aba) => {
 
       const formEnvioEmailsDefault = {
         // Envio de E-mails
-        limparInformacoesEmail: true
+        limparInformacoesEmail: true,
+        confirmarLimparInformacoesEmail: true
       }
 
       // Esperar para atualização da customização
@@ -3558,7 +3571,8 @@ Cypress.Commands.add('excluirChave', (nomeChave) => {
   })
 
   // Validar modal de confirmação de exclusão
-  cy.contains('.chakra-modal__header', tituloModalExclusao)
+  cy.get('header[id^="chakra-modal--header-"]')
+    .contains(tituloModalExclusao)
     .should('exist')
 
   cy.contains('.chakra-modal__body', textoModalExclusao)
@@ -3592,10 +3606,12 @@ Cypress.Commands.add('alterarSituacaoChave', (nomeChave, situacao) => {
           cy.contains('#activate-toast', msgChaveAtivada)
             .should('exist')
         } else if (situacao === 'Inativo') {
+          cy.wait(2000)
           // Validar modal de confirmação de inativação
-          cy.get('.chakra-modal__header')
-            .should('contain', tituloModalInativar)
-      
+          cy.get('header[id^="chakra-modal--header-"]')
+            .contains(tituloModalInativar)
+            .should('exist')
+
           cy.contains('.chakra-modal__body', textoModalInativar)
             .should('exist')
       
@@ -3713,11 +3729,9 @@ Cypress.Commands.add('configTodosCamposCustomizados', (acao) => {
   verificarPerfilENomeUsuario().then((resultado) => {
     if (resultado.acao === 'logout') {
       cy.logout()
-      cy.loginTwygoAutomacao()
-      cy.alterarPerfil('administrador')
+      cy.loginTwygoAutomacaoAdm()
     } else if (resultado.acao === 'login') {
-      cy.loginTwygoAutomacao()
-      cy.alterarPerfil('administrador')
+      cy.loginTwygoAutomacaoAdm()
     } else if (resultado.acao === 'perfil') {
       cy.alterarPerfil('administrador')
     }
@@ -3757,16 +3771,6 @@ Cypress.Commands.add('configTodosCamposCustomizados', (acao) => {
   // Logout
   cy.acessarPgListaConteudos()
   cy.logout()
-})
-
-Cypress.Commands.add('login', (login, senha) => {
-  cy.get(formLogin.elementos.login.seletor)
-    .type(login)
-  
-  cy.get(formLogin.elementos.senha.seletor)
-    .type(senha)
-  
-  formLogin.entrar()
 })
 
 Cypress.Commands.add('listaCursoViaApi', function() {
@@ -3838,8 +3842,7 @@ Cypress.Commands.add('configurarNrColaboradores', () => {
     salvarDados: true
   }
 
-  cy.loginTwygoAutomacao()
-  cy.alterarPerfil('administrador')
+  cy.loginTwygoAutomacaoAdm()
   cy.acessarPgConfigOrganizacao()
   cy.preencherDadosConfigOrganizacao(dados, 'dados', { limpar: true })
 
@@ -3849,21 +3852,22 @@ Cypress.Commands.add('configurarNrColaboradores', () => {
 })
 
 Cypress.Commands.add('configurarBtnRegistreSe', () => {
-  const visualizacao = {
-    visualizacao: 'Pública',
-    salvarDados: true
-  }
+	const visualizacao = {
+		visualizacao: 'Pública',
+		salvarDados: true
+	}
 
-  const registreSe = {
-    mostrarBotaoRegistrar: true,
-    salvarCustomizacaoInterface: true
-  }
+	const registreSe = {
+		mostrarBotaoRegistrar: true,
+		salvarCustomizacaoInterface: true
+	}
 
-  cy.loginTwygoAutomacao()
-  cy.alterarPerfil('administrador')
-  cy.acessarPgConfigOrganizacao()
-  cy.preencherDadosConfigOrganizacao(visualizacao, 'dados')
-  cy.preencherDadosConfigOrganizacao(registreSe, 'customizacoes')
+	cy.acessarPgConfigOrganizacao()
+	cy.preencherDadosConfigOrganizacao(visualizacao, 'dados')
+	cy.preencherDadosConfigOrganizacao(registreSe, 'customizacoes')
 
-  cy.logout()
+	cy.get(formConfigOrganizacao.elementos.abaSelecionada.seletor)
+		.should('contain.text', 'Dados')
+
+	cy.logout()
 })

@@ -14,8 +14,8 @@ describe('Criar e vincular cupom à curso', () => {
 
     beforeEach(function() {
         // Gera um nome aleatório para o conteúdo e para o nome e código do desconto
-        nomeConteudo1 = faker.lorem.words(2)
-        nomeConteudo2 = faker.lorem.words(2)
+        nomeConteudo1 = faker.commerce.productName()
+        nomeConteudo2 = faker.commerce.productName()
         nomeDesconto = faker.word.words(1)
         codigoDesconto = `${(tipoDesconto).toUpperCase()}-${(nomeDesconto).toUpperCase().trim().replace(' ', '')}${faker.number.int({ max: 100 })}`
 
@@ -26,9 +26,6 @@ describe('Criar e vincular cupom à curso', () => {
         getAuthToken()
         cy.excluirCursoViaApi()
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
-		
         listaConteudos = []
 		cy.listaConteudo('trilha', listaConteudos)
 		cy.excluirConteudo(null, 'trilha', listaConteudos)
@@ -287,9 +284,6 @@ describe('Criar e vincular voucher à curso', () => {
         getAuthToken()
         cy.excluirCursoViaApi()
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
-		
         listaConteudos = []
 		cy.listaConteudo('trilha', listaConteudos)
 		cy.excluirConteudo(null, 'trilha', listaConteudos)

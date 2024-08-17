@@ -32,8 +32,6 @@ describe('Instrutor', () => {
         // Exclui todos os usuários antes de iniciar o teste
         cy.excluirUsuarioViaApi()
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         // Cria os instrutores
         cy.criarInstrutor(nomeInstrutor1, sobrenomeInstrutor1)
         cy.criarInstrutor(nomeInstrutor2, sobrenomeInstrutor2)

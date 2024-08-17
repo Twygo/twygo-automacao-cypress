@@ -29,8 +29,6 @@ describe('Compartilhar trilha com ambientes adicionais', () => {
         cy.excluirCursoViaApi()
 
         // Exclui todas as trilhas antes de iniciar o teste
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
 
         listaConteudos = []
 		cy.listaConteudo(tipoConteudo, listaConteudos)

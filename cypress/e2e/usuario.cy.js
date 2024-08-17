@@ -65,8 +65,6 @@ describe('Usuário', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.acessarPgUsuarios()
         cy.addUsuario()
         cy.preencherDadosUsuario(dados, { limpar: true })
@@ -183,8 +181,6 @@ describe('Usuário', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.acessarPgUsuarios()
         cy.addUsuario()
         cy.preencherDadosUsuario(dados, { limpar: true })
@@ -299,8 +295,6 @@ describe('Usuário', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.acessarPgUsuarios()
         cy.addUsuario()
         cy.preencherDadosUsuario(dados, { limpar: true })
@@ -396,8 +390,6 @@ describe('Usuário', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.acessarPgUsuarios()
         cy.addUsuario()
         cy.preencherDadosUsuario(dados, { limpar: true })
@@ -474,8 +466,6 @@ describe('Usuário', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.acessarPgUsuarios()
         cy.addUsuario()
         cy.preencherDadosUsuario(dados, { limpar: true })
@@ -548,8 +538,6 @@ describe('Usuário', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.acessarPgUsuarios()
         cy.addUsuario()
         cy.preencherDadosUsuario(dados, { limpar: true })
@@ -634,8 +622,6 @@ describe('Usuário', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.acessarPgUsuarios()
         cy.addUsuario()
         cy.preencherDadosUsuario(dados, { limpar: true })
