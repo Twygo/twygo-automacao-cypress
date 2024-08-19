@@ -1,5 +1,8 @@
 class formAmbientesAdicionais {
+    url = `/o/${Cypress.env('orgId')}/additional_environments`
+
     elementos = {
+        breadcrumb: '#page-breadcrumb',
         adicionar: {
             seletor: 'button:contains("Adicionar")',
             tipo: 'button'
@@ -123,6 +126,35 @@ class formAmbientesAdicionais {
     salvarCompartilhamento() {
         cy.get(this.elementos.salvarCompartilhamento.seletor)
             .click()
+    }
+
+    page(breadcrumb) {
+        cy.url().then((urlAtual) => {
+            if (!urlAtual.includes(this.url)) {
+                // URL não está na página, acessar
+                cy.log(`:: Acessando ${this.url} ::`)
+                cy.visit(this.url)
+                this.validarBreadcrumb(breadcrumb)
+            } else {
+                // URL já está na página, verificar se o breadcrumb é o esperado
+                cy.log(`:: URL está correto. Verificando breadcrumb ${breadcrumb} ::`)
+                cy.get(this.elementos.breadcrumb).then(($breadcrumb) => {
+                    if (!$breadcrumb.text().includes(breadcrumb)) {
+                        // Se o breadcrumb não for o esperado, mesmo estando na página, recarregar
+                        cy.log(':: Recarregando página ::')
+                        cy.visit(this.url)
+                    }
+                })
+                // Validar breadcrumb
+                cy.log(`:: Validando breadcrumb ${breadcrumb} ::`)
+                this.validarBreadcrumb(breadcrumb)
+            }
+        })
+    }
+
+    validarBreadcrumb(breadcrumb) {
+        cy.contains(this.elementos.breadcrumb, breadcrumb)
+            .should('be.visible')
     }
 }
 export default new formAmbientesAdicionais

@@ -188,7 +188,10 @@
         "breadcrumb": "Ambientes adicionais",
         "msgSucesso": "Ambiente adicional criado com sucesso",
         "msgInativacao": "Ambiente inativado com sucesso",
-        "msgCompartilhamento": "Alterações salvas com sucesso"
+        "msgCompartilhamento": "Alterações salvas com sucesso",
+        "txtNenhumResultado": "Você ainda não tem um ambiente adicional.",
+        "txtCriarPrimeiro": "Crie o primeiro",
+        "txtBtnCriar": "Criar ambiente adicional"
     },
     "configOrganizacao": {
         "breadcrumb": "Organização",

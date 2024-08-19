@@ -81,63 +81,70 @@ Cypress.Commands.add('alterarPerfil', function(perfil) {
 	const labels = Cypress.env('labels')
 	const { administrador, instrutor, gestor, aluno, pgInicial, pgInicialAluno } = labels.perfil
 
-	// :: Altera perfil ::
-    cy.log(`:: Altera perfil para ${perfil} ::`)
+	// :: Verifica se o perfil atual já é o desejado ::
+	cy.get(formHome.elementos.btnProfile.seletor).then($btnProfile => {
+		if ($btnProfile.text().includes(perfil)) {
+			cy.log(`:: Perfil já está definido como ${perfil}. Nenhuma ação necessária ::`)
+			return
+		}
 
-	formHome.clicarPerfil()
-  
-	switch (perfil) {
-		case 'administrador':
-			formHome.alterarPerfil('admin')
+		// :: Altera perfil ::
+		cy.log(`:: Altera perfil para ${perfil} ::`)
+		formHome.clicarPerfil()
+	
+		switch (perfil) {
+			case 'administrador':
+				formHome.alterarPerfil('admin')
 
-			// :: Verifica se o perfil foi alterado com sucesso ::
-			cy.log(':: Verifica se o perfil foi alterado com sucesso ::')
+				// :: Verifica se o perfil foi alterado com sucesso ::
+				cy.log(':: Verifica se o perfil foi alterado com sucesso ::')
 
-			cy.contains(formHome.elementos.btnProfile.seletor, administrador)
-				.should('be.visible')
+				cy.contains(formHome.elementos.btnProfile.seletor, administrador)
+					.should('be.visible')
 
-			cy.contains(formHome.elementos.breadcrumb.seletor, pgInicial)
-				.should('be.visible')
-			break
-		case 'instrutor':
-			formHome.alterarPerfil('instructor')
-		
-			// :: Verifica se o perfil foi alterado com sucesso ::
-			cy.log(':: Verifica se o perfil foi alterado com sucesso ::')
+				cy.contains(formHome.elementos.breadcrumb.seletor, pgInicial)
+					.should('be.visible')
+				break
+			case 'instrutor':
+				formHome.alterarPerfil('instructor')
+			
+				// :: Verifica se o perfil foi alterado com sucesso ::
+				cy.log(':: Verifica se o perfil foi alterado com sucesso ::')
 
-			cy.contains(formHome.elementos.btnProfile.seletor, instrutor)
-				.should('be.visible')
+				cy.contains(formHome.elementos.btnProfile.seletor, instrutor)
+					.should('be.visible')
 
-			cy.contains(formHome.elementos.breadcrumb.seletor, pgInicial)
-				.should('be.visible')
-			break
-		case 'gestor':
-			formHome.alterarPerfil('manager')
-		
-			// :: Verifica se o perfil foi alterado com sucesso ::
-			cy.log(':: Verifica se o perfil foi alterado com sucesso ::')
+				cy.contains(formHome.elementos.breadcrumb.seletor, pgInicial)
+					.should('be.visible')
+				break
+			case 'gestor':
+				formHome.alterarPerfil('manager')
+			
+				// :: Verifica se o perfil foi alterado com sucesso ::
+				cy.log(':: Verifica se o perfil foi alterado com sucesso ::')
 
-			cy.contains(formHome.elementos.btnProfile.seletor, gestor)
-				.should('be.visible')
+				cy.contains(formHome.elementos.btnProfile.seletor, gestor)
+					.should('be.visible')
 
-			cy.contains(formHome.elementos.breadcrumb.seletor, pgInicial)
-				.should('be.visible')
-			break
-		case 'aluno':
-			formHome.alterarPerfil('student')
-		
-			// :: Verifica se o perfil foi alterado com sucesso ::
-			cy.log(':: Verifica se o perfil foi alterado com sucesso ::')
+				cy.contains(formHome.elementos.breadcrumb.seletor, pgInicial)
+					.should('be.visible')
+				break
+			case 'aluno':
+				formHome.alterarPerfil('student')
+			
+				// :: Verifica se o perfil foi alterado com sucesso ::
+				cy.log(':: Verifica se o perfil foi alterado com sucesso ::')
 
-			cy.contains(formHome.elementos.btnProfile.seletor, aluno)
-				.should('be.visible')
+				cy.contains(formHome.elementos.btnProfile.seletor, aluno)
+					.should('be.visible')
 
-			cy.contains(formHome.elementos.breadcrumb.seletor, pgInicialAluno)
-				.should('be.visible')
-			break
-		default:
-			throw new Error(`Perfil inválido: ${perfil}. Utilize 'administrador', 'instrutor', 'gestor' ou 'aluno'`)
-	}
+				cy.contains(formHome.elementos.breadcrumb.seletor, pgInicialAluno)
+					.should('be.visible')
+				break
+			default:
+				throw new Error(`Perfil inválido: ${perfil}. Utilize 'administrador', 'instrutor', 'gestor' ou 'aluno'`)
+		}
+	})
 })
 
 Cypress.Commands.add('acessarPgCatalogo', function() {
@@ -163,14 +170,10 @@ Cypress.Commands.add('acessarPgListaConteudos', function() {
 })
 
 Cypress.Commands.add('acessarPgAmbientesAdicionais', function() {
-  cy.visit(`/o/${Cypress.env('orgId')}/additional_environments`)
+  	const labels = Cypress.env('labels')
+  	const { breadcrumb } = labels.ambientesAdicionais
 
-  const labels = Cypress.env('labels')
-  const { breadcrumb } = labels.ambientesAdicionais
-
-  // Verificar se a página de ambientes adicionais foi acessada com sucesso
-  cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+  	formAmbientesAdicionais.page(breadcrumb)
 })
 
 Cypress.Commands.add('acessarPgBiblioteca', function() {
@@ -2617,21 +2620,21 @@ Cypress.Commands.add('listaAmbientesAdicionais', () => {
 })
 
 // Comando para inativar todos os ambientes adicionais
-Cypress.Commands.add('inativarTodosAmbientesAdicionais', () => {
-  cy.log(':: Acessando a página de ambientes adicionais para listar e inativar ::')
+// Cypress.Commands.add('inativarTodosAmbientesAdicionais', () => {
+//   cy.log(':: Acessando a página de ambientes adicionais para listar e inativar ::')
   
-  cy.acessarPgAmbientesAdicionais()
-  cy.listaAmbientesAdicionais().then(() => {
-    cy.get('@nomesAmbientesAdicionais').then((nomesAmbientesAdicionais) => {
-      nomesAmbientesAdicionais.forEach((nome) => {
-        cy.inativarAmbienteAdicional(nome)
-        cy.log(`:: Ambiente adicional >> '${nome}' << inativado com sucesso ::`)
-      })
-    })
-  }).then(() => {
-    cy.acessarPgAmbientesAdicionais()
-  })
-})
+//   cy.acessarPgAmbientesAdicionais()
+//   cy.listaAmbientesAdicionais().then(() => {
+//     cy.get('@nomesAmbientesAdicionais').then((nomesAmbientesAdicionais) => {
+//       nomesAmbientesAdicionais.forEach((nome) => {
+//         cy.inativarAmbienteAdicional(nome)
+//         cy.log(`:: Ambiente adicional >> '${nome}' << inativado com sucesso ::`)
+//       })
+//     })
+//   }).then(() => {
+//     cy.acessarPgAmbientesAdicionais()
+//   })
+// })
 
 Cypress.Commands.add('preencherDadosConfigOrganizacao', (dados, aba, opcoes = { limpar: false }) => {
   if (aba) {
