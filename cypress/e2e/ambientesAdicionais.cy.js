@@ -1,12 +1,21 @@
 /// reference types="cypress" />
 import { faker } from '@faker-js/faker'
 import { gerarDados } from '../support/helpers/geradorDados'
+import formAmbientesAdicionais from '../support/pageObjects/formAmbientesAdicionais'
 
 describe('ambientesAdicionais', () => {
 
     beforeEach(() => {
-        // Exclui todos os ambientes adicionais         
+        // Exclui todos os ambientes adicionais 
         cy.inativarTodosAmbientesAdicionais() 
+    })
+
+    afterEach(function() {
+        // Caso o teste falhe, excluir todos os ambientes adicionais
+        if (this.currentTest.state === 'failed') {
+            cy.log(':: Realizando limpeza de base ::')
+            cy.inativarTodosAmbientesAdicionais()
+        }
     })
 
     it('1. CRUD - Ambiente adicional', () => {
@@ -20,12 +29,13 @@ describe('ambientesAdicionais', () => {
 
         // CREATE
         cy.log('## CREATE ##')
+        cy.acessarPgAmbientesAdicionais()
         cy.criarAmbienteAdicional('Criar', dadosAmbiente, { limpar: true }) 
 
         // READ
         cy.log('## READ ##')
         cy.acessarPgAmbientesAdicionais()
-        cy.validarAmbienteAdicional(dadosAmbiente, 'Criação')
+        formAmbientesAdicionais.validarAmbienteAdicional(dadosAmbiente.nome, 'Criar')
 
         // UPDATE
         cy.log('## UPDATE ##')
@@ -33,10 +43,7 @@ describe('ambientesAdicionais', () => {
 
         // DELETE
         cy.log('## DELETE ##')
-
-        cy.inativarAmbienteAdicional(dadosAmbiente.nome)
         cy.acessarPgAmbientesAdicionais()
-        cy.validarAmbienteAdicional(dadosAmbiente, 'Inativação')
+        cy.inativarAmbienteAdicional(dadosAmbiente.nome)
     })
-
 })

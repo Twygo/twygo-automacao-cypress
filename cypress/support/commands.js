@@ -2476,62 +2476,60 @@ Cypress.Commands.add('ignorarCapturaErros', (errorsToIgnore, options = { ignoreS
 
 Cypress.Commands.add('ativarCapturaErros', function() {
   cy.log(':: Ativando captura de erros ::')
-
   Cypress.removeAllListeners('uncaught:exception')
 })
 
 Cypress.Commands.add('criarAmbienteAdicional', (acao, dadosAmbiente, opcoes = { limpar: true }) => {
-  const labels = Cypress.env('labels')
-  const { msgSucesso } = labels.ambientesAdicionais
-  
-  if (acao === 'Criar') {
-    formAmbientesAdicionais.criarAmbienteAdicional()
-  } else if (acao === 'Adicionar') {
-    formAmbientesAdicionais.adicionarAmbienteAdicional()
-  }
-  
-  Object.keys(dadosAmbiente).forEach(nomeCampo => {
-      const valor = dadosAmbiente[nomeCampo]
-      formAmbientesAdicionais.preencherCampo(nomeCampo, valor, opcoes)
-  })
+    const labels = Cypress.env('labels')
+    const { msgSucesso } = labels.ambientesAdicionais
+    const acaoToast = 'Criar'
+    
+    if (acao === 'Criar') {
+        formAmbientesAdicionais.criarAmbienteAdicional()
+    } else if (acao === 'Adicionar') {
+        formAmbientesAdicionais.adicionarAmbienteAdicional()
+    }
+    
+    Object.keys(dadosAmbiente).forEach(nomeCampo => {
+        const valor = dadosAmbiente[nomeCampo]
+        formAmbientesAdicionais.preencherCampo(nomeCampo, valor, opcoes)
+    })
 
-  formAmbientesAdicionais.salvarAmbiente()
-  cy.contains('#toast-success-toast', msgSucesso)   // Atualizado ID do toast
-        .should('exist')    // Alterado de should('be.visible') para should('exist') pois o toast é exibido por alguns segundos
-}) 
-
-Cypress.Commands.add('validarAmbienteAdicional', (dadosAmbiente, acao) => {
-  // Extrai o valor da chave 'nome' do objeto 'dadosAmbiente'
-  const nomeAmbiente = dadosAmbiente.nome;
-
-  switch(acao) {
-    case 'Criação':
-      cy.get('p.partner-card-text')   // Atualizado seletor
-        .should('exist')
-        .should('contain', nomeAmbiente)
-      break
-    case 'Inativação':
-      cy.get('p.partner-card-text span').should('not.exist')
-      break
-  }
+    formAmbientesAdicionais.salvarAmbiente()
+    formAmbientesAdicionais.validarMsgSucesso(acaoToast, msgSucesso)
 })
 
-Cypress.Commands.add('inativarAmbienteAdicional', (nomeAmbiente) => {
-  const labels = Cypress.env('labels')
-  const { msgInativacao } = labels.ambientesAdicionais
+Cypress.Commands.add('inativarAmbienteAdicional', (nomeAmbiente = null) => {
+    cy.log(':: Inativando ambiente adicional ::')
+	  const labels = Cypress.env('labels')
+    const { msgInativacao, txtNenhumResultado } = labels.ambientesAdicionais
+	  const acao = 'Inativar'
 
-  cy.contains('div', nomeAmbiente).within(() => {
-    cy.get(formAmbientesAdicionais.elementos.inativar.seletor)
-      .click()
-  })   
-
-  // Confirmar a inativação do ambiente
-  formAmbientesAdicionais.confirmarInativacaoAmbiente()
-  
-  // Valida a mensagem de sucesso
-  cy.contains('#toast-success-toast-description', msgInativacao)
-    .should('exist')
-}) 
+    // Verifica se o nome do ambiente foi fornecido
+    if (nomeAmbiente) {
+        // Inativa um ambiente específico
+        formAmbientesAdicionais.inativarAmbiente(nomeAmbiente)
+        formAmbientesAdicionais.confirmarInativacaoAmbiente()
+        formAmbientesAdicionais.validarMsgSucesso(acao, msgInativacao)
+        formAmbientesAdicionais.validarAmbienteAdicional(nomeAmbiente, acao)
+    } else {
+        // Verifica a presença da mensagem de "nenhum resultado"
+        cy.log(`Verificando a presença da mensagem de nenhum resultado: ${txtNenhumResultado}`)
+        formAmbientesAdicionais.verificarNenhumResultado(txtNenhumResultado).then((temResultado) => {
+            console.log(`Resultado da verificação: ${temResultado}`)
+            if (temResultado) {
+                formAmbientesAdicionais.capturarNomesAmbientes().then((nomesAmbientes) => {
+                    nomesAmbientes.forEach((nome) => {
+                        formAmbientesAdicionais.inativarAmbiente(nome)
+                        formAmbientesAdicionais.confirmarInativacaoAmbiente()
+                        formAmbientesAdicionais.validarMsgSucesso(acao, msgInativacao)
+                        formAmbientesAdicionais.validarAmbienteAdicional(nome, acao)
+                    })
+                })
+            }
+        })
+    }
+})
 
 Cypress.Commands.add('ambienteAdicionalConteudo', (nomeConteudo, tipoConteudo) => {
   const labels = Cypress.env('labels')
@@ -2599,42 +2597,6 @@ Cypress.Commands.add('validarCompartilhamentoComAmbienteAdicional', (nomeAmbient
     })
   })
 })
-
-// Comando para listar os nomes dos ambientes adicionais
-Cypress.Commands.add('listaAmbientesAdicionais', () => {
-  cy.log(':: Gerando lista de ambientes adicionais ::')
-  
-  return cy.get('body').then(($body) => {
-    const nomesAmbientesAdicionais = []
-
-    if ($body.find('.chakra-text.partner-card-text span').length > 0) {
-      cy.get('.chakra-text.partner-card-text span').each(($el) => {
-        nomesAmbientesAdicionais.push($el.text())
-      }).then(() => {
-        cy.wrap(nomesAmbientesAdicionais).as('nomesAmbientesAdicionais')
-      })
-    } else {
-      cy.wrap(nomesAmbientesAdicionais).as('nomesAmbientesAdicionais')
-    }
-  })
-})
-
-// Comando para inativar todos os ambientes adicionais
-// Cypress.Commands.add('inativarTodosAmbientesAdicionais', () => {
-//   cy.log(':: Acessando a página de ambientes adicionais para listar e inativar ::')
-  
-//   cy.acessarPgAmbientesAdicionais()
-//   cy.listaAmbientesAdicionais().then(() => {
-//     cy.get('@nomesAmbientesAdicionais').then((nomesAmbientesAdicionais) => {
-//       nomesAmbientesAdicionais.forEach((nome) => {
-//         cy.inativarAmbienteAdicional(nome)
-//         cy.log(`:: Ambiente adicional >> '${nome}' << inativado com sucesso ::`)
-//       })
-//     })
-//   }).then(() => {
-//     cy.acessarPgAmbientesAdicionais()
-//   })
-// })
 
 Cypress.Commands.add('preencherDadosConfigOrganizacao', (dados, aba, opcoes = { limpar: false }) => {
   if (aba) {
