@@ -35,9 +35,9 @@ Cypress.Commands.add('login', (login, senha, nome, idioma = 'pt') => {
   	// :: Verifica se já está na página de login ::
   	cy.url().then((currentUrl) => {
 		if (!currentUrl.includes('/users/login')) {
-          	cy.log(':: Redirecionando para a página de login ::')
-          	formLogin.login()
-      	}
+		  	cy.log(':: Redirecionando para a página de login ::')
+		  	formLogin.login()
+	  	}
   	})
 
 	// :: Login ::
@@ -69,8 +69,8 @@ Cypress.Commands.add('login', (login, senha, nome, idioma = 'pt') => {
 		case 'en':
 			const nomeFormatado = nome.split(' ').reverse().join(', ')
 
-            cy.contains(formHome.elementos.name.seletor, nomeFormatado)
-                .should('be.visible')
+			cy.contains(formHome.elementos.name.seletor, nomeFormatado)
+				.should('be.visible')
 			break
 		default:
 			throw new Error(`Idioma inválido: ${idioma}. Utilize 'pt', 'en' ou 'es'`)
@@ -155,7 +155,7 @@ Cypress.Commands.add('acessarPgCatalogo', function() {
 
   // Verificar se a página de catálogo foi acessada com sucesso
   cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('acessarPgListaConteudos', function() {
@@ -166,15 +166,75 @@ Cypress.Commands.add('acessarPgListaConteudos', function() {
 
   // Verificar se a página de lista de conteúdos foi acessada com sucesso
   cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+	.should('be.visible')
 })
 
+// :: Ambientes adicionais ::
 Cypress.Commands.add('acessarPgAmbientesAdicionais', function() {
   	const labels = Cypress.env('labels')
   	const { breadcrumb } = labels.ambientesAdicionais
 
   	formAmbientesAdicionais.page(breadcrumb)
 })
+
+Cypress.Commands.add('criarAmbienteAdicional', (acao, dadosAmbiente, opcoes = { limpar: true }) => {
+	const labels = Cypress.env('labels')
+	const { msgSucesso } = labels.ambientesAdicionais
+	const acaoToast = 'Criar'
+	
+	// :: Ação inicial com base no parâmetro 'acao' ::
+	if (acao === 'Criar') {
+		formAmbientesAdicionais.criarAmbienteAdicional()
+	} else if (acao === 'Adicionar') {
+		formAmbientesAdicionais.adicionarAmbienteAdicional()
+	}
+	
+	// :: Preenchimento dos campos ::
+	Object.keys(dadosAmbiente).forEach(nomeCampo => {
+		const valor = dadosAmbiente[nomeCampo]
+		formAmbientesAdicionais.preencherCampo(nomeCampo, valor, opcoes)
+	})
+
+	// :: Salvar ::
+	formAmbientesAdicionais.salvarAmbiente()
+
+	// :: Verificar mensagem de sucesso ::
+	formAmbientesAdicionais.validarMsgSucesso(acaoToast, msgSucesso)
+})
+
+Cypress.Commands.add('inativarAmbienteAdicional', (nomeAmbiente = null) => {
+	cy.log(':: Inativando ambiente adicional ::')
+	  const labels = Cypress.env('labels')
+	const { msgInativacao, txtNenhumResultado } = labels.ambientesAdicionais
+	  const acao = 'Inativar'
+
+	// Verifica se o nome do ambiente foi fornecido
+	if (nomeAmbiente) {
+		// Inativa um ambiente específico
+		formAmbientesAdicionais.inativarAmbiente(nomeAmbiente)
+		formAmbientesAdicionais.confirmarInativacaoAmbiente()
+		formAmbientesAdicionais.validarMsgSucesso(acao, msgInativacao)
+		formAmbientesAdicionais.validarAmbienteAdicional(nomeAmbiente, acao)
+	} else {
+		// Verifica a presença da mensagem de "nenhum resultado"
+		cy.log(`Verificando a presença da mensagem de nenhum resultado: ${txtNenhumResultado}`)
+		formAmbientesAdicionais.verificarNenhumResultado(txtNenhumResultado).then((temResultado) => {
+			console.log(`Resultado da verificação: ${temResultado}`)
+			if (temResultado) {
+				formAmbientesAdicionais.capturarNomesAmbientes().then((nomesAmbientes) => {
+					nomesAmbientes.forEach((nome) => {
+						formAmbientesAdicionais.inativarAmbiente(nome)
+						formAmbientesAdicionais.confirmarInativacaoAmbiente()
+						formAmbientesAdicionais.validarMsgSucesso(acao, msgInativacao)
+						formAmbientesAdicionais.validarAmbienteAdicional(nome, acao)
+					})
+				})
+			}
+		})
+	}
+})
+
+// :: ::
 
 Cypress.Commands.add('acessarPgBiblioteca', function() {
   cy.visit(`/o/${Cypress.env('orgId')}/events/?tab=libraries`)
@@ -184,14 +244,14 @@ Cypress.Commands.add('acessarPgBiblioteca', function() {
 
   // Verificar se a página da biblioteca foi acessada com sucesso
   cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('acessarPgLogin', function() {
   cy.visit('/users/login')
 
   cy.title()
-    .should('eq', `Login - ${Cypress.env('orgName')}`)
+	.should('eq', `Login - ${Cypress.env('orgName')}`)
 })
 
 Cypress.Commands.add('acessarPgQuestionarios', function() {
@@ -202,7 +262,7 @@ Cypress.Commands.add('acessarPgQuestionarios', function() {
 
   // Verificar se a página de questionários foi acessada com sucesso
   cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('acessarPgConfigOrganizacao', function(aba) {
@@ -213,31 +273,31 @@ Cypress.Commands.add('acessarPgConfigOrganizacao', function(aba) {
 
   // Verificar se a página de configuração da organização foi acessada com sucesso
   cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+	.should('be.visible')
   
   if (aba) {
-    switch (aba) {
-      case 'dados':
-        formConfigOrganizacao.abaDados()
-        break
-      case 'customizacoes':
-        formConfigOrganizacao.abaCustomizacoes()
-        break
-      case 'certificado':
-        formConfigOrganizacao.abaCertificado()
-        break
-      case 'integracoes':
-        formConfigOrganizacao.abaIntegracoes()
-        break
-      case 'termos':
-        formConfigOrganizacao.abaTermos()
-        break
-      case 'urlWebhooks':
-        formConfigOrganizacao.abaUrlWebhooks()
-        break
-      default:
-        throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
-    }
+	switch (aba) {
+	  case 'dados':
+		formConfigOrganizacao.abaDados()
+		break
+	  case 'customizacoes':
+		formConfigOrganizacao.abaCustomizacoes()
+		break
+	  case 'certificado':
+		formConfigOrganizacao.abaCertificado()
+		break
+	  case 'integracoes':
+		formConfigOrganizacao.abaIntegracoes()
+		break
+	  case 'termos':
+		formConfigOrganizacao.abaTermos()
+		break
+	  case 'urlWebhooks':
+		formConfigOrganizacao.abaUrlWebhooks()
+		break
+	  default:
+		throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
+	}
   }  
 })
 
@@ -249,135 +309,135 @@ Cypress.Commands.add('acessarPgConfigCobrancaInscricao', function(aba) {
 
   // Verificar se a página de configuração de cobrança de inscrição foi acessada com sucesso
   cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+	.should('be.visible')
 
   cy.wait (2000)
 
   if (aba) {
-    switch (aba) {
-      case 'cobrancaAutomatica':
-        formCobrancaAutomatica.abaCobrancaAutomatica()
-        break
-      case 'cuponsVouchers':
-        formCuponsVouchers.abaCuponsVouchers()
-        break
-      case 'logs':
-        // Não será validado neste momento
-        break
-      default:
-        throw new Error(`Aba inválida: ${aba}. Utilize 'cobrancaAutomatica', 'cuponsVouchers' ou 'logs'`)
-    }
+	switch (aba) {
+	  case 'cobrancaAutomatica':
+		formCobrancaAutomatica.abaCobrancaAutomatica()
+		break
+	  case 'cuponsVouchers':
+		formCuponsVouchers.abaCuponsVouchers()
+		break
+	  case 'logs':
+		// Não será validado neste momento
+		break
+	  default:
+		throw new Error(`Aba inválida: ${aba}. Utilize 'cobrancaAutomatica', 'cuponsVouchers' ou 'logs'`)
+	}
   }
 })
 
 Cypress.Commands.add("criarCatalogoViaApi", (body, attempt = 1) => {
-    const url = `/api/v1/o/${Cypress.env('orgId')}/portfolio`
-    
-    cy.request({
-      method: 'POST',
-      url: url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${Cypress.env('token')}`
-      },
-      body: body,
-      failOnStatusCode: false
-    }).then((response) => {
-      if (response.status !== 201 && attempt < 3) {
-        cy.log(`Tentativa ${attempt}: Falha na requisição. Tentando novamente`)
-        cy.criarCatalogoViaApi(body, attempt + 1)
-      } else if (response.status !== 201) {
-        cy.log(`Tentativa ${attempt}: Falha na requisição. Não foi possível criar o catálogo`)
-        throw new Error(`Erro na criação do catálogo: ${response}`)
-      } else {
-        expect(response.status).to.eq(201)
-      }
-    })
+	const url = `/api/v1/o/${Cypress.env('orgId')}/portfolio`
+	
+	cy.request({
+	  method: 'POST',
+	  url: url,
+	  headers: {
+		'Content-Type': 'application/json',
+		'Authorization': `Bearer ${Cypress.env('token')}`
+	  },
+	  body: body,
+	  failOnStatusCode: false
+	}).then((response) => {
+	  if (response.status !== 201 && attempt < 3) {
+		cy.log(`Tentativa ${attempt}: Falha na requisição. Tentando novamente`)
+		cy.criarCatalogoViaApi(body, attempt + 1)
+	  } else if (response.status !== 201) {
+		cy.log(`Tentativa ${attempt}: Falha na requisição. Não foi possível criar o catálogo`)
+		throw new Error(`Erro na criação do catálogo: ${response}`)
+	  } else {
+		expect(response.status).to.eq(201)
+	  }
+	})
 })
 
 Cypress.Commands.add('excluirCatalogoViaApi', function() {
   cy.request({
-    method: 'GET',
-    url: `/api/v1/o/${Cypress.env('orgId')}/portfolio`,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': `Bearer ${Cypress.env('token')}`
-    },
-    failOnStatusCode: false
+	method: 'GET',
+	url: `/api/v1/o/${Cypress.env('orgId')}/portfolio`,
+	headers: {
+	  'Content-Type': 'application/x-www-form-urlencoded',
+	  'Authorization': `Bearer ${Cypress.env('token')}`
+	},
+	failOnStatusCode: false
   }).then((response) => {
-    if (response.status !== 200) {
-      throw new Error(`Erro ao obter a listagem de catálogos: ${response}`)
-    }
+	if (response.status !== 200) {
+	  throw new Error(`Erro ao obter a listagem de catálogos: ${response}`)
+	}
 
-    const portfolios = response.body.portfolios
-    portfolios.forEach((portfolio) => {
-      cy.request({
-        method: 'DELETE',
-        url: `/api/v1/o/${Cypress.env('orgId')}/portfolio/${portfolio.id}`,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': `Bearer ${Cypress.env('token')}`
-        },
-      }).then((deleteResponse) => {
-        if (deleteResponse.status !== 200) {
-          throw new Error(`Erro ao excluir o catálogo: ${deleteResponse}`)
-        }
-      })
-    })
+	const portfolios = response.body.portfolios
+	portfolios.forEach((portfolio) => {
+	  cy.request({
+		method: 'DELETE',
+		url: `/api/v1/o/${Cypress.env('orgId')}/portfolio/${portfolio.id}`,
+		headers: {
+		  'Content-Type': 'application/x-www-form-urlencoded',
+		  'Authorization': `Bearer ${Cypress.env('token')}`
+		},
+	  }).then((deleteResponse) => {
+		if (deleteResponse.status !== 200) {
+		  throw new Error(`Erro ao excluir o catálogo: ${deleteResponse}`)
+		}
+	  })
+	})
   })
 })
 
 Cypress.Commands.add('excluirCursoViaApi', function() {
   cy.request({
-    method: 'GET',
-    url: `/api/v1/o/${Cypress.env('orgId')}/courses?page=1&per_page=99999`,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': `Bearer ${Cypress.env('token')}`
-    },
-    failOnStatusCode: false
+	method: 'GET',
+	url: `/api/v1/o/${Cypress.env('orgId')}/courses?page=1&per_page=99999`,
+	headers: {
+	  'Content-Type': 'application/x-www-form-urlencoded',
+	  'Authorization': `Bearer ${Cypress.env('token')}`
+	},
+	failOnStatusCode: false
   }).then((response) => {
-    if (response.status !== 200) {
-      throw new Error(`Erro ao obter a listagem de cursos: ${response}`)
-    }
-    
-    const courses = response.body.courses.contents
-    courses.forEach((course) => {
-      cy.request({
-        method: 'DELETE',
-        url: `/api/v1/o/${Cypress.env('orgId')}/courses/${course.id}`,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': `Bearer ${Cypress.env('token')}`
-        },
-      }).then((deleteResponse) => {
-        if (deleteResponse.status !== 200) {
-          throw new Error(`Erro ao excluir o curso: ${deleteResponse}`)
-        }
-      })
-    })
+	if (response.status !== 200) {
+	  throw new Error(`Erro ao obter a listagem de cursos: ${response}`)
+	}
+	
+	const courses = response.body.courses.contents
+	courses.forEach((course) => {
+	  cy.request({
+		method: 'DELETE',
+		url: `/api/v1/o/${Cypress.env('orgId')}/courses/${course.id}`,
+		headers: {
+		  'Content-Type': 'application/x-www-form-urlencoded',
+		  'Authorization': `Bearer ${Cypress.env('token')}`
+		},
+	  }).then((deleteResponse) => {
+		if (deleteResponse.status !== 200) {
+		  throw new Error(`Erro ao excluir o curso: ${deleteResponse}`)
+		}
+	  })
+	})
   })
 })
 
 Cypress.Commands.add('preencherDadosConteudo', (conteudo, opcoes = { limpar: false }) => {
   Object.keys(conteudo).forEach(nomeCampo => {
-      const valor = conteudo[nomeCampo]
-      formConteudos.preencherCampo(nomeCampo, valor, opcoes)
+	  const valor = conteudo[nomeCampo]
+	  formConteudos.preencherCampo(nomeCampo, valor, opcoes)
   })
 }) 
 
 Cypress.Commands.add('validarDadosConteudo', (conteudo, categoria) => {
   if (!conteudo) {
-    throw new Error('O parâmetro "conteudo" é obrigatório.')
+	throw new Error('O parâmetro "conteudo" é obrigatório.')
   }
 
   if (!categoria) {
-    throw new Error('O parâmetro "categoria" é obrigatório.')
+	throw new Error('O parâmetro "categoria" é obrigatório.')
   }
 
   Object.keys(conteudo).forEach(nomeCampo => {
-    const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
-    formConteudos.validarCampo(nomeCampo, valor, categoria)
+	const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
+	formConteudos.validarCampo(nomeCampo, valor, categoria)
   })
 })
 
@@ -386,40 +446,40 @@ Cypress.Commands.add('addConteudo', function(tipoConteudo) {
   const { breadcrumbAdicionar, tituloPgAdicionar } = labels.conteudo[tipoConteudo]
   
   switch (tipoConteudo) {
-    case 'curso':
-      cy.get('[data-id="add-button"]')
-        .click({force:true})
+	case 'curso':
+	  cy.get('[data-id="add-button"]')
+		.click({force:true})
 
-      cy.get('[data-id="add-event"]')
-        .click()
-      break
-    case 'trilha':
-      cy.get('[data-id="add-button"]')
-        .click({force:true})
+	  cy.get('[data-id="add-event"]')
+		.click()
+	  break
+	case 'trilha':
+	  cy.get('[data-id="add-button"]')
+		.click({force:true})
 
-      cy.get('[data-id="add-learning-path"]')
-        .click()
-      break
-    case 'catalogo':
-      cy.contains('button', 'Adicionar')
-        .should('be.visible')
-        .click()  
-      break
-    case 'biblioteca':
-      cy.contains('#add-library', 'Adicionar')
-        .should('be.visible')
-        .click()
-      break
-    default:
-      throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso', 'catalogo' ou 'biblioteca'`)
+	  cy.get('[data-id="add-learning-path"]')
+		.click()
+	  break
+	case 'catalogo':
+	  cy.contains('button', 'Adicionar')
+		.should('be.visible')
+		.click()  
+	  break
+	case 'biblioteca':
+	  cy.contains('#add-library', 'Adicionar')
+		.should('be.visible')
+		.click()
+	  break
+	default:
+	  throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso', 'catalogo' ou 'biblioteca'`)
   }
 
   // Validar se a página foi carregada corretamente
   cy.contains('#page-breadcrumb', breadcrumbAdicionar)
-    .should('be.visible')
+	.should('be.visible')
 
   cy.contains('.detail_title', tituloPgAdicionar)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('editarConteudo', function(nomeConteudo, tipoConteudo) {
@@ -431,42 +491,42 @@ Cypress.Commands.add('editarConteudo', function(nomeConteudo, tipoConteudo) {
   let seletor = ''
 
   switch (tipoConteudo) {
-    case 'trilha':
-    case 'curso':        
-        seletor = `tr[tag-name='${nomeConteudo}']`    
-        // Clica em 'Opções' e 'Editar'
-        cy.get(seletor)
-          .find('svg[aria-label="Options"]')
-          .click()
+	case 'trilha':
+	case 'curso':        
+		seletor = `tr[tag-name='${nomeConteudo}']`    
+		// Clica em 'Opções' e 'Editar'
+		cy.get(seletor)
+		  .find('svg[aria-label="Options"]')
+		  .click()
 
-        cy.get(seletor)
-          .contains('button', 'Editar')
-          .click()
-      break
-    case 'catalogo':
-        seletor = `tr.event-row[name='${nomeConteudo}']`
-        // Clica em editar
-        cy.get(seletor)
-          .find('a[title="Editar"]')
-          .click()
-      break
-    case 'biblioteca':
-      cy.get('tr.event-row')
-        .contains('td.event-name', nomeConteudo)
-        .parent()
-        .find('a.event-edit')
-        .click()
-      break
-    default:
-      throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso' ou 'catalogo'`)
+		cy.get(seletor)
+		  .contains('button', 'Editar')
+		  .click()
+	  break
+	case 'catalogo':
+		seletor = `tr.event-row[name='${nomeConteudo}']`
+		// Clica em editar
+		cy.get(seletor)
+		  .find('a[title="Editar"]')
+		  .click()
+	  break
+	case 'biblioteca':
+	  cy.get('tr.event-row')
+		.contains('td.event-name', nomeConteudo)
+		.parent()
+		.find('a.event-edit')
+		.click()
+	  break
+	default:
+	  throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso' ou 'catalogo'`)
   }
   
   // Valida se a página foi carregada corretamente conforme o tipo de conteúdo
   cy.contains('#page-breadcrumb', breadcrumbEdicao)
-    .should('be.visible')
+	.should('be.visible')
 
   cy.contains('.detail_title', tituloPgEdicao)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('salvarConteudo', function(nomeConteudo, tipoConteudo) {
@@ -479,38 +539,38 @@ Cypress.Commands.add('salvarConteudo', function(nomeConteudo, tipoConteudo) {
   
   // Salva o conteúdo
   cy.contains('button', 'Salvar')
-    .should('be.visible')
-    .click()  
+	.should('be.visible')
+	.click()  
   
   // Valida a mensagem
   cy.contains('.flash.notice', msgSucesso)
-    .should('exist')
+	.should('exist')
 
   // Valida o redirecionamento
   cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+	.should('be.visible')
 
   switch (tipoConteudo) {
-    case 'criarCurso':
-    case 'trilha':
-    case 'curso':
-      seletor = `tr[tag-name='${nomeConteudo}']`
-      break
-    case 'catalogo':
-      seletor = `tr.event-row[name='${nomeConteudo}']`
-      break
-    case 'biblioteca':
-      seletor = `td.event-name[title='${nomeConteudo}']`
-      break
-    default:
-      throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso', 'catalogo' ou 'biblioteca'`)
+	case 'criarCurso':
+	case 'trilha':
+	case 'curso':
+	  seletor = `tr[tag-name='${nomeConteudo}']`
+	  break
+	case 'catalogo':
+	  seletor = `tr.event-row[name='${nomeConteudo}']`
+	  break
+	case 'biblioteca':
+	  seletor = `td.event-name[title='${nomeConteudo}']`
+	  break
+	default:
+	  throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso', 'catalogo' ou 'biblioteca'`)
   }
 
   // Verifica se o conteúdo foi criado e é exibido na listagem
   if (seletor) {
-    cy.get(seletor)
-      .should('be.visible')
-      .should('have.length', 1)
+	cy.get(seletor)
+	  .should('be.visible')
+	  .should('have.length', 1)
   }
 })
 
@@ -520,12 +580,12 @@ Cypress.Commands.add('cancelarFormularioConteudo', function(tipoConteudo) {
 
   // Cancelar
   cy.contains('#event-cancel', 'Cancelar')
-    .should('be.visible')
-    .click()
+	.should('be.visible')
+	.click()
 
   // Validar redirecionamento
   cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo, listaConteudos = []) {
@@ -534,147 +594,147 @@ Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo, lis
 
   // Função para excluir um conteúdo específico
   const excluirConteudoEspecifico = (nomeConteudo, tipoConteudo) => {
-    const { tituloModalExclusao, texto1ModalExclusao, texto2ModalExclusao, msgSucessoExclusao } = labels.conteudo[tipoConteudo]
+	const { tituloModalExclusao, texto1ModalExclusao, texto2ModalExclusao, msgSucessoExclusao } = labels.conteudo[tipoConteudo]
 
-    // Define o seletor para encontrar o conteúdo na listagem
-    let seletor = ''
+	// Define o seletor para encontrar o conteúdo na listagem
+	let seletor = ''
 
-    // Utiliza o seletor para encontrar o conteúdo na listagem, clicar em 'Opções' e 'Excluir', clica em 'Excluir' e valida o modal de exclusão
-    switch(tipoConteudo) {
-      case 'trilha':
-        seletor = `tr[tag-name='${nomeConteudo}']`  
+	// Utiliza o seletor para encontrar o conteúdo na listagem, clicar em 'Opções' e 'Excluir', clica em 'Excluir' e valida o modal de exclusão
+	switch(tipoConteudo) {
+	  case 'trilha':
+		seletor = `tr[tag-name='${nomeConteudo}']`  
 
-        // Clica em 'Opções' e 'Excluir'
-        cy.get(seletor)
-          .find('svg[aria-label="Options"]')
-          .click()
+		// Clica em 'Opções' e 'Excluir'
+		cy.get(seletor)
+		  .find('svg[aria-label="Options"]')
+		  .click()
 
-        cy.get(seletor)
-          .wait(2000)	
-          .contains('button', 'Excluir')
-          .click({ force: true })
+		cy.get(seletor)
+		  .wait(2000)	
+		  .contains('button', 'Excluir')
+		  .click({ force: true })
 
-        // Valida o modal de exclusão
-        cy.contains('.chakra-modal__header', tituloModalExclusao)
-          .should('be.visible')
+		// Valida o modal de exclusão
+		cy.contains('.chakra-modal__header', tituloModalExclusao)
+		  .should('be.visible')
 
-        cy.contains('.chakra-text', nomeConteudo)
-          .should('be.visible')
+		cy.contains('.chakra-text', nomeConteudo)
+		  .should('be.visible')
 
-        cy.contains('.chakra-text', texto1ModalExclusao)
-          .should('be.visible')
-        break
-      case 'curso':
-        seletor = `tr[tag-name='${nomeConteudo}']`
+		cy.contains('.chakra-text', texto1ModalExclusao)
+		  .should('be.visible')
+		break
+	  case 'curso':
+		seletor = `tr[tag-name='${nomeConteudo}']`
 
-        // Clica em 'Opções' e 'Excluir'
-        cy.get(seletor)
-          .find('svg[aria-label="Options"]')
-          .click()
+		// Clica em 'Opções' e 'Excluir'
+		cy.get(seletor)
+		  .find('svg[aria-label="Options"]')
+		  .click()
 
-        cy.get(seletor)
-          .wait(2000)
-          .contains('button', 'Excluir')
-          .click({ force: true })
+		cy.get(seletor)
+		  .wait(2000)
+		  .contains('button', 'Excluir')
+		  .click({ force: true })
 
-        // Valida o modal de exclusão
-        cy.contains('.chakra-modal__header', tituloModalExclusao)
-          .should('be.visible')
+		// Valida o modal de exclusão
+		cy.contains('.chakra-modal__header', tituloModalExclusao)
+		  .should('be.visible')
 
-        cy.contains('.chakra-heading', nomeConteudo)
-          .should('be.visible')
+		cy.contains('.chakra-heading', nomeConteudo)
+		  .should('be.visible')
 
-        cy.contains('.chakra-modal__body', texto1ModalExclusao)
-          .should('be.visible')
+		cy.contains('.chakra-modal__body', texto1ModalExclusao)
+		  .should('be.visible')
 
-        cy.contains('.chakra-modal__body', texto2ModalExclusao)
-          .should('be.visible')
-        break
-      case 'catalogo':
-        seletor = `tr.event-row[name='${nomeConteudo}']`
-        cy.get(seletor)
-          .find('a[title="Excluir"]')
-          .click()
+		cy.contains('.chakra-modal__body', texto2ModalExclusao)
+		  .should('be.visible')
+		break
+	  case 'catalogo':
+		seletor = `tr.event-row[name='${nomeConteudo}']`
+		cy.get(seletor)
+		  .find('a[title="Excluir"]')
+		  .click()
 
-        cy.contains('#modal-remove-events-index', tituloModalExclusao)
-          .should('be.visible')
+		cy.contains('#modal-remove-events-index', tituloModalExclusao)
+		  .should('be.visible')
 
-        cy.contains('#modal-remove-events-index_sub_title', nomeConteudo)
-          .should('be.visible')
+		cy.contains('#modal-remove-events-index_sub_title', nomeConteudo)
+		  .should('be.visible')
 
-        cy.contains('#modal-remove-events-index-msg_title', texto1ModalExclusao)
-          .should('be.visible')
-        break
-      case 'biblioteca':
-        cy.get('tr.event-row')
-          .contains('td.event-name', nomeConteudo)
-          .parent()
-          .find('a.event-remove')
-          .click()
+		cy.contains('#modal-remove-events-index-msg_title', texto1ModalExclusao)
+		  .should('be.visible')
+		break
+	  case 'biblioteca':
+		cy.get('tr.event-row')
+		  .contains('td.event-name', nomeConteudo)
+		  .parent()
+		  .find('a.event-remove')
+		  .click()
 
-        cy.contains('#modal-remove-events-index', tituloModalExclusao)
-          .should('be.visible')
+		cy.contains('#modal-remove-events-index', tituloModalExclusao)
+		  .should('be.visible')
 
-        cy.contains('strong', 'Biblioteca')
-          .should('be.visible')
+		cy.contains('strong', 'Biblioteca')
+		  .should('be.visible')
 
-        cy.contains('#modal-remove-events-index-msg_title', texto1ModalExclusao)
-          .should('be.visible')
+		cy.contains('#modal-remove-events-index-msg_title', texto1ModalExclusao)
+		  .should('be.visible')
 
-        cy.contains('#modal-remove-events-index-msg_title', texto2ModalExclusao)
-          .should('be.visible')
-        break
-      default:
-        throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso', 'catalogo' ou 'biblioteca'`)
-    }
+		cy.contains('#modal-remove-events-index-msg_title', texto2ModalExclusao)
+		  .should('be.visible')
+		break
+	  default:
+		throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso', 'catalogo' ou 'biblioteca'`)
+	}
 
-    // Confirma a exclusão
-    switch(tipoConteudo) {
-      case 'trilha':
-      case 'curso':
-        cy.contains('button.chakra-button', 'Excluir')
-          .click({ force: true })
-        break
-      case 'catalogo':
-      case 'biblioteca':
-        cy.get('#modal-remove-events-index-confirmed')
-          .click({ force: true })
-        break
-      default:
-        throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso', 'catalogo' ou 'biblioteca'`)
-    }
+	// Confirma a exclusão
+	switch(tipoConteudo) {
+	  case 'trilha':
+	  case 'curso':
+		cy.contains('button.chakra-button', 'Excluir')
+		  .click({ force: true })
+		break
+	  case 'catalogo':
+	  case 'biblioteca':
+		cy.get('#modal-remove-events-index-confirmed')
+		  .click({ force: true })
+		break
+	  default:
+		throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso', 'catalogo' ou 'biblioteca'`)
+	}
 
-    // Valida a mensagem de sucesso da exclusão
-    if (nomeConteudo) {
-      if (tipoConteudo === 'catalogo' || tipoConteudo === 'biblioteca') {
-        cy.contains('.flash.notice', msgSucessoExclusao)
-          .should('be.visible')
-      } else {
-        cy.contains('#toast-content-success-toast-description', msgSucessoExclusao)
-          .should('exist')    // Utilizado exist pois o elemento é visível apenas por alguns segundos
-      }  
-    }
+	// Valida a mensagem de sucesso da exclusão
+	if (nomeConteudo) {
+	  if (tipoConteudo === 'catalogo' || tipoConteudo === 'biblioteca') {
+		cy.contains('.flash.notice', msgSucessoExclusao)
+		  .should('be.visible')
+	  } else {
+		cy.contains('#toast-content-success-toast-description', msgSucessoExclusao)
+		  .should('exist')    // Utilizado exist pois o elemento é visível apenas por alguns segundos
+	  }  
+	}
 
-    // Verifica se o conteúdo foi excluído e não é exibido na listagem
-    if (tipoConteudo === 'biblioteca') {
-      cy.get(`td.event-name[title='${nomeConteudo}']`)
-        .should('not.exist')
-    } else {
-      cy.get(seletor)
-        .should('not.exist')
-    }
+	// Verifica se o conteúdo foi excluído e não é exibido na listagem
+	if (tipoConteudo === 'biblioteca') {
+	  cy.get(`td.event-name[title='${nomeConteudo}']`)
+		.should('not.exist')
+	} else {
+	  cy.get(seletor)
+		.should('not.exist')
+	}
   }
 
   // Verifica se foi fornecido um nome de conteúdo específico
   if (nomeConteudo) {
-    excluirConteudoEspecifico(nomeConteudo, tipoConteudo)
+	excluirConteudoEspecifico(nomeConteudo, tipoConteudo)
   } else if (listaConteudos.length !== 0) {
-    // Itera sobre a lista de conteúdos e exclui cada um deles
-    listaConteudos.forEach((conteudo) => {
-      excluirConteudoEspecifico(conteudo, tipoConteudo)
-    })
+	// Itera sobre a lista de conteúdos e exclui cada um deles
+	listaConteudos.forEach((conteudo) => {
+	  excluirConteudoEspecifico(conteudo, tipoConteudo)
+	})
   } else {
-    cy.log('Nenhum conteúdo foi fornecido para exclusão.')
+	cy.log('Nenhum conteúdo foi fornecido para exclusão.')
   }
 })
 
@@ -685,47 +745,47 @@ Cypress.Commands.add('addAtividadeConteudo', function(nomeConteudo, tipoConteudo
   let seletor = ''
 
   switch (tipoConteudo) {
-    case 'trilha':
-    case 'curso':
-      seletor = `tr[tag-name='${nomeConteudo}']`    
-      // Clica em 'Opções' e 'Atividades'
-      cy.get(seletor)
-        .find('svg[aria-label="Options"]')
-        .click()
+	case 'trilha':
+	case 'curso':
+	  seletor = `tr[tag-name='${nomeConteudo}']`    
+	  // Clica em 'Opções' e 'Atividades'
+	  cy.get(seletor)
+		.find('svg[aria-label="Options"]')
+		.click()
 
-      cy.get(seletor)
-        .contains('button', 'Atividades')
-        .click( {force: true} )
-      break
-    case 'catalogo':
-      seletor = `tr.event-row[name='${nomeConteudo}']`
-      // Clica para expandir opções
-      cy.get(seletor)
-        .find('.div-table-arrow-down')
-        .click()
-      // Clica em 'Atividades'
-      cy.get('#content-link')
-        .click()
-      break
-    case 'biblioteca':
-      seletor = `tr.event-name[title='${nomeConteudo}']`
-      // Clica em 'Atividades'
-      cy.contains('button', 'Atividades')
-        .click()
-      break
-    default:
-      throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso', 'catalogo' ou 'biblioteca'`)
+	  cy.get(seletor)
+		.contains('button', 'Atividades')
+		.click( {force: true} )
+	  break
+	case 'catalogo':
+	  seletor = `tr.event-row[name='${nomeConteudo}']`
+	  // Clica para expandir opções
+	  cy.get(seletor)
+		.find('.div-table-arrow-down')
+		.click()
+	  // Clica em 'Atividades'
+	  cy.get('#content-link')
+		.click()
+	  break
+	case 'biblioteca':
+	  seletor = `tr.event-name[title='${nomeConteudo}']`
+	  // Clica em 'Atividades'
+	  cy.contains('button', 'Atividades')
+		.click()
+	  break
+	default:
+	  throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso', 'catalogo' ou 'biblioteca'`)
   }
 
   // Validar se a página foi carregada corretamente
   cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+	.should('be.visible')
 
   cy.contains('#breadcrumb', `> ${nomeConteudo}`)
-    .should('be.visible')
+	.should('be.visible')
 
   cy.contains('.detail_title', tituloPg)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('salvarAtividades', () => {
@@ -737,7 +797,7 @@ Cypress.Commands.add('salvarAtividades', () => {
 
   // Confirma a mensagem de sucesso
   cy.contains('.flash.notice', msgSucesso)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('editarAtividade', (nomeConteudo, nomeAtividade) => {
@@ -746,60 +806,60 @@ Cypress.Commands.add('editarAtividade', (nomeConteudo, nomeAtividade) => {
 
   // Edita a atividade
   cy.contains('li.dd-item', nomeAtividade)
-    .find('.dd-edit')
-    .should('be.visible')
-    .click( )
+	.find('.dd-edit')
+	.should('be.visible')
+	.click( )
 
   // Validar se a página foi carregada corretamente
   cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+	.should('be.visible')
 
   cy.contains('#breadcrumb', `> ${nomeConteudo}`)
-    .should('be.visible')
+	.should('be.visible')
 
   cy.contains('.detail_title', tituloPgEdicao)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('preencherDadosAtividade', (dados, opcoes = { limpar: false }) => {
   Object.keys(dados).forEach(nomeCampo => {
-      const valor = dados[nomeCampo]
-      formAtividades.preencherCampo(nomeCampo, valor, opcoes)
+	  const valor = dados[nomeCampo]
+	  formAtividades.preencherCampo(nomeCampo, valor, opcoes)
   })
 })
 
 Cypress.Commands.add('validarDadosAtividade', (dados) => {
   Object.keys(dados).forEach(nomeCampo => {
-    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
-    formAtividades.validarCampo(nomeCampo, valor)
+	const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+	formAtividades.validarCampo(nomeCampo, valor)
   })
 })
 
 Cypress.Commands.add('verificarProcessamentoScorm', (nomeConteudo, nomeAtividade, tipoConteudo) => {
   function verificar() {
-    cy.get('body').then($body => {
-      if ($body.find('span[style="font-style:italic;opacity:50%;font-size:11px;margin-left:20px;color:black;"]:contains("Processando scorm")').length > 0) {
-        cy.log('Arquivo Scorm ainda está sendo processado. Aguardando...')
+	cy.get('body').then($body => {
+	  if ($body.find('span[style="font-style:italic;opacity:50%;font-size:11px;margin-left:20px;color:black;"]:contains("Processando scorm")').length > 0) {
+		cy.log('Arquivo Scorm ainda está sendo processado. Aguardando...')
 
-        cy.wait(10000)
+		cy.wait(10000)
 
-        if (tipoConteudo === 'trilha' || tipoConteudo === 'curso') {
-          cy.acessarPgListaConteudos()
-        } else if (tipoConteudo === 'catalogo') {
-          cy.acessarPgCatalogo()
-        } else if (tipoConteudo === 'biblioteca') {
-          cy.acessarPgBiblioteca()
-        }
-        
-        cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
-        cy.editarAtividade(nomeConteudo, nomeAtividade)
+		if (tipoConteudo === 'trilha' || tipoConteudo === 'curso') {
+		  cy.acessarPgListaConteudos()
+		} else if (tipoConteudo === 'catalogo') {
+		  cy.acessarPgCatalogo()
+		} else if (tipoConteudo === 'biblioteca') {
+		  cy.acessarPgBiblioteca()
+		}
+		
+		cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
+		cy.editarAtividade(nomeConteudo, nomeAtividade)
 
-        // Chama o comando customizado novamente para verificar o estado do processamento
-        cy.verificarProcessamentoScorm(nomeConteudo, nomeAtividade, tipoConteudo)
-      } else {
-        cy.log('Arquivo Scorm processado com sucesso.')
-      }
-    })
+		// Chama o comando customizado novamente para verificar o estado do processamento
+		cy.verificarProcessamentoScorm(nomeConteudo, nomeAtividade, tipoConteudo)
+	  } else {
+		cy.log('Arquivo Scorm processado com sucesso.')
+	  }
+	})
   }
 
   verificar()
@@ -807,60 +867,60 @@ Cypress.Commands.add('verificarProcessamentoScorm', (nomeConteudo, nomeAtividade
 
 Cypress.Commands.add('excluirAtividade', (nomeAtividade) => {
   cy.contains('li.dd-item', nomeAtividade)
-    .find('.dd-delete')
-    .should('be.visible')
-    .click()
+	.find('.dd-delete')
+	.should('be.visible')
+	.click()
 
   // Confirma que a atividade foi enviada para lixeira
   cy.get('#deleted-list')
-    .contains('li.dd-item', nomeAtividade)
-    .should('be.visible')
+	.contains('li.dd-item', nomeAtividade)
+	.should('be.visible')
 
   // Salva atualização da estrutura de atividades
   cy.salvarAtividades()
 
   // Confirma que a atividade foi excluída
   cy.get('li.dd-item')
-    .contains(nomeAtividade)
-    .should('not.exist')
+	.contains(nomeAtividade)
+	.should('not.exist')
 })
 
 Cypress.Commands.add("criarCursoViaApi", (body, attempt = 1) => {
   const url = `/api/v1/o/${Cypress.env('orgId')}/courses`
   
   cy.request({
-    method: 'POST',
-    url: url,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${Cypress.env('token')}`
-    },
-    body: body,
-    failOnStatusCode: false
+	method: 'POST',
+	url: url,
+	headers: {
+	  'Content-Type': 'application/json',
+	  'Authorization': `Bearer ${Cypress.env('token')}`
+	},
+	body: body,
+	failOnStatusCode: false
   }).then((response) => {
-    if (response.status !== 201 && attempt < 3) {
-      cy.log(`Tentativa ${attempt}: Falha na requisição. Tentando novamente`)
-      cy.criarCursoViaApi(body, attempt + 1)
-    } else if (response.status !== 201) {
-      cy.log(`Tentativa ${attempt}: Falha na requisição. Não foi possível criar o catálogo`)
-      throw new Error(`Erro na criação do catálogo: ${response}`)
-    } else {
-      expect(response.status).to.eq(201)
-    }
+	if (response.status !== 201 && attempt < 3) {
+	  cy.log(`Tentativa ${attempt}: Falha na requisição. Tentando novamente`)
+	  cy.criarCursoViaApi(body, attempt + 1)
+	} else if (response.status !== 201) {
+	  cy.log(`Tentativa ${attempt}: Falha na requisição. Não foi possível criar o catálogo`)
+	  throw new Error(`Erro na criação do catálogo: ${response}`)
+	} else {
+	  expect(response.status).to.eq(201)
+	}
   })
 })
 
 Cypress.Commands.add('preencherDadosBiblioteca', (conteudo, opcoes = { limpar: false }) => {
   Object.keys(conteudo).forEach(nomeCampo => {
-      const valor = conteudo[nomeCampo]
-      formBiblioteca.preencherCampo(nomeCampo, valor, opcoes)
+	  const valor = conteudo[nomeCampo]
+	  formBiblioteca.preencherCampo(nomeCampo, valor, opcoes)
   })
 }) 
 
 Cypress.Commands.add('validarDadosBiblioteca', (conteudo) => {
   Object.keys(conteudo).forEach(nomeCampo => {
-    const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
-    formBiblioteca.validarCampo(nomeCampo, valor)
+	const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
+	formBiblioteca.validarCampo(nomeCampo, valor)
   })
 })
 
@@ -870,52 +930,52 @@ Cypress.Commands.add('listaConteudo', (tipoConteudo, listaConteudos) => {
   let seletor = ''
   
   switch(tipoConteudo) {
-    case 'trilha':
-      seletor = `tr[tag-name] span:contains("Trilha")`
-      break
-    case 'curso':
-      seletor = `tr[tag-name] span:contains("Curso")` 
-      break
-    case 'catalogo':
-      seletor = `tr.event-row`
-      break
-    case 'biblioteca':
-      seletor = `tr.event-row td.event-name` 
-      break
-    default:
-      throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso', 'catalogo' ou 'biblioteca'`)
+	case 'trilha':
+	  seletor = `tr[tag-name] span:contains("Trilha")`
+	  break
+	case 'curso':
+	  seletor = `tr[tag-name] span:contains("Curso")` 
+	  break
+	case 'catalogo':
+	  seletor = `tr.event-row`
+	  break
+	case 'biblioteca':
+	  seletor = `tr.event-row td.event-name` 
+	  break
+	default:
+	  throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso', 'catalogo' ou 'biblioteca'`)
   }
 
   cy.get('body').then(($body) => {
-    if ($body.find(seletor).length > 0) {
-      cy.get(seletor)
-        .each(($el) => {
-          let nomeConteudo = ''
+	if ($body.find(seletor).length > 0) {
+	  cy.get(seletor)
+		.each(($el) => {
+		  let nomeConteudo = ''
 
-          if (tipoConteudo === 'trilha' || tipoConteudo === 'curso') {
-            const $tr = $el.closest('tr')
-            if (!listaConteudos.includes($tr.attr('tag-name'))) {
-              nomeConteudo = $tr.attr('tag-name')
-              listaConteudos.push(nomeConteudo)
-            }
-          } else {
-            nomeConteudo = $el.text().trim()
-            listaConteudos.push(nomeConteudo)
-          }
-        })
-        .then(() => {
-          cy.log(listaConteudos.join(', '))
-        })
-    } else {
-      cy.log('Nenhum conteúdo encontrado.')
-    }
+		  if (tipoConteudo === 'trilha' || tipoConteudo === 'curso') {
+			const $tr = $el.closest('tr')
+			if (!listaConteudos.includes($tr.attr('tag-name'))) {
+			  nomeConteudo = $tr.attr('tag-name')
+			  listaConteudos.push(nomeConteudo)
+			}
+		  } else {
+			nomeConteudo = $el.text().trim()
+			listaConteudos.push(nomeConteudo)
+		  }
+		})
+		.then(() => {
+		  cy.log(listaConteudos.join(', '))
+		})
+	} else {
+	  cy.log('Nenhum conteúdo encontrado.')
+	}
   })
 })
 
 Cypress.Commands.add('criarBibliotecaDefault', (nomeConteudo) => {
   const dados = {
-    nome: nomeConteudo,
-    descricao: 'Descrição teste para criação de biblioteca',
+	nome: nomeConteudo,
+	descricao: 'Descrição teste para criação de biblioteca',
   }
 
   const tipoConteudo = 'biblioteca'
@@ -927,8 +987,8 @@ Cypress.Commands.add('criarBibliotecaDefault', (nomeConteudo) => {
 
 Cypress.Commands.add('criarTrilhaDefault', (nomeConteudo) => {
   const dados = {
-    nome: nomeConteudo,
-    descricao: 'Descrição teste para criação de trilha',
+	nome: nomeConteudo,
+	descricao: 'Descrição teste para criação de trilha',
   }
 
   const tipoConteudo = 'trilha'
@@ -940,15 +1000,15 @@ Cypress.Commands.add('criarTrilhaDefault', (nomeConteudo) => {
 
 Cypress.Commands.add('preencherDadosQuestionario', (dados, opcoes = { limpar: false }) => {
   Object.keys(dados).forEach(nomeCampo => {
-      const valor = dados[nomeCampo]
-      formQuestionarios.preencherCampo(nomeCampo, valor, opcoes)
+	  const valor = dados[nomeCampo]
+	  formQuestionarios.preencherCampo(nomeCampo, valor, opcoes)
   })
 })
 
 Cypress.Commands.add('validarDadosQuestionario', (dados) => {
   Object.keys(dados).forEach(nomeCampo => {
-    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
-    formQuestionarios.validarCampo(nomeCampo, valor)
+	const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+	formQuestionarios.validarCampo(nomeCampo, valor)
   })
 })
 
@@ -956,23 +1016,23 @@ Cypress.Commands.add('listaQuestionarios', (listaQuestionarios) => {
   const seletor = '.question-list-row'
 
   cy.get('body').then(($body) => {
-    if ($body.find('tbody').length > 0) {
-      if ($body.find(seletor).length > 0) {
-        cy.get(seletor)
-          .each(($el) => {
-            let nomeQuestionario = ''
-            nomeQuestionario = $el.closest('tr').attr('name')
-            listaQuestionarios.push(nomeQuestionario)
-          })
-          .then(() => {
-            cy.log(listaQuestionarios.join(', '))
-          })
-      } else {
-        cy.log('Nenhum questionário encontrado.')
-      }
-    } else {
-      cy.log('O elemento <tbody> não foi encontrado.')
-    }
+	if ($body.find('tbody').length > 0) {
+	  if ($body.find(seletor).length > 0) {
+		cy.get(seletor)
+		  .each(($el) => {
+			let nomeQuestionario = ''
+			nomeQuestionario = $el.closest('tr').attr('name')
+			listaQuestionarios.push(nomeQuestionario)
+		  })
+		  .then(() => {
+			cy.log(listaQuestionarios.join(', '))
+		  })
+	  } else {
+		cy.log('Nenhum questionário encontrado.')
+	  }
+	} else {
+	  cy.log('O elemento <tbody> não foi encontrado.')
+	}
   })
 })
 
@@ -982,53 +1042,53 @@ Cypress.Commands.add('excluirQuestionarios', (nomeQuestionario, listaQuestionari
 
   // Função para excluir um questionário específico
   const excluirQuestionarioEspecifico = (nomeQuestionario) => {
-    const { tituloModalExclusao, textoModalExclusao, msgSucessoExclusao } = labels.questionario
+	const { tituloModalExclusao, textoModalExclusao, msgSucessoExclusao } = labels.questionario
 
-    const seletor = `tr[name='${nomeQuestionario}']`
+	const seletor = `tr[name='${nomeQuestionario}']`
 
-    // Clica em 'Excluir'
-    cy.get(seletor)
-      .wait(2000)
-      .find(formQuestionarios.elementos.btnExcluir.seletor, formQuestionarios.elementos.btnExcluir.title)
-      .click({ force: true })
+	// Clica em 'Excluir'
+	cy.get(seletor)
+	  .wait(2000)
+	  .find(formQuestionarios.elementos.btnExcluir.seletor, formQuestionarios.elementos.btnExcluir.title)
+	  .click({ force: true })
 
-    // Valida o título do modal de exclusão
-    cy.get('.panel-header h3')
-      .invoke('text')
-      .then((text) => {
-        expect(text.trim()).to.equal(tituloModalExclusao)
-      })
+	// Valida o título do modal de exclusão
+	cy.get('.panel-header h3')
+	  .invoke('text')
+	  .then((text) => {
+		expect(text.trim()).to.equal(tituloModalExclusao)
+	  })
 
-    // Valida o texto do modal de exclusão
-    cy.get('.panel-header strong')
-      .invoke('text')
-      .then((text) => {
-        expect(text.trim()).to.equal(textoModalExclusao)
-      })    
-      
-    // Confirma a exclusão
-    cy.contains(formQuestionarios.elementos.btnConfirmarExclusao.seletor, 'Confirmar')
-      .click({ force: true })
+	// Valida o texto do modal de exclusão
+	cy.get('.panel-header strong')
+	  .invoke('text')
+	  .then((text) => {
+		expect(text.trim()).to.equal(textoModalExclusao)
+	  })    
+	  
+	// Confirma a exclusão
+	cy.contains(formQuestionarios.elementos.btnConfirmarExclusao.seletor, 'Confirmar')
+	  .click({ force: true })
 
-    // Valida a mensagem de sucesso da exclusão
-    cy.contains('.flash.notice', msgSucessoExclusao)
-      .should('be.visible')
+	// Valida a mensagem de sucesso da exclusão
+	cy.contains('.flash.notice', msgSucessoExclusao)
+	  .should('be.visible')
 
-    // Verifica se o questionário foi excluído e não é exibido na listagem
-    cy.get(seletor)
-      .should('not.exist')
+	// Verifica se o questionário foi excluído e não é exibido na listagem
+	cy.get(seletor)
+	  .should('not.exist')
   }
 
   // Verifica se foi fornecido um nome de conteúdo específico
   if (nomeQuestionario) {
-    excluirQuestionarioEspecifico(nomeQuestionario)
+	excluirQuestionarioEspecifico(nomeQuestionario)
   } else if (listaQuestionario.length !== 0) {
-    // Itera sobre a lista de conteúdos e exclui cada um deles
-    listaQuestionario.forEach((questionario) => {
-      excluirQuestionarioEspecifico(questionario)
-    })
+	// Itera sobre a lista de conteúdos e exclui cada um deles
+	listaQuestionario.forEach((questionario) => {
+	  excluirQuestionarioEspecifico(questionario)
+	})
   } else {
-    cy.log('Nenhum conteúdo foi fornecido para exclusão.')
+	cy.log('Nenhum conteúdo foi fornecido para exclusão.')
   }
 })
 
@@ -1041,11 +1101,11 @@ Cypress.Commands.add('salvarQuestionario', (nomeQuestionario) => {
 
   // Confirma a mensagem de sucesso
   cy.contains('.flash.notice', msgSucesso)
-    .should('be.visible')
+	.should('be.visible')
 
   // Verifica se o questionário foi salvo
   cy.get(`tr[name='${nomeQuestionario}']`)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('editarQuestionario', (nomeQuestionario) => {
@@ -1054,20 +1114,20 @@ Cypress.Commands.add('editarQuestionario', (nomeQuestionario) => {
 
   // Edita o questionário
   cy.get(`tr[name='${nomeQuestionario}']`)
-    .find(formQuestionarios.elementos.btnEditar.seletor, formQuestionarios.elementos.btnEditar.title)
-    .click()
+	.find(formQuestionarios.elementos.btnEditar.seletor, formQuestionarios.elementos.btnEditar.title)
+	.click()
 
   // Validar se a página foi carregada corretamente
   cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+	.should('be.visible')
 
   cy.contains('.detail_title', tituloPgEdicao)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('criarQuestionarioDefault', (nomeQuestionario) => {
   const dados = {
-    nome: nomeQuestionario
+	nome: nomeQuestionario
   }
 
   cy.acessarPgQuestionarios()
@@ -1082,31 +1142,31 @@ Cypress.Commands.add('acessarPerguntasQuestionario', (nomeQuestionario) => {
 
   // Acessa as perguntas do questionário
   cy.get(`tr[name='${nomeQuestionario}']`)
-    .find(formQuestionarios.elementos.btnPerguntas.seletor)
-    .click()
+	.find(formQuestionarios.elementos.btnPerguntas.seletor)
+	.click()
 
   // Valida se a página foi carregada corretamente
   cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+	.should('be.visible')
 
   cy.contains('#breadcrumb', `> ${nomeQuestionario}`)
-    .should('be.visible')
+	.should('be.visible')
 
   cy.contains('.detail_title', tituloPg)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('preencherDadosPergunta', (conteudo, opcoes = { limpar: false }) => {
   Object.keys(conteudo).forEach(nomeCampo => {
-      const valor = conteudo[nomeCampo]
-      formPerguntas.preencherCampo(nomeCampo, valor, opcoes)
+	  const valor = conteudo[nomeCampo]
+	  formPerguntas.preencherCampo(nomeCampo, valor, opcoes)
   })
 }) 
 
 Cypress.Commands.add('validarDadosPergunta', (conteudo) => {
   Object.keys(conteudo).forEach(nomeCampo => {
-    const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
-    formPerguntas.validarCampo(nomeCampo, valor)
+	const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
+	formPerguntas.validarCampo(nomeCampo, valor)
   })
 })
 
@@ -1116,43 +1176,43 @@ Cypress.Commands.add('salvarPergunta', (descPergunta, index) => {
 
   // Salva a pergunta
   cy.get(`tr[id='question-new-${index}']`)
-    .parent('tbody')
-    .within(() => {
-      formPerguntas.salvar()
-    })  
+	.parent('tbody')
+	.within(() => {
+	  formPerguntas.salvar()
+	})  
 
   // Confirma a mensagem de sucesso
   cy.contains('.flash.notice', msgSucesso)
-    .should('be.visible')
+	.should('be.visible')
 
   // Verifica se a pergunta foi salva
   cy.get(`tr[title*='${descPergunta.slice(0, 1000)}']`)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('excluirPergunta', (descPergunta) => {
   cy.get(`tr[title*='${descPergunta.slice(0, 30)}']`)
-    .parent('tbody')
-    .within(() => {
-      formPerguntas.remover()    
-      // Lida com a mensagem de confirmação do navegador
-      cy.on('window:confirm', (message) => {
-        expect(message).to.equal('Você tem certeza que deseja remover esta pergunta?')
-        return true
-    })
+	.parent('tbody')
+	.within(() => {
+	  formPerguntas.remover()    
+	  // Lida com a mensagem de confirmação do navegador
+	  cy.on('window:confirm', (message) => {
+		expect(message).to.equal('Você tem certeza que deseja remover esta pergunta?')
+		return true
+	})
   })
 
   // Verifica se a pergunta foi excluída e não é exibida na listagem
   cy.get(`tr[title*='${descPergunta.slice(0, 30)}']`)
-    .should('not.exist')
+	.should('not.exist')
 })
 
 Cypress.Commands.add('expandirPergunta', (descPergunta) => {
   cy.get(`tr[title*='${descPergunta.slice(0, 30)}']`)
-    .parent('tbody')
-    .within(() => {
-      formPerguntas.expandirPergunta()
-    })  
+	.parent('tbody')
+	.within(() => {
+	  formPerguntas.expandirPergunta()
+	})  
 })
 
 Cypress.Commands.add('salvarEdicaoPergunta', (oldDescPergunta, newDescPergunta) => {
@@ -1161,31 +1221,31 @@ Cypress.Commands.add('salvarEdicaoPergunta', (oldDescPergunta, newDescPergunta) 
 
   // Salva a pergunta
   cy.get(`tr[title*='${oldDescPergunta.slice(0, 30)}']`)
-    .parent('tbody')
-    .within(() => {
-      formPerguntas.salvar()
-    })  
+	.parent('tbody')
+	.within(() => {
+	  formPerguntas.salvar()
+	})  
 
   // Confirma a mensagem de sucesso
   cy.contains('.flash.notice', msgSucesso)
-    .should('be.visible')
+	.should('be.visible')
 
   // Verifica se a pergunta foi salva
   cy.get(`tr[title*='${newDescPergunta.slice(0, 1000)}']`)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('preencherDadosUsuario', (dados, opcoes = { limpar: false }) => { 
   Object.keys(dados).forEach(nomeCampo => {
-      const valor = dados[nomeCampo]
-      formUsuarios.preencherCampo(nomeCampo, valor, opcoes)
+	  const valor = dados[nomeCampo]
+	  formUsuarios.preencherCampo(nomeCampo, valor, opcoes)
   })
 }) 
 
 Cypress.Commands.add('validarDadosUsuario', (dados) => {
   Object.keys(dados).forEach(nomeCampo => {
-    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
-    formUsuarios.validarCampo(nomeCampo, valor)
+	const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+	formUsuarios.validarCampo(nomeCampo, valor)
   })
 })
 
@@ -1198,12 +1258,12 @@ Cypress.Commands.add('salvarUsuario', (nomeUsuario) => {
 
   // Confirma a mensagem de sucesso
   cy.contains('.flash.success', msgSucesso)
-    .should('be.visible')
+	.should('be.visible')
 
   // Verifica se o usuário foi criado com sucesso
   cy.get('.student-name')
-    .invoke('text')
-    .should('contain', nomeUsuario)
+	.invoke('text')
+	.should('contain', nomeUsuario)
 })
 
 Cypress.Commands.add('excluirUsuario', (nomeUsuario) => {
@@ -1211,53 +1271,53 @@ Cypress.Commands.add('excluirUsuario', (nomeUsuario) => {
   const { tituloModalExclusao, texto1ModalExclusao, texto2ModalExclusao, btnConfirmar, msgSucessoExclusao } = labels.usuarios
 
   cy.contains('tr.professional-row', nomeUsuario)
-    .within(() => {
-      cy.get('a.professional-delete')
-        .click()
-    })
+	.within(() => {
+	  cy.get('a.professional-delete')
+		.click()
+	})
 
   // Valida o título do modal de exclusão
   cy.get('#professional-exclusion .panel-header h3')
-    .invoke('text')
-    .then((text) => {
-      expect(text.trim()).to.equal(tituloModalExclusao)
-    })
+	.invoke('text')
+	.then((text) => {
+	  expect(text.trim()).to.equal(tituloModalExclusao)
+	})
 
   // Valida o texto do modal de exclusão
   cy.get('#professional-exclusion .panel-header strong')
-    .invoke('text')
-    .then((text) => {
-      expect(text.trim()).to.equal('Usuário')
-    })
+	.invoke('text')
+	.then((text) => {
+	  expect(text.trim()).to.equal('Usuário')
+	})
 
   cy.get('#professional-exclusion .panel-header p span.name')
-    .should('have.text', nomeUsuario)
+	.should('have.text', nomeUsuario)
 
   cy.get('.are_you_sure_destroy')
-    .invoke('text')
-    .then((text) => {
-      expect(text.trim()).to.equal(texto1ModalExclusao)
-    })
+	.invoke('text')
+	.then((text) => {
+	  expect(text.trim()).to.equal(texto1ModalExclusao)
+	})
 
   cy.get('.row.inactivate-option.hidden p')
-    .invoke('text')
-    .then((text) => {
-      expect(text.trim()).to.equal(texto2ModalExclusao)
-    })
+	.invoke('text')
+	.then((text) => {
+	  expect(text.trim()).to.equal(texto2ModalExclusao)
+	})
 
   // Confirma a exclusão do usuário
   cy.get('.remove-professional')
-    .contains(btnConfirmar)
-    .click()
+	.contains(btnConfirmar)
+	.click()
 
   // Valida a mensagem de sucesso após a exclusão
   cy.contains('.flash.success', msgSucessoExclusao)
-    .should('be.visible')
+	.should('be.visible')
 
   // Verifica se o usuário foi excluído e não é exibido na listagem
   cy.get('tr.professional-row')
-    .contains(nomeUsuario)
-    .should('not.exist')
+	.contains(nomeUsuario)
+	.should('not.exist')
 })
 
 Cypress.Commands.add('editarUsuario', (nomeUsuario) => {
@@ -1266,50 +1326,50 @@ Cypress.Commands.add('editarUsuario', (nomeUsuario) => {
 
   // Edita o usuário
   cy.contains('tr.professional-row', nomeUsuario)
-    .within(() => {
-      cy.get('a.professional-edit')
-        .click()
-    })
+	.within(() => {
+	  cy.get('a.professional-edit')
+		.click()
+	})
 
   // Valida se a página foi carregada corretamente
   cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+	.should('be.visible')
 
   cy.contains('.detail_title', tituloPgEdicao)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('excluirUsuarioViaApi', function() {
   cy.request({
-    method: 'GET',
-    url: `/api/v1/o/${Cypress.env('orgId')}/students`,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': `Bearer ${Cypress.env('token')}`
-    },
-    failOnStatusCode: false
+	method: 'GET',
+	url: `/api/v1/o/${Cypress.env('orgId')}/students`,
+	headers: {
+	  'Content-Type': 'application/x-www-form-urlencoded',
+	  'Authorization': `Bearer ${Cypress.env('token')}`
+	},
+	failOnStatusCode: false
   }).then((response) => {
-    if (response.status !== 200) {
-      throw new Error(`Erro ao obter a listagem de usuários: ${response}`)
-    }
+	if (response.status !== 200) {
+	  throw new Error(`Erro ao obter a listagem de usuários: ${response}`)
+	}
 
-    const students = response.body.students
-    students.forEach((student) => {
-      if (student.id !== Cypress.env('userAdminId')) {
-        cy.request({
-          method: 'DELETE',
-          url: `/api/v1/o/${Cypress.env('orgId')}/students/${student.id}`,
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${Cypress.env('token')}`
-          },
-        }).then((deleteResponse) => {
-          if (deleteResponse.status !== 200) {
-            throw new Error(`Erro ao excluir o usuário: ${deleteResponse}`)
-          }
-        })
-      }
-    })
+	const students = response.body.students
+	students.forEach((student) => {
+	  if (student.id !== Cypress.env('userAdminId')) {
+		cy.request({
+		  method: 'DELETE',
+		  url: `/api/v1/o/${Cypress.env('orgId')}/students/${student.id}`,
+		  headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			'Authorization': `Bearer ${Cypress.env('token')}`
+		  },
+		}).then((deleteResponse) => {
+		  if (deleteResponse.status !== 200) {
+			throw new Error(`Erro ao excluir o usuário: ${deleteResponse}`)
+		  }
+		})
+	  }
+	})
   })
 })
 
@@ -1321,7 +1381,7 @@ Cypress.Commands.add('acessarPgUsuarios', () => {
   
   // Valida se a página foi carregada corretamente
   cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('addUsuario', () => {
@@ -1329,14 +1389,14 @@ Cypress.Commands.add('addUsuario', () => {
   const { breadcrumb, tituloPgAdicionar } = labels.usuarios
 
   cy.get('#add-professional')
-    .click()
+	.click()
 
   // Valida se a página foi carregada corretamente
   cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+	.should('be.visible')
 
   cy.contains('.detail_title', tituloPgAdicionar)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('cancelarFormularioUsuario', function() {
@@ -1345,12 +1405,12 @@ Cypress.Commands.add('cancelarFormularioUsuario', function() {
 
   // Cancelar
   cy.contains('#professional-cancel', 'Cancelar')
-    .should('be.visible')
-    .click()
+	.should('be.visible')
+	.click()
 
   // Validar redirecionamento
   cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('resetSenhaUsuario', function(nomeUsuario, senha) {
@@ -1360,44 +1420,44 @@ Cypress.Commands.add('resetSenhaUsuario', function(nomeUsuario, senha) {
   // Clica em 'Alterar senha'
   cy.contains('tr.professional-row', nomeUsuario)
   .within(() => {
-    cy.get('a.user-password-change')
-      .click()
+	cy.get('a.user-password-change')
+	  .click()
   })
 
   // Valida o título do modal de alteração de senha
   cy.get('#user-password-change-modal .panel-header h3')
-    .should('contain', tituloAlterarSenha)
-    .and('contain', nomeUsuario)
+	.should('contain', tituloAlterarSenha)
+	.and('contain', nomeUsuario)
 
   // Valida a mensagem de aguardando senha
   cy.get('#matching-passwords')
-    .should('contain', aguardandoSenha)
+	.should('contain', aguardandoSenha)
 
   // Insere senhas incompatíveis
   cy.get('#user-password-change-modal #new-password')
-    .type(senha)
+	.type(senha)
 
   cy.get('#user-password-change-modal #confirm-password')
-    .type('senha123')
+	.type('senha123')
 
   cy.get('#matching-passwords')
-    .should('contain', senhasDiferentes)
+	.should('contain', senhasDiferentes)
 
   // Insere senhas compatíveis
   cy.get('#user-password-change-modal #confirm-password')
-    .clear()
-    .type(senha)
+	.clear()
+	.type(senha)
 
   cy.get('#matching-passwords')
-    .should('contain', senhasIguais)
+	.should('contain', senhasIguais)
 
   // Confirma a alteração de senha do usuário
   cy.get('.green_btn[value="Salvar"]')
-    .click()
+	.click()
 
   // Valida a mensagem de sucesso
   cy.contains('.flash.notice', msgSucessoSenha)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('inativarUsuario', function(nomeUsuario) {
@@ -1405,59 +1465,59 @@ Cypress.Commands.add('inativarUsuario', function(nomeUsuario) {
   const { tituloModalInativar, textoModalInativar, msgSucessoInativar } = labels.usuarios
 
   cy.contains('tr.professional-row', nomeUsuario)
-    .find('.professional-progress')
-    .then(($progressCell) => {
-      const title = $progressCell.attr('title')
-      if (title === 'Inativar') {
-        cy.wrap($progressCell)
-          .find('a.button-inactive')
-          .click()
-      }
-    })
+	.find('.professional-progress')
+	.then(($progressCell) => {
+	  const title = $progressCell.attr('title')
+	  if (title === 'Inativar') {
+		cy.wrap($progressCell)
+		  .find('a.button-inactive')
+		  .click()
+	  }
+	})
 
   // Valida o título do modal de inativação
   cy.get('#user-inactive-modal .inactiv_or_active')
-    .should('have.text', tituloModalInativar)
+	.should('have.text', tituloModalInativar)
 
   // Valida o texto do modal de inativação
   cy.get('#user-inactive-modal .are_you_sure_destroy')
-    .should('have.text', textoModalInativar)
+	.should('have.text', textoModalInativar)
 
   // Confirma a inativação do usuário
   cy.get('.inactive-professional')
-    .contains('Inativar')
-    .click()
+	.contains('Inativar')
+	.click()
 
   // Valida a mensagem de sucesso após a inativação
   cy.contains('.flash.notice', msgSucessoInativar)
-    .should('be.visible')
+	.should('be.visible')
 
   // Verifica se o usuário foi inativado
   cy.contains('tr.professional-row', nomeUsuario)
-    .within(() => {
-      cy.get('.professional-progress')
-        .should('have.attr', 'title', 'Ativar')
-        .find('a.button-inactive')
-        .should('be.visible')
+	.within(() => {
+	  cy.get('.professional-progress')
+		.should('have.attr', 'title', 'Ativar')
+		.find('a.button-inactive')
+		.should('be.visible')
 
-      // Verifica se o elemento de alteração de senha não está visível
-      cy.get('a.user-password-change')
-        .should('not.exist')
+	  // Verifica se o elemento de alteração de senha não está visível
+	  cy.get('a.user-password-change')
+		.should('not.exist')
 
-      // Verifica se o elemento de edição não está visível
-      cy.get('td.professional-progress[title="Editar"]')
-        .find('a.professional-edit')
-        .should('not.exist')
+	  // Verifica se o elemento de edição não está visível
+	  cy.get('td.professional-progress[title="Editar"]')
+		.find('a.professional-edit')
+		.should('not.exist')
 
-      // Verifica se o elemento de exclusão não está visível
-      cy.get('td.professional-progress[title="Excluir"]')
-        .find('a.professional-delete')
-        .should('not.exist')
+	  // Verifica se o elemento de exclusão não está visível
+	  cy.get('td.professional-progress[title="Excluir"]')
+		.find('a.professional-delete')
+		.should('not.exist')
 
-      // Verifica se o status do usuário é "Inativo"
-      cy.get('td.ellipsis')
-        .should('contain', 'Inativo')
-    })
+	  // Verifica se o status do usuário é "Inativo"
+	  cy.get('td.ellipsis')
+		.should('contain', 'Inativo')
+	})
 })
 
 Cypress.Commands.add('ativarUsuario', function(nomeUsuario) {
@@ -1465,59 +1525,59 @@ Cypress.Commands.add('ativarUsuario', function(nomeUsuario) {
   const { tituloModalAtivar, textoModalAtivar, msgSucessoAtivar } = labels.usuarios
 
   cy.contains('tr.professional-row', nomeUsuario)
-    .find('.professional-progress')
-    .then(($progressCell) => {
-      const title = $progressCell.attr('title')
-      if (title === 'Ativar') {
-        cy.wrap($progressCell)
-          .find('a.button-inactive')
-          .click()
-      }
+	.find('.professional-progress')
+	.then(($progressCell) => {
+	  const title = $progressCell.attr('title')
+	  if (title === 'Ativar') {
+		cy.wrap($progressCell)
+		  .find('a.button-inactive')
+		  .click()
+	  }
   })
 
   // Valida o título do modal de ativação
   cy.get('#user-inactive-modal .inactiv_or_active')
-    .should('have.text', tituloModalAtivar)
+	.should('have.text', tituloModalAtivar)
 
   // Valida o texto do modal de ativação
   cy.get('#user-inactive-modal .are_you_sure_destroy')
-    .should('have.text', textoModalAtivar)
+	.should('have.text', textoModalAtivar)
 
   // Confirma a ativação do usuário
   cy.get('.inactive-professional')
-    .contains('Ativar')
-    .click()
+	.contains('Ativar')
+	.click()
 
   // Valida a mensagem de sucesso após a ativação
   cy.contains('.flash.notice', msgSucessoAtivar)
-    .should('be.visible')
+	.should('be.visible')
 
   // Verifica se o usuário foi ativado
   cy.contains('tr.professional-row', nomeUsuario)
-    .within(() => {
-      cy.get('.professional-progress')
-        .should('have.attr', 'title', 'Inativar')
-        .find('a.button-inactive')
-        .should('be.visible')
+	.within(() => {
+	  cy.get('.professional-progress')
+		.should('have.attr', 'title', 'Inativar')
+		.find('a.button-inactive')
+		.should('be.visible')
 
-      // Verifica se o elemento de alteração de senha não está visível
-      cy.get('a.user-password-change')
-        .should('be.visible')
+	  // Verifica se o elemento de alteração de senha não está visível
+	  cy.get('a.user-password-change')
+		.should('be.visible')
 
-      // Verifica se o elemento de edição não está visível
-      cy.get('td.professional-progress[title="Editar"]')
-        .find('a.professional-edit')
-        .should('be.visible')
+	  // Verifica se o elemento de edição não está visível
+	  cy.get('td.professional-progress[title="Editar"]')
+		.find('a.professional-edit')
+		.should('be.visible')
 
-      // Verifica se o elemento de exclusão não está visível
-      cy.get('td.professional-progress[title="Excluir"]')
-        .find('a.professional-delete')
-        .should('be.visible')
+	  // Verifica se o elemento de exclusão não está visível
+	  cy.get('td.professional-progress[title="Excluir"]')
+		.find('a.professional-delete')
+		.should('be.visible')
 
-      // Verifica se o status do usuário é "Ativo"
-      cy.get('td.ellipsis')
-        .should('contain', 'Ativo')
-    })
+	  // Verifica se o status do usuário é "Ativo"
+	  cy.get('td.ellipsis')
+		.should('contain', 'Ativo')
+	})
 })
 
 Cypress.Commands.add('addParticipanteConteudo', function(nomeConteudo, tipoConteudo) {
@@ -1526,40 +1586,40 @@ Cypress.Commands.add('addParticipanteConteudo', function(nomeConteudo, tipoConte
 
   // Clica em 'Opções' e 'Atividades'
   cy.get(`tr[tag-name='${nomeConteudo}']`)
-    .find('svg[aria-label="Options"]')
-    .click()
+	.find('svg[aria-label="Options"]')
+	.click()
 
   cy.get(`tr[tag-name='${nomeConteudo}']`)
-    .contains('button', 'Inscrição')
-    .click( {force: true} )
+	.contains('button', 'Inscrição')
+	.click( {force: true} )
 
   // Validar se a página foi carregada corretamente
   switch (tipoConteudo) {
-    case 'Trilha':
-      cy.contains('#page-breadcrumb', breadcrumbTrilha)
-        .should('be.visible')
-      break
-    case 'curso':
-      cy.contains('#page-breadcrumb', breadcrumb)
-        .should('be.visible')
-      break
+	case 'Trilha':
+	  cy.contains('#page-breadcrumb', breadcrumbTrilha)
+		.should('be.visible')
+	  break
+	case 'curso':
+	  cy.contains('#page-breadcrumb', breadcrumb)
+		.should('be.visible')
+	  break
   }
 
   cy.contains('.detail_title', tituloPg)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('preencherDadosParticipante', (conteudo, opcoes = { limpar: false }) => {
   Object.keys(conteudo).forEach(nomeCampo => {
-      const valor = conteudo[nomeCampo]
-      formParticipantes.preencherCampo(nomeCampo, valor, opcoes)
+	  const valor = conteudo[nomeCampo]
+	  formParticipantes.preencherCampo(nomeCampo, valor, opcoes)
   })
 }) 
 
 Cypress.Commands.add('validarDadosParticipante', (conteudo) => {
   Object.keys(conteudo).forEach(nomeCampo => {
-    const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
-    formParticipantes.validarCampo(nomeCampo, valor)
+	const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
+	formParticipantes.validarCampo(nomeCampo, valor)
   })
 })
 
@@ -1572,11 +1632,11 @@ Cypress.Commands.add('salvarNovoParticipante', (nomeParticipante) => {
 
   // Confirma a mensagem de sucesso
   cy.contains('.flash.notice', msgSucesso)
-    .should('be.visible')
+	.should('be.visible')
 
   // Verifica se o usuário foi criado com sucesso
   cy.contains('td', nomeParticipante)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('salvarEdicaoParticipante', (nomeParticipante, status = 'Confirmados') => {
@@ -1588,32 +1648,32 @@ Cypress.Commands.add('salvarEdicaoParticipante', (nomeParticipante, status = 'Co
 
   // Confirma a mensagem de sucesso
   cy.contains('.flash.notice', msgSucessoEdicao)
-    .should('be.visible')
+	.should('be.visible')
 
   // Mapeia a aba esperada para o seletor correspondente
   const abaSeletor = {
-    'Confirmados': '#confirmed',
-    'Pendentes': '#pending',
-    'Cancelados': '#canceled'
+	'Confirmados': '#confirmed',
+	'Pendentes': '#pending',
+	'Cancelados': '#canceled'
   }
 
   // Clica na aba correspondente em que o participante foi editado
   switch (status) {
-    case 'Confirmados':
-      cy.abaConfirmados()
-      break
-    case 'Pendentes':
-      cy.abaPendentes()
-      break
-    case 'Cancelados':
-      cy.abaCancelados()
-      break
+	case 'Confirmados':
+	  cy.abaConfirmados()
+	  break
+	case 'Pendentes':
+	  cy.abaPendentes()
+	  break
+	case 'Cancelados':
+	  cy.abaCancelados()
+	  break
   }  
 
   // Verifica se o usuário foi editado com sucesso na aba esperada
   cy.get(abaSeletor[status])
-    .contains('td', nomeParticipante)
-    .should('be.visible')
+	.contains('td', nomeParticipante)
+	.should('be.visible')
 })
 
 Cypress.Commands.add('editarParticipante', (nomeParticipante, tipoConteudo) => {
@@ -1624,26 +1684,26 @@ Cypress.Commands.add('editarParticipante', (nomeParticipante, tipoConteudo) => {
   cy.contains('td', nomeParticipante) 
   .parent('tr') 
   .within(() => {
-    cy.get('.participant_edit') 
-      .find('a') 
-      .contains('Editar') 
-      .click()
+	cy.get('.participant_edit') 
+	  .find('a') 
+	  .contains('Editar') 
+	  .click()
   })
   
   // Valida se a página foi carregada corretamente [obs. adicionado tipoConteudo devido BUG no breadcrumb da trilha]
   switch (tipoConteudo) {
-    case 'trilha':
-      cy.contains('#page-breadcrumb', breadcrumbTrilha)
-        .should('be.visible')
-      break
-    case 'curso':
-      cy.contains('#page-breadcrumb', breadcrumbEdicao)
-        .should('be.visible')
-      break
+	case 'trilha':
+	  cy.contains('#page-breadcrumb', breadcrumbTrilha)
+		.should('be.visible')
+	  break
+	case 'curso':
+	  cy.contains('#page-breadcrumb', breadcrumbEdicao)
+		.should('be.visible')
+	  break
   }
 
   cy.contains('.detail_title', tituloPgEdicao)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('addParticipante', (tipoConteudo) => {
@@ -1651,22 +1711,22 @@ Cypress.Commands.add('addParticipante', (tipoConteudo) => {
   const { breadcrumbAdicionar, tituloPgAdicionar, breadcrumbTrilha } = labels.participantes
 
   cy.get('.new_participant_btn')
-    .click()
+	.click()
 
   // Valida se a página foi carregada corretamente [obs. adicionado tipoConteudo devido BUG no breadcrumb da trilha]
   switch (tipoConteudo) {
-    case 'trilha':
-      cy.contains('#page-breadcrumb', breadcrumbTrilha)
-        .should('be.visible')
-      break
-    case 'curso':
-      cy.contains('#page-breadcrumb', breadcrumbAdicionar)
-        .should('be.visible')
-      break
+	case 'trilha':
+	  cy.contains('#page-breadcrumb', breadcrumbTrilha)
+		.should('be.visible')
+	  break
+	case 'curso':
+	  cy.contains('#page-breadcrumb', breadcrumbAdicionar)
+		.should('be.visible')
+	  break
   }
 
   cy.contains('.detail_title', tituloPgAdicionar)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('alteraStatus', function(nomeParticipantes, status) {
@@ -1679,42 +1739,42 @@ Cypress.Commands.add('alteraStatus', function(nomeParticipantes, status) {
 
   // Seleciona o(s) participante(s)
   participantes.forEach(nomeParticipante => {
-    cy.contains('td', nomeParticipante)
-      .parent('tr')
-      .within(() => {
-        cy.get('.participant_check input[type="checkbox"]')
-        .check({ force: true })
-      })
+	cy.contains('td', nomeParticipante)
+	  .parent('tr')
+	  .within(() => {
+		cy.get('.participant_check input[type="checkbox"]')
+		.check({ force: true })
+	  })
   })
 
   // Clica no botão correspondente ao status desejado
   switch (status) {
-    case 'Confirmado':
-      cy.get('.link-confirm')
-        .first()
-        .should('be.visible')
-        .and('not.be.disabled')
-        .click()
-      break
-    case 'Pendente':
-      cy.get('.pending_participant')
-        .first()
-        .should('be.visible')
-        .and('not.be.disabled')
-        .click()
-      break
-    case 'Cancelado':
-      cy.get('.link-danger.cancel_participant')
-        .first()
-        .should('be.visible')
-        .and('not.be.disabled')
-        .click()
-      // Insere motivo de cancelamento e confirma
-      cy.get('#reject_message').type('Motivo de cancelamento: Teste Cypress')
-      cy.get('#simplemodal-data').find('p button.green_btn.confirmations').click()
-      break
-    default:
-      throw new Error(`Status inválido: ${status}`)
+	case 'Confirmado':
+	  cy.get('.link-confirm')
+		.first()
+		.should('be.visible')
+		.and('not.be.disabled')
+		.click()
+	  break
+	case 'Pendente':
+	  cy.get('.pending_participant')
+		.first()
+		.should('be.visible')
+		.and('not.be.disabled')
+		.click()
+	  break
+	case 'Cancelado':
+	  cy.get('.link-danger.cancel_participant')
+		.first()
+		.should('be.visible')
+		.and('not.be.disabled')
+		.click()
+	  // Insere motivo de cancelamento e confirma
+	  cy.get('#reject_message').type('Motivo de cancelamento: Teste Cypress')
+	  cy.get('#simplemodal-data').find('p button.green_btn.confirmations').click()
+	  break
+	default:
+	  throw new Error(`Status inválido: ${status}`)
   }
   // Problemas na validação das demais mensagens, validando apenas a última mensagem de sucesso (por isso a inclusão do wait de 3 segundos)
   // switch (status) {
@@ -1737,44 +1797,44 @@ Cypress.Commands.add('alteraStatus', function(nomeParticipantes, status) {
 
   // Navega para a aba correspondente ao status
   switch (status) {
-    case 'Confirmado':
-      cy.abaConfirmados()
-      break
-    case 'Pendente':
-      cy.abaPendentes()
-      break
-    case 'Cancelado':
-      cy.abaCancelados()
-      break
+	case 'Confirmado':
+	  cy.abaConfirmados()
+	  break
+	case 'Pendente':
+	  cy.abaPendentes()
+	  break
+	case 'Cancelado':
+	  cy.abaCancelados()
+	  break
   }
 
   // Valida o status do(s) participante(s)
   participantes.forEach(nomeParticipante => {
-    let statusSeletor = {
-      'Confirmado': 'confirmed',
-      'Pendente': 'pending',
-      'Cancelado': 'canceled'
-    }
+	let statusSeletor = {
+	  'Confirmado': 'confirmed',
+	  'Pendente': 'pending',
+	  'Cancelado': 'canceled'
+	}
 
-    cy.get(`#${statusSeletor[status]}`)
-      .find('td', nomeParticipante, { timeout: timeout })
-      .should('be.visible')
+	cy.get(`#${statusSeletor[status]}`)
+	  .find('td', nomeParticipante, { timeout: timeout })
+	  .should('be.visible')
   })
 })
 
 Cypress.Commands.add('abaConfirmados', function() {
   cy.contains('.tab_selector', 'Confirmados')
-    .click()
+	.click()
 })
 
 Cypress.Commands.add('abaPendentes', function() {
   cy.contains('.tab_selector', 'Pendentes')
-    .click()
+	.click()
 })
 
 Cypress.Commands.add('abaCancelados', function() {
   cy.contains('.tab_selector', 'Cancelados')
-    .click()
+	.click()
 })
 
 Cypress.Commands.add('cancelarFormularioParticipante', function(tipoConteudo) {
@@ -1783,50 +1843,50 @@ Cypress.Commands.add('cancelarFormularioParticipante', function(tipoConteudo) {
 
   // Cancelar
   cy.contains('a.btn.btn-cancel', 'Cancelar')
-    .should('be.visible')
-    .as('btnCancelar')
+	.should('be.visible')
+	.as('btnCancelar')
 
   cy.get('@btnCancelar')
-    .click()
+	.click()
 
   // Validar redirecionamento [obs. adicionado tipoConteudo devido BUG no breadcrumb da trilha]
   switch (tipoConteudo) {
-    case 'trilha':
-      cy.contains('#page-breadcrumb', breadcrumbTrilha)
-        .should('be.visible')
-      break
-    case 'curso':
-      cy.contains('#page-breadcrumb', breadcrumb)
-        .should('be.visible')
-      break
+	case 'trilha':
+	  cy.contains('#page-breadcrumb', breadcrumbTrilha)
+		.should('be.visible')
+	  break
+	case 'curso':
+	  cy.contains('#page-breadcrumb', breadcrumb)
+		.should('be.visible')
+	  break
   }
 
   cy.contains('.detail_title', tituloPg)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('criarUsuarioViaApi', function(body) {
   const url = `/api/v1/o/${Cypress.env('orgId')}/students`
 
   cy.request({
-    method: 'POST',
-    url: url,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${Cypress.env('token')}`
-    },
-    body: body,
-    failOnStatusCode: false
+	method: 'POST',
+	url: url,
+	headers: {
+	  'Content-Type': 'application/json',
+	  'Authorization': `Bearer ${Cypress.env('token')}`
+	},
+	body: body,
+	failOnStatusCode: false
   }).then((response) => {
-    if (response.status !== 201 && attempt < 3) {
-      cy.log(`Tentativa ${attempt}: Falha na requisição. Tentando novamente`)
-      cy.criarUsuarioViaApi(body, attempt + 1)
-    } else if (response.status !== 201) {
-      cy.log(`Tentativa ${attempt}: Falha na requisição. Não foi possível criar o usuário`)
-      throw new Error(`Erro na criação do usuário: ${response.body}`)
-    } else {
-      expect(response.status).to.eq(201)
-    }
+	if (response.status !== 201 && attempt < 3) {
+	  cy.log(`Tentativa ${attempt}: Falha na requisição. Tentando novamente`)
+	  cy.criarUsuarioViaApi(body, attempt + 1)
+	} else if (response.status !== 201) {
+	  cy.log(`Tentativa ${attempt}: Falha na requisição. Não foi possível criar o usuário`)
+	  throw new Error(`Erro na criação do usuário: ${response.body}`)
+	} else {
+	  expect(response.status).to.eq(201)
+	}
   })
 })
 
@@ -1836,23 +1896,23 @@ Cypress.Commands.add('associarParticipante', function(emailParticipante, nomePar
 
   // Insere o e-mail e seleciona o participante correspondente clicando em 'Associar'
   cy.get('#event_participant_email')
-    .type(emailParticipante)
-    .then(() => {
-      cy.get('#email-list')
-        .should('be.visible')
-        .contains('.participantName', nomeParticipante)
-        .parents('li')
-        .find('a[id^="undefined"]')
-        .contains('Associar')
-        .click()
-    })
+	.type(emailParticipante)
+	.then(() => {
+	  cy.get('#email-list')
+		.should('be.visible')
+		.contains('.participantName', nomeParticipante)
+		.parents('li')
+		.find('a[id^="undefined"]')
+		.contains('Associar')
+		.click()
+	})
 
   // Salva a associação do participante
   cy.salvarNovoParticipante(nomeParticipante)
 
   // Valida a mensagem de sucesso
   cy.contains('.flash.notice', msgSucesso)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('alterarStatusTodosParticipantes', function(status, novoStatus, listaParticipantes) {
@@ -1862,68 +1922,68 @@ Cypress.Commands.add('alterarStatusTodosParticipantes', function(status, novoSta
 
   // Clica na aba correspondente ao status atual
   switch(status) {
-    case 'Confirmado':
-      cy.get('#confirmed')
-        .click()
-      break
-    case 'Pendente':
-      cy.get('#pending')
-        .click()
-      break
-    case 'Cancelado':
-      cy.get('#canceled')
-        .click()
-      break
-    default:
-      throw new Error(`Status inválido: ${status}`)
+	case 'Confirmado':
+	  cy.get('#confirmed')
+		.click()
+	  break
+	case 'Pendente':
+	  cy.get('#pending')
+		.click()
+	  break
+	case 'Cancelado':
+	  cy.get('#canceled')
+		.click()
+	  break
+	default:
+	  throw new Error(`Status inválido: ${status}`)
   }
 
   // Seleciona todos os participantes conforme a aba do status atual
   switch(status) {
-    case 'Confirmado':
-      cy.get('#confirmed_top_all_participants')
-        .click()
-      break
-    case 'Pendente':
-      cy.get('#pending_top_all_participants')
-        .click()
-      break
-    case 'Cancelado':
-      cy.get('#canceled_top_all_participants')
-        .click()
-      break
-    default:
-      throw new Error(`Status inválido: ${status}`)
+	case 'Confirmado':
+	  cy.get('#confirmed_top_all_participants')
+		.click()
+	  break
+	case 'Pendente':
+	  cy.get('#pending_top_all_participants')
+		.click()
+	  break
+	case 'Cancelado':
+	  cy.get('#canceled_top_all_participants')
+		.click()
+	  break
+	default:
+	  throw new Error(`Status inválido: ${status}`)
   }  
 
   // Clica no botão correspondente ao status desejado
   switch (novoStatus) {
-    case 'Confirmado':
-      cy.get('.link-confirm')
-        .first()
-        .should('be.visible')
-        .and('not.be.disabled')
-        .click()
-      break
-    case 'Pendente':
-      cy.get('.pending_participant')
-        .first()
-        .should('be.visible')
-        .and('not.be.disabled')
-        .click()
-      break
-    case 'Cancelado':
-      cy.get('.link-danger.cancel_participant')
-        .first()
-        .should('be.visible')
-        .and('not.be.disabled')
-        .click()
-      // Insere motivo de cancelamento e confirma
-      cy.get('#reject_message').type('Motivo de cancelamento: Teste Cypress')
-      cy.get('#simplemodal-data').find('p button.green_btn.confirmations').click()
-      break
-    default:
-      throw new Error(`Status inválido: ${novoStatus}`)
+	case 'Confirmado':
+	  cy.get('.link-confirm')
+		.first()
+		.should('be.visible')
+		.and('not.be.disabled')
+		.click()
+	  break
+	case 'Pendente':
+	  cy.get('.pending_participant')
+		.first()
+		.should('be.visible')
+		.and('not.be.disabled')
+		.click()
+	  break
+	case 'Cancelado':
+	  cy.get('.link-danger.cancel_participant')
+		.first()
+		.should('be.visible')
+		.and('not.be.disabled')
+		.click()
+	  // Insere motivo de cancelamento e confirma
+	  cy.get('#reject_message').type('Motivo de cancelamento: Teste Cypress')
+	  cy.get('#simplemodal-data').find('p button.green_btn.confirmations').click()
+	  break
+	default:
+	  throw new Error(`Status inválido: ${novoStatus}`)
   }
 
   // Problemas ao validar demais mensagens, validando apenas a última mensagem de sucesso (por isso a inclusão do wait de 3 segundos)
@@ -1947,28 +2007,28 @@ Cypress.Commands.add('alterarStatusTodosParticipantes', function(status, novoSta
 
   // Navega para a aba correspondente ao novo status
   switch (novoStatus) {
-    case 'Confirmado':
-      cy.abaConfirmados()
-      break
-    case 'Pendente':
-      cy.abaPendentes()
-      break
-    case 'Cancelado':
-      cy.abaCancelados()
-      break
+	case 'Confirmado':
+	  cy.abaConfirmados()
+	  break
+	case 'Pendente':
+	  cy.abaPendentes()
+	  break
+	case 'Cancelado':
+	  cy.abaCancelados()
+	  break
   }
 
   // Valida o novo status do(s) participante(s)
   listaParticipantes.forEach(nomeParticipante => {
-    let statusSeletor = {
-      'Confirmado': 'confirmed',
-      'Pendente': 'pending',
-      'Cancelado': 'canceled'
-    }
+	let statusSeletor = {
+	  'Confirmado': 'confirmed',
+	  'Pendente': 'pending',
+	  'Cancelado': 'canceled'
+	}
 
-    cy.get(`#${statusSeletor[novoStatus]}`)
-      .find('td', nomeParticipante, { timeout: timeout })
-      .should('be.visible')
+	cy.get(`#${statusSeletor[novoStatus]}`)
+	  .find('td', nomeParticipante, { timeout: timeout })
+	  .should('be.visible')
   })
 })
 
@@ -1978,49 +2038,49 @@ Cypress.Commands.add('importarParticipante', function(arquivo) {
 
   // Clica no botão 'Importar'
   cy.get('.import')
-    .click()
+	.click()
 
   // Clica em 'Enviar arquivo'
   cy.get('#file-name-container')
-    .contains('a', 'Enviar arquivo')
-    .click( { force: true } )
+	.contains('a', 'Enviar arquivo')
+	.click( { force: true } )
 
   // Seleciona o arquivo a ser importado
   cy.get('#file')
-    .selectFile(`cypress/fixtures/${arquivo}`, { force: true })
-    
+	.selectFile(`cypress/fixtures/${arquivo}`, { force: true })
+	
   // Clica em 'Enviar'
   cy.get('#send_to_import')
-    .click( { force: true } )
+	.click( { force: true } )
 
   // Valida a mensagem de sucesso do upload do arquivo
   cy.contains('.flash.success', msgUploadImportacao)
-    .should('be.visible')
+	.should('be.visible')
 
   // Valida modal de campos para importar
   cy.get('#imports-fields')
-    .contains('h3', 'Campos para importar')
+	.contains('h3', 'Campos para importar')
 
   // Seleciona as opções de telefone pessoal e celular
   cy.get('#importables_phone1')
-    .select('Telefone pessoal')
+	.select('Telefone pessoal')
 
   cy.get('#importables_cell_phone')
-    .select('Celular')
+	.select('Celular')
 
   // Clica em 'Enviar'
   cy.get('#csv-settings-form')
-    .find('div.field.fs3')
-    .contains('button', 'Enviar')
-    .click( { force: true } )
+	.find('div.field.fs3')
+	.contains('button', 'Enviar')
+	.click( { force: true } )
 
   // Valida a mensagem de sucesso após a importação
   cy.contains('.flash.success', msgImportacaoEmAndamento)
-    .should('be.visible')
+	.should('be.visible')
 
   // Valida a mensagem de sucesso da importação com espera de até 2 minutos
   cy.contains('.flash.success', msgImportacaoConcluida, { timeout: 120000 })
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('validarStatusImportacao', (tipo, statusEsperado) => {
@@ -2034,56 +2094,56 @@ Cypress.Commands.add('validarStatusImportacao', (tipo, statusEsperado) => {
   cy.log(`Status de importação esperado: ${statusEsperado}`)
 
   switch (tipo) {
-    case 'usuários':
-      seletor = '#import_users'
-      break
-    case 'participantes':
-      seletor = '.import'
-      break
-    default:
-      throw new Error(`Tipo de importação inválido: ${tipo}`)
+	case 'usuários':
+	  seletor = '#import_users'
+	  break
+	case 'participantes':
+	  seletor = '.import'
+	  break
+	default:
+	  throw new Error(`Tipo de importação inválido: ${tipo}`)
   }
 
   // Validar a mensagem da importação com espera de até 3 minutos com base na opção
   switch(statusEsperado) {
-    case 'Concluído':
-      cy.contains('.flash.success', msgImportacaoConcluida, { timeout: TIMEOUT_IMPORTACAO })
-        .should('be.visible')
-      break
-    case 'Cancelado':
-      cy.contains('.flash.error', msgImportacaoCancelada, { timeout: TIMEOUT_IMPORTACAO })
-        .should('be.visible')
-      break
+	case 'Concluído':
+	  cy.contains('.flash.success', msgImportacaoConcluida, { timeout: TIMEOUT_IMPORTACAO })
+		.should('be.visible')
+	  break
+	case 'Cancelado':
+	  cy.contains('.flash.error', msgImportacaoCancelada, { timeout: TIMEOUT_IMPORTACAO })
+		.should('be.visible')
+	  break
   }
 
   function verificarStatus() {
-    // Seleciona a primeira linha de dados da tabela, ignorando explicitamente o cabeçalho
-    // Usamos o seletor 'tr:has(td)' para garantir que estamos selecionando apenas linhas que contêm células de dados
-    cy.get('#imports-list').find('tr:nth-child(2)').find('td:nth-child(4)').then($cell => {
-      const status = $cell.text().trim()
-      cy.log(`Status da importação: ${status}`)
+	// Seleciona a primeira linha de dados da tabela, ignorando explicitamente o cabeçalho
+	// Usamos o seletor 'tr:has(td)' para garantir que estamos selecionando apenas linhas que contêm células de dados
+	cy.get('#imports-list').find('tr:nth-child(2)').find('td:nth-child(4)').then($cell => {
+	  const status = $cell.text().trim()
+	  cy.log(`Status da importação: ${status}`)
 
-      if (status === 'Execução' || status === 'Pendente') {
-        cy.log('Arquivo de importação ainda está sendo processado. Aguardando...')
-        cy.get('#twygo-modal-close').click()
-        cy.wait(10000)
-        cy.get(seletor).click()
-        verificarStatus()
-      } else if (status === statusEsperado) {
-        cy.log(`Status da importação está conforme o esperado: ${statusEsperado}`)
-        cy.get('#twygo-modal-close').click()
-      } else if (status !== statusEsperado) {
-        throw new Error(`Status: ${status}`)
-      }
-    })
+	  if (status === 'Execução' || status === 'Pendente') {
+		cy.log('Arquivo de importação ainda está sendo processado. Aguardando...')
+		cy.get('#twygo-modal-close').click()
+		cy.wait(10000)
+		cy.get(seletor).click()
+		verificarStatus()
+	  } else if (status === statusEsperado) {
+		cy.log(`Status da importação está conforme o esperado: ${statusEsperado}`)
+		cy.get('#twygo-modal-close').click()
+	  } else if (status !== statusEsperado) {
+		throw new Error(`Status: ${status}`)
+	  }
+	})
   }
   
   if (tipo === 'usuários'){
-    cy.acessarPgUsuarios()
+	cy.acessarPgUsuarios()
   }
 
   cy.get(seletor)
-    .click()
+	.click()
 
   verificarStatus()
 })
@@ -2100,23 +2160,23 @@ Cypress.Commands.add('configUsuario', (idioma = 'pt') => {
   const { breadcrumb, tituloPg } = labels.configUsuario
   
   cy.get('#btn-profile')
-    .click()
+	.click()
 
   cy.get('#config-profile')
-    .click()
+	.click()
 
   // Valida se a página foi carregada corretamente
   cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+	.should('be.visible')
 
   cy.contains('.detail_title', tituloPg)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('preencherDadosConfigUsuario', (dados, opcoes = { limpar: false }) => {
   Object.keys(dados).forEach(nomeCampo => {
-      const valor = dados[nomeCampo]
-      formConfigUsuario.preencherCampo(nomeCampo, valor, opcoes)
+	  const valor = dados[nomeCampo]
+	  formConfigUsuario.preencherCampo(nomeCampo, valor, opcoes)
   })
 })
 
@@ -2126,12 +2186,12 @@ Cypress.Commands.add('vincularInstrutor', (nomeInstrutor) => {
 
 Cypress.Commands.add('vinculoGestao', (nomeGestor, acao) => {
   switch(acao) {
-    case 'Vincular':
-      formGestor.vincularGestor(nomeGestor)
-      break
-    case  'Desvincular':
-      formGestor.desvincularGestor(nomeGestor)
-      break
+	case 'Vincular':
+	  formGestor.vincularGestor(nomeGestor)
+	  break
+	case  'Desvincular':
+	  formGestor.desvincularGestor(nomeGestor)
+	  break
   }
 })
 
@@ -2146,34 +2206,34 @@ Cypress.Commands.add('validarVinculoGestor', (nomeGestor, status) => {
   const { msgSucessoRemocao } = labels.gestores
 
   switch(status) {
-    case 'Vinculado':
-      cy.contains('.flash.success', msgSucessoVinculo)
-        .should('be.visible')
+	case 'Vinculado':
+	  cy.contains('.flash.success', msgSucessoVinculo)
+		.should('be.visible')
 
-      cy.get(`td:contains('${nomeGestor}')`)
-        .parents('tr')
-        .find('.icon-check-circle.on')
-      break
-    case 'Desvinculado':
-      cy.contains('.flash.success', msgSucessoRemocao)
-        .should('be.visible')
+	  cy.get(`td:contains('${nomeGestor}')`)
+		.parents('tr')
+		.find('.icon-check-circle.on')
+	  break
+	case 'Desvinculado':
+	  cy.contains('.flash.success', msgSucessoRemocao)
+		.should('be.visible')
   
-      cy.get(`td:contains('${nomeGestor}')`)
-        .parents('tr')
-        .find('.icon-times-circle.off')
-        .should('be.visible')
-      break  
+	  cy.get(`td:contains('${nomeGestor}')`)
+		.parents('tr')
+		.find('.icon-times-circle.off')
+		.should('be.visible')
+	  break  
   }
 })
 
 Cypress.Commands.add('removerVinculoInstrutor', (nomeInstrutor) => {
   //Encontra o instrutor e clica para remover 
   cy.contains('.speaker_name', nomeInstrutor)
-    .parents('div')
-    .parents('div')
-    .parents('tr')
-    .find('a.name')
-    .click()
+	.parents('div')
+	.parents('div')
+	.parents('tr')
+	.find('a.name')
+	.click()
 })
 
 Cypress.Commands.add('validarRemocaoVinculoInstrutor', (nomeInstrutor) => {
@@ -2187,10 +2247,10 @@ Cypress.Commands.add('criarInstrutor', (nomeInstrutor, sobrenomeInstrutor) => {
   let email = fakerPT_BR.internet.email({ firstName: nome, lastName: sobrenome}).toLowerCase()
 
   const dados = {
-      email: email,
-      nome: nome,
-      sobrenome: sobrenome,
-      perfilInstrutor: true
+	  email: email,
+	  nome: nome,
+	  sobrenome: sobrenome,
+	  perfilInstrutor: true
   }
 
   cy.acessarPgUsuarios()
@@ -2201,8 +2261,8 @@ Cypress.Commands.add('criarInstrutor', (nomeInstrutor, sobrenomeInstrutor) => {
 
 Cypress.Commands.add('validarDadosConfigUsuario', (dados) => {
   Object.keys(dados).forEach(nomeCampo => {
-    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
-    formConfigUsuario.validarCampo(nomeCampo, valor)
+	const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+	formConfigUsuario.validarCampo(nomeCampo, valor)
   })
 })
 
@@ -2212,14 +2272,14 @@ Cypress.Commands.add('logout', (idioma = 'pt') => {
   const { msgLogout } = labels.configUsuario
   
   cy.get('#btn-profile')
-    .click()
+	.click()
 
   cy.get('#link_logout')
-    .click( { force: true } )
+	.click( { force: true } )
 
   // Validar mensagem de sucesso do logout
   cy.contains('.flash.notice', msgLogout)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('instrutorConteudo', (nomeConteudo) => {
@@ -2233,19 +2293,19 @@ Cypress.Commands.add('instrutorConteudo', (nomeConteudo) => {
   seletor = `tr[tag-name='${nomeConteudo}']`    
   // Clica em 'Opções' e 'Instrutor'
   cy.get(seletor)
-    .find('svg[aria-label="Options"]')
-    .click()
+	.find('svg[aria-label="Options"]')
+	.click()
 
   cy.get(seletor)
-    .contains('button', 'Instrutor')
-    .click({force: true})
+	.contains('button', 'Instrutor')
+	.click({force: true})
   
   // Valida se a página foi carregada corretamente conforme o tipo de conteúdo
   cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+	.should('be.visible')
 
   cy.contains('.detail_title', tituloPg)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('criarGestor', (nomeGestor, sobrenomeGestor) => {
@@ -2255,10 +2315,10 @@ Cypress.Commands.add('criarGestor', (nomeGestor, sobrenomeGestor) => {
   let email = fakerPT_BR.internet.email({ firstName: nome, lastName: sobrenome}).toLowerCase()
 
   const dados = {
-      email: email,
-      nome: nome,
-      sobrenome: sobrenome,
-      perfilGestor: true
+	  email: email,
+	  nome: nome,
+	  sobrenome: sobrenome,
+	  perfilGestor: true
   }
 
   cy.acessarPgUsuarios()
@@ -2270,27 +2330,27 @@ Cypress.Commands.add('criarGestor', (nomeGestor, sobrenomeGestor) => {
 Cypress.Commands.add('gestorConteudo', (nomeConteudo) => {
   // Acessa o arquivo de labels
   cy.readFile('cypress/fixtures/labels.json').then(labels => {
-    const { breadcrumb, tituloPg } = labels.gestores;
+	const { breadcrumb, tituloPg } = labels.gestores;
 
-    // Define o seletor para encontrar o conteúdo na listagem
-    let seletor = `tr[tag-name='${nomeConteudo}']`;
+	// Define o seletor para encontrar o conteúdo na listagem
+	let seletor = `tr[tag-name='${nomeConteudo}']`;
 
-    // Clica em 'Opções' e 'Gestores de turma'
-    cy.get(seletor)
-      .find('svg[aria-label="Options"]')
-      .click();
+	// Clica em 'Opções' e 'Gestores de turma'
+	cy.get(seletor)
+	  .find('svg[aria-label="Options"]')
+	  .click();
 
-    cy.get(seletor)
-      .contains('button', 'Gestores de turma')
-      .click({ force: true });
+	cy.get(seletor)
+	  .contains('button', 'Gestores de turma')
+	  .click({ force: true });
 
-    // Valida se a página foi carregada corretamente conforme o tipo de conteúdo
-    const breadcrumbComVariavel = breadcrumb.replace('{{nomeDoConteudo}}', nomeConteudo);
-    cy.contains('#page-breadcrumb', breadcrumbComVariavel)
-      .should('be.visible');
+	// Valida se a página foi carregada corretamente conforme o tipo de conteúdo
+	const breadcrumbComVariavel = breadcrumb.replace('{{nomeDoConteudo}}', nomeConteudo);
+	cy.contains('#page-breadcrumb', breadcrumbComVariavel)
+	  .should('be.visible');
 
-    cy.contains('.detail_title', tituloPg)
-      .should('be.visible');
+	cy.contains('.detail_title', tituloPg)
+	  .should('be.visible');
   })
 })
 
@@ -2301,48 +2361,48 @@ Cypress.Commands.add('primeiroLogin', function(login, password, username, idioma
   cy.visit('/users/login')
 
   cy.get('#user_email')
-    .type(login)
+	.type(login)
   
   cy.get('#user_password')
-    .type(password)
+	.type(password)
 
   cy.contains('button', 'Entrar')
-    .should('be.visible')  
-    .click()
+	.should('be.visible')  
+	.click()
 
   // Aceite dos termos de uso
   cy.get('#agree_check')
-    .click()
+	.click()
 
   cy.get('#next')
-    .click()
+	.click()
 
   // Verificar se o login foi realizado com sucesso
   cy.contains('#page-breadcrumb', pgInicialAluno)
-    .should('be.visible')
+	.should('be.visible')
 
-    switch (idioma) {
-      case 'pt':
-      case 'es':
-        cy.contains('.name', username)
-          .should('be.visible')
-        break
-      case 'en':
-        const nomeCompleto = username
-        const palavras = nomeCompleto.split(' ')
+	switch (idioma) {
+	  case 'pt':
+	  case 'es':
+		cy.contains('.name', username)
+		  .should('be.visible')
+		break
+	  case 'en':
+		const nomeCompleto = username
+		const palavras = nomeCompleto.split(' ')
 
-        const nome = palavras[0]
-        const sobrenome = palavras.slice(1).join(' ')
+		const nome = palavras[0]
+		const sobrenome = palavras.slice(1).join(' ')
 
-        cy.contains('.name', `${sobrenome}, ${nome}`)
-          .should('be.visible')
-        break
-      default:
-        throw new Error(`Idioma inválido: ${idioma}. Utilize 'pt', 'en' ou 'es'`)
-    }
+		cy.contains('.name', `${sobrenome}, ${nome}`)
+		  .should('be.visible')
+		break
+	  default:
+		throw new Error(`Idioma inválido: ${idioma}. Utilize 'pt', 'en' ou 'es'`)
+	}
 
   cy.contains('#btn-profile', btnProfile)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('salvarConfigUsuario', (idioma = 'pt') => {
@@ -2356,17 +2416,17 @@ Cypress.Commands.add('salvarConfigUsuario', (idioma = 'pt') => {
 
   // Valida a mensagem
   cy.contains('.flash.notice', msgSucesso)
-    .should('be.visible')
+	.should('be.visible')
 
   // Valida o redirecionamento
   cy.contains('#page-breadcrumb', pgInicialAluno)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('voltar', () => {
   // Localiza o e clica no botão de voltar
   cy.contains('.btn.btn-default.btn-back.waves-effect', 'Voltar')
-    .click()  
+	.click()  
 })
 
 Cypress.Commands.add('importarUsuarios', function(arquivo, opcao = 'Cancelar') {
@@ -2375,52 +2435,52 @@ Cypress.Commands.add('importarUsuarios', function(arquivo, opcao = 'Cancelar') {
 
   // Clica no botão 'Importar'
   cy.get('#import_users')
-    .click()
+	.click()
 
   // Clica em 'Enviar arquivo'
   cy.get('#file-name-container')
-    .contains('a', 'Enviar arquivo')
-    .click( { force: true } )
+	.contains('a', 'Enviar arquivo')
+	.click( { force: true } )
 
   // Seleciona o arquivo a ser importado
   cy.get('#file')
-    .selectFile(`cypress/fixtures/${arquivo}`, { force: true })
-    
+	.selectFile(`cypress/fixtures/${arquivo}`, { force: true })
+	
   // Seleciona a opção de ação para os "Usuários já cadastrados"
   cy.get('#user_exists_action')
-    .select(opcao)
+	.select(opcao)
 
   // Clica em 'Enviar'
   cy.get('#send_to_import')
-    .click( { force: true } )
+	.click( { force: true } )
 
   // Valida a mensagem de sucesso do upload do arquivo
   cy.contains('.flash.success', msgUploadImportacao)
-    .should('be.visible')
+	.should('be.visible')
 
   // Valida modal de campos para importar
   cy.get('#imports-fields')
-    .contains('h3', 'Campos para importar')
+	.contains('h3', 'Campos para importar')
 
   // Seleciona as opções de telefone pessoal, comercial e celular
   cy.get('#importables_phone1')
-    .select('Telefone pessoal')
+	.select('Telefone pessoal')
 
   cy.get('#importables_phone2')
-    .select('Telefone comercial')
+	.select('Telefone comercial')
 
   cy.get('#importables_cell_phone')
-    .select('Celular')
+	.select('Celular')
 
   // Clica em 'Enviar'
   cy.get('#csv-settings-form')
-    .find('div.field.fs3')
-    .contains('button', 'Enviar')
-    .click( { force: true } )
+	.find('div.field.fs3')
+	.contains('button', 'Enviar')
+	.click( { force: true } )
 
   // Valida a mensagem de sucesso após o upload do arquivo
   cy.contains('.flash.success', msgImportacaoEmAndamento)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('limparDadosOrg', function() {
@@ -2430,17 +2490,17 @@ Cypress.Commands.add('limparDadosOrg', function() {
 
   // Acessar menu da Sophia
   cy.get('img[src*="sophia"]')
-    .eq(0)
-    .click()
+	.eq(0)
+	.click()
 
   // Selecionar a opção para excluir informações
   cy.get('#accordion-button-delete-info')
-    .click()
+	.click()
 
   // Selecionar a opção para limpar todas as informações
   cy.get('.chakra-checkbox__control')
-    .eq(3)
-    .click()
+	.eq(3)
+	.click()
 
   // Alternativa para navegar até o botão de excluir
   cy.realPress('Tab')
@@ -2449,86 +2509,34 @@ Cypress.Commands.add('limparDadosOrg', function() {
 
   // Confirmar a ação de exclusão
   cy.contains('.flash.success', exclusaoEmAndamento)
-    .should('be.visible')	
+	.should('be.visible')	
 
   // Aguardar mensagem de confirmação de exclusão	
   cy.contains('.flash.success', exclusaoConcluida, { timeout: TIMEOUT_EXCLUSAO })
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('ignorarCapturaErros', (errorsToIgnore, options = { ignoreScriptErrors: false, ignoreNetworkErrors: false }) => {
   cy.log(':: Ignora a captura de erros já mapeados ::')
 
   Cypress.on('uncaught:exception', (err, runnable) => {
-    const shouldIgnoreError = errorsToIgnore.some(errorToIgnore => err.message.includes(errorToIgnore))
-    
-    // Verificações específicas para erros de script de origem cruzada e erros de rede
-    const isCrossOriginError = err.message.includes('Script error.') || err.message.includes('cross-origin')
-    const isNetworkError = err.message.includes('Network Error')
+	const shouldIgnoreError = errorsToIgnore.some(errorToIgnore => err.message.includes(errorToIgnore))
+	
+	// Verificações específicas para erros de script de origem cruzada e erros de rede
+	const isCrossOriginError = err.message.includes('Script error.') || err.message.includes('cross-origin')
+	const isNetworkError = err.message.includes('Network Error')
 
-    if (shouldIgnoreError || 
-        (options.ignoreScriptErrors && isCrossOriginError) ||
-        (options.ignoreNetworkErrors && isNetworkError)) {
-      return false // Ignora o erro
-    }
+	if (shouldIgnoreError || 
+		(options.ignoreScriptErrors && isCrossOriginError) ||
+		(options.ignoreNetworkErrors && isNetworkError)) {
+	  return false // Ignora o erro
+	}
   })
 })
 
 Cypress.Commands.add('ativarCapturaErros', function() {
   cy.log(':: Ativando captura de erros ::')
   Cypress.removeAllListeners('uncaught:exception')
-})
-
-Cypress.Commands.add('criarAmbienteAdicional', (acao, dadosAmbiente, opcoes = { limpar: true }) => {
-    const labels = Cypress.env('labels')
-    const { msgSucesso } = labels.ambientesAdicionais
-    const acaoToast = 'Criar'
-    
-    if (acao === 'Criar') {
-        formAmbientesAdicionais.criarAmbienteAdicional()
-    } else if (acao === 'Adicionar') {
-        formAmbientesAdicionais.adicionarAmbienteAdicional()
-    }
-    
-    Object.keys(dadosAmbiente).forEach(nomeCampo => {
-        const valor = dadosAmbiente[nomeCampo]
-        formAmbientesAdicionais.preencherCampo(nomeCampo, valor, opcoes)
-    })
-
-    formAmbientesAdicionais.salvarAmbiente()
-    formAmbientesAdicionais.validarMsgSucesso(acaoToast, msgSucesso)
-})
-
-Cypress.Commands.add('inativarAmbienteAdicional', (nomeAmbiente = null) => {
-    cy.log(':: Inativando ambiente adicional ::')
-	  const labels = Cypress.env('labels')
-    const { msgInativacao, txtNenhumResultado } = labels.ambientesAdicionais
-	  const acao = 'Inativar'
-
-    // Verifica se o nome do ambiente foi fornecido
-    if (nomeAmbiente) {
-        // Inativa um ambiente específico
-        formAmbientesAdicionais.inativarAmbiente(nomeAmbiente)
-        formAmbientesAdicionais.confirmarInativacaoAmbiente()
-        formAmbientesAdicionais.validarMsgSucesso(acao, msgInativacao)
-        formAmbientesAdicionais.validarAmbienteAdicional(nomeAmbiente, acao)
-    } else {
-        // Verifica a presença da mensagem de "nenhum resultado"
-        cy.log(`Verificando a presença da mensagem de nenhum resultado: ${txtNenhumResultado}`)
-        formAmbientesAdicionais.verificarNenhumResultado(txtNenhumResultado).then((temResultado) => {
-            console.log(`Resultado da verificação: ${temResultado}`)
-            if (temResultado) {
-                formAmbientesAdicionais.capturarNomesAmbientes().then((nomesAmbientes) => {
-                    nomesAmbientes.forEach((nome) => {
-                        formAmbientesAdicionais.inativarAmbiente(nome)
-                        formAmbientesAdicionais.confirmarInativacaoAmbiente()
-                        formAmbientesAdicionais.validarMsgSucesso(acao, msgInativacao)
-                        formAmbientesAdicionais.validarAmbienteAdicional(nome, acao)
-                    })
-                })
-            }
-        })
-    }
 })
 
 Cypress.Commands.add('ambienteAdicionalConteudo', (nomeConteudo, tipoConteudo) => {
@@ -2540,34 +2548,34 @@ Cypress.Commands.add('ambienteAdicionalConteudo', (nomeConteudo, tipoConteudo) =
 
   // Clica em 'Opções' e 'Ambientes adicionais'
   cy.get(seletor)
-    .find('svg[aria-label="Options"]')
-    .click();
+	.find('svg[aria-label="Options"]')
+	.click();
 
   cy.get(seletor)
-    .contains('button', 'Ambiente adicional')
-    .click({ force: true })
+	.contains('button', 'Ambiente adicional')
+	.click({ force: true })
 
   // Valida se a página foi carregada corretamente
   const breadcrumbComVariavel = breadcrumbAmbienteAdicional.replace('{{nomeDoConteudo}}', nomeConteudo)
   cy.contains('#page-breadcrumb', breadcrumbComVariavel)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('compartilharComAmbienteAdicional', (nomeAmbiente, acao) => {
   // Encontra o card que contém o nome do ambiente
   cy.contains('p.chakra-text.partner-card-text span', nomeAmbiente).closest('div').within(() => {
-    // Verifica o estado atual do checkbox
-    cy.get('label.chakra-checkbox input[type="checkbox"]').then(($checkbox) => {
-      const isChecked = $checkbox.is(':checked')
-      
-      if (acao === 'Habilitar' && !isChecked) {
-        // Se a ação for 'Habilitar' e o checkbox não estiver marcado, marque-o
-        cy.wrap($checkbox).check({ force: true });
-      } else if (acao === 'Desabilitar' && isChecked) {
-        // Se a ação for 'Desabilitar' e o checkbox estiver marcado, desmarque-o
-        cy.wrap($checkbox).uncheck({ force: true })
-      }
-    })
+	// Verifica o estado atual do checkbox
+	cy.get('label.chakra-checkbox input[type="checkbox"]').then(($checkbox) => {
+	  const isChecked = $checkbox.is(':checked')
+	  
+	  if (acao === 'Habilitar' && !isChecked) {
+		// Se a ação for 'Habilitar' e o checkbox não estiver marcado, marque-o
+		cy.wrap($checkbox).check({ force: true });
+	  } else if (acao === 'Desabilitar' && isChecked) {
+		// Se a ação for 'Desabilitar' e o checkbox estiver marcado, desmarque-o
+		cy.wrap($checkbox).uncheck({ force: true })
+	  }
+	})
   })
 })
 
@@ -2579,241 +2587,241 @@ Cypress.Commands.add('salvarCompartilhamentoAmbienteAdicional', () => {
 
   // Valida a mensagem de sucesso
   cy.contains('.chakra-alert__desc', msgCompartilhamento)
-    .should('exist')
+	.should('exist')
 })
 
 Cypress.Commands.add('validarCompartilhamentoComAmbienteAdicional', (nomeAmbiente, acao) => {
   // Encontra o card que contém o nome do ambiente
   cy.contains('p.chakra-text.partner-card-text span', nomeAmbiente).closest('div').within(() => {
-    // Verifica o estado atual do checkbox
-    cy.get('label.chakra-checkbox input[type="checkbox"]').should(($checkbox) => {
-      const isChecked = $checkbox.is(':checked')
-      
-      if (acao === 'Habilitado') {
-        expect(isChecked).to.be.true
-      } else if (acao === 'Desabilitado') {
-        expect(isChecked).to.be.false
-      }
-    })
+	// Verifica o estado atual do checkbox
+	cy.get('label.chakra-checkbox input[type="checkbox"]').should(($checkbox) => {
+	  const isChecked = $checkbox.is(':checked')
+	  
+	  if (acao === 'Habilitado') {
+		expect(isChecked).to.be.true
+	  } else if (acao === 'Desabilitado') {
+		expect(isChecked).to.be.false
+	  }
+	})
   })
 })
 
 Cypress.Commands.add('preencherDadosConfigOrganizacao', (dados, aba, opcoes = { limpar: false }) => {
   if (aba) {
-    switch (aba) {
-      case 'dados':
-        formConfigOrganizacao.abaDados()
-        break
-      case 'customizacoes':
-        formConfigOrganizacao.abaCustomizacoes()
-        break
-      case 'certificado':
-        formConfigOrganizacao.abaCertificado()
-        break
-      case 'integracoes':
-        formConfigOrganizacao.abaIntegracoes()
-        break
-      case 'termos':
-        formConfigOrganizacao.abaTermos()
-        break
-      case 'urlWebhooks':
-        formConfigOrganizacao.abaUrlWebhooks()
-        break
-      default:
-        throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
-    }
+	switch (aba) {
+	  case 'dados':
+		formConfigOrganizacao.abaDados()
+		break
+	  case 'customizacoes':
+		formConfigOrganizacao.abaCustomizacoes()
+		break
+	  case 'certificado':
+		formConfigOrganizacao.abaCertificado()
+		break
+	  case 'integracoes':
+		formConfigOrganizacao.abaIntegracoes()
+		break
+	  case 'termos':
+		formConfigOrganizacao.abaTermos()
+		break
+	  case 'urlWebhooks':
+		formConfigOrganizacao.abaUrlWebhooks()
+		break
+	  default:
+		throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
+	}
   }
   
   Object.keys(dados).forEach(nomeCampo => {
-      const valor = dados[nomeCampo]
-      formConfigOrganizacao.preencherCampo(nomeCampo, valor, opcoes)
+	  const valor = dados[nomeCampo]
+	  formConfigOrganizacao.preencherCampo(nomeCampo, valor, opcoes)
   })
 }) 
 
 Cypress.Commands.add('validarDadosConfigOrganizacao', (dados, aba) => {
   switch (aba) {
-    case 'dados':
-      formConfigOrganizacao.abaDados()
-      break
-    case 'customizacoes':
-      formConfigOrganizacao.abaCustomizacoes()
-      break
-    case 'certificado':
-      formConfigOrganizacao.abaCertificado()
-      break
-    case 'integracoes':
-      formConfigOrganizacao.abaIntegracoes()
-      break
-    case 'termos':
-      formConfigOrganizacao.abaTermos()
-      break
-    case 'urlWebhooks':
-      formConfigOrganizacao.abaUrlWebhooks()
-      break
-    default:
-      throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
+	case 'dados':
+	  formConfigOrganizacao.abaDados()
+	  break
+	case 'customizacoes':
+	  formConfigOrganizacao.abaCustomizacoes()
+	  break
+	case 'certificado':
+	  formConfigOrganizacao.abaCertificado()
+	  break
+	case 'integracoes':
+	  formConfigOrganizacao.abaIntegracoes()
+	  break
+	case 'termos':
+	  formConfigOrganizacao.abaTermos()
+	  break
+	case 'urlWebhooks':
+	  formConfigOrganizacao.abaUrlWebhooks()
+	  break
+	default:
+	  throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
   }
 
   Object.keys(dados).forEach(nomeCampo => {
-    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
-    formConfigOrganizacao.validarCampo(nomeCampo, valor)
+	const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+	formConfigOrganizacao.validarCampo(nomeCampo, valor)
   })
 })
 
 Cypress.Commands.add('resetConfigOrganizacao', (aba) => {
   switch (aba) {
-    case 'dados':
-      const formDadosDefault = {
-        nome: Cypress.env('orgName'),
-        descricao: '',
-        informacoesGerais: '',
-        resumoIndexacao: '',
-        cep: '',
-        endereco: '',
-        complemento: '',
-        bairro: '',
-        cidade: '',
-        estado: '',
-        pais: '',
-        telefone: '(45) 99999-9999',
-        email: Cypress.env('login'),
-        site: '',
-        converterEscalaBranco: false,
-        personalizarLinkLogotipo: true,
-        linkRedirecionamento: '',
-        botaoContato: '',
-        usarGestaoCompetencias: false,
-        ativarGamificacao: false,
-        visualizacao: 'Privada',
-        abaPortfolio: false,
-        abaAgenda: false,
-        abaParceiros: false,
-        abaSobre: false,
-        abaPlanos: false,
-        listaEmpresas: '',
-        nrColaboradores: '',
-        ramoAtuacao: '',
-        cargo: ''
-      }
+	case 'dados':
+	  const formDadosDefault = {
+		nome: Cypress.env('orgName'),
+		descricao: '',
+		informacoesGerais: '',
+		resumoIndexacao: '',
+		cep: '',
+		endereco: '',
+		complemento: '',
+		bairro: '',
+		cidade: '',
+		estado: '',
+		pais: '',
+		telefone: '(45) 99999-9999',
+		email: Cypress.env('login'),
+		site: '',
+		converterEscalaBranco: false,
+		personalizarLinkLogotipo: true,
+		linkRedirecionamento: '',
+		botaoContato: '',
+		usarGestaoCompetencias: false,
+		ativarGamificacao: false,
+		visualizacao: 'Privada',
+		abaPortfolio: false,
+		abaAgenda: false,
+		abaParceiros: false,
+		abaSobre: false,
+		abaPlanos: false,
+		listaEmpresas: '',
+		nrColaboradores: '',
+		ramoAtuacao: '',
+		cargo: ''
+	  }
 
-      const atualizarPersonalizarLink = {
-          personalizarLinkLogotipo: false,
-          salvarDados: true
-      }
+	  const atualizarPersonalizarLink = {
+		  personalizarLinkLogotipo: false,
+		  salvarDados: true
+	  }
 
-      cy.acessarPgConfigOrganizacao()
-      cy.preencherDadosConfigOrganizacao(formDadosDefault, 'dados', { limpar: true })
-      cy.preencherDadosConfigOrganizacao(atualizarPersonalizarLink)
-      // Aguardar 3 segundos para atualização dos dados
-      cy.wait(3000)
-      cy.acessarPgConfigOrganizacao()
-      break
-    case 'customizacoes':
-      const formAlterarDadosUsuarioDefault = {
-        // Alterar dados do usuário
-        naoPermitirAlterarDados: false,
-        salvarAlterarDados: true
-      }
+	  cy.acessarPgConfigOrganizacao()
+	  cy.preencherDadosConfigOrganizacao(formDadosDefault, 'dados', { limpar: true })
+	  cy.preencherDadosConfigOrganizacao(atualizarPersonalizarLink)
+	  // Aguardar 3 segundos para atualização dos dados
+	  cy.wait(3000)
+	  cy.acessarPgConfigOrganizacao()
+	  break
+	case 'customizacoes':
+	  const formAlterarDadosUsuarioDefault = {
+		// Alterar dados do usuário
+		naoPermitirAlterarDados: false,
+		salvarAlterarDados: true
+	  }
 
-      cy.acessarPgConfigOrganizacao()
-      cy.preencherDadosConfigOrganizacao(formAlterarDadosUsuarioDefault, 'customizacoes', { limpar: true })
+	  cy.acessarPgConfigOrganizacao()
+	  cy.preencherDadosConfigOrganizacao(formAlterarDadosUsuarioDefault, 'customizacoes', { limpar: true })
 
-      const formConfigLoginDefault = {
-        // Configurações de login
-        tempoExpiracaoLogin: false,
-        loginEmail: true,
-        loginCpf: false,
-        salvarConfiguracoesLogin: true
-      }
+	  const formConfigLoginDefault = {
+		// Configurações de login
+		tempoExpiracaoLogin: false,
+		loginEmail: true,
+		loginCpf: false,
+		salvarConfiguracoesLogin: true
+	  }
 
-      cy.preencherDadosConfigOrganizacao(formConfigLoginDefault, 'customizacoes', { limpar: true })
+	  cy.preencherDadosConfigOrganizacao(formConfigLoginDefault, 'customizacoes', { limpar: true })
 
-      const formCustomizacoesInterfaceDefault = {
-        // Customização de interface
-        corPrimaria: '#9349DE',
-        corTexto: '#596679',
-        mostrarFundoLogin: false,
-        mostrarBotaoRegistrar: true,
-        removerImagemFundoLogin: false,
-        salvarCustomizacaoInterface: true
-      }
+	  const formCustomizacoesInterfaceDefault = {
+		// Customização de interface
+		corPrimaria: '#9349DE',
+		corTexto: '#596679',
+		mostrarFundoLogin: false,
+		mostrarBotaoRegistrar: true,
+		removerImagemFundoLogin: false,
+		salvarCustomizacaoInterface: true
+	  }
 
-      cy.preencherDadosConfigOrganizacao(formCustomizacoesInterfaceDefault, 'customizacoes', { limpar: true })
+	  cy.preencherDadosConfigOrganizacao(formCustomizacoesInterfaceDefault, 'customizacoes', { limpar: true })
 
-      const formEnvioEmailsDefault = {
-        // Envio de E-mails
-        limparInformacoesEmail: true,
-        confirmarLimparInformacoesEmail: true
-      }
+	  const formEnvioEmailsDefault = {
+		// Envio de E-mails
+		limparInformacoesEmail: true,
+		confirmarLimparInformacoesEmail: true
+	  }
 
-      // Esperar para atualização da customização
-      cy.wait(5000)
+	  // Esperar para atualização da customização
+	  cy.wait(5000)
 
-      cy.preencherDadosConfigOrganizacao(formEnvioEmailsDefault, 'customizacoes', { limpar: true })
-      break
-    case 'certificado':
-      // Carregar um certificado em branco, pois não é possível limpar os dados	
-      const carregarCertificadoEmBranco = {
-        configurar: true,
-        selecionarImagem: `imagem_0.jpg`,
-        salvarGerarModelo: true
-      }
+	  cy.preencherDadosConfigOrganizacao(formEnvioEmailsDefault, 'customizacoes', { limpar: true })
+	  break
+	case 'certificado':
+	  // Carregar um certificado em branco, pois não é possível limpar os dados	
+	  const carregarCertificadoEmBranco = {
+		configurar: true,
+		selecionarImagem: `imagem_0.jpg`,
+		salvarGerarModelo: true
+	  }
 
-      const formConfigCertificadoDefault = {
-          notificarGestorNovosCertificados: false,
-          salvarCertificado: true
-      }
+	  const formConfigCertificadoDefault = {
+		  notificarGestorNovosCertificados: false,
+		  salvarCertificado: true
+	  }
 
-      cy.acessarPgConfigOrganizacao()
-      cy.preencherDadosConfigOrganizacao(carregarCertificadoEmBranco, 'certificado')
+	  cy.acessarPgConfigOrganizacao()
+	  cy.preencherDadosConfigOrganizacao(carregarCertificadoEmBranco, 'certificado')
 
-      cy.acessarPgConfigOrganizacao()
-      cy.preencherDadosConfigOrganizacao(formConfigCertificadoDefault, 'certificado')
+	  cy.acessarPgConfigOrganizacao()
+	  cy.preencherDadosConfigOrganizacao(formConfigCertificadoDefault, 'certificado')
 
-      // Aguardar 10 segundos para que o certificado seja carregado
-      cy.wait(10000)
-      break    
-    case 'integracoes':
-      const formConfigIntegracoesDefault = {
-        // Configurações de integrações
-        ativarLogin: false,
-        salvarLogin: true
-      }
+	  // Aguardar 10 segundos para que o certificado seja carregado
+	  cy.wait(10000)
+	  break    
+	case 'integracoes':
+	  const formConfigIntegracoesDefault = {
+		// Configurações de integrações
+		ativarLogin: false,
+		salvarLogin: true
+	  }
 
-      cy.acessarPgConfigOrganizacao()
-      cy.preencherDadosConfigOrganizacao(formConfigIntegracoesDefault, 'integracoes')
+	  cy.acessarPgConfigOrganizacao()
+	  cy.preencherDadosConfigOrganizacao(formConfigIntegracoesDefault, 'integracoes')
 
-      cy.listaPixels().then(nomes => {
-        nomes.forEach(nome => {
-          cy.excluirIdentificadorPixel(nome)
-        })
-      })
-      break
-    case 'termos':
-      const formTermosDefault = {
-        editorTexto: true,
-        termosUsoTexto: '.',
-        politicaPrivacidadeTexto: '.',
-        salvarTermosPoliticaTexto: true
-      }
+	  cy.listaPixels().then(nomes => {
+		nomes.forEach(nome => {
+		  cy.excluirIdentificadorPixel(nome)
+		})
+	  })
+	  break
+	case 'termos':
+	  const formTermosDefault = {
+		editorTexto: true,
+		termosUsoTexto: '.',
+		politicaPrivacidadeTexto: '.',
+		salvarTermosPoliticaTexto: true
+	  }
 
-      cy.acessarPgConfigOrganizacao()
-      cy.preencherDadosConfigOrganizacao(formTermosDefault, 'termos')
-      break
-    case 'urlWebhooks':
-      cy.acessarPgConfigOrganizacao('urlWebhooks')
-      cy.listaConfigUrlWebhooks().then((configs) => {
-        // Verifica se existem configurações para excluir
-        if (configs.length > 0) {
-            // Exclui cada configuração encontrada
-            configs.forEach(config => {
-                cy.excluirUrlWebhook(config.nomeFuncao, config.url)
-            })
-        }
-    })
-      break
-    default:
-      throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
+	  cy.acessarPgConfigOrganizacao()
+	  cy.preencherDadosConfigOrganizacao(formTermosDefault, 'termos')
+	  break
+	case 'urlWebhooks':
+	  cy.acessarPgConfigOrganizacao('urlWebhooks')
+	  cy.listaConfigUrlWebhooks().then((configs) => {
+		// Verifica se existem configurações para excluir
+		if (configs.length > 0) {
+			// Exclui cada configuração encontrada
+			configs.forEach(config => {
+				cy.excluirUrlWebhook(config.nomeFuncao, config.url)
+			})
+		}
+	})
+	  break
+	default:
+	  throw new Error(`Aba inválida: ${aba}. Utilize 'dados', 'customizacoes', 'certificado', 'integracoes', 'termos' ou 'urlWebhooks'`)
   }
 })
 
@@ -2822,379 +2830,379 @@ Cypress.Commands.add('validarCertificadoGerado', (dadosGerarCertificado) => {
 
   // Validação do nome do arquivo do certificado
   cy.get('.file-size')
-      .contains('.label', `${Cypress.env('orgId')}-${orgName}.pdf`)
-      .should('exist')
+	  .contains('.label', `${Cypress.env('orgId')}-${orgName}.pdf`)
+	  .should('exist')
 
   // Mapeamento dos tamanhos de arquivo por imagem
   const tamanhosPorImagem = {
-      'imagem_0.jpg': '1602 bytes',
-      'imagem_1.jpg': '348689 bytes',
-      'imagem_2.jpg': '285303 bytes',
-      'imagem_3.jpg': '236988 bytes',
-      'imagem_4.jpg': '212021 bytes',
-      'imagem_5.jpg': '268280 bytes',
-      'imagem_6.jpg': '110903 bytes',
-      'imagem_7.jpg': '60988 bytes',
-      'imagem_8.jpg': '226841 bytes',
-      'imagem_9.jpg': '11045 bytes',
-      'imagem_10.jpg': '163247 bytes',
+	  'imagem_0.jpg': '1602 bytes',
+	  'imagem_1.jpg': '348689 bytes',
+	  'imagem_2.jpg': '285303 bytes',
+	  'imagem_3.jpg': '236988 bytes',
+	  'imagem_4.jpg': '212021 bytes',
+	  'imagem_5.jpg': '268280 bytes',
+	  'imagem_6.jpg': '110903 bytes',
+	  'imagem_7.jpg': '60988 bytes',
+	  'imagem_8.jpg': '226841 bytes',
+	  'imagem_9.jpg': '11045 bytes',
+	  'imagem_10.jpg': '163247 bytes',
   }
 
   let tamanho = tamanhosPorImagem[dadosGerarCertificado.selecionarImagem]
 
   // Validação do tamanho do arquivo
   cy.get('.file-size')
-      .contains('.size', tamanho)
-      .should('exist')
+	  .contains('.size', tamanho)
+	  .should('exist')
 })
 
 Cypress.Commands.add('listaPixels', () => {
   cy.get('body').then($body => {
-    // Verifica se existe algum 'tr' dentro de 'tbody'
-    if ($body.find('tbody tr').length > 0) {
-      // Se existir, prossegue com a lógica
-      return cy.get('tbody tr').then($trs => {
-        const nomes = $trs.map((index, tr) => Cypress.$(tr).find('td').first().text()).get()
-        return nomes
-      })
-    } else {
-      // Se não, retorna um array vazio
-      return []
-    }
+	// Verifica se existe algum 'tr' dentro de 'tbody'
+	if ($body.find('tbody tr').length > 0) {
+	  // Se existir, prossegue com a lógica
+	  return cy.get('tbody tr').then($trs => {
+		const nomes = $trs.map((index, tr) => Cypress.$(tr).find('td').first().text()).get()
+		return nomes
+	  })
+	} else {
+	  // Se não, retorna um array vazio
+	  return []
+	}
   })
 })
 
 Cypress.Commands.add('excluirIdentificadorPixel', (identificador) => {
   cy.get('body').then($body => {
-    // Verifica se o identificador existe na página antes de tentar excluí-lo
-    if ($body.find(`tbody tr:contains('${identificador}')`).length) {
-      cy.get(`tbody tr:contains('${identificador}')`).within(() => {
-        cy.get('a').contains('Excluir').click()
-      })
-      // Aguarda a exclusão ser processada, idealmente substituir por uma verificação de estado da página
-      cy.wait(1000) // Considerar substituir por uma estratégia mais robusta
-    } else {
-      cy.log(`Identificador ${identificador} não encontrado.`)
-    }
+	// Verifica se o identificador existe na página antes de tentar excluí-lo
+	if ($body.find(`tbody tr:contains('${identificador}')`).length) {
+	  cy.get(`tbody tr:contains('${identificador}')`).within(() => {
+		cy.get('a').contains('Excluir').click()
+	  })
+	  // Aguarda a exclusão ser processada, idealmente substituir por uma verificação de estado da página
+	  cy.wait(1000) // Considerar substituir por uma estratégia mais robusta
+	} else {
+	  cy.log(`Identificador ${identificador} não encontrado.`)
+	}
   })
 })
 
 Cypress.Commands.add('editarIdentificadorPixel', (identificador) => {
   cy.get('body').then($body => {
-    // Verifica se o identificador existe na página antes de tentar editá-lo
-    if ($body.find(`tbody tr:contains('${identificador}')`).length) {
-      cy.get(`tbody tr:contains('${identificador}')`).within(() => {
-        cy.get('a').contains('Editar').click()
-      })
-    } else {
-      cy.log(`Identificador ${identificador} não encontrado.`)
-    }
+	// Verifica se o identificador existe na página antes de tentar editá-lo
+	if ($body.find(`tbody tr:contains('${identificador}')`).length) {
+	  cy.get(`tbody tr:contains('${identificador}')`).within(() => {
+		cy.get('a').contains('Editar').click()
+	  })
+	} else {
+	  cy.log(`Identificador ${identificador} não encontrado.`)
+	}
   })
 })
 
 Cypress.Commands.add('aceiteTermos', ()=> {
-    cy.get('#agree_check')
-    .click()
+	cy.get('#agree_check')
+	.click()
 
   cy.get('#next')
-    .click()
+	.click()
 })
 
 Cypress.Commands.add('validarWebhook', (dadosWebhook) => {
   cy.get('div.url_webhook label[for="url"]')
-    .should('have.text', dadosWebhook.urlWebhook)
+	.should('have.text', dadosWebhook.urlWebhook)
 
   cy.get('div.url_webhook label[for="function"]')
-    .should('have.text', dadosWebhook.funcionalidade)
+	.should('have.text', dadosWebhook.funcionalidade)
 })
 
 Cypress.Commands.add('listaConfigUrlWebhooks', () => {
   cy.get('body').then($body => {
-    // Verifica se existe algum elemento com a classe '.url_webhook' no corpo do documento
-    if ($body.find('.url_webhook').length) {
-      // Se existir, prossegue com a lógica de mapeamento
-      return cy.get('.url_webhook').then($webhooks => {
-        const configs = $webhooks.map((index, webhook) => {
-          const nomeFuncao = Cypress.$(webhook).find('.col-md-3 label').text().trim()
-          const url = Cypress.$(webhook).find('.col-md-7 label').text().trim()
-          return {
-            nomeFuncao,
-            url
-          };
-        }).get()
-        // Usa cy.wrap para retornar a lista de configurações de forma assíncrona
-        return cy.wrap(configs)
-      })
-    } else {
-      // Se não existir, usa cy.wrap para retornar uma lista vazia de forma assíncrona
-      cy.log('Nenhuma configuração de URL de webhook encontrada.')
-      return cy.wrap([])
-    }
+	// Verifica se existe algum elemento com a classe '.url_webhook' no corpo do documento
+	if ($body.find('.url_webhook').length) {
+	  // Se existir, prossegue com a lógica de mapeamento
+	  return cy.get('.url_webhook').then($webhooks => {
+		const configs = $webhooks.map((index, webhook) => {
+		  const nomeFuncao = Cypress.$(webhook).find('.col-md-3 label').text().trim()
+		  const url = Cypress.$(webhook).find('.col-md-7 label').text().trim()
+		  return {
+			nomeFuncao,
+			url
+		  };
+		}).get()
+		// Usa cy.wrap para retornar a lista de configurações de forma assíncrona
+		return cy.wrap(configs)
+	  })
+	} else {
+	  // Se não existir, usa cy.wrap para retornar uma lista vazia de forma assíncrona
+	  cy.log('Nenhuma configuração de URL de webhook encontrada.')
+	  return cy.wrap([])
+	}
   })
 })
 
 Cypress.Commands.add('excluirUrlWebhook', (nomeFuncao, url) => {
   cy.get('.url_webhook').then($webhooks => {
-    const webhookEspecifico = $webhooks.filter((index, webhook) => {
-      const nomeFuncaoAtual = Cypress.$(webhook).find('.col-md-3 label').text()
-      const urlAtual = Cypress.$(webhook).find('.col-md-7 label').text()
-      return nomeFuncaoAtual === nomeFuncao && urlAtual === url
-    })
+	const webhookEspecifico = $webhooks.filter((index, webhook) => {
+	  const nomeFuncaoAtual = Cypress.$(webhook).find('.col-md-3 label').text()
+	  const urlAtual = Cypress.$(webhook).find('.col-md-7 label').text()
+	  return nomeFuncaoAtual === nomeFuncao && urlAtual === url
+	})
 
-    if (webhookEspecifico.length) {
-      // Assume que o botão de excluir está sempre no último `.col-md-1`
-      cy.wrap(webhookEspecifico).find('.col-md-1 .url_webhook_destroy').click()
-      cy.contains('.flash.success', 'URL deletada com sucesso')
-        .should('be.visible')
-    } else {
-      cy.log(`Configuração com nome ${nomeFuncao} e URL ${url} não encontrada.`)
-    }
+	if (webhookEspecifico.length) {
+	  // Assume que o botão de excluir está sempre no último `.col-md-1`
+	  cy.wrap(webhookEspecifico).find('.col-md-1 .url_webhook_destroy').click()
+	  cy.contains('.flash.success', 'URL deletada com sucesso')
+		.should('be.visible')
+	} else {
+	  cy.log(`Configuração com nome ${nomeFuncao} e URL ${url} não encontrada.`)
+	}
   })
 })
 
 Cypress.Commands.add('editarUrlWebhook', (nomeFuncao, url) => {
   cy.get('.url_webhook').then($webhooks => {
-    const webhookEspecifico = $webhooks.filter((index, webhook) => {
-      const nomeFuncaoAtual = Cypress.$(webhook).find('.col-md-3 label').text().trim()
-      const urlAtual = Cypress.$(webhook).find('.col-md-7 label').text().trim()
-      return nomeFuncaoAtual === nomeFuncao && urlAtual === url
-    })
+	const webhookEspecifico = $webhooks.filter((index, webhook) => {
+	  const nomeFuncaoAtual = Cypress.$(webhook).find('.col-md-3 label').text().trim()
+	  const urlAtual = Cypress.$(webhook).find('.col-md-7 label').text().trim()
+	  return nomeFuncaoAtual === nomeFuncao && urlAtual === url
+	})
 
-    if (webhookEspecifico.length) {
-      // Assume que o botão de editar pode ser identificado de forma única
-      cy.wrap(webhookEspecifico).find('.col-md-1 .url_webhook_edit').click()
-    } else {
-      cy.log(`Configuração com nome ${nomeFuncao} e URL ${url} não encontrada.`)
-    }
+	if (webhookEspecifico.length) {
+	  // Assume que o botão de editar pode ser identificado de forma única
+	  cy.wrap(webhookEspecifico).find('.col-md-1 .url_webhook_edit').click()
+	} else {
+	  cy.log(`Configuração com nome ${nomeFuncao} e URL ${url} não encontrada.`)
+	}
   })
 })
 
 Cypress.Commands.add('preencherDadosTrial', (dados, opcoes = { limpar: false }) => {
   Object.keys(dados).forEach(nomeCampo => {
-    const valor = dados[nomeCampo]
-    formTrial.preencherCampo(nomeCampo, valor, opcoes)
+	const valor = dados[nomeCampo]
+	formTrial.preencherCampo(nomeCampo, valor, opcoes)
   })
 })
 
 Cypress.Commands.add('validarDadosTrial', (dados) => {
   Object.keys(dados).forEach(nomeCampo => {
-    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
-    formTrial.validarCampo(nomeCampo, valor)
+	const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+	formTrial.validarCampo(nomeCampo, valor)
   })
 })
 
 Cypress.Commands.add('registroTrial', () => { 
   // Clica no botão "Registre-se"
   cy.get('#register_button')
-    .click()
+	.click()
 
   // Valida página do trial
   cy.url()
-    .should('include', '/new/register')
+	.should('include', '/new/register')
 })
 
 Cypress.Commands.add('validarMsgTrial', (step, objetivo, nomeUsuario) => {
   const objetivoMap = {
-    'Treinamento de colaboradores': 'treinamentoColaboradores',
-    'Treinamento de clientes': 'treinamentoClientes',
-    'Treinamento de parceiros': 'treinamentoParceiros',
-    'Venda de cursos': 'vendaCursos',
-    'Outro': 'outro'
+	'Treinamento de colaboradores': 'treinamentoColaboradores',
+	'Treinamento de clientes': 'treinamentoClientes',
+	'Treinamento de parceiros': 'treinamentoParceiros',
+	'Venda de cursos': 'vendaCursos',
+	'Outro': 'outro'
   }
 
   const validarTextos = (textos) => {
-    textos.forEach(({ seletor, texto }) => {
-      cy.contains(seletor, texto).should('be.visible')
-    })
+	textos.forEach(({ seletor, texto }) => {
+	  cy.contains(seletor, texto).should('be.visible')
+	})
   }
 
   const steps = {
-    seusDados: () => {
-      const { nomeStep, msgBemVindo, msgPreparado, msgSolicitaDados, texto1, texto2, texto3, texto4, texto5, texto6 } = Cypress.env('labels').trial.stepSeusDados
-      validarTextos([
-        { seletor: 'p.chakra-text', texto: nomeStep },
-        { seletor: 'h1.chakra-heading', texto: msgBemVindo },
-        { seletor: 'h2.chakra-heading', texto: msgPreparado },
-        { seletor: 'p.chakra-text', texto: msgSolicitaDados },
-        { seletor: 'span.chakra-text', texto: texto1 },
-        { seletor: 'span.chakra-text', texto: texto2 },
-        { seletor: 'b.chakra-text', texto: texto3 },
-        { seletor: 'span.chakra-text', texto: texto4 },
-        { seletor: 'b.chakra-text', texto: texto5 },
-        { seletor: 'span.chakra-text', texto: texto6 },
-      ])
-    },
-    dadosEmpresa: () => {
-      const { nomeStep, tituloStepDadosEmpresa, texto1, texto2, texto3, texto4 } = Cypress.env('labels').trial.stepDadosEmpresa
-      validarTextos([
-        { seletor: 'p.chakra-text', texto: nomeStep },
-        { seletor: 'h2.chakra-heading', texto: tituloStepDadosEmpresa },
-        { seletor: 'span.chakra-text', texto: texto1 },
-        { seletor: 'span.chakra-text', texto: texto2 },
-        { seletor: 'span.chakra-text', texto: texto3 },
-        { seletor: 'b.chakra-text', texto: texto4 },
-      ])
-    },
-    perfilUso: () => {
-      const { nomeStep, tituloStepPerfilUso, texto1, texto2, texto3 } = Cypress.env('labels').trial.stepPerfilUso
-      validarTextos([
-        { seletor: 'p.chakra-text', texto: nomeStep },
-        { seletor: 'label.chakra-form__label', texto: tituloStepPerfilUso },
-        { seletor: 'span.chakra-text', texto: texto1 },
-        { seletor: 'span.chakra-text', texto: texto2 },
-        { seletor: 'b.chakra-text', texto: texto3 },
-      ])
-    },
-    usuarios: () => {
-      const { nomeStep } = Cypress.env('labels').trial.stepUsuarios
-      validarTextos([
-        { seletor: 'p.chakra-text', texto: nomeStep },
-      ])
+	seusDados: () => {
+	  const { nomeStep, msgBemVindo, msgPreparado, msgSolicitaDados, texto1, texto2, texto3, texto4, texto5, texto6 } = Cypress.env('labels').trial.stepSeusDados
+	  validarTextos([
+		{ seletor: 'p.chakra-text', texto: nomeStep },
+		{ seletor: 'h1.chakra-heading', texto: msgBemVindo },
+		{ seletor: 'h2.chakra-heading', texto: msgPreparado },
+		{ seletor: 'p.chakra-text', texto: msgSolicitaDados },
+		{ seletor: 'span.chakra-text', texto: texto1 },
+		{ seletor: 'span.chakra-text', texto: texto2 },
+		{ seletor: 'b.chakra-text', texto: texto3 },
+		{ seletor: 'span.chakra-text', texto: texto4 },
+		{ seletor: 'b.chakra-text', texto: texto5 },
+		{ seletor: 'span.chakra-text', texto: texto6 },
+	  ])
+	},
+	dadosEmpresa: () => {
+	  const { nomeStep, tituloStepDadosEmpresa, texto1, texto2, texto3, texto4 } = Cypress.env('labels').trial.stepDadosEmpresa
+	  validarTextos([
+		{ seletor: 'p.chakra-text', texto: nomeStep },
+		{ seletor: 'h2.chakra-heading', texto: tituloStepDadosEmpresa },
+		{ seletor: 'span.chakra-text', texto: texto1 },
+		{ seletor: 'span.chakra-text', texto: texto2 },
+		{ seletor: 'span.chakra-text', texto: texto3 },
+		{ seletor: 'b.chakra-text', texto: texto4 },
+	  ])
+	},
+	perfilUso: () => {
+	  const { nomeStep, tituloStepPerfilUso, texto1, texto2, texto3 } = Cypress.env('labels').trial.stepPerfilUso
+	  validarTextos([
+		{ seletor: 'p.chakra-text', texto: nomeStep },
+		{ seletor: 'label.chakra-form__label', texto: tituloStepPerfilUso },
+		{ seletor: 'span.chakra-text', texto: texto1 },
+		{ seletor: 'span.chakra-text', texto: texto2 },
+		{ seletor: 'b.chakra-text', texto: texto3 },
+	  ])
+	},
+	usuarios: () => {
+	  const { nomeStep } = Cypress.env('labels').trial.stepUsuarios
+	  validarTextos([
+		{ seletor: 'p.chakra-text', texto: nomeStep },
+	  ])
 
-      if (objetivo !== '') {
-        const objetivosUsuarios = {
-          treinamentoColaboradores: () => {
-            const { tituloStepUsuarios, texto1, texto2 } = Cypress.env('labels').trial.stepUsuarios.treinamentoColaboradores
-            validarTextos([
-              { seletor: 'p.chakra-text', texto: tituloStepUsuarios },
-              { seletor: 'span.chakra-text', texto: texto1 },
-              { seletor: 'span.chakra-text', texto: texto2 },
-            ])
-          },
-          treinamentoClientes: () => {
-            const { tituloStepUsuarios, texto1, texto2, informativo1, informativo2 } = Cypress.env('labels').trial.stepUsuarios.treinamentoClientes
-            validarTextos([
-              { seletor: 'p.chakra-text', texto: tituloStepUsuarios },
-              { seletor: 'p.chakra-text', texto: informativo1 },
-              { seletor: 'p.chakra-text', texto: informativo2 },
-              { seletor: 'span.chakra-text', texto: texto1 },
-              { seletor: 'span.chakra-text', texto: texto2 },
-            ])
-          },
-          treinamentoParceiros: () => {
-            const { tituloStepUsuarios, texto1, texto2, informativo1, informativo2 } = Cypress.env('labels').trial.stepUsuarios.treinamentoParceiros
-            validarTextos([
-              { seletor: 'p.chakra-text', texto: tituloStepUsuarios },
-              { seletor: 'p.chakra-text', texto: informativo1 },
-              { seletor: 'p.chakra-text', texto: informativo2 },
-              { seletor: 'span.chakra-text', texto: texto1 },
-              { seletor: 'span.chakra-text', texto: texto2 },
-            ])
-          },
-          vendaCursos: () => {
-            const { tituloStepUsuarios, texto1, texto2, texto3, informativo1, informativo2 } = Cypress.env('labels').trial.stepUsuarios.vendaCursos
-            validarTextos([
-              { seletor: 'p.chakra-text', texto: tituloStepUsuarios },
-              { seletor: 'p.chakra-text', texto: informativo1 },
-              { seletor: 'p.chakra-text', texto: informativo2 },
-              { seletor: 'span.chakra-text', texto: texto1 },
-              { seletor: 'span.chakra-text', texto: texto2 },
-              { seletor: 'span.chakra-text', texto: texto3 },
-            ])
-          },
-          outro: () => {
-            const { tituloStepUsuarios, texto1, texto2 } = Cypress.env('labels').trial.stepUsuarios.outro
-            validarTextos([
-              { seletor: 'p.chakra-text', texto: tituloStepUsuarios },
-              { seletor: 'span.chakra-text', texto: texto1 },
-              { seletor: 'span.chakra-text', texto: texto2 },
-            ])
-          },
-        }
+	  if (objetivo !== '') {
+		const objetivosUsuarios = {
+		  treinamentoColaboradores: () => {
+			const { tituloStepUsuarios, texto1, texto2 } = Cypress.env('labels').trial.stepUsuarios.treinamentoColaboradores
+			validarTextos([
+			  { seletor: 'p.chakra-text', texto: tituloStepUsuarios },
+			  { seletor: 'span.chakra-text', texto: texto1 },
+			  { seletor: 'span.chakra-text', texto: texto2 },
+			])
+		  },
+		  treinamentoClientes: () => {
+			const { tituloStepUsuarios, texto1, texto2, informativo1, informativo2 } = Cypress.env('labels').trial.stepUsuarios.treinamentoClientes
+			validarTextos([
+			  { seletor: 'p.chakra-text', texto: tituloStepUsuarios },
+			  { seletor: 'p.chakra-text', texto: informativo1 },
+			  { seletor: 'p.chakra-text', texto: informativo2 },
+			  { seletor: 'span.chakra-text', texto: texto1 },
+			  { seletor: 'span.chakra-text', texto: texto2 },
+			])
+		  },
+		  treinamentoParceiros: () => {
+			const { tituloStepUsuarios, texto1, texto2, informativo1, informativo2 } = Cypress.env('labels').trial.stepUsuarios.treinamentoParceiros
+			validarTextos([
+			  { seletor: 'p.chakra-text', texto: tituloStepUsuarios },
+			  { seletor: 'p.chakra-text', texto: informativo1 },
+			  { seletor: 'p.chakra-text', texto: informativo2 },
+			  { seletor: 'span.chakra-text', texto: texto1 },
+			  { seletor: 'span.chakra-text', texto: texto2 },
+			])
+		  },
+		  vendaCursos: () => {
+			const { tituloStepUsuarios, texto1, texto2, texto3, informativo1, informativo2 } = Cypress.env('labels').trial.stepUsuarios.vendaCursos
+			validarTextos([
+			  { seletor: 'p.chakra-text', texto: tituloStepUsuarios },
+			  { seletor: 'p.chakra-text', texto: informativo1 },
+			  { seletor: 'p.chakra-text', texto: informativo2 },
+			  { seletor: 'span.chakra-text', texto: texto1 },
+			  { seletor: 'span.chakra-text', texto: texto2 },
+			  { seletor: 'span.chakra-text', texto: texto3 },
+			])
+		  },
+		  outro: () => {
+			const { tituloStepUsuarios, texto1, texto2 } = Cypress.env('labels').trial.stepUsuarios.outro
+			validarTextos([
+			  { seletor: 'p.chakra-text', texto: tituloStepUsuarios },
+			  { seletor: 'span.chakra-text', texto: texto1 },
+			  { seletor: 'span.chakra-text', texto: texto2 },
+			])
+		  },
+		}
 
-        const mappedObjetivo = objetivoMap[objetivo]
-        if (mappedObjetivo && objetivosUsuarios[mappedObjetivo]) {
-          objetivosUsuarios[mappedObjetivo]()
-        } else {
-          throw new Error(`Objetivo inválido: ${objetivo}. Utilize 'Treinamento de colaboradores', 'Treinamento de clientes', 'Treinamento de parceiros', 'Venda de cursos' ou 'Outro'`)
-        }
-      }
-    },
-    loginSenha: () => {
-      const { nomeStep, tituloStepLoginSenha } = Cypress.env('labels').trial.stepLoginSenha
-      validarTextos([
-        { seletor: 'p.chakra-text', texto: nomeStep },
-        { seletor: 'p.chakra-text', texto: tituloStepLoginSenha },
-      ])
+		const mappedObjetivo = objetivoMap[objetivo]
+		if (mappedObjetivo && objetivosUsuarios[mappedObjetivo]) {
+		  objetivosUsuarios[mappedObjetivo]()
+		} else {
+		  throw new Error(`Objetivo inválido: ${objetivo}. Utilize 'Treinamento de colaboradores', 'Treinamento de clientes', 'Treinamento de parceiros', 'Venda de cursos' ou 'Outro'`)
+		}
+	  }
+	},
+	loginSenha: () => {
+	  const { nomeStep, tituloStepLoginSenha } = Cypress.env('labels').trial.stepLoginSenha
+	  validarTextos([
+		{ seletor: 'p.chakra-text', texto: nomeStep },
+		{ seletor: 'p.chakra-text', texto: tituloStepLoginSenha },
+	  ])
 
-      if (objetivo !== '') {
-        const objetivosLoginSenha = {
-          treinamentoColaboradores: () => {
-            const { texto1, texto2 } = Cypress.env('labels').trial.stepLoginSenha.treinamentoColaboradores
-            validarTextos([
-              { seletor: 'span.chakra-text', texto: texto1 },
-              { seletor: 'span.chakra-text', texto: texto2 },
-            ])
-          },
-          treinamentoClientes: () => {
-            const { texto1, texto2 } = Cypress.env('labels').trial.stepLoginSenha.treinamentoClientes
-            validarTextos([
-              { seletor: 'span.chakra-text', texto: texto1 },
-              { seletor: 'span.chakra-text', texto: texto2 },
-            ])
-          },
-          treinamentoParceiros: () => {
-            const { texto1, texto2 } = Cypress.env('labels').trial.stepLoginSenha.treinamentoParceiros
-            validarTextos([
-              { seletor: 'span.chakra-text', texto: texto1 },
-              { seletor: 'span.chakra-text', texto: texto2 },
-            ])
-          },
-          vendaCursos: () => {
-            const { texto1, texto2, texto3 } = Cypress.env('labels').trial.stepLoginSenha.vendaCursos
-            validarTextos([
-              { seletor: 'span.chakra-text', texto: texto1 },
-              { seletor: 'span.chakra-text', texto: texto2 },
-              { seletor: 'span.chakra-text', texto: texto3 },
-            ])
-          },
-          outro: () => {
-            const { texto1, texto2 } = Cypress.env('labels').trial.stepLoginSenha.outro
-            validarTextos([
-              { seletor: 'span.chakra-text', texto: texto1 },
-              { seletor: 'span.chakra-text', texto: texto2 },
-            ])
-          },
-        }
+	  if (objetivo !== '') {
+		const objetivosLoginSenha = {
+		  treinamentoColaboradores: () => {
+			const { texto1, texto2 } = Cypress.env('labels').trial.stepLoginSenha.treinamentoColaboradores
+			validarTextos([
+			  { seletor: 'span.chakra-text', texto: texto1 },
+			  { seletor: 'span.chakra-text', texto: texto2 },
+			])
+		  },
+		  treinamentoClientes: () => {
+			const { texto1, texto2 } = Cypress.env('labels').trial.stepLoginSenha.treinamentoClientes
+			validarTextos([
+			  { seletor: 'span.chakra-text', texto: texto1 },
+			  { seletor: 'span.chakra-text', texto: texto2 },
+			])
+		  },
+		  treinamentoParceiros: () => {
+			const { texto1, texto2 } = Cypress.env('labels').trial.stepLoginSenha.treinamentoParceiros
+			validarTextos([
+			  { seletor: 'span.chakra-text', texto: texto1 },
+			  { seletor: 'span.chakra-text', texto: texto2 },
+			])
+		  },
+		  vendaCursos: () => {
+			const { texto1, texto2, texto3 } = Cypress.env('labels').trial.stepLoginSenha.vendaCursos
+			validarTextos([
+			  { seletor: 'span.chakra-text', texto: texto1 },
+			  { seletor: 'span.chakra-text', texto: texto2 },
+			  { seletor: 'span.chakra-text', texto: texto3 },
+			])
+		  },
+		  outro: () => {
+			const { texto1, texto2 } = Cypress.env('labels').trial.stepLoginSenha.outro
+			validarTextos([
+			  { seletor: 'span.chakra-text', texto: texto1 },
+			  { seletor: 'span.chakra-text', texto: texto2 },
+			])
+		  },
+		}
 
-        const mappedObjetivo = objetivoMap[objetivo]
-        if (mappedObjetivo && objetivosLoginSenha[mappedObjetivo]) {
-          objetivosLoginSenha[mappedObjetivo]()
-        } else {
-          throw new Error(`Objetivo inválido: ${objetivo}. Utilize 'Treinamento de colaboradores', 'Treinamento de clientes', 'Treinamento de parceiros', 'Venda de cursos' ou 'Outro'`)
-        }
-      }
-    },
-    finalizacao: () => {
-      const { textoSucesso, textoEmail, textoCliqueAqui, textoReenviar } = Cypress.env('labels').trial.finalizacao
-      validarTextos([
-        { seletor: 'span.chakra-text', texto: nomeUsuario },
-        { seletor: 'span.chakra-text', texto: textoSucesso },
-        { seletor: 'p.chakra-text', texto: textoEmail },
-        { seletor: 'u.chakra-text', texto: textoCliqueAqui },
-        { seletor: 'p.chakra-text', texto: textoReenviar },
-      ])
-    }
+		const mappedObjetivo = objetivoMap[objetivo]
+		if (mappedObjetivo && objetivosLoginSenha[mappedObjetivo]) {
+		  objetivosLoginSenha[mappedObjetivo]()
+		} else {
+		  throw new Error(`Objetivo inválido: ${objetivo}. Utilize 'Treinamento de colaboradores', 'Treinamento de clientes', 'Treinamento de parceiros', 'Venda de cursos' ou 'Outro'`)
+		}
+	  }
+	},
+	finalizacao: () => {
+	  const { textoSucesso, textoEmail, textoCliqueAqui, textoReenviar } = Cypress.env('labels').trial.finalizacao
+	  validarTextos([
+		{ seletor: 'span.chakra-text', texto: nomeUsuario },
+		{ seletor: 'span.chakra-text', texto: textoSucesso },
+		{ seletor: 'p.chakra-text', texto: textoEmail },
+		{ seletor: 'u.chakra-text', texto: textoCliqueAqui },
+		{ seletor: 'p.chakra-text', texto: textoReenviar },
+	  ])
+	}
   }
 
   if (steps[step]) {
-    steps[step]()
+	steps[step]()
   } else {
-    throw new Error(`Step inválido: ${step}. Utilize 'seusDados', 'dadosEmpresa', 'perfilUso', 'usuarios', 'loginSenha', 'finalizacao'`)
+	throw new Error(`Step inválido: ${step}. Utilize 'seusDados', 'dadosEmpresa', 'perfilUso', 'usuarios', 'loginSenha', 'finalizacao'`)
   }
 })
 
 Cypress.Commands.add('preencherDadosCobrancaAutomatica', (conteudo, opcoes = { limpar: false }) => {
   Object.keys(conteudo).forEach(nomeCampo => {
-      const valor = conteudo[nomeCampo]
-      formCobrancaAutomatica.preencherCampo(nomeCampo, valor, opcoes)
+	  const valor = conteudo[nomeCampo]
+	  formCobrancaAutomatica.preencherCampo(nomeCampo, valor, opcoes)
   })
 }) 
 
 Cypress.Commands.add('validarDadosCobrancaAutomatica', (conteudo) => {
   Object.keys(conteudo).forEach(nomeCampo => {
-    const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
-    formCobrancaAutomatica.validarCampo(nomeCampo, valor)
+	const valor = conteudo[nomeCampo] !== undefined ? conteudo[nomeCampo] : valorDefault
+	formCobrancaAutomatica.validarCampo(nomeCampo, valor)
   })
 })
 
@@ -3207,16 +3215,16 @@ Cypress.Commands.add('salvarCobrancaAutomatica', () => {
   
   // Valida a mensagem de sucesso
   cy.contains('#toast-payments-success-toast-description', msgSucesso)
-    .should('exist')
+	.should('exist')
 })
 
 Cypress.Commands.add('resetCobrancaAutomatica', () => {
   const dados = {
-    radioAsaas: true,
-    chaveAsaas: 'a',
-    checkCartao: true, 
-    checkPixBoleto: true,
-    vencimentoBoleto: '3'
+	radioAsaas: true,
+	chaveAsaas: 'a',
+	checkCartao: true, 
+	checkPixBoleto: true,
+	vencimentoBoleto: '3'
   }
 
   cy.acessarPgConfigCobrancaInscricao()
@@ -3242,11 +3250,11 @@ Cypress.Commands.add('validarModalSubstCobranca', () => {
   
   // Se aparecer modal de confirmação, clica para confirmar
   cy.get('body', { timeout: timeout }).then($body => {
-    if ($body.find(seletorModal).length > 0) {
-      // Se o modal estiver presente, clica no botão de confirmação
-      cy.get(seletorModalConfirmacao, { timeout: timeout })
-        .click()
-    }
+	if ($body.find(seletorModal).length > 0) {
+	  // Se o modal estiver presente, clica no botão de confirmação
+	  cy.get(seletorModalConfirmacao, { timeout: timeout })
+		.click()
+	}
   })
 })
 
@@ -3259,38 +3267,38 @@ Cypress.Commands.add('adicionarCupomVoucher', (tipoDesconto) => {
 
   // Valida a página
   cy.get('#page-breadcrumb')
-    .should('contain', breadcrumbTipo.replace('{{ tipo }}', tipoDesconto.toLowerCase()))
-    .should('exist')
+	.should('contain', breadcrumbTipo.replace('{{ tipo }}', tipoDesconto.toLowerCase()))
+	.should('exist')
 
   cy.get('h2.chakra-heading')
-    .should('contain', tituloPg)
-    .should('exist')
+	.should('contain', tituloPg)
+	.should('exist')
 })
 
 Cypress.Commands.add('preencherDadosCupomVoucher', (dados, opcoes = { limpar: false }) => {   
   Object.keys(dados).forEach(nomeCampo => {
-      const valor = dados[nomeCampo]
-      formCuponsVouchers.preencherCampo(nomeCampo, valor, opcoes)
+	  const valor = dados[nomeCampo]
+	  formCuponsVouchers.preencherCampo(nomeCampo, valor, opcoes)
   })
 }) 
 
 Cypress.Commands.add('validarDadosCupomVoucher', (dados, tipoDesconto) => {
   Object.keys(dados).forEach(nomeCampo => {
-      const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : formCuponsVouchers.elementos[nomeCampo].default
-      formCuponsVouchers.validarCampo(nomeCampo, valor, tipoDesconto);
+	  const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : formCuponsVouchers.elementos[nomeCampo].default
+	  formCuponsVouchers.validarCampo(nomeCampo, valor, tipoDesconto);
   });
 });
 
 Cypress.Commands.add('validarTabelaCupomVoucher', (dados, tipoDesconto) => {    
   Object.keys(dados).forEach(nomeCampo => {
-    let valor = dados[nomeCampo]
+	let valor = dados[nomeCampo]
 
-    // Verifica se o campo é 'validade' e converte a data para o formato DD/MM/AAAA
-    if (nomeCampo === 'validade') {
-      valor = moment(valor, 'YYYY-MM-DD').format('DD/MM/YYYY')
-    }
+	// Verifica se o campo é 'validade' e converte a data para o formato DD/MM/AAAA
+	if (nomeCampo === 'validade') {
+	  valor = moment(valor, 'YYYY-MM-DD').format('DD/MM/YYYY')
+	}
 
-    formCuponsVouchers.validarTabela(nomeCampo, valor, tipoDesconto)
+	formCuponsVouchers.validarTabela(nomeCampo, valor, tipoDesconto)
   })
 })
 
@@ -3301,13 +3309,13 @@ Cypress.Commands.add('salvarCupomVoucher', (tipo, acao) => {
   formCuponsVouchers.salvar()
 
   if (acao === 'salvar') {
-    // Valida a mensagem de sucesso
-    cy.contains('.chakra-alert__desc', msgSucesso.replace('{{ tipo }}', tipo))
-      .should('exist')
+	// Valida a mensagem de sucesso
+	cy.contains('.chakra-alert__desc', msgSucesso.replace('{{ tipo }}', tipo))
+	  .should('exist')
   } else if ( acao === 'editar')
   // Valida a mensagem de sucesso na edição
   cy.contains('.chakra-alert__desc', msgSucessoEdicao.replace('{{ tipo }}', tipo))
-    .should('exist')
+	.should('exist')
 })
 
 Cypress.Commands.add('adicionarItemCupomVoucher', (tipo) => {   
@@ -3317,12 +3325,12 @@ Cypress.Commands.add('adicionarItemCupomVoucher', (tipo) => {
   formCuponsVouchers.adicionarItem()
 
   cy.get(formCuponsVouchers.elementos.tituloModal.seletor)
-    .should('contain', tituloModal.replace('{{ tipo }}', tipo))
-    .should('exist')
+	.should('contain', tituloModal.replace('{{ tipo }}', tipo))
+	.should('exist')
 
   cy.get(formCuponsVouchers.elementos.descricaoModal.seletor)
-    .should('contain', descricaoModal.replace('{{ tipo }}', tipo.toLowerCase()))
-    .should('exist')
+	.should('contain', descricaoModal.replace('{{ tipo }}', tipo.toLowerCase()))
+	.should('exist')
 })
 
 Cypress.Commands.add('aplicarItemAoCupomVoucher', (nomeItem, tipoDesconto) => {   
@@ -3330,18 +3338,18 @@ Cypress.Commands.add('aplicarItemAoCupomVoucher', (nomeItem, tipoDesconto) => {
   const { msgSucesso } = labels.cuponsVouchers.modalAplicadoItem
   
   if (Array.isArray(nomeItem)) {
-    nomeItem.forEach(nome => {
-      formCuponsVouchers.aplicarItens(nome)
-    })
+	nomeItem.forEach(nome => {
+	  formCuponsVouchers.aplicarItens(nome)
+	})
   } else {
-    formCuponsVouchers.aplicarItens(nomeItem)
+	formCuponsVouchers.aplicarItens(nomeItem)
   }
 
   formCuponsVouchers.salvarItem()
 
   // Validar mensagem de sucesso
   cy.get('.chakra-alert__desc')
-    .should('contain', msgSucesso.replace('{{ tipo }}', tipoDesconto))
+	.should('contain', msgSucesso.replace('{{ tipo }}', tipoDesconto))
 })
 
 Cypress.Commands.add('editarCupomVoucher', (nome) => {    
@@ -3350,17 +3358,17 @@ Cypress.Commands.add('editarCupomVoucher', (nome) => {
   const seletor = `tr[data-item-name="${nome}"]`
 
   cy.get(seletor)
-    .find(formCuponsVouchers.elementos.editar.seletor)
-    .click()
+	.find(formCuponsVouchers.elementos.editar.seletor)
+	.click()
   
   // Valida a página de edição
   cy.get('#page-breadcrumb')
-    .should('contain', breadcrumbEdicao.replace('{{ nome }}', nome))
-    .should('exist')
+	.should('contain', breadcrumbEdicao.replace('{{ nome }}', nome))
+	.should('exist')
 
   cy.get('h2.chakra-heading')
-    .should('contain', tituloPgEdicao.replace('{{ nome }}', nome))
-    .should('exist')
+	.should('contain', tituloPgEdicao.replace('{{ nome }}', nome))
+	.should('exist')
 })
 
 Cypress.Commands.add('excluirCupomVoucher', (nome, tipo) => {   
@@ -3369,25 +3377,25 @@ Cypress.Commands.add('excluirCupomVoucher', (nome, tipo) => {
   const seletor = `tr[data-item-name="${nome}"]`
 
   cy.get(seletor)
-    .find(formCuponsVouchers.elementos.excluir.seletor)
-    .click()
+	.find(formCuponsVouchers.elementos.excluir.seletor)
+	.click()
 
   // Valida a mensagem de exclusão
   cy.get(formCuponsVouchers.elementos.tituloModalExclusao.seletor)
-    .should('contain', tituloModal)
-    .should('exist')
+	.should('contain', tituloModal)
+	.should('exist')
 
   cy.get(formCuponsVouchers.elementos.descricaoModalExclusao.seletor)
-    .should('contain', descricaoModal)
-    .should('exist')
+	.should('contain', descricaoModal)
+	.should('exist')
 
   // Confirma a exclusão
   formCuponsVouchers.confirmarExclusao()
 
   // Valida a mensagem de sucesso da exclusão
   cy.get('.chakra-alert__desc')
-    .should('contain', msgSucesso.replace('{{ tipo }}', tipo))
-    .should('exist')
+	.should('contain', msgSucesso.replace('{{ tipo }}', tipo))
+	.should('exist')
 })
 
 Cypress.Commands.add('excluirTodosCuponsVouchers', () => {    
@@ -3396,29 +3404,29 @@ Cypress.Commands.add('excluirTodosCuponsVouchers', () => {
   const listaCuponsVouchers = []
   
   cy.get('tbody').then($tbody => {
-    if ($tbody.find(`tr:contains(${msgNenhumResultado})`).length > 0) {
-      return listaCuponsVouchers
-    } else {
-      cy.get('tbody tr').each($row => {
-        const cupomVoucher = {}
-        cy.wrap($row).find('td.coupons-name-data').invoke('text').then((text) => {
-          cupomVoucher.nome = text.trim()
-        })
-        cy.wrap($row).find('td.coupons-discount_type-data').invoke('text').then((text) => {
-          cupomVoucher.tipo = text.trim()
-        }).then(() => {
-          listaCuponsVouchers.push(cupomVoucher)
-        })
-      }).then(() => {
-        return listaCuponsVouchers
-      })
-    }
+	if ($tbody.find(`tr:contains(${msgNenhumResultado})`).length > 0) {
+	  return listaCuponsVouchers
+	} else {
+	  cy.get('tbody tr').each($row => {
+		const cupomVoucher = {}
+		cy.wrap($row).find('td.coupons-name-data').invoke('text').then((text) => {
+		  cupomVoucher.nome = text.trim()
+		})
+		cy.wrap($row).find('td.coupons-discount_type-data').invoke('text').then((text) => {
+		  cupomVoucher.tipo = text.trim()
+		}).then(() => {
+		  listaCuponsVouchers.push(cupomVoucher)
+		})
+	  }).then(() => {
+		return listaCuponsVouchers
+	  })
+	}
   }).then((listaCuponsVouchers) => {
-    listaCuponsVouchers.forEach(({ nome, tipo }) => {
-      cy.excluirCupomVoucher(nome, tipo)
+	listaCuponsVouchers.forEach(({ nome, tipo }) => {
+	  cy.excluirCupomVoucher(nome, tipo)
 
-      cy.get('div[role="status"] div#toast-success-toast button[aria-label="Close"]').click()
-    })
+	  cy.get('div[role="status"] div#toast-success-toast button[aria-label="Close"]').click()
+	})
   })
 })
 
@@ -3430,7 +3438,7 @@ Cypress.Commands.add('acessarPgIntegracoes', function() {
 
   // Verificar se a página de integrações foi acessada com sucesso
   cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('adicionarChaveApi', function() {
@@ -3441,16 +3449,16 @@ Cypress.Commands.add('adicionarChaveApi', function() {
 
   // Verificar se a página de adicionar chave foi acessada com sucesso
   cy.contains('#page-breadcrumb', breadcrumbAdicionar)
-    .should('be.visible')
+	.should('be.visible')
 
   cy.contains('h2.chakra-heading', tituloAdicionar)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('preencherIntegracaoApi', (dados, opcoes = { limpar: true }) => {
   Object.keys(dados).forEach(nomeCampo => {
-      const valor = dados[nomeCampo]
-      formIntegracoes.preencherCampo(nomeCampo, valor, opcoes)
+	  const valor = dados[nomeCampo]
+	  formIntegracoes.preencherCampo(nomeCampo, valor, opcoes)
   })
 }) 
 
@@ -3462,11 +3470,11 @@ Cypress.Commands.add('salvarChaveApi', function(acao) {
   cy.wait(2000)   // Aguardar a atualização da página devido react
 
   if (acao === 'Criação') {
-    cy.contains('#toast-success-toast-title', msgSucessoCriacao)
-      .should('exist')
+	cy.contains('#toast-success-toast-title', msgSucessoCriacao)
+	  .should('exist')
   } else if (acao === 'Edição') {
-    cy.contains('#toast-success-toast-title', msgSucessoEdicao)
-      .should('exist')
+	cy.contains('#toast-success-toast-title', msgSucessoEdicao)
+	  .should('exist')
   }
 })
 
@@ -3474,32 +3482,32 @@ Cypress.Commands.add('validarTabelaIntegracoes', (nome, situacao, acao) => {
   const seletor = formIntegracoes.elementos.linhaTabela.seletor(nome)
 
   switch (acao) {
-    case 'Exclusão':
-      cy.get('body').then($body => {
-        if ($body.find(seletor).length > 0) {
-          cy.get(seletor).should('not.exist')
-        }
-      })
-      break
+	case 'Exclusão':
+	  cy.get('body').then($body => {
+		if ($body.find(seletor).length > 0) {
+		  cy.get(seletor).should('not.exist')
+		}
+	  })
+	  break
 
-    case 'Criação':
-      cy.get(seletor).should('exist').and('be.visible')
-      switch (situacao) {
-        case 'Ativada':
-          cy.get(seletor).find('span[data-checked]').should('exist')
-          break
+	case 'Criação':
+	  cy.get(seletor).should('exist').and('be.visible')
+	  switch (situacao) {
+		case 'Ativada':
+		  cy.get(seletor).find('span[data-checked]').should('exist')
+		  break
 
-        case 'Desativada':
-          cy.get(seletor).find('span[data-checked]').should('not.exist')
-          break
+		case 'Desativada':
+		  cy.get(seletor).find('span[data-checked]').should('not.exist')
+		  break
 
-        default:
-          throw new Error(`Situação desconhecida: ${situacao}`)
-      }
-      break
+		default:
+		  throw new Error(`Situação desconhecida: ${situacao}`)
+	  }
+	  break
 
-    default:
-      throw new Error(`Ação desconhecida: ${acao}`)
+	default:
+	  throw new Error(`Ação desconhecida: ${acao}`)
   }
 })
 
@@ -3508,22 +3516,22 @@ Cypress.Commands.add('editarChave', (nomeChave) => {
   const { breadcrumbEditar, tituloEditar } = labels.integracoes
 
   cy.get(formIntegracoes.elementos.linhaTabela.seletor(nomeChave)).within(() => {
-    formIntegracoes.editarChave()
+	formIntegracoes.editarChave()
   })
 
   // Verificar se a página de edição de chave foi acessada com sucesso
   cy.contains('#page-breadcrumb', breadcrumbEditar)
-    .should('be.visible')
+	.should('be.visible')
 
   cy.contains('h2.chakra-heading', tituloEditar)
-    .should('be.visible')
+	.should('be.visible')
   // formIntegracoes.expandirSelectUsuario()
 })
 
 Cypress.Commands.add('validarDadosIntegracoes', (dados) => {
   Object.keys(dados).forEach(nomeCampo => {
-    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
-    formIntegracoes.validarCampo(nomeCampo, valor)
+	const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+	formIntegracoes.validarCampo(nomeCampo, valor)
   })
 })
 
@@ -3532,22 +3540,22 @@ Cypress.Commands.add('excluirChave', (nomeChave) => {
   const { tituloModalExclusao, textoModalExclusao, msgSucessoExclusao} = labels.integracoes
   
   cy.get(formIntegracoes.elementos.linhaTabela.seletor(nomeChave)).within(() => {
-    formIntegracoes.exclusaoDeChave()
+	formIntegracoes.exclusaoDeChave()
   })
 
   // Validar modal de confirmação de exclusão
   cy.get('header[id^="chakra-modal--header-"]')
-    .contains(tituloModalExclusao)
-    .should('exist')
+	.contains(tituloModalExclusao)
+	.should('exist')
 
   cy.contains('.chakra-modal__body', textoModalExclusao)
-    .should('exist')
+	.should('exist')
 
   formIntegracoes.confirmacaoExclusaoDeChave()
 
   // Validar mensagem de sucesso
   cy.contains('.chakra-alert__desc', msgSucessoExclusao)
-    .should('exist')
+	.should('exist')
 })
 
 Cypress.Commands.add('alterarSituacaoChave', (nomeChave, situacao) => {
@@ -3555,39 +3563,39 @@ Cypress.Commands.add('alterarSituacaoChave', (nomeChave, situacao) => {
   const { msgChaveAtivada, tituloModalInativar, textoModalInativar, msgChaveInativada } = labels.integracoes
   
   cy.get(formIntegracoes.elementos.linhaTabela.seletor(nomeChave)).within(() => {
-    cy.get(formIntegracoes.elementos.situacao.seletor).find('input[type="checkbox"]').then($checkbox => {
-      const isChecked = $checkbox.is(':checked')
-      const estadoAtual = isChecked ? 'Ativo' : 'Inativo'
+	cy.get(formIntegracoes.elementos.situacao.seletor).find('input[type="checkbox"]').then($checkbox => {
+	  const isChecked = $checkbox.is(':checked')
+	  const estadoAtual = isChecked ? 'Ativo' : 'Inativo'
   
-      // Comparar o estado atual com o estado desejado
-      if (estadoAtual !== situacao) {
-        // Clicar no toggle switch para alterar o estado
-        cy.get(formIntegracoes.elementos.situacao.seletorValor)
-          .click()
-          .wait(2000)
-        
-        if (situacao === 'Ativo') {
-          // Validar mensagem de sucesso
-          cy.contains('#activate-toast', msgChaveAtivada)
-            .should('exist')
-        } else if (situacao === 'Inativo') {
-          cy.wait(2000)
-          // Validar modal de confirmação de inativação
-          cy.get('header[id^="chakra-modal--header-"]')
-            .contains(tituloModalInativar)
-            .should('exist')
+	  // Comparar o estado atual com o estado desejado
+	  if (estadoAtual !== situacao) {
+		// Clicar no toggle switch para alterar o estado
+		cy.get(formIntegracoes.elementos.situacao.seletorValor)
+		  .click()
+		  .wait(2000)
+		
+		if (situacao === 'Ativo') {
+		  // Validar mensagem de sucesso
+		  cy.contains('#activate-toast', msgChaveAtivada)
+			.should('exist')
+		} else if (situacao === 'Inativo') {
+		  cy.wait(2000)
+		  // Validar modal de confirmação de inativação
+		  cy.get('header[id^="chakra-modal--header-"]')
+			.contains(tituloModalInativar)
+			.should('exist')
 
-          cy.contains('.chakra-modal__body', textoModalInativar)
-            .should('exist')
-      
-          formIntegracoes.confirmarInativacao()
-      
-          // Validar mensagem de sucesso
-          cy.contains('.chakra-alert__desc', msgChaveInativada)
-            .should('exist')
-        }
-      }
-    })
+		  cy.contains('.chakra-modal__body', textoModalInativar)
+			.should('exist')
+	  
+		  formIntegracoes.confirmarInativacao()
+	  
+		  // Validar mensagem de sucesso
+		  cy.contains('.chakra-alert__desc', msgChaveInativada)
+			.should('exist')
+		}
+	  }
+	})
   })
 })
 
@@ -3598,33 +3606,33 @@ Cypress.Commands.add('excluirTodasChavesApi', () => {
 
   // Verifica se a página não contém resultados
   cy.get('tbody').then(($tbody) => {
-    if ($tbody.find(`p.chakra-text:contains("${nenhumResultado}")`).length > 0) {
-      // Se não houver resultados, não há chaves para excluir
-    } else {
-      // Seleciona todos os elementos que contêm os nomes das chaves
-      cy.get('.tokens-name-data').each(($el) => {
-        nomesChavesIntegracao.push($el.text())
-      }).then(() => {
-        // Após coletar todos os nomes das chaves, iterar sobre eles para exclusão
-        Cypress._.each(nomesChavesIntegracao, (nome) => {
-          cy.excluirChave(nome)
-        })
-      })
-    }
+	if ($tbody.find(`p.chakra-text:contains("${nenhumResultado}")`).length > 0) {
+	  // Se não houver resultados, não há chaves para excluir
+	} else {
+	  // Seleciona todos os elementos que contêm os nomes das chaves
+	  cy.get('.tokens-name-data').each(($el) => {
+		nomesChavesIntegracao.push($el.text())
+	  }).then(() => {
+		// Após coletar todos os nomes das chaves, iterar sobre eles para exclusão
+		Cypress._.each(nomesChavesIntegracao, (nome) => {
+		  cy.excluirChave(nome)
+		})
+	  })
+	}
   })
 })
 
 Cypress.Commands.add('preencherDadosRegistreSe', (dados, opcoes = { limpar: false }) => {
   Object.keys(dados).forEach(nomeCampo => {
-    const valor = dados[nomeCampo]
-    formRegistreSe.preencherCampo(nomeCampo, valor, opcoes)
+	const valor = dados[nomeCampo]
+	formRegistreSe.preencherCampo(nomeCampo, valor, opcoes)
   })
 })
 
 Cypress.Commands.add('validarDadosRegistreSe', (dados) => {
   Object.keys(dados).forEach(nomeCampo => {
-    const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
-    formRegistreSe.validarCampo(nomeCampo, valor)
+	const valor = dados[nomeCampo] !== undefined ? dados[nomeCampo] : valorDefault
+	formRegistreSe.validarCampo(nomeCampo, valor)
   })
 })
 
@@ -3636,7 +3644,7 @@ Cypress.Commands.add('salvarRegistreSe', () => {
 
   // Valida a mensagem de sucesso
   cy.contains('.flash.notice', msgSucesso)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('acessarSuperAdmin', (opcao) => {
@@ -3647,21 +3655,21 @@ Cypress.Commands.add('acessarSuperAdmin', (opcao) => {
 
   // Validar a página de super admin
   cy.contains('h1', boasVindas)
-    .should('be.visible')
+	.should('be.visible')
   
   cy.contains('p', msgOrientacao)
-    .should('be.visible')
+	.should('be.visible')
   
   switch (opcao) {
-    case 'Campos customizados':
-      formSuperAdmin.acessarCamposCustomizados()
+	case 'Campos customizados':
+	  formSuperAdmin.acessarCamposCustomizados()
 
-      // Validar a página de campos customizados
-      cy.contains('.page-header h1', tituloPgCamposCustomizados)
-        .should('be.visible')
-      break
-    default:
-      throw new Error(`Opção inválida: ${opcao}. Utilize 'Campos customizados'`)
+	  // Validar a página de campos customizados
+	  cy.contains('.page-header h1', tituloPgCamposCustomizados)
+		.should('be.visible')
+	  break
+	default:
+	  throw new Error(`Opção inválida: ${opcao}. Utilize 'Campos customizados'`)
   }
 })
 
@@ -3671,35 +3679,35 @@ Cypress.Commands.add('configTodosCamposCustomizados', (acao) => {
 
   // Função para gerar a configuração dos campos customizados
   function gerarConfiguracaoCampos(campos, acoes) {
-    return campos.reduce((config, campo) => {
-      config[campo] = acoes
-      return config
-    }, {})
+	return campos.reduce((config, campo) => {
+	  config[campo] = acoes
+	  return config
+	}, {})
   }
 
   // Definir os campos customizados
   const todosCampos = [
-    'phone', 'cpf', 'rg', 'address', 'address2', 'city', 'district', 
-    'address_number', 'zip_code', 'state', 'country', 'manager', 'team', 
-    'department', 'enterprise', 'business_line', 'number_of_employees', 'role'
+	'phone', 'cpf', 'rg', 'address', 'address2', 'city', 'district', 
+	'address_number', 'zip_code', 'state', 'country', 'manager', 'team', 
+	'department', 'enterprise', 'business_line', 'number_of_employees', 'role'
   ]
 
   const camposSemObrigatorio = [
-    'manager', 'team'
+	'manager', 'team'
   ]
 
   const camposComObrigatorio = todosCampos.filter(campo => !camposSemObrigatorio.includes(campo))
 
   // Validar perfil de administrador
   verificarPerfilENomeUsuario().then((resultado) => {
-    if (resultado.acao === 'logout') {
-      cy.logout()
-      cy.loginTwygoAutomacaoAdm()
-    } else if (resultado.acao === 'login') {
-      cy.loginTwygoAutomacaoAdm()
-    } else if (resultado.acao === 'perfil') {
-      cy.alterarPerfil('administrador')
-    }
+	if (resultado.acao === 'logout') {
+	  cy.logout()
+	  cy.loginTwygoAutomacaoAdm()
+	} else if (resultado.acao === 'login') {
+	  cy.loginTwygoAutomacaoAdm()
+	} else if (resultado.acao === 'perfil') {
+	  cy.alterarPerfil('administrador')
+	}
   })
 
   // Acessar SuperAdmin
@@ -3712,21 +3720,21 @@ Cypress.Commands.add('configTodosCamposCustomizados', (acao) => {
   const todosObrigatorios = gerarConfiguracaoCampos(camposComObrigatorio, 'obrigatório')
 
   switch (acao) {
-    case 'Habilitado':
-      formSuperAdmin.configurarCamposCustomizados(habilitarTodosCampos)    
-      break
-    case 'Obrigatório':
-      formSuperAdmin.configurarCamposCustomizados(todosObrigatorios)   
-      break
-    case 'Habilitado e Obrigatório':
-      formSuperAdmin.configurarCamposCustomizados(habilitarTodosCampos)    
-      formSuperAdmin.configurarCamposCustomizados(todosObrigatorios)
-      break
-    case 'Desabilitado':
-      formSuperAdmin.configurarCamposCustomizados(desabilitarTodosCampos)    
-      break
-    default:
-      throw new Error(`Ação inválida: ${acao}. Utilize 'Habilitado', 'Obrigatório', 'Habilitado e Obrigatório' ou 'Desabilitado'`)
+	case 'Habilitado':
+	  formSuperAdmin.configurarCamposCustomizados(habilitarTodosCampos)    
+	  break
+	case 'Obrigatório':
+	  formSuperAdmin.configurarCamposCustomizados(todosObrigatorios)   
+	  break
+	case 'Habilitado e Obrigatório':
+	  formSuperAdmin.configurarCamposCustomizados(habilitarTodosCampos)    
+	  formSuperAdmin.configurarCamposCustomizados(todosObrigatorios)
+	  break
+	case 'Desabilitado':
+	  formSuperAdmin.configurarCamposCustomizados(desabilitarTodosCampos)    
+	  break
+	default:
+	  throw new Error(`Ação inválida: ${acao}. Utilize 'Habilitado', 'Obrigatório', 'Habilitado e Obrigatório' ou 'Desabilitado'`)
   }
 
   // Salvar as configurações e validar a mensagem de sucesso
@@ -3740,19 +3748,19 @@ Cypress.Commands.add('configTodosCamposCustomizados', (acao) => {
 
 Cypress.Commands.add('listaCursoViaApi', function() {
   return cy.request({
-    method: 'GET',
-    url: `/api/v1/o/${Cypress.env('orgId')}/courses?page=1&per_page=99999`,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': `Bearer ${Cypress.env('token')}`
-    },
-    failOnStatusCode: false
+	method: 'GET',
+	url: `/api/v1/o/${Cypress.env('orgId')}/courses?page=1&per_page=99999`,
+	headers: {
+	  'Content-Type': 'application/x-www-form-urlencoded',
+	  'Authorization': `Bearer ${Cypress.env('token')}`
+	},
+	failOnStatusCode: false
   }).then((response) => {
-    if (response.status !== 200) {
-      throw new Error(`Erro ao obter a listagem de cursos: ${response.statusText}`)
-    }
-    
-    return response.body.courses.contents
+	if (response.status !== 200) {
+	  throw new Error(`Erro ao obter a listagem de cursos: ${response.statusText}`)
+	}
+	
+	return response.body.courses.contents
   })
 })
 
@@ -3768,7 +3776,7 @@ Cypress.Commands.add('acessarPgConfigComunicacao', () => {
 
   // Verificar se a página de configuração de comunicação foi acessada com sucesso
   cy.contains('#page-breadcrumb', breadcrumb)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('salvarConfigComunicacao', () => {
@@ -3779,7 +3787,7 @@ Cypress.Commands.add('salvarConfigComunicacao', () => {
 
   // Valida a mensagem de sucesso
   cy.contains('.flash.notice', msgSucesso)
-    .should('be.visible')
+	.should('be.visible')
 })
 
 Cypress.Commands.add('resetConfigComunicacao', () => {
@@ -3790,12 +3798,12 @@ Cypress.Commands.add('resetConfigComunicacao', () => {
 
   const combinacoes = comunicacao.gerarCombinacoes(todasSecoes, todosPerfis, todasPermissoes, acao)
   combinacoes.forEach(combinacao => {
-    comunicacao.configurarCombinacoes(combinacao)
+	comunicacao.configurarCombinacoes(combinacao)
   })
 
   const combinacaoLogs = comunicacao.gerarCombinacoes(['logs'], todosPerfis, ['ver'], acao)
   combinacaoLogs.forEach(combinacao => {
-    comunicacao.configurarCombinacoes(combinacao)
+	comunicacao.configurarCombinacoes(combinacao)
   })
   
   cy.salvarConfigComunicacao()
@@ -3803,8 +3811,8 @@ Cypress.Commands.add('resetConfigComunicacao', () => {
 
 Cypress.Commands.add('configurarNrColaboradores', () => {
   const dados = {
-    nrColaboradores: '1 - 10\n11 - 30\n31 - 100\n101 - 500\n> 500',
-    salvarDados: true
+	nrColaboradores: '1 - 10\n11 - 30\n31 - 100\n101 - 500\n> 500',
+	salvarDados: true
   }
 
   cy.loginTwygoAutomacaoAdm()
