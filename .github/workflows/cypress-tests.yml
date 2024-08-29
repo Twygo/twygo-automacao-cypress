@@ -22,6 +22,10 @@ jobs:
     - name: Install Dependencies
       run: yarn install
 
+    - name: Import GPG Kay
+      run: |
+        echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --quiet --batch --import
+        
     - name: Decrypt Cypress Config
       run: gpg --quiet --batch --yes --decrypt --passphrase="$CYPRESS_CONFIG_PASSWORD" --output cypress.config.js cypress.config.js.gpg
       env:
