@@ -7,23 +7,23 @@ class formComunidades{
 		},
         trocarImagem:{
 			seletor: '#community_logo',
-			tipo: 'input'
+			tipo: 'button'
 		},
         habilitarChatNaComunidade:{
 			seletor: '#community_enable_twygo_chat',
-			tipo: 'input'
+			tipo: 'checkbox'
 		},
         tagsRelacionadas:{
 			seletor: '#add_categories2',
 			tipo: 'input'
 		},
-		btnCriarComentario:{
+		btnCriarComunidade:{
             seletor: '.btn-create-community',
-            tipo: 'anchor'
+            tipo: 'button'
 		},
         btnVoltar:{
             seletor: '.btn btn-default btn-back',
-            tipo: 'i'
+            tipo: 'button'
         },
         btnSalvar:{
             seletor: '#submit-news',
@@ -31,25 +31,24 @@ class formComunidades{
         },
         btnAdicionarTag:{
             seletor: '#categories2',
-            tipo: 'anchor'
+            tipo: 'button'
         },
         btnEditarTag:{
             seletor: '.remove_category',
-            tipo: 'anchor'
+            tipo: 'button'
         },
         btnRemoverTag:{
             seletor: '.edit_category',
-            tipo: 'anchor'
+            tipo: 'button'
         },
         btnVerTodas:{
             seletor: '#see-all-communities',
-            tipo: 'anchor'
+            tipo: 'button'
         },
         btnAcessar:{
             seletor: '.btn btn-primary btn-sm',
-            tipo: 'anchor'
+            tipo: 'button'
         }
 	}
 }
-
 export default new formComunidades
