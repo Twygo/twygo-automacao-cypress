@@ -7,6 +7,10 @@ class formConfigOrganizacao {
         abaTermos: () => cy.get('a[tab="terms"]'),
         abaUrlWebhooks: () => cy.get('a[tab="url_webhooks"]'),
 
+        abaSelecionada: {
+            seletor: '.tab_selector.selected'
+        },
+
         // :: Aba Dados ::
         nome: {
             seletor: '#organization_name',
@@ -207,6 +211,10 @@ class formConfigOrganizacao {
         },
         limparInformacoesEmail: {
             seletor: '#cancel-organization-email',
+            tipo: 'button'
+        },
+        confirmarLimparInformacoesEmail: {
+            seletor: '#modal-remove-email-confirmed',
             tipo: 'button'
         },
 

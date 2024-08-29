@@ -5,20 +5,7 @@ import formTrial from '../support/pageObjects/formTrial'
 describe('Criar organização "Trial"', () => {
     let senha
 
-    before(() => {
-        cy.fixture('labels').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
-
     beforeEach(() => {
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "Unexpected token 'else'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ], { ignoreScriptErrors: true })
-
         // Defina a URL base
         const baseUrl = Cypress.env('baseUrlPadrao')
         Cypress.config('baseUrl', baseUrl)
@@ -36,15 +23,14 @@ describe('Criar organização "Trial"', () => {
             nome: fakerPT_BR.person.fullName(),
             funcao: 'Estudante',
             departamento: 'Atendimento / Assistência / CS',
-            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
+            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}${fakerPT_BR.string.numeric(4)}`,
             email: faker.internet.email().toLowerCase(),
             termos: true,
             politica: true,
             proximoStep0: true
         }
 
-    	cy.visit('/users/login')
-        cy.registroTrial()
+    	cy.visit('/new/register/steps?1')
         
         // Preenche formulário "Seus dados"
         cy.preencherDadosTrial(seusDados)
@@ -132,7 +118,7 @@ describe('Criar organização "Trial"', () => {
             nome: fakerPT_BR.person.fullName(),
             funcao: 'Autônomo / Profissional liberal',
             departamento: 'Presidência',
-            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
+            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}${fakerPT_BR.string.numeric(4)}`,
             email: faker.internet.email().toLowerCase(),
             termos: true,
             politica: true,
@@ -232,15 +218,14 @@ describe('Criar organização "Trial"', () => {
             nome: fakerPT_BR.person.fullName(),
             funcao: 'Analista / Engenheiro',
             departamento: 'RH',
-            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
+            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}${fakerPT_BR.string.numeric(4)}`,
             email: faker.internet.email().toLowerCase(),
             termos: true,
             politica: true,
             proximoStep0: true
         }
 
-    	cy.visit('/users/login')
-        cy.registroTrial()
+        cy.visit('/new/register/steps?1')
         
         // Preenche formulário "Seus dados"
         cy.preencherDadosTrial(seusDados)
@@ -328,7 +313,7 @@ describe('Criar organização "Trial"', () => {
             nome: fakerPT_BR.person.fullName(),
             funcao: 'Coordenador / Supervisor',
             departamento: 'Comercial',
-            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
+            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}${fakerPT_BR.string.numeric(4)}`,
             email: faker.internet.email().toLowerCase(),
             termos: true,
             politica: true,
@@ -428,15 +413,14 @@ describe('Criar organização "Trial"', () => {
             nome: fakerPT_BR.person.fullName(),
             funcao: 'Diretor / V.P.',
             departamento: 'TI / Suporte',
-            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
+            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}${fakerPT_BR.string.numeric(4)}`,
             email: faker.internet.email().toLowerCase(),
             termos: true,
             politica: true,
             proximoStep0: true
         }
 
-    	cy.visit('/users/login')
-        cy.registroTrial()
+        cy.visit('/new/register/steps?1')
         
         // Preenche formulário "Seus dados"
         cy.preencherDadosTrial(seusDados)
@@ -524,7 +508,7 @@ describe('Criar organização "Trial"', () => {
             nome: fakerPT_BR.person.fullName(),
             funcao: 'CEO / Presidente',
             departamento: 'Ensino / Educação Corporativa',
-            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
+            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}${fakerPT_BR.string.numeric(4)}`,
             email: faker.internet.email().toLowerCase(),
             termos: true,
             politica: true,
@@ -624,15 +608,14 @@ describe('Criar organização "Trial"', () => {
             nome: fakerPT_BR.person.fullName(),
             funcao: 'Estagiário',
             departamento: 'Administrativo',
-            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
+            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}${fakerPT_BR.string.numeric(4)}`,
             email: faker.internet.email().toLowerCase(),
             termos: true,
             politica: true,
             proximoStep0: true
         }
 
-    	cy.visit('/users/login')
-        cy.registroTrial()
+        cy.visit('/new/register/steps?1')
         
         // Preenche formulário "Seus dados"
         cy.preencherDadosTrial(seusDados)
@@ -720,7 +703,7 @@ describe('Criar organização "Trial"', () => {
             nome: fakerPT_BR.person.fullName(),
             funcao: 'Professor / Instrutor',
             departamento: 'Parcerias / Alianças',
-            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
+            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}${fakerPT_BR.string.numeric(4)}`,
             email: faker.internet.email().toLowerCase(),
             termos: true,
             politica: true,
@@ -820,15 +803,14 @@ describe('Criar organização "Trial"', () => {
             nome: fakerPT_BR.person.fullName(),
             funcao: 'Especialista /  Business partner',
             departamento: 'Marketing',
-            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
+            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}${fakerPT_BR.string.numeric(4)}`,
             email: faker.internet.email().toLowerCase(),
             termos: true,
             politica: true,
             proximoStep0: true
         }
 
-    	cy.visit('/users/login')
-        cy.registroTrial()
+        cy.visit('/new/register/steps?1')
         
         // Preenche formulário "Seus dados"
         cy.preencherDadosTrial(seusDados)
@@ -916,7 +898,7 @@ describe('Criar organização "Trial"', () => {
             nome: fakerPT_BR.person.fullName(),
             funcao: 'Gerente',
             departamento: 'Segurança do trabalho',
-            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
+            celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}${fakerPT_BR.string.numeric(4)}`,
             email: faker.internet.email().toLowerCase(),
             termos: true,
             politica: true,

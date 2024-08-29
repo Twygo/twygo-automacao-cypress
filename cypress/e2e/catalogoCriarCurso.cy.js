@@ -39,7 +39,6 @@ describe('criar curso via catálogo', () => {
 		hashtag: '',
 		addCategoria: '',
 		removerCategoria: '',
-		removerBanner: false,
 		permiteAnexo: 'Desabilitado',
 		mensagemAnexo: '',
 		statusIframeAnexo: false,
@@ -70,22 +69,7 @@ describe('criar curso via catálogo', () => {
 		'Suspenso': 2
 	}
 
-	before(() => {
-		// Carrega os labels do arquivo JSON
-		cy.fixture('labels.json').then((labels) => {  
-			Cypress.env('labels', labels)
-		})
-	})
-
 	beforeEach( () => {
-		// Ignora mensagens de erro conhecidas
-		cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier",    // Firefox
-			"Cannot read properties of undefined (reading 'length')",	//Chrome
-			"Cannot read properties of null (reading 'getClientRect')"  //Chrome
-		], { ignoreScriptErrors: true })
-		
 		// Define o tipo de conteúdo
 		tipoConteudo = 'criarCurso'
 
@@ -105,10 +89,6 @@ describe('criar curso via catálogo', () => {
 		cy.excluirCatalogoViaApi()
 	})
 
-	afterEach(() => {
-		cy.ativarCapturaErros()
-	})
-	
 	it('1. CRUD deve criar um curso via catálogo com visualização para inscritos', () => {    
         // Massa de dados para criar um curso via catálogo
 		const catalogo = {
@@ -139,8 +119,6 @@ describe('criar curso via catálogo', () => {
 		cy.log('## CREATE ##')
 
 		cy.criarCatalogoViaApi(body)
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		formConteudos.criarCursoViaCatalogo(catalogo.nome)
 		cy.salvarConteudo(catalogo.nome, tipoConteudo)
@@ -197,7 +175,6 @@ describe('criar curso via catálogo', () => {
 			rotuloContato: 'Contato',
 			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
-			removerBanner: true,
 			permiteAnexo: 'Habilitado',
 			statusIframeAnexo: true,
 			mensagemAnexo: `Insira o anexo do Curso: ${novoNome}`,
@@ -267,8 +244,6 @@ describe('criar curso via catálogo', () => {
 		cy.log('## CREATE ##')
 
         cy.criarCatalogoViaApi(body)
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		formConteudos.criarCursoViaCatalogo(catalogo.nome)
 		cy.salvarConteudo(catalogo.nome, tipoConteudo)
@@ -318,7 +293,6 @@ describe('criar curso via catálogo', () => {
 			rotuloContato: 'Mande-nos um e-mail',
 			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
-			removerBanner: true,
 			permiteAnexo: 'Habilitado',
 			statusIframeAnexo: true,
 			mensagemAnexo: `${fakerPT_BR.lorem.sentence()} anexo do curso ${novoNome}`,
@@ -383,8 +357,6 @@ describe('criar curso via catálogo', () => {
 		cy.log('## CREATE ##')
 
 		cy.criarCatalogoViaApi(body)
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		formConteudos.criarCursoViaCatalogo(catalogo.nome)
 		cy.salvarConteudo(catalogo.nome, tipoConteudo)
@@ -474,8 +446,6 @@ describe('criar curso via catálogo', () => {
 		cy.log('## CREATE ##')
 
         cy.criarCatalogoViaApi(body)
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		formConteudos.criarCursoViaCatalogo(catalogo.nome)
 		cy.salvarConteudo(catalogo.nome, tipoConteudo)
@@ -552,8 +522,6 @@ describe('criar curso via catálogo', () => {
 		cy.log('## CREATE ##')
 
 		cy.criarCatalogoViaApi(body)
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()
 		
 		// Não deve ser possível criar um curso com base em um catálogo em desenvolvimento
@@ -690,8 +658,6 @@ describe('criar curso via catálogo', () => {
 		cy.log('## CREATE ##')
 
 		cy.criarCatalogoViaApi(body)
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()
 
 		// Não deve ser possível criar um curso com base em um catálogo em desenvolvimento
@@ -843,7 +809,6 @@ describe('criar curso via catálogo', () => {
 			rotuloContato: 'Contato',
 			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: novasCategorias,
-			removerBanner: true,
 			permiteAnexo: 'Desabilitado',
 			statusIframeAnexo: false,
 			visualizacao: 'Público',
@@ -935,8 +900,6 @@ describe('criar curso via catálogo', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()
 
 		cy.addConteudo('catalogo')

@@ -3,31 +3,10 @@ import comunicacao from '../support/pageObjects/comunicacao'
 
 describe('Configuração de Comunicação', () => {
     before(() => {
-        // Carrega os labels do arquivo JSON
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-        
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'"
-        ])
-
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
+        cy.loginTwygoAutomacaoAdm()
         cy.acessarPgConfigComunicacao()
         cy.resetConfigComunicacao()
         cy.logout()
-    })
-
-    beforeEach(() => {
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'"
-        ])
-        
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
     })
     
     it('1. CRUD - Comunidades', () => {

@@ -107,6 +107,10 @@ function gerarDados(dado, nome = '', sobrenome = '', dominio = 'automacao.com', 
             return faker.number.int( { min: 1, max: 9999 } )
         case 'site':
             return faker.internet.url()
+        case 'nomeProduto':
+            return faker.commerce.productName()
+        case 'descricaoProduto':
+            return faker.commerce.productDescription()
         default:
             throw new Error(`Tipo de dado não suportado: ${dado}`)
     }

@@ -38,17 +38,6 @@ describe('Usuário', () => {
     }
     
     before(() => {
-		// Carrega os labels do arquivo JSON
-		cy.fixture('labels.json').then((labels) => {
-			Cypress.env('labels', labels)
-		})
-
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ], { ignoreScriptErrors: true })        
-
         // Configuração de campos customizados
         cy.configTodosCamposCustomizados('Desabilitado')
         cy.configTodosCamposCustomizados('Habilitado')
@@ -56,19 +45,9 @@ describe('Usuário', () => {
 	})
     
     beforeEach(() => {
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ])
-        
         // Obtém token autenticação, lista e exclui os usuários
         getAuthToken()
         cy.excluirUsuarioViaApi()
-    })
-
-    afterEach(() => {
-        cy.ativarCapturaErros()
     })
 
     it('1. CRUD usuário default', () => {
@@ -86,8 +65,6 @@ describe('Usuário', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.acessarPgUsuarios()
         cy.addUsuario()
         cy.preencherDadosUsuario(dados, { limpar: true })
@@ -204,8 +181,6 @@ describe('Usuário', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.acessarPgUsuarios()
         cy.addUsuario()
         cy.preencherDadosUsuario(dados, { limpar: true })
@@ -320,8 +295,6 @@ describe('Usuário', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.acessarPgUsuarios()
         cy.addUsuario()
         cy.preencherDadosUsuario(dados, { limpar: true })
@@ -417,8 +390,6 @@ describe('Usuário', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.acessarPgUsuarios()
         cy.addUsuario()
         cy.preencherDadosUsuario(dados, { limpar: true })
@@ -495,8 +466,6 @@ describe('Usuário', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.acessarPgUsuarios()
         cy.addUsuario()
         cy.preencherDadosUsuario(dados, { limpar: true })
@@ -569,8 +538,6 @@ describe('Usuário', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.acessarPgUsuarios()
         cy.addUsuario()
         cy.preencherDadosUsuario(dados, { limpar: true })
@@ -655,8 +622,6 @@ describe('Usuário', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.acessarPgUsuarios()
         cy.addUsuario()
         cy.preencherDadosUsuario(dados, { limpar: true })

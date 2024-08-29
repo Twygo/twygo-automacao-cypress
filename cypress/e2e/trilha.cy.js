@@ -32,28 +32,11 @@ describe('trilha', () => {
 		notificarResponsavel: false,
 		addCategoria: '',
 		removerCategoria: '',
-		removerBanner: false,
 		situacao: 'Em desenvolvimento',
 		exigeConfirmacao: 'Desabilitado'
 	}
 
-	before(() => {
-		// Carrega os labels do arquivo JSON
-		cy.fixture('labels.json').then((labels) => {
-			Cypress.env('labels', labels)
-		})
-	})
-
 	beforeEach(() => {
-		// Ignora mensagens de erro conhecidas
-		cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier",    // Firefox
-			"Cannot read properties of undefined (reading 'replace')", // Chrome
-            "Cannot read properties of undefined (reading 'length')",	//Chrome
-			"Cannot read properties of null (reading 'getClientRect')"  //Chrome
-		], { ignoreScriptErrors: true })
-		
 		// Define o tipo de conteúdo
 		tipoConteudo = 'trilha'
 
@@ -70,18 +53,12 @@ describe('trilha', () => {
 		cy.excluirCursoViaApi()
 
 		// Exclui todos os conteúdos do tipo trilha antes de iniciar o teste
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		
 		listaConteudos = []
 		cy.listaConteudo(tipoConteudo, listaConteudos)
 		cy.excluirConteudo(null, tipoConteudo, listaConteudos)		
 	})
 
-	afterEach(() => {
-		cy.ativarCapturaErros()
-	})
-	
 	it('1. CRUD trilha com dados default', () =>{
 		// Massa de dados para criação da trilha
         const conteudo = {
@@ -132,7 +109,6 @@ describe('trilha', () => {
 			emailResponsavel: fakerPT_BR.internet.email(),
 			notificarResponsavel: true,
 			addCategoria: categorias,
-			removerBanner: true,
 			situacao: 'Liberado',
 			exigeConfirmacao: 'Habilitado'
 		}
@@ -222,7 +198,6 @@ describe('trilha', () => {
 			emailResponsavel: fakerPT_BR.internet.email(),
 			notificarResponsavel: false,
 			addCategoria: novasCategorias,
-			removerBanner: true,
 			situacao: 'Suspenso',
 			exigeConfirmacao: 'Desabilitado',
 		}
@@ -560,8 +535,7 @@ describe('trilha', () => {
 		const conteudoEdit = {
 			vigencia: '0',
 			atualizarInscritos: true,
-			removerCategoria: delCategorias,
-			removerBanner: true
+			removerCategoria: delCategorias
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })

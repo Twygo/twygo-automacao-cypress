@@ -1,33 +1,22 @@
 /// reference types="cypress" />
 import { faker } from '@faker-js/faker'
 import { gerarDados } from '../support/helpers/geradorDados'
+import formAmbientesAdicionais from '../support/pageObjects/formAmbientesAdicionais'
 
 describe('ambientesAdicionais', () => {
 
-    before(() => {
-        // Carrega os labels do arquivo JSON
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
-
     beforeEach(() => {
-        // Ignora mensagens de erro conhecidas
-		cy.ignorarCapturaErros([
-		    "Unexpected identifier 'id'",
-            "ResizeObserver loop completed with undelivered notifications"
-		], { ignoreScriptErrors: true })
-
         // Exclui todos os ambientes adicionais 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
-        cy.acessarPgAmbientesAdicionais()
         cy.inativarTodosAmbientesAdicionais() 
     })
 
-    afterEach(() => {
-		cy.ativarCapturaErros()
-	})
+    afterEach(function() {
+        // Caso o teste falhe, excluir todos os ambientes adicionais
+        if (this.currentTest.state === 'failed') {
+            cy.log(':: Realizando limpeza de base ::')
+            cy.inativarTodosAmbientesAdicionais()
+        }
+    })
 
     it('1. CRUD - Ambiente adicional', () => {
     //Massa de dados para criação do ambiente
@@ -40,12 +29,13 @@ describe('ambientesAdicionais', () => {
 
         // CREATE
         cy.log('## CREATE ##')
+        cy.acessarPgAmbientesAdicionais()
         cy.criarAmbienteAdicional('Criar', dadosAmbiente, { limpar: true }) 
 
         // READ
         cy.log('## READ ##')
         cy.acessarPgAmbientesAdicionais()
-        cy.validarAmbienteAdicional(dadosAmbiente, 'Criação')
+        formAmbientesAdicionais.validarAmbienteAdicional(dadosAmbiente.nome, 'Criar')
 
         // UPDATE
         cy.log('## UPDATE ##')
@@ -53,10 +43,7 @@ describe('ambientesAdicionais', () => {
 
         // DELETE
         cy.log('## DELETE ##')
-
-        cy.inativarAmbienteAdicional(dadosAmbiente.nome)
         cy.acessarPgAmbientesAdicionais()
-        cy.validarAmbienteAdicional(dadosAmbiente, 'Inativação')
+        cy.inativarAmbienteAdicional(dadosAmbiente.nome)
     })
-
 })

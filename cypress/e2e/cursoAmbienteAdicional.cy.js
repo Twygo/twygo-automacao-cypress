@@ -1,42 +1,12 @@
-/// reference types="cypress" />
-import { faker } from '@faker-js/faker'
-import { getAuthToken } from '../support/authHelper'
-import { gerarTelefone } from '../support/utilsHelper'
+/// <reference types="cypress" />
 
 describe('Compartilhar curso com ambientes adicionais', () => {
-
-    let nomeConteudo, tipoConteudo, dadosAmbiente1, dadosAmbiente2, nomeAmbienteAdicional1, nomeAmbienteAdicional2, situacaoCurso, nomeTesteAtual,
-    celular, fixo
-
-    before(() => {
-        // Carrega os labels do arquivo JSON
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
+    const tipoConteudo = 'curso'
+    let situacaoCurso, nomeTesteAtual
 
     beforeEach(function() {
-        // Ignora mensagens de erro conhecidas
-		cy.ignorarCapturaErros([
-		    "Unexpected identifier 'id'",
-            "ResizeObserver loop completed with undelivered notifications"
-		], { ignoreScriptErrors: true })
-
-        // Gera um nome aleatório para o conteúdo e para os ambientes adicionais
-        nomeConteudo = faker.commerce.productName()
-        nomeAmbienteAdicional1 = faker.commerce.productName()
-        nomeAmbienteAdicional2 = faker.commerce.productName()
-        celular = gerarTelefone('celular')
-        fixo = gerarTelefone('fixo')
-
         // Captura o nome do teste atual
         nomeTesteAtual = this.currentTest.title
-
-        // Obtém o token de autenticação
-        getAuthToken()
-
-        // Exclui todos os cursos antes de iniciar o teste
-        cy.excluirCursoViaApi()
 
         // Define situação do curso com base no nome do teste atual
         if (nomeTesteAtual.includes('liberado')) {
@@ -50,47 +20,15 @@ describe('Compartilhar curso com ambientes adicionais', () => {
             return
         }
 
-        // Massa de dados para criar um curso
-        const body = {
-            name: nomeConteudo,
-            description: faker.lorem.sentence(5),
-            situation: situacaoCurso
-        }   
-
-        // Cria um novo curso via API
-        cy.criarCursoViaApi(body)
-
-        // Excluir todos os ambientes adicionais
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
-        cy.acessarPgAmbientesAdicionais()
-        cy.inativarTodosAmbientesAdicionais()
-        
-        // Cria dois novos ambientes adicionais para o teste
-        dadosAmbiente1 = {
-            nome: nomeAmbienteAdicional1,
-            email: faker.internet.email().toLowerCase(),
-            telefone: celular,
-            site: faker.internet.url()
-        }
-
-        dadosAmbiente2 = {
-            nome: nomeAmbienteAdicional2,
-            email: faker.internet.email().toLowerCase(),
-            telefone: fixo,
-            site: faker.internet.url()
-        }
-
-        cy.criarAmbienteAdicional('Criar', dadosAmbiente1, { limpar: true })
-        cy.criarAmbienteAdicional('Adicionar', dadosAmbiente2, { limpar: true })
-
-        // Define tipo de conteúdo
-        tipoConteudo = 'curso'
+        // Prepara o ambiente de teste com base na situação do curso
+        cy.preCondConteudoAmbienteAdicional(tipoConteudo, situacaoCurso )
     })
 
     afterEach(() => {
-		cy.ativarCapturaErros()
-	})
+        // Raaliza limpeza de base
+        cy.log(':: Realizando limpeza de base ::')
+        cy.posCondConteudoAmbienteAdicional()
+    })
 
     it('1. CRUD - Curso liberado compartilhado com ambiente adicional', () => {
             // CREATE
@@ -98,45 +36,45 @@ describe('Compartilhar curso com ambientes adicionais', () => {
 
             // Compartilhar curso com o ambiente adicional
             cy.acessarPgListaConteudos()
-            cy.ambienteAdicionalConteudo(nomeConteudo, tipoConteudo)
-            cy.compartilharComAmbienteAdicional(nomeAmbienteAdicional1, 'Habilitar')
+            cy.ambienteAdicionalConteudo(Cypress.env('nomeConteudo'), tipoConteudo)
+            cy.compartilharComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional1'), 'Habilitar')
             cy.salvarCompartilhamentoAmbienteAdicional()
 
             // READ
             cy.log('## READ ##')
 
             cy.acessarPgListaConteudos()
-            cy.ambienteAdicionalConteudo(nomeConteudo, tipoConteudo)
-            cy.validarCompartilhamentoComAmbienteAdicional(nomeAmbienteAdicional1, 'Habilitado')
+            cy.ambienteAdicionalConteudo(Cypress.env('nomeConteudo'), tipoConteudo)
+            cy.validarCompartilhamentoComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional1'), 'Habilitado')
 
             // UPDATE
             cy.log('## UPDATE ##')
 
-            cy.compartilharComAmbienteAdicional(nomeAmbienteAdicional1, 'Desabilitar')
+            cy.compartilharComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional1'), 'Desabilitar')
             cy.salvarCompartilhamentoAmbienteAdicional()
 
-            cy.compartilharComAmbienteAdicional(nomeAmbienteAdicional2, 'Habilitar')
+            cy.compartilharComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional2'), 'Habilitar')
             cy.salvarCompartilhamentoAmbienteAdicional()
 
             // READ-UPDATE
             cy.log('## READ-UPDATE ##')
 
             cy.acessarPgListaConteudos()
-            cy.ambienteAdicionalConteudo(nomeConteudo, tipoConteudo)
-            cy.validarCompartilhamentoComAmbienteAdicional(nomeAmbienteAdicional1, 'Desabilitado')
-            cy.validarCompartilhamentoComAmbienteAdicional(nomeAmbienteAdicional2, 'Habilitado')
+            cy.ambienteAdicionalConteudo(Cypress.env('nomeConteudo'), tipoConteudo)
+            cy.validarCompartilhamentoComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional1'), 'Desabilitado')
+            cy.validarCompartilhamentoComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional2'), 'Habilitado')
 
             // DELETE
             cy.log('## DELETE ##')
             cy.log('Remover compartilhamento com ambiente adicional')
 
             cy.acessarPgListaConteudos()
-            cy.ambienteAdicionalConteudo(nomeConteudo, tipoConteudo)
-            cy.compartilharComAmbienteAdicional(nomeAmbienteAdicional2, 'Desabilitar')
+            cy.ambienteAdicionalConteudo(Cypress.env('nomeConteudo'), tipoConteudo)
+            cy.compartilharComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional2'), 'Desabilitar')
             cy.salvarCompartilhamentoAmbienteAdicional()
 
-            cy.validarCompartilhamentoComAmbienteAdicional(nomeAmbienteAdicional1, 'Desabilitado')
-            cy.validarCompartilhamentoComAmbienteAdicional(nomeAmbienteAdicional2, 'Desabilitado')
+            cy.validarCompartilhamentoComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional1'), 'Desabilitado')
+            cy.validarCompartilhamentoComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional2'), 'Desabilitado')
     })
 
     it('2. CRUD - Curso suspenso compartilhado com ambiente adicional', () => {
@@ -145,45 +83,45 @@ describe('Compartilhar curso com ambientes adicionais', () => {
 
         // Compartilhar curso com o ambiente adicional
         cy.acessarPgListaConteudos()
-        cy.ambienteAdicionalConteudo(nomeConteudo, tipoConteudo)
-        cy.compartilharComAmbienteAdicional(nomeAmbienteAdicional1, 'Habilitar')
+        cy.ambienteAdicionalConteudo(Cypress.env('nomeConteudo'), tipoConteudo)
+        cy.compartilharComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional1'), 'Habilitar')
         cy.salvarCompartilhamentoAmbienteAdicional()
 
         // READ
         cy.log('## READ ##')
 
         cy.acessarPgListaConteudos()
-        cy.ambienteAdicionalConteudo(nomeConteudo, tipoConteudo)
-        cy.validarCompartilhamentoComAmbienteAdicional(nomeAmbienteAdicional1, 'Habilitado')
+        cy.ambienteAdicionalConteudo(Cypress.env('nomeConteudo'), tipoConteudo)
+        cy.validarCompartilhamentoComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional1'), 'Habilitado')
 
         // UPDATE
         cy.log('## UPDATE ##')
 
-        cy.compartilharComAmbienteAdicional(nomeAmbienteAdicional1, 'Desabilitar')
+        cy.compartilharComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional1'), 'Desabilitar')
         cy.salvarCompartilhamentoAmbienteAdicional()
 
-        cy.compartilharComAmbienteAdicional(nomeAmbienteAdicional2, 'Habilitar')
+        cy.compartilharComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional2'), 'Habilitar')
         cy.salvarCompartilhamentoAmbienteAdicional()
 
         // READ-UPDATE
         cy.log('## READ-UPDATE ##')
 
         cy.acessarPgListaConteudos()
-        cy.ambienteAdicionalConteudo(nomeConteudo, tipoConteudo)
-        cy.validarCompartilhamentoComAmbienteAdicional(nomeAmbienteAdicional1, 'Desabilitado')
-        cy.validarCompartilhamentoComAmbienteAdicional(nomeAmbienteAdicional2, 'Habilitado')
+        cy.ambienteAdicionalConteudo(Cypress.env('nomeConteudo'), tipoConteudo)
+        cy.validarCompartilhamentoComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional1'), 'Desabilitado')
+        cy.validarCompartilhamentoComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional2'), 'Habilitado')
 
         // DELETE
         cy.log('## DELETE ##')
         cy.log('Remover compartilhamento com ambiente adicional')
 
         cy.acessarPgListaConteudos()
-        cy.ambienteAdicionalConteudo(nomeConteudo, tipoConteudo)
-        cy.compartilharComAmbienteAdicional(nomeAmbienteAdicional2, 'Desabilitar')
+        cy.ambienteAdicionalConteudo(Cypress.env('nomeConteudo'), tipoConteudo)
+        cy.compartilharComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional2'), 'Desabilitar')
         cy.salvarCompartilhamentoAmbienteAdicional()
 
-        cy.validarCompartilhamentoComAmbienteAdicional(nomeAmbienteAdicional1, 'Desabilitado')
-        cy.validarCompartilhamentoComAmbienteAdicional(nomeAmbienteAdicional2, 'Desabilitado')
+        cy.validarCompartilhamentoComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional1'), 'Desabilitado')
+        cy.validarCompartilhamentoComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional2'), 'Desabilitado')
     })  
 
     it('3. CRUD - Curso em desenvolvimento compartilhado com ambiente adicional', () => {
@@ -192,44 +130,44 @@ describe('Compartilhar curso com ambientes adicionais', () => {
 
         // Compartilhar curso com o ambiente adicional
         cy.acessarPgListaConteudos()
-        cy.ambienteAdicionalConteudo(nomeConteudo, tipoConteudo)
-        cy.compartilharComAmbienteAdicional(nomeAmbienteAdicional1, 'Habilitar')
+        cy.ambienteAdicionalConteudo(Cypress.env('nomeConteudo'), tipoConteudo)
+        cy.compartilharComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional1'), 'Habilitar')
         cy.salvarCompartilhamentoAmbienteAdicional()
 
         // READ
         cy.log('## READ ##')
 
         cy.acessarPgListaConteudos()
-        cy.ambienteAdicionalConteudo(nomeConteudo, tipoConteudo)
-        cy.validarCompartilhamentoComAmbienteAdicional(nomeAmbienteAdicional1, 'Habilitado')
+        cy.ambienteAdicionalConteudo(Cypress.env('nomeConteudo'), tipoConteudo)
+        cy.validarCompartilhamentoComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional1'), 'Habilitado')
 
         // UPDATE
         cy.log('## UPDATE ##')
 
-        cy.compartilharComAmbienteAdicional(nomeAmbienteAdicional1, 'Desabilitar')
+        cy.compartilharComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional1'), 'Desabilitar')
         cy.salvarCompartilhamentoAmbienteAdicional()
 
-        cy.compartilharComAmbienteAdicional(nomeAmbienteAdicional2, 'Habilitar')
+        cy.compartilharComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional2'), 'Habilitar')
         cy.salvarCompartilhamentoAmbienteAdicional()
 
         // READ-UPDATE
         cy.log('## READ-UPDATE ##')
 
         cy.acessarPgListaConteudos()
-        cy.ambienteAdicionalConteudo(nomeConteudo, tipoConteudo)
-        cy.validarCompartilhamentoComAmbienteAdicional(nomeAmbienteAdicional1, 'Desabilitado')
-        cy.validarCompartilhamentoComAmbienteAdicional(nomeAmbienteAdicional2, 'Habilitado')
+        cy.ambienteAdicionalConteudo(Cypress.env('nomeConteudo'), tipoConteudo)
+        cy.validarCompartilhamentoComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional1'), 'Desabilitado')
+        cy.validarCompartilhamentoComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional2'), 'Habilitado')
 
         // DELETE
         cy.log('## DELETE ##')
         cy.log('Remover compartilhamento com ambiente adicional')
 
         cy.acessarPgListaConteudos()
-        cy.ambienteAdicionalConteudo(nomeConteudo, tipoConteudo)
-        cy.compartilharComAmbienteAdicional(nomeAmbienteAdicional2, 'Desabilitar')
+        cy.ambienteAdicionalConteudo(Cypress.env('nomeConteudo'), tipoConteudo)
+        cy.compartilharComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional2'), 'Desabilitar')
         cy.salvarCompartilhamentoAmbienteAdicional()
 
-        cy.validarCompartilhamentoComAmbienteAdicional(nomeAmbienteAdicional1, 'Desabilitado')
-        cy.validarCompartilhamentoComAmbienteAdicional(nomeAmbienteAdicional2, 'Desabilitado')
+        cy.validarCompartilhamentoComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional1'), 'Desabilitado')
+        cy.validarCompartilhamentoComAmbienteAdicional(Cypress.env('nomeAmbienteAdicional2'), 'Desabilitado')
     })  
 })

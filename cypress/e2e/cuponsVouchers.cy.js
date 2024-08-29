@@ -8,24 +8,14 @@ describe('Criar e vincular cupom à curso', () => {
     let nomeConteudo1, nomeConteudo2, situacaoCurso, nomeTesteAtual, listaConteudos, tipoDesconto, nomeDesconto, codigoDesconto
     
     before(() => {
-        cy.fixture('labels').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-
         // Define o tipo de desconto
         tipoDesconto = 'Cupom'
     })
 
     beforeEach(function() {
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",       // Chrome
-            "unexpected token: identifier"     // Firefox
-        ])
-
         // Gera um nome aleatório para o conteúdo e para o nome e código do desconto
-        nomeConteudo1 = faker.lorem.words(2)
-        nomeConteudo2 = faker.lorem.words(2)
+        nomeConteudo1 = faker.commerce.productName()
+        nomeConteudo2 = faker.commerce.productName()
         nomeDesconto = faker.word.words(1)
         codigoDesconto = `${(tipoDesconto).toUpperCase()}-${(nomeDesconto).toUpperCase().trim().replace(' ', '')}${faker.number.int({ max: 100 })}`
 
@@ -36,9 +26,6 @@ describe('Criar e vincular cupom à curso', () => {
         getAuthToken()
         cy.excluirCursoViaApi()
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
-		
         listaConteudos = []
 		cy.listaConteudo('trilha', listaConteudos)
 		cy.excluirConteudo(null, 'trilha', listaConteudos)
@@ -77,10 +64,6 @@ describe('Criar e vincular cupom à curso', () => {
         }
         
         cy.criarCursoViaApi(body)        
-    })
-
-    afterEach(() => {
-        cy.ativarCapturaErros()
     })
     
     it('1. CRUD cupom associado a um curso liberado', () => {
@@ -283,21 +266,11 @@ describe('Criar e vincular voucher à curso', () => {
     let nomeConteudo1, nomeConteudo2, situacaoCurso, nomeTesteAtual, listaConteudos, tipoDesconto, nomeDesconto, codigoDesconto
     
     before(() => {
-        cy.fixture('labels').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-
         // Define o tipo de desconto
         tipoDesconto = 'Voucher'
     })
 
     beforeEach(function() {
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",       // Chrome
-            "unexpected token: identifier"     // Firefox
-        ])
-
         // Gera um nome aleatório para o conteúdo e para o nome e código do desconto
         nomeConteudo1 = faker.commerce.productName()
         nomeConteudo2 = faker.commerce.productName()
@@ -311,9 +284,6 @@ describe('Criar e vincular voucher à curso', () => {
         getAuthToken()
         cy.excluirCursoViaApi()
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
-		
         listaConteudos = []
 		cy.listaConteudo('trilha', listaConteudos)
 		cy.excluirConteudo(null, 'trilha', listaConteudos)
@@ -354,10 +324,6 @@ describe('Criar e vincular voucher à curso', () => {
         cy.criarCursoViaApi(body)        
     })
 
-    afterEach(() => {
-        cy.ativarCapturaErros()
-    })
-    
     it('1. CRUD voucher associado a um curso liberado', () => {
         // Massa de dados
         const dados = {

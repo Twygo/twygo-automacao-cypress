@@ -18,20 +18,7 @@ describe('Questionário', () => {
         addCategoria2: ''
     }
 
-    before(() => {
-		// Carrega os labels do arquivo JSON
-		cy.fixture('labels.json').then((labels) => {
-			Cypress.env('labels', labels)
-		})
-	})
-
     beforeEach(() => { 
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ])
-        
         // Gerar um nome aleatório para o questionário
         nomeQuestionario = fakerPT_BR.commerce.productName()
         nomeCategoria1 = 'Assunto'
@@ -43,17 +30,11 @@ describe('Questionário', () => {
         categoriasAtualizadas = []
         
         // Acessar a página de questionários, listar e excluir todos os questionários antes do teste
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.acessarPgQuestionarios()
 
         listaQuestionarios = []
         cy.listaQuestionarios(listaQuestionarios)
         cy.excluirQuestionarios(null, listaQuestionarios)
-    })
-
-    afterEach(() => {
-        cy.ativarCapturaErros()
     })
 
     it('1. CRUD questionário tipo "Prova" com comentário aluno e parecer instrutor', () => {

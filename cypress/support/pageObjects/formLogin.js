@@ -35,5 +35,10 @@ class formLogin {
         cy.get(this.elementos.registreSe.seletor)
             .click()
     }
+
+    login() {
+        cy.visit('/users/login')
+    }
+    
 }
 export default new formLogin

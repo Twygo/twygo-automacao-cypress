@@ -128,24 +128,7 @@ describe('Criar atividade', () => {
         tempoMinPermanencia: false
     }
 
-    before(() => {
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
-
     beforeEach(() => {
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier",    // Firefox
-            "Cannot read properties of undefined (reading 'toString')", // Chrome
-            "Cannot read properties of undefined (reading 'hasAttribute')", // Chrome
-            "Cannot read properties of null (reading 'addEventListener')", // Chrome
-			"Cannot read properties of undefined (reading 'length')",	//Chrome
-            "Cannot read properties of null (reading 'getClientRect')"  //Chrome
-        ], { ignoreNetworkErrors: true })
-        
         // Define o tipo de conteúdo
         tipoConteudo = 'catalogo'
 
@@ -167,16 +150,10 @@ describe('Criar atividade', () => {
         cy.criarCatalogoViaApi(body)
     })
 
-    afterEach(() => {
-        cy.ativarCapturaErros()
-    })
-
     it('1. Criar uma atividade default', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
@@ -195,8 +172,6 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.acessarPgCatalogo()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
@@ -257,8 +232,6 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.acessarPgCatalogo()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
@@ -326,8 +299,6 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.acessarPgCatalogo()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
@@ -397,8 +368,6 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.acessarPgCatalogo()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
@@ -468,8 +437,6 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.acessarPgCatalogo()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
@@ -536,9 +503,6 @@ describe('Criar atividade', () => {
 
         // CREATE
         cy.log('## CREATE ##')
-
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
 
         // Criar questionário
         cy.criarQuestionarioDefault(dados.selecionarQuestionario)
@@ -620,8 +584,6 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.acessarPgCatalogo()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
@@ -691,8 +653,6 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.acessarPgCatalogo()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()

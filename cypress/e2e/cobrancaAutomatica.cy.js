@@ -2,27 +2,10 @@
 import { faker } from '@faker-js/faker'
 
 describe('Cobrança de inscrição', () => {
-    before(() => {
-        cy.fixture('labels').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
 
     beforeEach(() => {
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",       // Chrome
-            "unexpected token: identifier"     // Firefox
-        ])
-
         // Desabilitar cobrança de inscrições
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.resetCobrancaAutomatica()
-    })
-
-    afterEach(() => {
-        cy.ativarCapturaErros()
     })
 
     it('1. CRUD cobrança automática Asaas alterando dados', () => {

@@ -11,22 +11,7 @@ describe('Biblioteca', () => {
         canal: ''
     }
 
-    before(() => {
-        // Carrega os labels do arquivo JSON
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
-
-    beforeEach(() => {      
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier",    // Firefox
-            "Cannot read properties of undefined (reading 'replace')", // Chrome
-            "Cannot read properties of null (reading 'getClientRect')"  //Chrome
-        ], { ignoreScriptErrors: true})   
-        
+    beforeEach(() => {              
         //Define o tipo de conteúdo
         tipoConteudo = 'biblioteca'
 
@@ -34,17 +19,11 @@ describe('Biblioteca', () => {
         nome = fakerPT_BR.commerce.productName()
 
         // Acessa página de biblioteca e gera uma lista com os conteúdos para serem excluídos
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.acessarPgBiblioteca()
         
         listaConteudos = []
         cy.listaConteudo(tipoConteudo, listaConteudos)
         cy.excluirConteudo(null, tipoConteudo, listaConteudos)
-    })
-
-    afterEach(() => {
-        cy.ativarCapturaErros()
     })
 
     it('1. CRUD biblioteca "Em companhia"', () => {

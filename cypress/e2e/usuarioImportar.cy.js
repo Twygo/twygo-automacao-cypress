@@ -275,17 +275,6 @@ describe('Importar Usuários', () => {
     }
 
     before(() => {
-        // Carrega os labels do arquivo JSON
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ], { ignoreScriptErrors: true })        
-
         // Configuração de campos customizados
         cy.configTodosCamposCustomizados('Desabilitado')
         cy.configTodosCamposCustomizados('Habilitado')
@@ -293,24 +282,12 @@ describe('Importar Usuários', () => {
     })
 
     beforeEach(() => {
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ])
-        
         // Exclui todos os usuários cadastrados (com excessão do usuário administrador principal)
         getAuthToken()
         cy.excluirUsuarioViaApi()
 
         // Acessa o sistema com o usuário administrador
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.acessarPgUsuarios()
-    })
-
-    afterEach(() => {
-        cy.ativarCapturaErros()
     })
 
     it('1. CRUD de usuário via importação com uma nova importação utilizando a opção de "Atualizar" os usuários já cadastrados', () => {

@@ -7,17 +7,6 @@ describe('Instrutor', () => {
     let nomeConteudo, nomeInstrutor1, nomeInstrutor2, sobrenomeInstrutor1, sobrenomeInstrutor2 
 
     before(() => {
-        // Carrega os labels do arquivo JSON
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ], { ignoreScriptErrors: true })        
-
         // Configuração de campos customizados
         cy.configTodosCamposCustomizados('Desabilitado')
         cy.configTodosCamposCustomizados('Habilitado')
@@ -25,12 +14,6 @@ describe('Instrutor', () => {
 
     //Criar um usuário Instrutor e um curso 
     beforeEach(() => {
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ])
-
         // Gera um nome aleatório para o conteúdo e para a atividade
         nomeConteudo = fakerPT_BR.commerce.productName()
         
@@ -49,15 +32,9 @@ describe('Instrutor', () => {
         // Exclui todos os usuários antes de iniciar o teste
         cy.excluirUsuarioViaApi()
 
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         // Cria os instrutores
         cy.criarInstrutor(nomeInstrutor1, sobrenomeInstrutor1)
         cy.criarInstrutor(nomeInstrutor2, sobrenomeInstrutor2)
-    })
-
-    afterEach(() => {
-        cy.ativarCapturaErros()
     })
 
     it('1. CRUD - Vincular instrutor em curso liberado', () => {

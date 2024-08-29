@@ -38,7 +38,6 @@ describe('catálogo', () => {
 		hashtag: '',
 		addCategoria: '',
 		removerCategoria: '',
-		removerBanner: false,
 		permiteAnexo: 'Desabilitado',
 		mensagemAnexo: '',
 		statusIframeAnexo: false,
@@ -55,22 +54,7 @@ describe('catálogo', () => {
 		valorAcrescimo: '0.0',
 	}
 
-	before(() => {
-		// Carrega os labels do arquivo JSON
-		cy.fixture('labels.json').then((labels) => {
-			Cypress.env('labels', labels)
-		})
-	})
-
 	beforeEach(() => {
-		// Ignora mensagens de erro conhecidas
-		cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier",    // Firefox
-			"Cannot read properties of undefined (reading 'length')",	//Chrome
-			"Cannot read properties of null (reading 'getClientRect')"  //Chrome
-		], { ignoreScriptErrors: true })
-				
 		// Define o tipo de conteúdo
 		tipoConteudo = 'catalogo'
 
@@ -88,10 +72,6 @@ describe('catálogo', () => {
 		// Exclui todos os catálogos antes de iniciar o teste
 		cy.excluirCatalogoViaApi()
 	})
-
-	afterEach(() => {
-		cy.ativarCapturaErros()
-	})
 	
 	it('1. CRUD catalogo com dados default', () => {
 		// Massa de dados para criação do catálogo
@@ -103,8 +83,6 @@ describe('catálogo', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		cy.addConteudo(tipoConteudo)
 		cy.preencherDadosConteudo(conteudo, { limpar: true })
@@ -151,7 +129,6 @@ describe('catálogo', () => {
 			rotuloContato: 'Contato',
 			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
-			removerBanner: true,
 			permiteAnexo: 'Habilitado',
 			statusIframeAnexo: true,
 			mensagemAnexo: 'Insira o anexo do Catálogo do evento:',
@@ -233,8 +210,6 @@ describe('catálogo', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		cy.addConteudo(tipoConteudo)
 		cy.preencherDadosConteudo(conteudo, { limpar: true })
@@ -275,7 +250,6 @@ describe('catálogo', () => {
 			rotuloContato: 'Contato',
 			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
-			removerBanner: true,
 			permiteAnexo: 'Desabilitado',
 			statusIframeAnexo: false,
 			visualizacao: 'Público',
@@ -357,8 +331,6 @@ describe('catálogo', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		cy.addConteudo(tipoConteudo)
 		cy.preencherDadosConteudo(conteudo, { limpar: true })
@@ -399,7 +371,6 @@ describe('catálogo', () => {
 			rotuloContato: 'Mande-nos um e-mail',
 			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: novasCategorias,
-			removerBanner: true,
 			permiteAnexo: 'Habilitado',
 			statusIframeAnexo: true,
 			mensagemAnexo: fakerPT_BR.lorem.sentence(),
@@ -463,8 +434,6 @@ describe('catálogo', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		cy.addConteudo(tipoConteudo)
 		cy.preencherDadosConteudo(conteudo, { limpar: true })
@@ -540,8 +509,6 @@ describe('catálogo', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		cy.addConteudo(tipoConteudo)
 		cy.preencherDadosConteudo(conteudo, { limpar: true })
@@ -607,8 +574,6 @@ describe('catálogo', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		cy.addConteudo(tipoConteudo)
 		cy.preencherDadosConteudo(conteudo, { limpar: true })
@@ -670,8 +635,6 @@ describe('catálogo', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.acessarPgCatalogo()	
 		cy.addConteudo(tipoConteudo)
 		cy.preencherDadosConteudo(conteudo, { limpar: true })

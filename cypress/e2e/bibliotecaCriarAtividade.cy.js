@@ -127,22 +127,7 @@ describe('Criar atividade', () => {
         tempoMinPermanencia: false
     }
 
-    before(() => {
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
-
     beforeEach(() => {
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier",    // Firefox
-            "Cannot read properties of undefined (reading 'replace')", // Chrome
-            "Cannot read properties of null (reading 'getClientRect')",  //Chrome
-            "Cannot read properties of undefined (reading 'toString')"  //Chrome [Não foi possível reproduzir o erro manualmente]
-        ], { ignoreScriptErrors: true, ignoreNetworkErrors: true})           
-        
         // Define o tipo de conteúdo
         tipoConteudo = 'biblioteca'
 
@@ -151,8 +136,6 @@ describe('Criar atividade', () => {
         nomeAtividade = fakerPT_BR.commerce.productName()
 
         // Acessa página de biblioteca e gera uma lista com os conteúdos para serem excluídos
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
         cy.acessarPgBiblioteca()
         
         listaConteudos = []
@@ -161,10 +144,6 @@ describe('Criar atividade', () => {
         
         // Cria uma biblioteca
         cy.criarBibliotecaDefault(nomeConteudo)    
-    })
-
-    afterEach(() => {
-        cy.ativarCapturaErros()
     })
 
     it('1. Criar uma atividade default', () => {

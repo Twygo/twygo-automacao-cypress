@@ -14,7 +14,7 @@ describe('Configurações > Organização > Dados', () => {
         cidade: '',
         estado: '',
         pais: '',
-        telefone: '(45) 99999-9999',
+        telefone: '45999999999',
         email: Cypress.env('login'),
         site: '',
         converterEscalaBranco: false,
@@ -35,27 +35,8 @@ describe('Configurações > Organização > Dados', () => {
         cargo: ''
     }
 
-    before(() => {
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
-
     beforeEach(() => {
-        //Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ], { ignoreScriptErrors: true })
-
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')      
-
         cy.resetConfigOrganizacao('dados')
-    })
-
-    afterEach(() => {
-        cy.ativarCapturaErros()
     })
 
     it('1. CRUD aba Dados', () => {
@@ -72,7 +53,7 @@ describe('Configurações > Organização > Dados', () => {
             cidade: faker.location.city(),
             estado: faker.location.state(),
             pais: faker.location.country(),
-            telefone: '(45) 3 0303-030',
+            telefone: '(45) 3 0303030',
             email: faker.internet.email(),
             site: faker.internet.url(),
             converterEscalaBranco: true,
@@ -111,7 +92,7 @@ describe('Configurações > Organização > Dados', () => {
         const dadosUpdate = {
             descricao: faker.lorem.sentence(50),
             resumoIndexacao: '',
-            telefone: '(45) 9 8888-777',
+            telefone: '(45) 9 8888777',
             converterEscalaBranco: false,
             personalizarLinkLogotipo: false,
             usarGestaoCompetencias: false,
@@ -175,30 +156,10 @@ describe('Configurações > Organização > Customizações', () => {
         emailEmail: ''
     }
 
-    
-    before(() => {
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
-
     beforeEach(() => {
-        //Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ], { ignoreScriptErrors: true })
-
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')      
-
         cy.resetConfigOrganizacao('customizacoes')
     })
 
-    afterEach(() => {
-        cy.ativarCapturaErros()
-    })
-    
     it('2. CRUD aba Customizações', () => {
         // Massa de dados
         const alterarDadosUsuario = {
@@ -319,29 +280,11 @@ describe('Configurações > Organização > Customizações', () => {
 })
 
 describe('Configurações > Organização > Certificado', () => {
-    before(() => {
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
 
     beforeEach(() => {
-        //Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ], { ignoreScriptErrors: true })
-
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
-        
         cy.resetConfigOrganizacao('certificado')
     })
 
-    afterEach(() => {
-        cy.ativarCapturaErros()
-    })  
-    
     it('3. CRUD aba Certificado', () => {      
         // Massa de dados
         const dadosGerarCertificado = {
@@ -413,29 +356,11 @@ describe('Configurações > Organização > Certificado', () => {
 })
 
 describe('Configurações > Organização > Integrações', () => {
-    before(() => {
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
 
     beforeEach(() => {
-        //Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ], { ignoreScriptErrors: true })
-
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
-        
         cy.resetConfigOrganizacao('integracoes')
     })
 
-    afterEach(() => {
-        cy.ativarCapturaErros()
-    })  
-    
     it('4. CRUD aba Integrações', () => {
         // Massa de dados
         const dadosPixel = {
@@ -529,22 +454,8 @@ describe('Configurações > Organização > Integrações', () => {
 })
 
 describe('Configurações > Organização > Termos', () => {
-    before(() => {
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
 
     beforeEach(() => {
-        //Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ], { ignoreScriptErrors: true })
-
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
-        
         cy.resetConfigOrganizacao('termos')
 
         // Aguardar 2 segundos para que o aceite seja salvo
@@ -557,10 +468,6 @@ describe('Configurações > Organização > Termos', () => {
         cy.wait(2000)
         cy.alterarPerfil('administrador')
     })
-
-    afterEach(() => {
-        cy.ativarCapturaErros()
-    })  
 
     it('5. CRUD aba Termos com editor de texto', () => {
         // Massa de dados
@@ -715,29 +622,11 @@ describe('Configurações > Organização > Termos', () => {
 })
 
 describe('Configurações > Organização > Url Webhooks', () => {
-    before(() => {
-        cy.fixture('labels.json').then((labels) => {
-            Cypress.env('labels', labels)
-        })
-    })
 
     beforeEach(() => {
-        //Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier"    // Firefox
-        ], { ignoreScriptErrors: true })
-
-        cy.loginTwygoAutomacao()
-        cy.alterarPerfil('administrador')
-        
         cy.resetConfigOrganizacao('urlWebhooks')
     })
 
-    afterEach(() => {
-        cy.ativarCapturaErros()
-    })
-    
     it('7. CRUD aba Url Webhooks - Ao completar o curso', () => {
         // Massa de dados
         const dados = {

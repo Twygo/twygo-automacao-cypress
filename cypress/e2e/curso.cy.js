@@ -37,7 +37,6 @@ describe('curso', () => {
 		hashtag: '',
 		addCategoria: '',
 		removerCategoria: '',
-		removerBanner: false,
 		permiteAnexo: 'Desabilitado',
 		mensagemAnexo: '',
 		statusIframeAnexo: false,
@@ -55,22 +54,7 @@ describe('curso', () => {
 		habilitarChat: false
 	}
 
-	before(() => {
-		// Carrega os labels do arquivo JSON
-		cy.fixture('labels.json').then((labels) => {
-			Cypress.env('labels', labels)
-		})
-	})
-
 	beforeEach( () => {
-		// Ignora mensagens de erro conhecidas
-		cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'",    // Chrome
-            "unexpected token: identifier",    // Firefox
-			"Cannot read properties of undefined (reading 'length')",	//Chrome
-			"Cannot read properties of null (reading 'getClientRect')"  //Chrome
-		], { ignoreScriptErrors: true })
-		
 		// Define o tipo de conteúdo
 		tipoConteudo = 'curso'
 
@@ -89,10 +73,6 @@ describe('curso', () => {
 		cy.excluirCursoViaApi()
 	})
 
-	afterEach(() => {
-		cy.ativarCapturaErros()
-	})
-	
 	it('1. CRUD curso com dados default', () =>{
 		// Massa de dados para criação do curso
         const conteudo = {
@@ -103,8 +83,6 @@ describe('curso', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
@@ -150,7 +128,6 @@ describe('curso', () => {
 			rotuloContato: 'Contato',
 			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
-			removerBanner: true,
 			permiteAnexo: 'Habilitado',
 			mensagemAnexo: `Insira o anexo do Curso: ${novoNome}`,
 			statusIframeAnexo: true,
@@ -235,8 +212,6 @@ describe('curso', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
@@ -276,7 +251,6 @@ describe('curso', () => {
 			rotuloContato: 'Contato',
 			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: novasCategorias,
-			removerBanner: true,
 			permiteAnexo: 'Desabilitado',
 			statusIframeAnexo: false,
 			visualizacao: 'Público',
@@ -360,8 +334,6 @@ describe('curso', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
@@ -472,8 +444,6 @@ describe('curso', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
@@ -550,8 +520,6 @@ describe('curso', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
 		cy.addConteudo(tipoConteudo)
 		cy.preencherDadosConteudo(conteudo, { limpar: true })
 		cy.salvarConteudo(conteudo.nome, tipoConteudo)
@@ -622,8 +590,6 @@ describe('curso', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
@@ -681,8 +647,6 @@ describe('curso', () => {
 		// CREATE
 		cy.log('## CREATE ##')
 
-		cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
         cy.salvarConteudo(conteudo.nome, tipoConteudo)
@@ -703,7 +667,6 @@ describe('curso', () => {
 			vigencia: '0',
 			atualizarInscritos: true,
 			removerCategoria: delCategorias,
-			removerBanner: true,
 			habilitarChat: false
 		}
 

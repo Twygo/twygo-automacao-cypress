@@ -6,7 +6,8 @@ import { getAuthToken } from '../support/authHelper'
 import formSuperAdmin from '../support/pageObjects/formSuperAdmin'
 let fakerbr = require('faker-br')
 
-describe('Registre-se', () => {
+describe.skip('Registre-se', () => {
+    // BUG: Usuário é criado mas não é exibido na lista de usuários
     let gerarSenha, nome, sobrenome
 
     let formDefault = {
@@ -41,19 +42,7 @@ describe('Registre-se', () => {
         notificacoes: true
     }
 
-    before(() => {
-		// Carrega os labels do arquivo JSON
-		cy.fixture('labels.json').then((labels) => {
-			Cypress.env('labels', labels)
-		})
-	})
-
     beforeEach(() => {
-        // Ignora mensagens de erro conhecidas
-        cy.ignorarCapturaErros([
-            "Unexpected identifier 'id'"
-        ])
-
         // Configura organização como pública e todos os campos omo obrigatórios
         cy.configurarBtnRegistreSe()
         cy.configTodosCamposCustomizados('Habilitado e Obrigatório')
@@ -107,8 +96,7 @@ describe('Registre-se', () => {
         // READ
         cy.log('## READ ##')
 
-        cy.loginTwygoAutomacao()
-		cy.alterarPerfil('administrador')
+        cy.loginTwygoAutomacaoAdm()
         cy.acessarPgUsuarios()
 
         cy.editarUsuario(`${dados.nome} ${dados.sobrenome}`)

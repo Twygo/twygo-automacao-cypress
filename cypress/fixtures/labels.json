@@ -44,8 +44,8 @@
             "tituloPgAdicionar": "Nova trilha",
             "breadcrumbEdicao": "Lista de conteúdos",
             "tituloPgEdicao": "Editar trilhas",
-            "tituloModalExclusao": "Excluir conteúdo",
-            "texto1ModalExclusao": "Ao excluir a trilha você não excluirá os conteúdos dentro dela, apenas o agrupamento. Tem certeza que deseja prosseguir?",
+            "tituloModalExclusao": "Confirmação de exclusão",
+            "texto1ModalExclusao": "Ao excluir a trilha você não excluirá as atividades dentro dela, apenas o agrupamento. Essa ação não pode ser desfeita. Tem certeza que deseja prosseguir?",
             "msgSucessoExclusao": "Conteúdo excluído com sucesso",
             "breadcrumbAmbienteAdicional": "Lista de conteúdos > {{nomeDoConteudo}} > Ambiente adicional"
         },
@@ -188,7 +188,10 @@
         "breadcrumb": "Ambientes adicionais",
         "msgSucesso": "Ambiente adicional criado com sucesso",
         "msgInativacao": "Ambiente inativado com sucesso",
-        "msgCompartilhamento": "Alterações salvas com sucesso"
+        "msgCompartilhamento": "Alterações salvas com sucesso",
+        "txtNenhumResultado": "Você ainda não tem um ambiente adicional.",
+        "txtCriarPrimeiro": "Crie o primeiro",
+        "txtBtnCriar": "Criar ambiente adicional"
     },
     "configOrganizacao": {
         "breadcrumb": "Organização",
@@ -314,7 +317,7 @@
         "tituloPgEdicao": "{{ nome }}",
         "msgSucesso": "{{ tipo }} salvo com sucesso",
         "msgSucessoEdicao": "{{ tipo }} alterado com sucesso",
-        "msgNenhumResultado": "Nenhum resultado para mostrar",
+        "msgNenhumResultado": "Não há dados para exibir",
         "modalAplicadoItem": { 
             "tituloModal": "{{ tipo }} aplicado aos itens",
             "descricaoModal": "Esse {{ tipo }} está aplicado aos itens abaixo. Para adicionar novos, digite para pesquisar.",
@@ -337,7 +340,7 @@
         "tituloModalExclusao": "Confirmação de exclusão",
         "textoModalExclusao": "Todas as consultas que usam essa chave de API serão interrompidas. Tem certeza que deseja excluir?",
         "msgSucessoExclusao": "Chave de api excluída com sucesso",
-        "nenhumResultado": "Nenhum resultado para mostrar",
+        "nenhumResultado": "Não há dados para exibir",
         "tituloModalInativar": "Confirmação de inativação",
         "textoModalInativar": "Todas as consultas que usam essa chave de API serão interrompidas. Tem certeza que deseja continuar?",
         "msgSucessoInativar": "Chave de API inativada com sucesso",
