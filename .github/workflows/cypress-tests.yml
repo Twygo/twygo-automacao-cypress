@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: master
   schedule:
-    - cron: '0 3 * * 5' # Executa à meia-noite de sexta-feira
+    - cron: '0 3 * * 4,5' # Executa à meia-noite de quinta e sexta-feira
   workflow_dispatch:
 
 jobs:
@@ -24,7 +24,9 @@ jobs:
 
     - name: Import GPG Key
       run: |
-        echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 --decode | gpg --import
+        echo -n "$GPG_PRIVATE_KEY" | base64 --decode | gpg --import
+      env:
+        GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
         
     - name: Decrypt Cypress Config
       run: gpg --quiet --batch --yes --decrypt --passphrase ${{ secrets.CYPRESS_CONFIG_PASSWORD }} --output cypress.config.js cypress.config.js.gpg
