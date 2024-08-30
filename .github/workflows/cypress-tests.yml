@@ -23,7 +23,8 @@ jobs:
       run: yarn install
 
     - name: Import GPG Key
-      run: echo "$GPG_PRIVATE_KEY" | gpg --quiet --batch --import
+      run: |
+        echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 --decode | gpg --import
         
     - name: Decrypt Cypress Config
       run: gpg --quiet --batch --yes --decrypt --passphrase="$CYPRESS_CONFIG_PASSWORD" --output cypress.config.js cypress.config.js.gpg
