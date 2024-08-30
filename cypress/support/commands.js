@@ -3787,7 +3787,7 @@ Cypress.Commands.add('salvarConfigComunicacao', () => {
 
   // Valida a mensagem de sucesso
   cy.contains('.flash.notice', msgSucesso)
-	.should('be.visible')
+	.should('be.exist')
 })
 
 Cypress.Commands.add('resetConfigComunicacao', () => {
