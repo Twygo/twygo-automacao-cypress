@@ -22,14 +22,22 @@ jobs:
     - name: Install Dependencies
       run: yarn install
 
-    - name: Import GPG Key
-      run: |
-        echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 --decode | gpg --import
-        
-    - name: Decrypt Cypress Config
-      run: gpg --quiet --batch --yes --decrypt --passphrase ${{ secrets.CYPRESS_CONFIG_PASSWORD }} --output cypress.config.js cypress.config.js.gpg
+    - name: Decode and import GPG key
       env:
-        CYPRESS_CONFIG_PASSWORD: ${{ secrets.CYPRESS_CONFIG_PASSWORD }}
+        GPG_PRIVATE_KEY_BASE64: ${{ secrets.GPG_PRIVATE_KEY_BASE64 }}
+      run: |
+        echo "$GPG_PRIVATE_KEY_BASE64" | base64 --decode > private.key
+        gpg --import private.key
+
+    - name: Decrypt configuration file
+      env:
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      run: |
+        gpg --quiet --batch --yes --decrypt --passphrase="$GPG_PASSPHRASE" \
+            --output cypress.config.js cypress.config.js.gpg
+
+    - name: Clean up
+      run: rm private.key
 
     - name: Run Cypress Tests
       uses: cypress-io/github-action@v6
