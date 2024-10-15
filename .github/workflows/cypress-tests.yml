@@ -39,13 +39,29 @@ jobs:
         certutil -decode private_key_base64.txt private.key
         gpg --batch --yes --import private.key
 
-    - name: Decrypt configuration file
+    - name: Create passphrase file
       env:
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       shell: pwsh
       run: |
-        gpg --quiet --batch --yes --decrypt --passphrase="$env:GPG_PASSPHRASE" `
-            --output cypress.config.js cypress.config.js.gpg
+        $env:GPG_PASSPHRASE | Out-File -NoNewline -Encoding ASCII temp_passphrase.txt
+
+    - name: Decrypt configuration file
+      shell: pwsh
+      run: |
+        Write-Host "Starting decryption..."
+        gpg --decrypt --output cypress.config.js --batch --yes --passphrase-file temp_passphrase.txt cypress.config.js.gpg
+        Write-Host "Decryption completed"
+        if (Test-Path cypress.config.js) {
+            Write-Host "cypress.config.js file created successfully"
+        } else {
+            Write-Host "Failed to create cypress.config.js file"
+        }
+      
+    - name: Remove passphrase file
+      if: always()
+      shell: pwsh
+      run: Remove-Item -Force -ErrorAction Ignore temp_passphrase.txt
 
     - name: Clean up
       run: |
