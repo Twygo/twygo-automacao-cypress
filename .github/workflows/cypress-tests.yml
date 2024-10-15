@@ -22,14 +22,12 @@ jobs:
     - name: Install Dependencies
       run: yarn install
 
-    - name: Install GPG
-      run: |
-        $url = "https://github.com/gnu-win32/gpg4win/releases/download/4.1.0/gnupg-w32-2.4.0_20221216.exe"
-        $output = "$env:TEMP\gnupg-w32.exe"
-        Invoke-WebRequest -Uri $url -OutFile $output
-        Start-Process -FilePath $output -ArgumentList "/S" -Wait
-        $env:PATH += ";C:\Program Files (x86)\GnuPG\bin"
-        [Environment]::SetEnvironmentVariable("PATH", $env:PATH, [EnvironmentVariableTarget]::Machine)
+    - name: Check GPG version
+      run: gpg --version
+      shell: pwsh
+
+    - name: Check PATH
+      run: $env:PATH
       shell: pwsh
 
     - name: Decode and import GPG key
