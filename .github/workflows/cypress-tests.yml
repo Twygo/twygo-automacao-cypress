@@ -9,7 +9,7 @@ on:
 
 jobs:
   cypress-run:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - name: Get code
       uses: actions/checkout@v4.1.7
@@ -24,42 +24,73 @@ jobs:
     
     - name: Install GPG
       run: |
-        choco install gnupg
-        refreshenv
-      shell: pwsh
+        sudo apt-get update
+        sudo apt-get install -y gpg
+
+    - name: Configure GPG
+      run: |
+        mkdir -p ~/.gnupg
+        chmod 700 ~/.gnupg
+        
+        echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+        echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+        echo "use-agent" >> ~/.gnupg/gpg.conf
+        
+        chmod 600 ~/.gnupg/gpg-agent.conf
+        chmod 600 ~/.gnupg/gpg.conf
+        
+        gpgconf --kill gpg-agent
+        gpgconf --reload gpg-agent
 
     - name: Import PGP key
       env:
         PGP_PRIVATE_KEY: ${{ secrets.PGP_PRIVATE_KEY }}
-      shell: pwsh
       run: |
-        $env:PGP_PRIVATE_KEY | Out-File -Encoding ASCII private.key
+        echo "$PGP_PRIVATE_KEY" > private.key
+        chmod 600 private.key
         gpg --batch --yes --import private.key
+        
+        # Criar arquivo de confiança diretamente
+        echo -e "trust\n5\ny\nsave\n" | gpg --batch --command-fd 0 --no-tty --edit-key karla.oliveira@twygo.com
+    
+    - name: Debug GPG keys
+      run: |
+        gpg --list-secret-keys --keyid-format LONG
+        gpg --list-keys --keyid-format LONG
     
     - name: Decrypt configuration file
       env:
         PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
-      shell: pwsh
       run: |
-        Write-Host "Starting decryption..."
-        $passphrase = $env:PGP_PASSPHRASE
-        $process = Start-Process -FilePath "gpg" -ArgumentList "--batch", "--yes", "--passphrase-fd", "0", "--decrypt", "--output", "cypress.config.js", "cypress.config.js.gpg" -NoNewWindow -PassThru -RedirectStandardInput ([System.IO.Path]::GetTempFileName())
-        $process.StandardInput.WriteLine($passphrase)
-        $process.StandardInput.Close()
-        $process.WaitForExit()
-        Write-Host "Decryption completed"
-        if (Test-Path cypress.config.js) {
-            Write-Host "cypress.config.js file created successfully"
-        } else {
-            Write-Host "Failed to create cypress.config.js file"
-            exit 1
-        }
+        echo "Starting decryption..."
+        mkdir -p /tmp/gpg
+        chmod 700 /tmp/gpg
+        echo "$PGP_PASSPHRASE" > /tmp/gpg/passphrase
+        chmod 600 /tmp/gpg/passphrase
+        
+        gpg --batch --yes \
+            --pinentry-mode loopback \
+            --passphrase-file /tmp/gpg/passphrase \
+            --decrypt \
+            --output cypress.config.js \
+            cypress.config.js.gpg
+            
+        rm -rf /tmp/gpg
+        
+        echo "Decryption completed"
+        if [ -f cypress.config.js ]; then
+          echo "cypress.config.js file created successfully"
+          ls -la cypress.config.js
+        else
+          echo "Failed to create cypress.config.js file"
+          exit 1
+        fi
     
     - name: Clean up
       if: always()
-      shell: pwsh
       run: |
-        Remove-Item -Force -ErrorAction Ignore private.key
+        rm -f private.key
+        rm -rf ~/.gnupg
     
     - name: Run Cypress Tests
       uses: cypress-io/github-action@v6
