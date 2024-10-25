@@ -29,15 +29,29 @@ jobs:
 
     - name: Configure GPG
       run: |
+        # Criar diretório .gnupg com permissões corretas
+        mkdir -p ~/.gnupg
+        chmod 700 ~/.gnupg
+        
+        # Configurar GPG
         echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
         echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+        echo "use-agent" >> ~/.gnupg/gpg.conf
+        
+        # Ajustar permissões
+        chmod 600 ~/.gnupg/gpg-agent.conf
+        chmod 600 ~/.gnupg/gpg.conf
+        
+        # Reiniciar o agente GPG
         gpgconf --kill gpg-agent
+        gpg-agent --daemon
 
     - name: Import PGP key
       env:
         PGP_PRIVATE_KEY: ${{ secrets.PGP_PRIVATE_KEY }}
       run: |
         echo "$PGP_PRIVATE_KEY" > private.key
+        chmod 600 private.key
         gpg --batch --yes --import private.key
         # Definir confiança última na chave importada
         echo -e "5\ny\n" | gpg --command-fd 0 --expert --edit-key "karla.oliveira@twygo.com" trust
@@ -54,7 +68,9 @@ jobs:
         echo "Starting decryption..."
         # Criar diretório temporário para arquivo de senha
         mkdir -p /tmp/gpg
+        chmod 700 /tmp/gpg
         echo "$PGP_PASSPHRASE" > /tmp/gpg/passphrase
+        chmod 600 /tmp/gpg/passphrase
         
         # Tentar decriptação com arquivo de senha
         gpg --batch --yes \
