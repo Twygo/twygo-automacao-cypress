@@ -27,11 +27,11 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y gpg
 
-    - name: Import GPG key
+    - name: Import PGP key
       env:
-        GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        PGP_PRIVATE_KEY: ${{ secrets.PGP_PRIVATE_KEY }}
       run: |
-        echo "$GPG_PRIVATE_KEY" > private.key
+        echo "$PGP_PRIVATE_KEY" > private.key
         gpg --batch --yes --import private.key
     
     - name: Debug GPG keys
@@ -39,10 +39,10 @@ jobs:
     
     - name: Decrypt configuration file
       env:
-        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
       run: |
         echo "Starting decryption..."
-        echo "$GPG_PASSPHRASE" | gpg --batch --yes --passphrase-fd 0 --decrypt --output cypress.config.js cypress.config.js.gpg
+        echo "$PGP_PASSPHRASE" | gpg --batch --yes --passphrase-fd 0 --decrypt --output cypress.config.js cypress.config.js.gpg
         echo "Decryption completed"
         if [ -f cypress.config.js ]; then
           echo "cypress.config.js file created successfully"
