@@ -27,22 +27,46 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y gpg
 
+    - name: Configure GPG
+      run: |
+        echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+        echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+        gpgconf --kill gpg-agent
+
     - name: Import PGP key
       env:
         PGP_PRIVATE_KEY: ${{ secrets.PGP_PRIVATE_KEY }}
       run: |
         echo "$PGP_PRIVATE_KEY" > private.key
         gpg --batch --yes --import private.key
+        # Definir confiança última na chave importada
+        echo -e "5\ny\n" | gpg --command-fd 0 --expert --edit-key "karla.oliveira@twygo.com" trust
     
     - name: Debug GPG keys
-      run: gpg --list-secret-keys --keyid-format LONG
+      run: |
+        gpg --list-secret-keys --keyid-format LONG
+        gpg --list-keys --keyid-format LONG
     
     - name: Decrypt configuration file
       env:
         PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
       run: |
         echo "Starting decryption..."
-        echo "$PGP_PASSPHRASE" | gpg --batch --yes --passphrase-fd 0 --decrypt --output cypress.config.js cypress.config.js.gpg
+        # Criar diretório temporário para arquivo de senha
+        mkdir -p /tmp/gpg
+        echo "$PGP_PASSPHRASE" > /tmp/gpg/passphrase
+        
+        # Tentar decriptação com arquivo de senha
+        gpg --batch --yes \
+            --pinentry-mode loopback \
+            --passphrase-file /tmp/gpg/passphrase \
+            --decrypt \
+            --output cypress.config.js \
+            cypress.config.js.gpg
+            
+        # Limpar arquivo de senha
+        rm -rf /tmp/gpg
+        
         echo "Decryption completed"
         if [ -f cypress.config.js ]; then
           echo "cypress.config.js file created successfully"
@@ -54,7 +78,9 @@ jobs:
     
     - name: Clean up
       if: always()
-      run: rm -f private.key
+      run: |
+        rm -f private.key
+        rm -rf ~/.gnupg
     
     - name: Run Cypress Tests
       uses: cypress-io/github-action@v6
