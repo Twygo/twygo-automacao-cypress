@@ -29,20 +29,16 @@ jobs:
 
     - name: Configure GPG
       run: |
-        # Criar diretório .gnupg com permissões corretas
         mkdir -p ~/.gnupg
         chmod 700 ~/.gnupg
         
-        # Configurar GPG
         echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
         echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
         echo "use-agent" >> ~/.gnupg/gpg.conf
         
-        # Ajustar permissões
         chmod 600 ~/.gnupg/gpg-agent.conf
         chmod 600 ~/.gnupg/gpg.conf
         
-        # Recarregar configurações
         gpgconf --kill gpg-agent
         gpgconf --reload gpg-agent
 
@@ -53,8 +49,9 @@ jobs:
         echo "$PGP_PRIVATE_KEY" > private.key
         chmod 600 private.key
         gpg --batch --yes --import private.key
-        # Definir confiança última na chave importada
-        echo -e "5\ny\n" | gpg --command-fd 0 --expert --edit-key "karla.oliveira@twygo.com" trust
+        
+        # Criar arquivo de confiança diretamente
+        echo -e "trust\n5\ny\nsave\n" | gpg --batch --command-fd 0 --no-tty --edit-key karla.oliveira@twygo.com
     
     - name: Debug GPG keys
       run: |
@@ -66,13 +63,11 @@ jobs:
         PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
       run: |
         echo "Starting decryption..."
-        # Criar diretório temporário para arquivo de senha
         mkdir -p /tmp/gpg
         chmod 700 /tmp/gpg
         echo "$PGP_PASSPHRASE" > /tmp/gpg/passphrase
         chmod 600 /tmp/gpg/passphrase
         
-        # Tentar decriptação com arquivo de senha
         gpg --batch --yes \
             --pinentry-mode loopback \
             --passphrase-file /tmp/gpg/passphrase \
@@ -80,7 +75,6 @@ jobs:
             --output cypress.config.js \
             cypress.config.js.gpg
             
-        # Limpar arquivo de senha
         rm -rf /tmp/gpg
         
         echo "Decryption completed"
