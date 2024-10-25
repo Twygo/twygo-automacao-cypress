@@ -42,9 +42,9 @@ jobs:
         chmod 600 ~/.gnupg/gpg-agent.conf
         chmod 600 ~/.gnupg/gpg.conf
         
-        # Reiniciar o agente GPG
+        # Recarregar configurações
         gpgconf --kill gpg-agent
-        gpg-agent --daemon
+        gpgconf --reload gpg-agent
 
     - name: Import PGP key
       env:
