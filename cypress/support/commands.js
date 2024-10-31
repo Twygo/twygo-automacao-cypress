@@ -3609,7 +3609,7 @@ Cypress.Commands.add('excluirTodasChavesApi', () => {
 	  // Se não houver resultados, não há chaves para excluir
 	} else {
 	  // Seleciona todos os elementos que contêm os nomes das chaves
-	  cy.get('.tokens-name-data').each(($el) => {
+	  cy.get('td[id^="td-name-"]').each(($el) => {
 		nomesChavesIntegracao.push($el.text())
 	  }).then(() => {
 		// Após coletar todos os nomes das chaves, iterar sobre eles para exclusão
