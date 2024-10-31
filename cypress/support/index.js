@@ -1,5 +1,8 @@
 /// <reference types="cypress" />
 
+// Inicialize skipLogin como false no ambiente do Cypress
+Cypress.env('skipLogin', false)
+
 // :: Hooks globais ::
 before(() => {
     // :: Carrega os labels do arquivo JSON ::
@@ -10,7 +13,7 @@ before(() => {
     })
 })
 
-beforeEach(() => {
+beforeEach(() => {   
     // :: Ignora mensagens de erro conhecidas ::
     cy.ignorarCapturaErros([
         // Chrome
@@ -25,6 +28,12 @@ beforeEach(() => {
         "Unexpected token 'else'",
         "Cannot read properties of null (reading 'style')"
     ], { ignoreScriptErrors: true, ignoreNetworkErrors: true })
+
+    // Validar se o login deve ser ignorado
+    if (Cypress.env('skipLogin')) {
+        // Se skipLogin for verdadeiro, não executa o login
+        return
+    }
 
     // :: Realiza o login na Twygo com o usuário de automação e altera para perfil administrador ::
     cy.loginTwygoAutomacaoAdm()
