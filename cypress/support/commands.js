@@ -204,9 +204,9 @@ Cypress.Commands.add('criarAmbienteAdicional', (acao, dadosAmbiente, opcoes = { 
 
 Cypress.Commands.add('inativarAmbienteAdicional', (nomeAmbiente = null) => {
 	cy.log(':: Inativando ambiente adicional ::')
-	  const labels = Cypress.env('labels')
+	const labels = Cypress.env('labels')
 	const { msgInativacao, txtNenhumResultado } = labels.ambientesAdicionais
-	  const acao = 'Inativar'
+	const acao = 'Inativar'
 
 	// Verifica se o nome do ambiente foi fornecido
 	if (nomeAmbiente) {
@@ -2690,7 +2690,6 @@ Cypress.Commands.add('resetConfigOrganizacao', (aba) => {
 		personalizarLinkLogotipo: true,
 		linkRedirecionamento: '',
 		botaoContato: '',
-		usarGestaoCompetencias: false,
 		ativarGamificacao: false,
 		visualizacao: 'Privada',
 		abaPortfolio: false,
@@ -3409,10 +3408,10 @@ Cypress.Commands.add('excluirTodosCuponsVouchers', () => {
 	} else {
 	  cy.get('tbody tr').each($row => {
 		const cupomVoucher = {}
-		cy.wrap($row).find('td.coupons-name-data').invoke('text').then((text) => {
+		cy.wrap($row).find('td[id^="td-name-"]').invoke('text').then((text) => {
 		  cupomVoucher.nome = text.trim()
 		})
-		cy.wrap($row).find('td.coupons-discount_type-data').invoke('text').then((text) => {
+		cy.wrap($row).find('td[id^="td-discount_type-"]').invoke('text').then((text) => {
 		  cupomVoucher.tipo = text.trim()
 		}).then(() => {
 		  listaCuponsVouchers.push(cupomVoucher)
@@ -3425,7 +3424,7 @@ Cypress.Commands.add('excluirTodosCuponsVouchers', () => {
 	listaCuponsVouchers.forEach(({ nome, tipo }) => {
 	  cy.excluirCupomVoucher(nome, tipo)
 
-	  cy.get('div[role="status"] div#toast-success-toast button[aria-label="Close"]').click()
+	//   cy.get('div[role="status"] div#toast-success-toast button[aria-label="Close"]').click()
 	})
   })
 })
@@ -3610,7 +3609,7 @@ Cypress.Commands.add('excluirTodasChavesApi', () => {
 	  // Se não houver resultados, não há chaves para excluir
 	} else {
 	  // Seleciona todos os elementos que contêm os nomes das chaves
-	  cy.get('.tokens-name-data').each(($el) => {
+	  cy.get('td[id^="td-name-"]').each(($el) => {
 		nomesChavesIntegracao.push($el.text())
 	  }).then(() => {
 		// Após coletar todos os nomes das chaves, iterar sobre eles para exclusão

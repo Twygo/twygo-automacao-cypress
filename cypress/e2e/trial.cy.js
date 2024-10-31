@@ -5,13 +5,23 @@ import formTrial from '../support/pageObjects/formTrial'
 describe('Criar organização "Trial"', () => {
     let senha
 
-    beforeEach(() => {
-        // Defina a URL base
+    before(() => {
+        // Define 'skipLogin' como 'true' para este teste
+        Cypress.env('skipLogin', true)
+    })
+
+    beforeEach(() => {        
+        // Define a URL base
         const baseUrl = Cypress.env('baseUrlPadrao')
         Cypress.config('baseUrl', baseUrl)
         
         // Gerar senha para o usuário
         senha = faker.internet.password()
+    })
+
+    after(() => {
+        // Resetar 'skipLogin' para 'false' após o teste
+        Cypress.env('skipLogin', false)
     })
 
     it('1. CRUD trial treinamento de colaboradores alterando opção para treinamento de parceiros', () => {
@@ -44,6 +54,7 @@ describe('Criar organização "Trial"', () => {
         }
 
         cy.preencherDadosTrial(dadosEmpresa, { limpar: true })
+        cy.preencherDadosTrial({ proximoStep1: true })      // Medida de contorno por primeiro clique não funcionar
 
         // Preenche formulário "Perfil de uso"
         const perfilUso = {
@@ -202,6 +213,7 @@ describe('Criar organização "Trial"', () => {
         cy.log('## FINALIZAR TRIAL ##')
         
         cy.preencherDadosTrial({ finalizar: true })
+        cy.wait(5000)       // Aguarda 5 segundos para finalizar a criação do trial devido ao ambiente de stage
         cy.validarMsgTrial('finalizacao', '', seusDadosUpdate.nome)
 
         // DELETE
@@ -239,6 +251,7 @@ describe('Criar organização "Trial"', () => {
         }
 
         cy.preencherDadosTrial(dadosEmpresa, { limpar: true })
+        cy.preencherDadosTrial({ proximoStep1: true })      // Medida de contorno por primeiro clique não funcionar
 
         // Preenche formulário "Perfil de uso"
         const perfilUso = {
@@ -397,6 +410,7 @@ describe('Criar organização "Trial"', () => {
         cy.log('## FINALIZAR TRIAL ##')
         
         cy.preencherDadosTrial({ finalizar: true })
+        cy.wait(5000)       // Aguarda 5 segundos para finalizar a criação do trial devido ao ambiente de stage
         cy.validarMsgTrial('finalizacao', '', seusDadosUpdate.nome)
 
         // DELETE
@@ -434,6 +448,7 @@ describe('Criar organização "Trial"', () => {
         }
 
         cy.preencherDadosTrial(dadosEmpresa, { limpar: true })
+        cy.preencherDadosTrial({ proximoStep1: true })      // Medida de contorno por primeiro clique não funcionar
 
         // Preenche formulário "Perfil de uso"
         const perfilUso = {
@@ -592,6 +607,7 @@ describe('Criar organização "Trial"', () => {
         cy.log('## FINALIZAR TRIAL ##')
         
         cy.preencherDadosTrial({ finalizar: true })
+        cy.wait(5000)       // Aguarda 5 segundos para finalizar a criação do trial devido ao ambiente de stage
         cy.validarMsgTrial('finalizacao', '', seusDadosUpdate.nome)
 
         // DELETE
@@ -629,6 +645,7 @@ describe('Criar organização "Trial"', () => {
         }
 
         cy.preencherDadosTrial(dadosEmpresa, { limpar: true })
+        cy.preencherDadosTrial({ proximoStep1: true })      // Medida de contorno por primeiro clique não funcionar
 
         // Preenche formulário "Perfil de uso"
         const perfilUso = {
@@ -787,6 +804,7 @@ describe('Criar organização "Trial"', () => {
         cy.log('## FINALIZAR TRIAL ##')
         
         cy.preencherDadosTrial({ finalizar: true })
+        cy.wait(5000)       // Aguarda 5 segundos para finalizar a criação do trial devido ao ambiente de stage
         cy.validarMsgTrial('finalizacao', '', seusDadosUpdate.nome)
 
         // DELETE
@@ -824,6 +842,7 @@ describe('Criar organização "Trial"', () => {
         }
 
         cy.preencherDadosTrial(dadosEmpresa, { limpar: true })
+        cy.preencherDadosTrial({ proximoStep1: true })      // Medida de contorno por primeiro clique não funcionar
 
         // Preenche formulário "Perfil de uso"
         const perfilUso = {
@@ -982,6 +1001,7 @@ describe('Criar organização "Trial"', () => {
         cy.log('## FINALIZAR TRIAL ##')
         
         cy.preencherDadosTrial({ finalizar: true })
+        cy.wait(5000)       // Aguarda 5 segundos para finalizar a criação do trial devido ao ambiente de stage
         cy.validarMsgTrial('finalizacao', '', seusDadosUpdate.nome)
 
         // DELETE
