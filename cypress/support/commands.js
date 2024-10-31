@@ -2690,7 +2690,6 @@ Cypress.Commands.add('resetConfigOrganizacao', (aba) => {
 		personalizarLinkLogotipo: true,
 		linkRedirecionamento: '',
 		botaoContato: '',
-		usarGestaoCompetencias: false,
 		ativarGamificacao: false,
 		visualizacao: 'Privada',
 		abaPortfolio: false,

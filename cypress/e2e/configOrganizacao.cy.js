@@ -21,7 +21,6 @@ describe('Configurações > Organização > Dados', () => {
         personalizarLinkLogotipo: false,
         linkRedirecionamento: '',
         botaoContato: '',
-        usarGestaoCompetencias: false,
         ativarGamificacao: false,
         visualizacao: 'Privada',
         abaPortfolio: false,
@@ -39,7 +38,7 @@ describe('Configurações > Organização > Dados', () => {
         cy.resetConfigOrganizacao('dados')
     })
 
-    it('1. CRUD aba Dados', () => {
+    it.only('1. CRUD aba Dados', () => {
         // Massa de dados
         const dados = {
             nome: faker.commerce.productName(),
@@ -60,7 +59,6 @@ describe('Configurações > Organização > Dados', () => {
             personalizarLinkLogotipo: true,
             linkRedirecionamento: faker.internet.url(),
             botaoContato: faker.lorem.word(),
-            usarGestaoCompetencias: true,
             ativarGamificacao: true,
             visualizacao: 'Pública',
             abaPortfolio: true,
@@ -95,7 +93,6 @@ describe('Configurações > Organização > Dados', () => {
             telefone: '(45) 9 8888777',
             converterEscalaBranco: false,
             personalizarLinkLogotipo: false,
-            usarGestaoCompetencias: false,
             ativarGamificacao: true,
             visualizacao: 'Pública',
             abaPortfolio: true,

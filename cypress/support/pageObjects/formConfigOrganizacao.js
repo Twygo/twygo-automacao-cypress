@@ -84,10 +84,6 @@ class formConfigOrganizacao {
             seletor: '#organization_contact_label',
             tipo: 'input' 
         },
-        usarGestaoCompetencias: {
-            seletor: '#organization_use_professional_skills',
-            tipo: 'checkbox' 
-        },
         ativarGamificacao: {
             seletor: '#organization_gamification_active',
             tipo: 'checkbox' 
