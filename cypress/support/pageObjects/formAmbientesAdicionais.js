@@ -151,6 +151,7 @@ class formAmbientesAdicionais {
     verificarNenhumResultado(txtNenhumResultado) {
         cy.log(`:: Verificar mensagem de nenhum resultado ::`)
         // Verificar se a mensagem de nenhum resultado é exibida e retorna true caso não esteja e false caso esteja
+        cy.wait(2000)
         return cy.get('body').then(($body) => {
             return !$body.find(`div#details h2.chakra-heading:contains("${txtNenhumResultado}")`).length
         })
