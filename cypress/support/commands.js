@@ -204,9 +204,9 @@ Cypress.Commands.add('criarAmbienteAdicional', (acao, dadosAmbiente, opcoes = { 
 
 Cypress.Commands.add('inativarAmbienteAdicional', (nomeAmbiente = null) => {
 	cy.log(':: Inativando ambiente adicional ::')
-	  const labels = Cypress.env('labels')
+	const labels = Cypress.env('labels')
 	const { msgInativacao, txtNenhumResultado } = labels.ambientesAdicionais
-	  const acao = 'Inativar'
+	const acao = 'Inativar'
 
 	// Verifica se o nome do ambiente foi fornecido
 	if (nomeAmbiente) {
