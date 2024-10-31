@@ -74,25 +74,25 @@ class formCuponsVouchers {
         // Tabela
         tabela: {
             nome: {
-                seletor: 'td[id^="coupons-name-data-"]'
+                seletor: 'td[id^="td-name-"]'
             },
             tipo: {
-                seletor: 'td[id^="coupons-discount_type-data-"]'
+                seletor: 'td[id^="td-discount_type-"]'
             },
             codigo: {
-                seletor: 'td[id^="coupons-code-data-"]'
+                seletor: 'td[id^="td-code-"]'
             },
             situacao: {
-                seletor: 'td[id^="coupons-situation-data-"]'
+                seletor: 'td[id^="td-situation-"]'
             },
             valor: {
-                seletor: 'td[id^="coupons-value-data-"]'
+                seletor: 'td[id^="td-value-"]'
             },
             itens: {
-                seletor: 'td[id^="coupons-events-data-"]'
+                seletor: 'td[id^="td-events-"]'
             },
             validade: {
-                seletor: 'td[id^="coupons-valid_until-data-"]'
+                seletor: 'td[id^="td-valid_until-"]'
             }
         },
 

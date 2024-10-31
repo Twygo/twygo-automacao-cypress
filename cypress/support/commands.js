@@ -3408,10 +3408,10 @@ Cypress.Commands.add('excluirTodosCuponsVouchers', () => {
 	} else {
 	  cy.get('tbody tr').each($row => {
 		const cupomVoucher = {}
-		cy.wrap($row).find('td.coupons-name-data').invoke('text').then((text) => {
+		cy.wrap($row).find('td[id^="td-name-"]').invoke('text').then((text) => {
 		  cupomVoucher.nome = text.trim()
 		})
-		cy.wrap($row).find('td.coupons-discount_type-data').invoke('text').then((text) => {
+		cy.wrap($row).find('td[id^="td-discount_type-"]').invoke('text').then((text) => {
 		  cupomVoucher.tipo = text.trim()
 		}).then(() => {
 		  listaCuponsVouchers.push(cupomVoucher)
@@ -3424,7 +3424,7 @@ Cypress.Commands.add('excluirTodosCuponsVouchers', () => {
 	listaCuponsVouchers.forEach(({ nome, tipo }) => {
 	  cy.excluirCupomVoucher(nome, tipo)
 
-	  cy.get('div[role="status"] div#toast-success-toast button[aria-label="Close"]').click()
+	//   cy.get('div[role="status"] div#toast-success-toast button[aria-label="Close"]').click()
 	})
   })
 })
