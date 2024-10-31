@@ -107,8 +107,7 @@ describe('Usuário', () => {
             perfilInstrutor: true,
             perfilGestor: true,
             perfilLiderEquipe: true,
-            comunidades: false,
-            notificacoes: false            
+            comunidades: false
         }
 
         cy.preencherDadosUsuario(dadosUpdate, { limpar: true })
@@ -237,8 +236,7 @@ describe('Usuário', () => {
             perfilInstrutor: false,
             perfilGestor: false,
             perfilLiderEquipe: false,
-            comunidades: false,
-            notificacoes: false            
+            comunidades: false
         }
 
         cy.editarUsuario(`${dados.nome} ${dados.sobrenome}`)
@@ -333,8 +331,7 @@ describe('Usuário', () => {
             cargo: fakerPT_BR.person.jobTitle(),
             area: fakerPT_BR.person.jobArea(),
             perfilAdministrador: false,
-            comunidades: false,
-            notificacoes: false            
+            comunidades: false
         }
 
         cy.preencherDadosUsuario(dadosUpdate, { limpar: true })
@@ -427,8 +424,7 @@ describe('Usuário', () => {
             celular: `(${fakerPT_BR.string.numeric(2)}) ${fakerPT_BR.string.numeric(5)}-${fakerPT_BR.string.numeric(4)}`,
             pais: 'BQ',
             perfilAdministrador: true,
-            comunidades: false,
-            notificacoes: false            
+            comunidades: false
         }
 
         cy.editarUsuario(dados.nome)
@@ -488,7 +484,7 @@ describe('Usuário', () => {
             pais: 'Pitcairn',
             cargo: fakerPT_BR.person.jobTitle(),
             comunidades: false,
-            notificacoes: false            
+            //notificacoes: false            // BUG: https://app.artia.com/a/4874953/f/5542828/activities/28934308
         }
 
         cy.preencherDadosUsuario(dadosUpdate, { limpar: true })
@@ -584,7 +580,7 @@ describe('Usuário', () => {
             area: fakerPT_BR.person.jobArea(),
             perfilInstrutor: true,
             comunidades: false,
-            notificacoes: false            
+            //notificacoes: false            // BUG: https://app.artia.com/a/4874953/f/5542828/activities/28934308            
         }
 
         cy.editarUsuario(dados.nome)
@@ -660,7 +656,7 @@ describe('Usuário', () => {
             area: fakerPT_BR.person.jobArea(),
             perfilGestor: true,
             comunidades: false,
-            notificacoes: false            
+            //notificacoes: false            // BUG: https://app.artia.com/a/4874953/f/5542828/activities/28934308            
         }
 
         cy.preencherDadosUsuario(dadosUpdate, { limpar: true })
