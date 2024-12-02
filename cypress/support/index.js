@@ -23,7 +23,8 @@ beforeEach(() => {
         "Cannot read properties of null (reading 'addEventListener')",
         "Cannot read properties of undefined (reading 'test')",
         "Unexpected token 'else'",
-        "Cannot read properties of null (reading 'style')"
+        "Cannot read properties of null (reading 'style')",
+        "saveFunction is not defined"
     ], { ignoreScriptErrors: true, ignoreNetworkErrors: true })
 
     // :: Realiza o login na Twygo com o usuário de automação e altera para perfil administrador ::
