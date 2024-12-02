@@ -1340,37 +1340,42 @@ Cypress.Commands.add('editarUsuario', (nomeUsuario) => {
 })
 
 Cypress.Commands.add('excluirUsuarioViaApi', function() {
-  cy.request({
-	method: 'GET',
-	url: `/api/v1/o/${Cypress.env('orgId')}/students`,
-	headers: {
-	  'Content-Type': 'application/x-www-form-urlencoded',
-	  'Authorization': `Bearer ${Cypress.env('token')}`
-	},
-	failOnStatusCode: false
-  }).then((response) => {
-	if (response.status !== 200) {
-	  throw new Error(`Erro ao obter a listagem de usuários: ${response}`)
-	}
-
-	const students = response.body.students
-	students.forEach((student) => {
-	  if (student.id !== Cypress.env('userAdminId')) {
-		cy.request({
-		  method: 'DELETE',
-		  url: `/api/v1/o/${Cypress.env('orgId')}/students/${student.id}`,
-		  headers: {
+	cy.request({
+	  	method: 'GET',
+	    url: `/api/v1/o/${Cypress.env('orgId')}/students`,
+		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
 			'Authorization': `Bearer ${Cypress.env('token')}`
-		  },
-		}).then((deleteResponse) => {
-		  if (deleteResponse.status !== 200) {
-			throw new Error(`Erro ao excluir o usuário: ${deleteResponse}`)
-		  }
+		},
+		failOnStatusCode: false
+	}).then((response) => {
+		if (response.status !== 200) {
+			throw new Error(`Erro ao obter a listagem de usuários: ${response}`)
+		}
+	
+		const students = response.body ? response.body.students : null
+		if (!students || !Array.isArray(students) || students.length === 0) {
+			// Se não houver estudantes, apenas retorna
+			return
+		}
+  
+		students.forEach((student) => {
+			if (student.id !== Cypress.env('userAdminId')) {
+				cy.request({
+					method: 'DELETE',
+					url: `/api/v1/o/${Cypress.env('orgId')}/students/${student.id}`,
+					headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+					'Authorization': `Bearer ${Cypress.env('token')}`
+					},
+				}).then((deleteResponse) => {
+					if (deleteResponse.status !== 200) {
+						throw new Error(`Erro ao excluir o usuário: ${deleteResponse}`)
+					}
+				})
+			}
 		})
-	  }
 	})
-  })
 })
 
 Cypress.Commands.add('acessarPgUsuarios', () => {
