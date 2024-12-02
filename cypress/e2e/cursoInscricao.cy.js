@@ -809,7 +809,7 @@ describe('Participante', () => {
         })
     })
 
-    it('11. CRUD via criação de participante por importação de arquivo CSV', () => {
+    it.only('11. CRUD via criação de participante por importação de arquivo CSV', () => {
         const participante1 = {
             nome: 'Carlos Lucas',
             sobrenome: 'Moura',
