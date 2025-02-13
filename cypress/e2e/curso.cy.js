@@ -3,6 +3,8 @@ import 'cypress-real-events/support'
 import { fakerPT_BR } from '@faker-js/faker'
 import { getAuthToken } from '../support/authHelper'
 import { gerarData } from '../support/utilsHelper'
+import formConteudos from '../support/pageObjects/formConteudos'
+import listaConteudos from '../support/pageObjects/listaConteudos'
 
 describe('curso', () => {
 	let nome, tipoConteudo, categorias, novasCategorias, delCategorias
@@ -20,7 +22,6 @@ describe('curso', () => {
 		sincronismo: 'Gravado',
 		canal: '',
 		cargaHoraria: '0',
-		numeroTurma: '',
 		vigencia: '0',
 		atualizarInscritos: false,
 		local: '',
@@ -74,24 +75,20 @@ describe('curso', () => {
 	})
 
 	it('1. CRUD curso com dados default', () =>{
-		// Massa de dados para criação do curso
-        const conteudo = {
+		const conteudo = {
 			nome: nome,
-            descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${nome}`,
+			descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${nome}`,
 		}
 
 		// CREATE
 		cy.log('## CREATE ##')
-
-        cy.addConteudo(tipoConteudo)
-        cy.preencherDadosConteudo(conteudo, { limpar: true })
-        cy.salvarConteudo(conteudo.nome, tipoConteudo)
+		cy.addConteudo(tipoConteudo)
+		cy.preencherDadosConteudo(conteudo, { limpar: true })
+		formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
 		cy.log('## READ ##')
-
-        cy.editarConteudo(conteudo.nome, tipoConteudo)
-        
+		listaConteudos.editarConteudo(conteudo.nome)
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
@@ -112,7 +109,6 @@ describe('curso', () => {
 			sincronismo: 'Ao vivo',
 			canal: 'Outros',
 			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			numeroTurma: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			atualizarInscritos: true,
 			local: 'Centro de Eventos',
@@ -146,22 +142,19 @@ describe('curso', () => {
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
-		cy.salvarConteudo(conteudoEdit.nome, tipoConteudo)
+		formConteudos.salvarConteudo(conteudoEdit.nome, tipoConteudo)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
-
-		cy.editarConteudo(conteudoEdit.nome, tipoConteudo)
-
+		listaConteudos.editarConteudo(conteudoEdit.nome)
 		const todasCategorias = [...categorias, ...novasCategorias]
 		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE
 		cy.log('## DELETE ##')
-
-		cy.cancelarFormularioConteudo(tipoConteudo)
-		cy.excluirConteudo(conteudoEdit.nome, tipoConteudo)
+		formConteudos.cancelar()
+		listaConteudos.excluirConteudo(conteudoEdit.nome, tipoConteudo)
 	})
 
 	it('2. CRUD curso liberado, com anexo, com pagamento, sem acréscimo, com confirmação, com visualização para inscritos', () => {
@@ -179,7 +172,6 @@ describe('curso', () => {
 			sincronismo: 'Ao vivo',
 			canal: 'Outros',
 			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			numeroTurma: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			local: 'Centro de Eventos',
 			cep: '85804-455',
@@ -214,13 +206,11 @@ describe('curso', () => {
 
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
-        cy.salvarConteudo(conteudo.nome, tipoConteudo)
+        formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
 		cy.log('## READ ##')
-
-        cy.editarConteudo(conteudo.nome, tipoConteudo)
-
+		listaConteudos.editarConteudo(conteudo.nome)
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
         cy.validarDadosConteudo(dadosParaValidar, categorias)
 
@@ -241,7 +231,6 @@ describe('curso', () => {
 			sincronismo: 'Gravado',
 			canal: '',
 			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			numeroTurma: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			atualizarInscritos: true,
 			local: 'T&D Connect',
@@ -266,11 +255,15 @@ describe('curso', () => {
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
-		cy.salvarConteudo(conteudoEdit.nome, tipoConteudo)
+		formConteudos.salvarConteudo(conteudoEdit.nome, tipoConteudo)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
 
+		listaConteudos.editarConteudo(conteudoEdit.nome)
+		
+		const todasCategorias = [...categorias, ...novasCategorias]
+		
 		let dadosEspecificos = {
 			endereco: '',
 			complemento: '',
@@ -278,18 +271,15 @@ describe('curso', () => {
 			estado: '',
 			pais: ''
 		}
-
-		cy.editarConteudo(conteudoEdit.nome, tipoConteudo)
-
-		const todasCategorias = [...categorias, ...novasCategorias]
+		
 		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit, ...dadosEspecificos }		
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE
 		cy.log('## DELETE ##')
 		
-		cy.cancelarFormularioConteudo(tipoConteudo)
-		cy.excluirConteudo(conteudoEdit.nome, tipoConteudo)
+		formConteudos.cancelar()
+		listaConteudos.excluirConteudo(conteudoEdit.nome, tipoConteudo)
 	})
 
 	it('3. CRUD curso liberado, com anexo, com pagamento, c/acréscimo, sem confirmação, com visualização para público', () => {
@@ -307,7 +297,6 @@ describe('curso', () => {
 			sincronismo: 'Gravado',
 			canal: 'Em companhia',
 			cargaHoraria: fakerPT_BR.number.int({ min: 10, max: 99 }),
-			numeroTurma: fakerPT_BR.number.int({ min: 10, max: 99 }),
 			vigencia: fakerPT_BR.number.int({ min: 10, max: 99 }),
 			local: 'Youtube',
 			emailResponsavel: fakerPT_BR.internet.email(),
@@ -336,15 +325,13 @@ describe('curso', () => {
 
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
-        cy.salvarConteudo(conteudo.nome, tipoConteudo)
+        formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
 		cy.log('## READ ##')
-
-        cy.editarConteudo(conteudo.nome, tipoConteudo)
-
+		listaConteudos.editarConteudo(conteudo.nome)
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
-        cy.validarDadosConteudo(dadosParaValidar, categorias)
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// UPDATE
 		cy.log('## UPDATE ##')
@@ -363,7 +350,6 @@ describe('curso', () => {
 			sincronismo: 'Ao vivo',
 			canal: 'Aberto',
 			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			numeroTurma: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			atualizarInscritos: true,
 			emailResponsavel: fakerPT_BR.internet.email(),
@@ -387,22 +373,19 @@ describe('curso', () => {
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
-		cy.salvarConteudo(conteudoEdit.nome, tipoConteudo)
+		formConteudos.salvarConteudo(conteudoEdit.nome, tipoConteudo)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
-
-		cy.editarConteudo(conteudoEdit.nome, tipoConteudo)
-
+		listaConteudos.editarConteudo(conteudoEdit.nome)
 		const todasCategorias = [...categorias, ...novasCategorias]
 		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE
 		cy.log('## DELETE ##')
-
-		cy.cancelarFormularioConteudo(tipoConteudo)
-		cy.excluirConteudo(conteudoEdit.nome, tipoConteudo)
+		formConteudos.cancelar()
+		listaConteudos.excluirConteudo(conteudoEdit.nome, tipoConteudo)
 	})
 
 	it('4. CRUD curso suspenso, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
@@ -420,7 +403,6 @@ describe('curso', () => {
 			sincronismo: 'Gravado',
 			canal: 'Aberto',
 			cargaHoraria: fakerPT_BR.number.int({ min: 100, max: 999 }),
-			numeroTurma: fakerPT_BR.number.int({ min: 100, max: 999 }),
 			vigencia: fakerPT_BR.number.int({ min: 100, max: 999 }),
 			local: 'Youtube',
 			emailResponsavel: fakerPT_BR.internet.email(),
@@ -429,7 +411,6 @@ describe('curso', () => {
 			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
 			permiteAnexo: 'Desabilitado',
-			statusIframeAnexo: false,
 			statusIframeAnexo: false,
 			visualizacao: 'Colaborador',
 			situacao: 'Suspenso',
@@ -446,15 +427,13 @@ describe('curso', () => {
 
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
-        cy.salvarConteudo(conteudo.nome, tipoConteudo)
+        formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
 		cy.log('## READ ##')
-
-        cy.editarConteudo(conteudo.nome, tipoConteudo)
-
+		listaConteudos.editarConteudo(conteudo.nome)
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
-        cy.validarDadosConteudo(dadosParaValidar, categorias)
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// UPDATE
 		cy.log('## UPDATE ##')
@@ -472,22 +451,19 @@ describe('curso', () => {
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
-		cy.salvarConteudo(conteudo.nome, tipoConteudo)
+		formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
-
-		cy.editarConteudo(conteudo.nome, tipoConteudo)
-
+		listaConteudos.editarConteudo(conteudo.nome)
 		const todasCategorias = [...categorias, ...novasCategorias]
 		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE
 		cy.log('## DELETE ##')
-		
-		cy.cancelarFormularioConteudo(tipoConteudo)
-		cy.excluirConteudo(conteudo.nome, tipoConteudo)
+		formConteudos.cancelar()
+		listaConteudos.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
 	it('5. CRUD curso em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
@@ -501,7 +477,6 @@ describe('curso', () => {
 			sincronismo: 'Gravado',
 			canal: 'Aberto',
 			cargaHoraria: fakerPT_BR.number.int({ min: 1000, max: 9999 }),
-			numeroTurma: fakerPT_BR.number.int({ min: 1000, max: 9999 }),
 			vigencia: fakerPT_BR.number.int({ min: 1000, max: 9999 }),
 			local: 'Twygo',
 			emailResponsavel: fakerPT_BR.internet.email(),
@@ -522,13 +497,11 @@ describe('curso', () => {
 
 		cy.addConteudo(tipoConteudo)
 		cy.preencherDadosConteudo(conteudo, { limpar: true })
-		cy.salvarConteudo(conteudo.nome, tipoConteudo)
+		formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
 		cy.log('## READ ##')
-
-		cy.editarConteudo(conteudo.nome, tipoConteudo)
-
+		listaConteudos.editarConteudo(conteudo.nome)
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 		
@@ -542,21 +515,18 @@ describe('curso', () => {
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
-		cy.salvarConteudo(conteudo.nome, tipoConteudo)
+		formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
-
-		cy.editarConteudo(conteudo.nome, tipoConteudo)
-
+		listaConteudos.editarConteudo(conteudo.nome)
 		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
 		cy.log('## DELETE ##')
-
-		cy.cancelarFormularioConteudo(tipoConteudo)
-		cy.excluirConteudo(conteudo.nome, tipoConteudo)
+		formConteudos.cancelar()
+		listaConteudos.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
 	it('6. CRUD curso liberado, sem anexo, sem pagamento, sem confirmação, com visualização para público', () => {
@@ -570,7 +540,6 @@ describe('curso', () => {
 			sincronismo: 'Gravado',
 			canal: 'Aberto',
 			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 99 }),
-			numeroTurma: fakerPT_BR.number.int({ min: 1, max: 99 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 99 }),
 			local: 'Zoom',
 			emailResponsavel: fakerPT_BR.internet.email(),
@@ -592,15 +561,13 @@ describe('curso', () => {
 
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
-        cy.salvarConteudo(conteudo.nome, tipoConteudo)
+        formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
 		cy.log('## READ ##')
-
-        cy.editarConteudo(conteudo.nome, tipoConteudo)
-
+		listaConteudos.editarConteudo(conteudo.nome)
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
-        cy.validarDadosConteudo(dadosParaValidar, categorias)
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 		
 		// UPDATE
 		cy.log('## UPDATE ##')
@@ -610,21 +577,18 @@ describe('curso', () => {
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
-		cy.salvarConteudo(conteudo.nome, tipoConteudo)
+		formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
-
-		cy.editarConteudo(conteudo.nome, tipoConteudo)
-
+		listaConteudos.editarConteudo(conteudo.nome)
 		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
 		cy.log('## DELETE ##')
-
-		cy.cancelarFormularioConteudo(tipoConteudo)
-		cy.excluirConteudo(conteudo.nome, tipoConteudo)
+		formConteudos.cancelar()
+		listaConteudos.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
 	it('7. CRUD curso em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários', () => {
@@ -649,15 +613,13 @@ describe('curso', () => {
 
         cy.addConteudo(tipoConteudo)
         cy.preencherDadosConteudo(conteudo, { limpar: true })
-        cy.salvarConteudo(conteudo.nome, tipoConteudo)
+        formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
 		cy.log('## READ ##')
-
-        cy.editarConteudo(conteudo.nome, tipoConteudo)
-
+		listaConteudos.editarConteudo(conteudo.nome)
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
-        cy.validarDadosConteudo(dadosParaValidar, categorias)		
+		cy.validarDadosConteudo(dadosParaValidar, categorias)		
 
 		// UPDATE
 		cy.log('## UPDATE ##')
@@ -671,12 +633,11 @@ describe('curso', () => {
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
-		cy.salvarConteudo(conteudo.nome, tipoConteudo)
+		formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
-
-		cy.editarConteudo(conteudo.nome, tipoConteudo)
+		listaConteudos.editarConteudo(conteudo.nome)
 		
 		const todasCategorias = categorias.filter(categoria => 
 			!delCategorias.includes(categoria)
@@ -687,8 +648,7 @@ describe('curso', () => {
 
 		// DELETE
 		cy.log('## DELETE ##')
-
-		cy.cancelarFormularioConteudo(tipoConteudo)
-		cy.excluirConteudo(conteudo.nome, tipoConteudo)
+		formConteudos.cancelar()
+		listaConteudos.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 })

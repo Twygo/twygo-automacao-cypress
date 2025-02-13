@@ -7,10 +7,9 @@
             "tituloPgAdicionar": "Novo Curso",
             "breadcrumbEdicao": "Detalhes do evento",
             "tituloPgEdicao": "Editar Cursos",
-            "tituloModalExclusao": "Excluir curso",
-            "texto1ModalExclusao": "Você tem certeza que deseja excluir este curso?",
-            "texto2ModalExclusao": "Esta ação não poderá ser desfeita.",
-            "msgSucessoExclusao": "Conteúdo excluído com sucesso",
+            "tituloModalExclusao": "Confirmação de exclusão",
+            "texto1ModalExclusao": "Você tem certeza que deseja deletar?",
+            "msgSucessoExclusao": "Registro excluído com sucesso!",
             "breadcrumbAmbienteAdicional": "Lista de conteúdos > {{nomeDoConteudo}} > Ambiente adicional"
         },
         "criarCurso": {
@@ -20,10 +19,9 @@
             "tituloPgAdicionar": "Novo Curso",
             "breadcrumbEdicao": "Detalhes do evento",
             "tituloPgEdicao": "Editar Cursos",
-            "tituloModalExclusao": "Excluir curso",
-            "texto1ModalExclusao": "Você tem certeza que deseja excluir este curso?",
-            "texto2ModalExclusao": "Esta ação não poderá ser desfeita.",
-            "msgSucessoExclusao": "Conteúdo excluído com sucesso"
+            "tituloModalExclusao": "Confirmação de exclusão",
+            "texto1ModalExclusao": "Você tem certeza que deseja deletar?",
+            "msgSucessoExclusao": "Registro excluído com sucesso!"
         },
         "catalogo": {
             "breadcrumb": "Catálogo de cursos",
@@ -45,8 +43,8 @@
             "breadcrumbEdicao": "Lista de conteúdos",
             "tituloPgEdicao": "Editar trilhas",
             "tituloModalExclusao": "Confirmação de exclusão",
-            "texto1ModalExclusao": "Ao excluir a trilha você não excluirá as atividades dentro dela, apenas o agrupamento. Essa ação não pode ser desfeita. Tem certeza que deseja prosseguir?",
-            "msgSucessoExclusao": "Conteúdo excluído com sucesso",
+            "texto1ModalExclusao": "Você tem certeza que deseja deletar?",
+            "msgSucessoExclusao": "Registro excluído com sucesso!",
             "breadcrumbAmbienteAdicional": "Lista de conteúdos > {{nomeDoConteudo}} > Ambiente adicional"
         },
         "biblioteca": {

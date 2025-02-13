@@ -53,10 +53,6 @@ class formConteudos {
 			tipo: 'input', 
 			default: '0' 
 		},
-		numeroTurma: { 
-			seletor: '#event_class_number', 
-			tipo: 'input' 
-		},
 		vigencia: { 
 			seletor: '#event_days_to_expire', 
 			tipo: 'input', 
@@ -122,8 +118,8 @@ class formConteudos {
 			tipo: 'tag'
 		},
 		addCategoria: {
-			seletor: "input.form-control.as-input[name='event[category_extra]']",
-			tipo: 'addTag'
+			seletor: 'input[name="event[category_extra]"].as-input',
+			tipo: 'input_array'
 		},
 		removerCategoria: {
 			seletor: 'li.as-selection-item.blur',
@@ -202,7 +198,11 @@ class formConteudos {
 			seletor: '#event_enable_twygo_chat',
 			tipo: 'checkbox',
 			default: false
-		}
+		},
+		btnSalvar: () => cy.contains('button', 'Salvar'),
+		mensagemSucesso: () => cy.get('.flash.notice'),
+		breadcrumb: () => cy.get('#page-breadcrumb'),
+		btnCancelar: () => cy.contains('#event-cancel', 'Cancelar')
 	}
 			
 	preencherCampo(nomeCampo, valor, opcoes = { limpar: false }) {
@@ -232,6 +232,19 @@ class formConteudos {
 				case 'input':
 					cy.get(seletor)
 						.type(valorFinal)
+					break
+				case 'input_array':
+					if (Array.isArray(valorFinal)) {
+						valorFinal.forEach(val => {
+							cy.get(seletor)
+								.type(val)
+								.realPress('Tab')
+						})
+					} else {
+						cy.get(seletor)
+							.type(valorFinal)
+							.realPress('Tab')
+					}
 					break
 				case 'select':
 					cy.get(seletor)
@@ -274,19 +287,6 @@ class formConteudos {
 						const doc = $iframe.contents()
 						cy.wrap(doc).find('body.cke_editable').click({ force: true }).clear().type(valorFinal, { force: true })
 					})
-					break
-				case 'addTag':
-					if (Array.isArray(valorFinal)) {
-						valorFinal.forEach(val => {
-							cy.get(seletor)
-								.type(`${val}`)
-							cy.realPress('Tab')
-						})
-					} else {
-						cy.get(seletor)
-							.type(`${valorFinal}`)
-						cy.realPress('Tab')
-					}
 					break
 				case 'delTag':
 					if (Array.isArray(valorFinal)) {
@@ -407,6 +407,24 @@ class formConteudos {
 	criarCursoViaCatalogo(nomeConteudo) {
 		cy.get(`tr.event-row[name='${nomeConteudo}']`)
 			.find('a[title="Criar  Curso"]')
+			.click()
+	}
+
+	salvarConteudo(nomeConteudo, tipoConteudo) {
+		cy.fixture('labels').then(labels => {
+			this.elementos.btnSalvar()
+				.should('be.visible')
+				.click()
+
+			this.elementos.mensagemSucesso()
+				.should('exist')
+				.and('contain', labels.conteudo[tipoConteudo].msgSucesso)
+		})
+	}
+
+	cancelar() {
+		this.elementos.btnCancelar()
+			.should('be.visible')
 			.click()
 	}
 }
