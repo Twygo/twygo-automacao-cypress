@@ -3,9 +3,11 @@ import 'cypress-real-events/support'
 import { fakerPT_BR } from '@faker-js/faker'
 import { getAuthToken } from '../support/authHelper'
 import { gerarData } from '../support/utilsHelper'
+import formConteudos from '../support/pageObjects/formConteudos'
+import listaConteudos from '../support/pageObjects/listaConteudos'
 
 describe('trilha', () => {
-	let nome, tipoConteudo, categorias, novasCategorias, delCategorias, listaConteudos
+	let nome, tipoConteudo, categorias, novasCategorias, delCategorias
 
 	// Campos e dados default do formulário de trilha
 	let formularioConteudo = {
@@ -48,42 +50,33 @@ describe('trilha', () => {
 		novasCategorias = []
 		delCategorias = []
 
-		// Exclui todos os cursos da lista de conteúdos
+		// Obtém o token de autenticação
 		getAuthToken()
-		cy.excluirCursoViaApi()
 
-		// Exclui todos os conteúdos do tipo trilha antes de iniciar o teste
-		
-		listaConteudos = []
-		cy.listaConteudo(tipoConteudo, listaConteudos)
-		cy.excluirConteudo(null, tipoConteudo, listaConteudos)		
+		// Exclui todos os cursos antes de iniciar o teste
+		cy.excluirCursoViaApi()
 	})
 
-	it('1. CRUD trilha com dados default', () =>{
-		// Massa de dados para criação da trilha
-        const conteudo = {
+	it('1. CRUD trilha com dados default', () => {
+		const conteudo = {
 			nome: nome,
-            descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${nome}`,
+			descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${nome}`
 		}
 
 		// CREATE
 		cy.log('## CREATE ##')
-
-        cy.addConteudo(tipoConteudo)
-        cy.preencherDadosConteudo(conteudo, { limpar: true })
-        cy.salvarConteudo(conteudo.nome, tipoConteudo)
+		cy.addConteudo(tipoConteudo)
+		cy.preencherDadosConteudo(conteudo, { limpar: true })
+		formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
 		cy.log('## READ ##')
-
-        cy.editarConteudo(conteudo.nome, tipoConteudo)
-        
+		listaConteudos.editarConteudo(conteudo.nome)
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// UPDATE
 		cy.log('## UPDATE ##')
-
 		const novoNome = fakerPT_BR.commerce.productName()
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudoEdit = {
@@ -114,22 +107,18 @@ describe('trilha', () => {
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
-		cy.salvarConteudo(conteudoEdit.nome, tipoConteudo)
+		formConteudos.salvarConteudo(conteudoEdit.nome, tipoConteudo)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
-
-		cy.editarConteudo(conteudoEdit.nome, tipoConteudo)
-
-		const todasCategorias = [...categorias, ...novasCategorias]
-		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
-		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
+		listaConteudos.editarConteudo(conteudoEdit.nome)
+		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
 		cy.log('## DELETE ##')
-
-		cy.cancelarFormularioConteudo(tipoConteudo)
-		cy.excluirConteudo(conteudoEdit.nome, tipoConteudo)
+		formConteudos.cancelar()
+		listaConteudos.excluirConteudo(conteudoEdit.nome, tipoConteudo)
 	})
 
 	it('2. CRUD trilha liberada, com confirmação, com visualização para inscritos', () => {
@@ -163,22 +152,18 @@ describe('trilha', () => {
 
 		// CREATE
 		cy.log('## CREATE ##')
-
-        cy.addConteudo(tipoConteudo)
-        cy.preencherDadosConteudo(conteudo, { limpar: true })
-        cy.salvarConteudo(conteudo.nome, tipoConteudo)
+		cy.addConteudo(tipoConteudo)
+		cy.preencherDadosConteudo(conteudo, { limpar: true })
+		formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
 		cy.log('## READ ##')
-
-        cy.editarConteudo(conteudo.nome, tipoConteudo)
-
+		listaConteudos.editarConteudo(conteudo.nome)
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
-        cy.validarDadosConteudo(dadosParaValidar, categorias)
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// UPDATE
 		cy.log('## UPDATE ##')
-
 		const novoNome = fakerPT_BR.commerce.productName()
 		novasCategorias = [`Cat3-${fakerPT_BR.hacker.noun()}`, `Cat4-${fakerPT_BR.hacker.noun()}`]
 		const conteudoEdit = {
@@ -203,11 +188,10 @@ describe('trilha', () => {
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
-		cy.salvarConteudo(conteudoEdit.nome, tipoConteudo)
+		formConteudos.salvarConteudo(conteudoEdit.nome, tipoConteudo)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
-
 		let dadosEspecificos = {
 			endereco: '',
 			complemento: '',
@@ -215,18 +199,15 @@ describe('trilha', () => {
 			estado: '',
 			pais: ''
 		}
-
-		cy.editarConteudo(conteudoEdit.nome, tipoConteudo)
-
+		listaConteudos.editarConteudo(conteudoEdit.nome)
 		const todasCategorias = [...categorias, ...novasCategorias]
-		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit, ...dadosEspecificos }		
+		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit, ...dadosEspecificos }
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE
 		cy.log('## DELETE ##')
-		
-		cy.cancelarFormularioConteudo(tipoConteudo)
-		cy.excluirConteudo(conteudoEdit.nome, tipoConteudo)
+		formConteudos.cancelar()
+		listaConteudos.excluirConteudo(conteudoEdit.nome, tipoConteudo)
 	})
 
 	it('3. CRUD trilha liberada, sem confirmação, com visualização para inscritos', () => {
@@ -253,24 +234,20 @@ describe('trilha', () => {
 
 		// CREATE
 		cy.log('## CREATE ##')
-
-        cy.addConteudo(tipoConteudo)
-        cy.preencherDadosConteudo(conteudo, { limpar: true })
-        cy.salvarConteudo(conteudo.nome, tipoConteudo)
+		cy.addConteudo(tipoConteudo)
+		cy.preencherDadosConteudo(conteudo, { limpar: true })
+		formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
 		cy.log('## READ ##')
-
-        cy.editarConteudo(conteudo.nome, tipoConteudo)
-
+		listaConteudos.editarConteudo(conteudo.nome)
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
-        cy.validarDadosConteudo(dadosParaValidar, categorias)
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// UPDATE
 		cy.log('## UPDATE ##')
-
 		const novoNome = fakerPT_BR.commerce.productName()
-		novasCategorias = [`Cat4-${fakerPT_BR.hacker.noun()}`, `Cat5-${fakerPT_BR.hacker.noun()}`]		
+		novasCategorias = [`Cat4-${fakerPT_BR.hacker.noun()}`, `Cat5-${fakerPT_BR.hacker.noun()}`]
 		const conteudoEdit = {
 			nome: novoNome,
 			dataInicio: '10/03/2000',
@@ -291,22 +268,18 @@ describe('trilha', () => {
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
-		cy.salvarConteudo(conteudoEdit.nome, tipoConteudo)
+		formConteudos.salvarConteudo(conteudoEdit.nome, tipoConteudo)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
-
-		cy.editarConteudo(conteudoEdit.nome, tipoConteudo)
-
-		const todasCategorias = [...categorias, ...novasCategorias]
+		listaConteudos.editarConteudo(conteudoEdit.nome)
 		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
-		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
 		cy.log('## DELETE ##')
-
-		cy.cancelarFormularioConteudo(tipoConteudo)
-		cy.excluirConteudo(conteudoEdit.nome, tipoConteudo)
+		formConteudos.cancelar()
+		listaConteudos.excluirConteudo(conteudoEdit.nome, tipoConteudo)
 	})
 
 	it('4. CRUD trilha suspensa, com confirmação, com visualização para inscritos', () => {
@@ -334,22 +307,18 @@ describe('trilha', () => {
 
 		// CREATE
 		cy.log('## CREATE ##')
-
-        cy.addConteudo(tipoConteudo)
-        cy.preencherDadosConteudo(conteudo, { limpar: true })
-        cy.salvarConteudo(conteudo.nome, tipoConteudo)
+		cy.addConteudo(tipoConteudo)
+		cy.preencherDadosConteudo(conteudo, { limpar: true })
+		formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
 		cy.log('## READ ##')
-
-        cy.editarConteudo(conteudo.nome, tipoConteudo)
-
+		listaConteudos.editarConteudo(conteudo.nome)
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
-        cy.validarDadosConteudo(dadosParaValidar, categorias)
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// UPDATE
 		cy.log('## UPDATE ##')
-
 		novasCategorias = [`Cat2-${fakerPT_BR.hacker.noun()}`, `Cat3-${fakerPT_BR.hacker.noun()}`]
 		const conteudoEdit = {
 			dataInicio: '01/01/2000',
@@ -361,22 +330,19 @@ describe('trilha', () => {
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
-		cy.salvarConteudo(conteudo.nome, tipoConteudo)
+		formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
-
-		cy.editarConteudo(conteudo.nome, tipoConteudo)
-
+		listaConteudos.editarConteudo(conteudo.nome)
 		const todasCategorias = [...categorias, ...novasCategorias]
 		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE
 		cy.log('## DELETE ##')
-		
-		cy.cancelarFormularioConteudo(tipoConteudo)
-		cy.excluirConteudo(conteudo.nome, tipoConteudo)
+		formConteudos.cancelar()
+		listaConteudos.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
 	it('5. CRUD trilha suspensa, sem confirmação, com visualização para inscritos', () => {
@@ -398,42 +364,35 @@ describe('trilha', () => {
 
 		// CREATE
 		cy.log('## CREATE ##')
-
 		cy.addConteudo(tipoConteudo)
 		cy.preencherDadosConteudo(conteudo, { limpar: true })
-		cy.salvarConteudo(conteudo.nome, tipoConteudo)
+		formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
 		cy.log('## READ ##')
-
-		cy.editarConteudo(conteudo.nome, tipoConteudo)
-
+		listaConteudos.editarConteudo(conteudo.nome)
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 		
 		// UPDATE
 		cy.log('## UPDATE ##')
-
 		const conteudoEdit = {
 			tipo: 'Outros'
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
-		cy.salvarConteudo(conteudo.nome, tipoConteudo)
+		formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
-
-		cy.editarConteudo(conteudo.nome, tipoConteudo)
-
+		listaConteudos.editarConteudo(conteudo.nome)
 		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
 		cy.log('## DELETE ##')
-
-		cy.cancelarFormularioConteudo(tipoConteudo)
-		cy.excluirConteudo(conteudo.nome, tipoConteudo)
+		formConteudos.cancelar()
+		listaConteudos.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
 	it('6. CRUD trilha em desenvolvimento, sem confirmação, com visualização para inscritos', () => {
@@ -456,22 +415,18 @@ describe('trilha', () => {
 
 		// CREATE
 		cy.log('## CREATE ##')
-
-        cy.addConteudo(tipoConteudo)
-        cy.preencherDadosConteudo(conteudo, { limpar: true })
-        cy.salvarConteudo(conteudo.nome, tipoConteudo)
+		cy.addConteudo(tipoConteudo)
+		cy.preencherDadosConteudo(conteudo, { limpar: true })
+		formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
 		cy.log('## READ ##')
-
-        cy.editarConteudo(conteudo.nome, tipoConteudo)
-
+		listaConteudos.editarConteudo(conteudo.nome)
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
-        cy.validarDadosConteudo(dadosParaValidar, categorias)
+		cy.validarDadosConteudo(dadosParaValidar, categorias)
 		
 		// UPDATE
 		cy.log('## UPDATE ##')
-
 		const conteudoEdit = {
 			tipo: 'Palestra',
 			modalidade: 'Presencial',
@@ -484,21 +439,18 @@ describe('trilha', () => {
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
-		cy.salvarConteudo(conteudo.nome, tipoConteudo)
+		formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
-
-		cy.editarConteudo(conteudo.nome, tipoConteudo)
-
+		listaConteudos.editarConteudo(conteudo.nome)
 		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
 		cy.log('## DELETE ##')
-
-		cy.cancelarFormularioConteudo(tipoConteudo)
-		cy.excluirConteudo(conteudo.nome, tipoConteudo)
+		formConteudos.cancelar()
+		listaConteudos.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
 	it('7. CRUD trilha em desenvolvimento, com confirmação, com visualização para inscritos', () => {
@@ -515,22 +467,18 @@ describe('trilha', () => {
 
 		// CREATE
 		cy.log('## CREATE ##')
-
-        cy.addConteudo(tipoConteudo)
-        cy.preencherDadosConteudo(conteudo, { limpar: true })
-        cy.salvarConteudo(conteudo.nome, tipoConteudo)
+		cy.addConteudo(tipoConteudo)
+		cy.preencherDadosConteudo(conteudo, { limpar: true })
+		formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ
 		cy.log('## READ ##')
-
-        cy.editarConteudo(conteudo.nome, tipoConteudo)
-
+		listaConteudos.editarConteudo(conteudo.nome)
 		let dadosParaValidar = { ...formularioConteudo, ...conteudo }
-        cy.validarDadosConteudo(dadosParaValidar, categorias)		
+		cy.validarDadosConteudo(dadosParaValidar, categorias)		
 
 		// UPDATE
 		cy.log('## UPDATE ##')
-
 		delCategorias = categorias[0]
 		const conteudoEdit = {
 			vigencia: '0',
@@ -539,12 +487,11 @@ describe('trilha', () => {
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
-		cy.salvarConteudo(conteudo.nome, tipoConteudo)
+		formConteudos.salvarConteudo(conteudo.nome, tipoConteudo)
 
 		// READ-UPDATE
 		cy.log('## READ-UPDATE ##')
-
-		cy.editarConteudo(conteudo.nome, tipoConteudo)
+		listaConteudos.editarConteudo(conteudo.nome)
 		
 		const todasCategorias = categorias.filter(categoria => 
 			!delCategorias.includes(categoria)
@@ -555,8 +502,7 @@ describe('trilha', () => {
 
 		// DELETE
 		cy.log('## DELETE ##')
-
-		cy.cancelarFormularioConteudo(tipoConteudo)
-		cy.excluirConteudo(conteudo.nome, tipoConteudo)
+		formConteudos.cancelar()
+		listaConteudos.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 })
