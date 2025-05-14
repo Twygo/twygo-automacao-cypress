@@ -1,0 +1,14 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Use nomes descritivos com camelCase para arquivos e métodos:
+- Arquivos de página: `loginPage.js`, `homePage.js`
+- Métodos: `fillLoginForm()`, `submitForm()`
+
+Para classes POM, use PascalCase:
+- Classes: `LoginPage`, `HomePage`
+
+
+Os nomes devem ser autoexplicativos e indicar claramente a função do arquivo ou método.

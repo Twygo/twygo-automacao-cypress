@@ -1,0 +1,50 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+name: Gerar Teste Cypress
+description: Cria um teste Cypress com base em uma descrição simples.
+agent: Cypress QA Agent
+---
+
+Crie um teste Cypress automatizado baseado nesta descrição: 
+
+Gere uma suíte de testes Cypress para a página informada, utilizando Page Object Model (POM) e seguindo as melhores práticas:
+- Estruture os testes em `cypress/e2e/`.
+- Utilize describe/it com nomes descritivos (formato BDD).
+- Use beforeEach para setup comum e carregamento de fixtures.
+- Utilize apenas métodos do Page Object, nunca seletores diretos.
+- Use AAA (Arrange-Act-Assert) em cada teste.
+- Utilize assertions explícitas e should().
+- Use dados dinâmicos via fixtures.
+- Não repita código (DRY).
+- Cada teste deve ser independente.
+- Não adicione lógica de navegação ou validação de outros componentes.
+
+Exemplo:
+```javascript
+describe('Login', () => {
+  beforeEach(() => {
+    cy.fixture('users').as('userData');
+    cy.visit('/login');
+  });
+
+  it('deve fazer login com usuário válido', function() {
+    const { username, password } = this.userData.validUser;
+    loginPage.preencherEmail(username)
+      .preencherSenha(password)
+      .clicarEmEntrar();
+    cy.url().should('include', '/dashboard');
+  });
+
+  it('deve mostrar erro com usuário inválido', function() {
+    const { username, password } = this.userData.invalidUser;
+    loginPage.preencherEmail(username)
+      .preencherSenha(password)
+      .clicarEmEntrar();
+    cy.get('[data-cy=error-message]').should('be.visible');
+  });
+});
+```

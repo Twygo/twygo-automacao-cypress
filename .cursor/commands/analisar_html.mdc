@@ -1,0 +1,25 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+Analise o HTML fornecido e sugira os melhores seletores para automação de testes Cypress, seguindo esta ordem de prioridade:
+1. data-cy ou data-testid
+2. id
+3. atributos específicos (name, type, etc)
+4. classes CSS específicas (não genéricas)
+5. texto apenas se não houver alternativa
+
+Centralize os seletores sugeridos no topo da classe Page Object. Não sugira seletores frágeis (como :nth-child, classes genéricas ou baseadas em posição).
+
+Exemplo de resposta:
+```javascript
+class MinhaPagina {
+  elements = {
+    botaoSalvar: () => cy.get('[data-cy=salvar], #btn-salvar'),
+    campoEmail: () => cy.get('[data-testid=email], #email'),
+    // ... outros seletores
+  }
+}
+```
+

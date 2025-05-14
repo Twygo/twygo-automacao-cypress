@@ -1,0 +1,12 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Organize os testes e objetos de página seguindo esta estrutura:
+- `cypress/e2e/` para arquivos de teste
+- `cypress/support/pages/` para arquivos de Page Object
+- `cypress/fixtures/` para dados mockados
+
+
+Cada arquivo deve estar na pasta correta para manter a organização e facilitar a manutenção do projeto.

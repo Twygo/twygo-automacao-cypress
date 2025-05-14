@@ -1,0 +1,29 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+Gere a estrutura de diretórios recomendada para o tipo de projeto Cypress informado, seguindo as melhores práticas:
+- Separe arquivos de teste em `cypress/e2e/`
+- Page Objects em `cypress/support/pages/`
+- Comandos customizados em `cypress/support/commands.js`
+- Fixtures em `cypress/fixtures/`
+- Centralize lógica comum e seletores
+- Estrutura clara, manutenível e escalável
+
+Exemplo:
+```
+cypress/
+  e2e/
+    login.spec.js
+    home.spec.js
+  fixtures/
+    users.json
+  support/
+    pages/
+      loginPage.js
+      homePage.js
+    commands.js
+    index.js
+```
+

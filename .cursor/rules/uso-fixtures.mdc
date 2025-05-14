@@ -1,0 +1,49 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Todos os dados dinâmicos, como usuários ou entradas de formulário, devem ser carregados via arquivos em cypress/fixtures/.
+
+Benefícios:
+
+- Separa dados de teste da lógica de teste
+- Facilita manutenção e atualização de dados
+- Permite reutilização de dados entre testes
+
+Exemplo:
+
+```javascript
+// Em cypress/fixtures/users.json
+{
+  "validUser": {
+    "username": "testuser",
+    "password": "password123"
+  },
+  "invalidUser": {
+    "username": "wronguser",
+    "password": "wrongpass"
+  }
+}
+
+// No teste
+describe('Login', () => {
+  beforeEach(() => {
+    cy.fixture('users').as('userData');
+    cy.visit('/login');
+  });
+
+  it('deve fazer login com usuário válido', function() {
+    const { username, password } = this.userData.validUser;
+    loginPage.login(username, password);
+    cy.url().should('include', '/dashboard');
+  });
+});
+
+
+
+```
+
+
+
+- Relacione os arquivos de fixture diretamente nos testes para facilitar a reutilização.

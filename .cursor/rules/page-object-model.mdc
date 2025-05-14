@@ -1,0 +1,51 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Todos os testes devem interagir com a interface somente através das Page Objects, nunca diretamente com seletores no teste.
+
+Cada Page Object deve:
+1. Encapsular todos os seletores da página
+2. Fornecer métodos para interações com a página
+3. Ter responsabilidade única (uma página ou componente)
+4. Retornar this para permitir encadeamento de métodos
+
+Exemplo:
+```javascript
+class LoginPage {
+  // Seletores
+  elements = {
+    usernameInput: () => cy.get('[data-cy=username]'),
+    passwordInput: () => cy.get('[data-cy=password]'),
+    loginButton: () => cy.get('[data-cy=login-button]')
+  }
+
+  // Ações
+  typeUsername(username) {
+    this.elements.usernameInput().type(username);
+    return this;
+  }
+
+  typePassword(password) {
+    this.elements.passwordInput().type(password);
+    return this;
+  }
+
+  clickLogin() {
+    this.elements.loginButton().click();
+    return this;
+  }
+
+  // Métodos compostos
+  login(username, password) {
+    this.typeUsername(username);
+    this.typePassword(password);
+    this.clickLogin();
+    return this;
+  }
+}
+
+
+
+export default new LoginPage();

@@ -1,0 +1,64 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Cada função, comando ou Page Object deve ter uma única responsabilidade bem definida (Single Responsibility Principle).
+
+Diretrizes:
+
+- Uma classe ou função deve ter apenas um motivo para mudar
+- Divida funções grandes em funções menores com propósitos específicos
+- Cada Page Object deve representar apenas uma página ou componente
+- Métodos devem fazer apenas uma coisa e fazê-la bem
+
+
+Exemplo de violação do SRP:
+
+```javascript
+// ❌ Método com múltiplas responsabilidades
+login() {
+  cy.visit('/login');
+  cy.get('[data-cy=username]').type('user');
+  cy.get('[data-cy=password]').type('pass');
+  cy.get('[data-cy=login-button]').click();
+  cy.url().should('include', '/dashboard');
+  cy.get('[data-cy=welcome-message]').should('be.visible');
+}
+```
+
+Refatoração aplicando SRP:
+```javascript
+// ✅ Métodos com responsabilidades únicas
+visit() {
+  cy.visit('/login');
+  return this;
+}
+
+typeUsername(username) {
+  cy.get('[data-cy=username]').type(username);
+  return this;
+}
+
+typePassword(password) {
+  cy.get('[data-cy=password]').type(password);
+  return this;
+}
+
+clickLoginButton() {
+  cy.get('[data-cy=login-button]').click();
+  return this;
+}
+
+// Método composto que utiliza os métodos de responsabilidade única
+login(username, password) {
+  this.typeUsername(username);
+  this.typePassword(password);
+  this.clickLoginButton();
+  return this;
+}
+
+
+
+
+```
