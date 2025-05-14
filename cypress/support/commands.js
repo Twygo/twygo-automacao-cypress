@@ -491,34 +491,32 @@ Cypress.Commands.add('editarConteudo', function(nomeConteudo, tipoConteudo) {
   let seletor = ''
 
   switch (tipoConteudo) {
-	case 'trilha':
-	case 'curso':        
-		seletor = `tr[tag-name='${nomeConteudo}']`    
-		// Clica em 'Opções' e 'Editar'
-		cy.get(seletor)
-		  .find('svg[aria-label="Options"]')
-		  .click()
+    case 'trilha':
+    case 'curso':        
+      seletor = `tr[data-item-name='${nomeConteudo}']`    
+      // Clica em 'Opções' e 'Editar'
+      cy.get(seletor)
+        .find('svg[aria-label="Options"]')
+        .click()
 
-		cy.get(seletor)
-		  .contains('button', 'Editar')
-		  .click()
-	  break
-	case 'catalogo':
-		seletor = `tr.event-row[name='${nomeConteudo}']`
-		// Clica em editar
-		cy.get(seletor)
-		  .find('a[title="Editar"]')
-		  .click()
-	  break
-	case 'biblioteca':
-	  cy.get('tr.event-row')
-		.contains('td.event-name', nomeConteudo)
-		.parent()
-		.find('a.event-edit')
-		.click()
-	  break
-	default:
-	  throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso' ou 'catalogo'`)
+      cy.get(seletor)
+        .contains('button', 'Editar')
+        .click()
+      break
+    case 'catalogo':
+      seletor = `tr[data-item-name='${nomeConteudo}']`
+      // Clica em editar
+      cy.get(seletor)
+        .find('a[title="Editar"]')
+        .click()
+      break
+    case 'biblioteca':
+      cy.get(`tr[data-item-name='${nomeConteudo}']`)
+        .find('a.event-edit')
+        .click()
+      break
+    default:
+      throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso' ou 'catalogo'`)
   }
   
   // Valida se a página foi carregada corretamente conforme o tipo de conteúdo
