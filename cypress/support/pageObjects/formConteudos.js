@@ -53,10 +53,6 @@ class formConteudos {
 			tipo: 'input', 
 			default: '0' 
 		},
-		numeroTurma: { 
-			seletor: '#event_class_number', 
-			tipo: 'input' 
-		},
 		vigencia: { 
 			seletor: '#event_days_to_expire', 
 			tipo: 'input', 
