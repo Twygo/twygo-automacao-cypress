@@ -1,13 +1,13 @@
 /// reference types="cypress" />
 import 'cypress-real-events/support'
 import { fakerPT_BR } from '@faker-js/faker'
-import { getAuthToken } from '../support/authHelper'
-import { gerarData } from '../support/utilsHelper'
+import { getAuthToken } from '../../../support/authHelper'
+import { gerarData } from '../../../support/utilsHelper'
 
-describe('curso', () => {
-	let nome, tipoConteudo, categorias, novasCategorias, delCategorias
+describe('trilha', () => {
+	let nome, tipoConteudo, categorias, novasCategorias, delCategorias, listaConteudos
 
-	// Campos e dados default do formulário de curso
+	// Campos e dados default do formulário de trilha
 	let formularioConteudo = {
 		nome: '',
 		dataInicio: '',
@@ -18,7 +18,6 @@ describe('curso', () => {
 		tipo: 'Treinamento',
 		modalidade: 'Online',
 		sincronismo: 'Gravado',
-		canal: '',
 		cargaHoraria: '0',
 		vigencia: '0',
 		atualizarInscritos: false,
@@ -30,32 +29,16 @@ describe('curso', () => {
 		estado: '',
 		pais: '',
 		emailResponsavel: Cypress.env('login'),
-		site: '',
 		notificarResponsavel: false,
-		rotuloContato: '',
-		hashtag: '',
 		addCategoria: '',
 		removerCategoria: '',
-		permiteAnexo: 'Desabilitado',
-		mensagemAnexo: '',
-		statusIframeAnexo: false,
-		visualizacao: 'Inscritos',
 		situacao: 'Em desenvolvimento',
-		notificarConcluirPrimeiraAula: 'Não',
-		notificarUsuarios: 'Não',
-		diasTeste: '0',
-		habilitarDiasTeste: false,
-		exigeConfirmacao: 'Desabilitado',
-		valorInscricao: '0,00',
-		habilitarPagamento: false,
-		nrParcelas: '1',
-		valorAcrescimo: '0.0',
-		habilitarChat: false
+		exigeConfirmacao: 'Desabilitado'
 	}
 
-	beforeEach( () => {
+	beforeEach(() => {
 		// Define o tipo de conteúdo
-		tipoConteudo = 'curso'
+		tipoConteudo = 'trilha'
 
 		// Gera um nome aleatório para o conteúdo
 		nome = fakerPT_BR.commerce.productName()
@@ -65,15 +48,19 @@ describe('curso', () => {
 		novasCategorias = []
 		delCategorias = []
 
-		// Obtém o token de autenticação
+		// Exclui todos os cursos da lista de conteúdos
 		getAuthToken()
-
-		// Exclui todos os cursos antes de iniciar o teste
 		cy.excluirCursoViaApi()
+
+		// Exclui todos os conteúdos do tipo trilha antes de iniciar o teste
+		
+		listaConteudos = []
+		cy.listaConteudo(tipoConteudo, listaConteudos)
+		cy.excluirConteudo(null, tipoConteudo, listaConteudos)		
 	})
 
-	it('1. CRUD curso com dados default', () =>{
-		// Massa de dados para criação do curso
+	it('1. CRUD trilha com dados default', () =>{
+		// Massa de dados para criação da trilha
         const conteudo = {
 			nome: nome,
             descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${nome}`,
@@ -109,7 +96,6 @@ describe('curso', () => {
 			tipo: 'Congresso',
 			modalidade: 'Presencial',
 			sincronismo: 'Ao vivo',
-			canal: 'Outros',
 			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			atualizarInscritos: true,
@@ -121,26 +107,10 @@ describe('curso', () => {
 			estado: 'PR',
 			pais: 'Brasil',
 			emailResponsavel: fakerPT_BR.internet.email(),
-			site: fakerPT_BR.internet.url(),
 			notificarResponsavel: true,
-			rotuloContato: 'Contato',
-			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
-			permiteAnexo: 'Habilitado',
-			mensagemAnexo: `Insira o anexo do Curso: ${novoNome}`,
-			statusIframeAnexo: true,
-			visualizacao: 'Público',
 			situacao: 'Liberado',
-			notificarConcluirPrimeiraAula: 'Sim',
-			notificarUsuarios: 'Sim',
-			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			habilitarDiasTeste: true,
-			exigeConfirmacao: 'Habilitado',
-			valorInscricao: fakerPT_BR.commerce.price({ min: 60, max: 100 }),
-			habilitarPagamento: true,
-			nrParcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			valorAcrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 }),
-			habilitarChat: true
+			exigeConfirmacao: 'Habilitado'
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
@@ -152,7 +122,7 @@ describe('curso', () => {
 		cy.editarConteudo(conteudoEdit.nome, tipoConteudo)
 
 		const todasCategorias = [...categorias, ...novasCategorias]
-		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
+		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE
@@ -162,8 +132,8 @@ describe('curso', () => {
 		cy.excluirConteudo(conteudoEdit.nome, tipoConteudo)
 	})
 
-	it('2. CRUD curso liberado, com anexo, com pagamento, sem acréscimo, com confirmação, com visualização para inscritos', () => {
-		// Massa de dados para criação do curso
+	it('2. CRUD trilha liberada, com confirmação, com visualização para inscritos', () => {
+		// Massa de dados para criação da trilha
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
@@ -175,7 +145,6 @@ describe('curso', () => {
 			tipo: 'Congresso',
 			modalidade: 'Presencial',
 			sincronismo: 'Ao vivo',
-			canal: 'Outros',
 			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			local: 'Centro de Eventos',
@@ -186,24 +155,10 @@ describe('curso', () => {
 			estado: 'SC',
 			pais: 'Brasil',
 			emailResponsavel: fakerPT_BR.internet.email(),
-			site: fakerPT_BR.internet.url(),
 			notificarResponsavel: true,
-			rotuloContato: 'Fale conosco',
-			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
-			permiteAnexo: 'Habilitado',
-			mensagemAnexo: `Insira o anexo do Curso: ${nome}`,
-			statusIframeAnexo: true,
-			visualizacao: 'Inscritos',
 			situacao: 'Liberado',
-			notificarConcluirPrimeiraAula: 'Sim',
-			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			habilitarDiasTeste: true,
-			exigeConfirmacao: 'Habilitado',
-			valorInscricao: fakerPT_BR.commerce.price({ min: 60, max: 100 }),
-			habilitarPagamento: true,
-			nrParcelas: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			habilitarChat: true
+			exigeConfirmacao: 'Habilitado'
 		}
 
 		// CREATE
@@ -236,29 +191,15 @@ describe('curso', () => {
 			tipo: 'Feira',
 			modalidade: 'Online',
 			sincronismo: 'Gravado',
-			canal: '',
 			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			atualizarInscritos: true,
 			local: 'T&D Connect',
 			emailResponsavel: fakerPT_BR.internet.email(),
-			site: fakerPT_BR.internet.url(),
 			notificarResponsavel: false,
-			rotuloContato: 'Contato',
-			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: novasCategorias,
-			permiteAnexo: 'Desabilitado',
-			statusIframeAnexo: false,
-			visualizacao: 'Público',
 			situacao: 'Suspenso',
-			notificarConcluirPrimeiraAula: 'Não',
-			notificarUsuarios: 'Sim',
-			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			habilitarDiasTeste: false,
 			exigeConfirmacao: 'Desabilitado',
-			valorInscricao: fakerPT_BR.commerce.price({ min: 5, max: 9 }),
-			habilitarPagamento: false,
-			habilitarChat: false
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
@@ -278,7 +219,7 @@ describe('curso', () => {
 		cy.editarConteudo(conteudoEdit.nome, tipoConteudo)
 
 		const todasCategorias = [...categorias, ...novasCategorias]
-		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit, ...dadosEspecificos }		
+		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit, ...dadosEspecificos }		
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE
@@ -288,8 +229,8 @@ describe('curso', () => {
 		cy.excluirConteudo(conteudoEdit.nome, tipoConteudo)
 	})
 
-	it('3. CRUD curso liberado, com anexo, com pagamento, c/acréscimo, sem confirmação, com visualização para público', () => {
-		// Massa de dados para criação do curso
+	it('3. CRUD trilha liberada, sem confirmação, com visualização para inscritos', () => {
+		// Massa de dados para criação da trilha
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`, `Cat3-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
@@ -301,29 +242,13 @@ describe('curso', () => {
 			tipo: 'Feira',
 			modalidade: 'Online',
 			sincronismo: 'Gravado',
-			canal: 'Em companhia',
 			cargaHoraria: fakerPT_BR.number.int({ min: 10, max: 99 }),
 			vigencia: fakerPT_BR.number.int({ min: 10, max: 99 }),
 			local: 'Youtube',
 			emailResponsavel: fakerPT_BR.internet.email(),
-			site: fakerPT_BR.internet.url(),
 			notificarResponsavel: false,
-			rotuloContato: 'Entre em contato conosco para mais informações.',
-			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
-			permiteAnexo: 'Habilitado',
-			statusIframeAnexo: true,
-			visualizacao: 'Público',
-			situacao: 'Liberado',
-			notificarConcluirPrimeiraAula: 'Sim',
-			notificarUsuarios: 'Sim',
-			diasTeste: fakerPT_BR.number.int({ min: 10, max: 99 }),
-			habilitarDiasTeste: true,
-			valorInscricao: fakerPT_BR.commerce.price({ min: 100, max: 999 }),
-			habilitarPagamento: true,
-			nrParcelas: fakerPT_BR.number.int({ min: 10, max: 12 }),
-			valorAcrescimo: fakerPT_BR.commerce.price({ min: 1, max: 9, dec: 1 }),
-			habilitarChat: true
+			situacao: 'Liberado'
 		}
 
 		// CREATE
@@ -356,28 +281,13 @@ describe('curso', () => {
 			tipo: 'Webinar',
 			modalidade: 'Presencial',
 			sincronismo: 'Ao vivo',
-			canal: 'Aberto',
 			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 9 }),
 			atualizarInscritos: true,
 			emailResponsavel: fakerPT_BR.internet.email(),
-			site: fakerPT_BR.internet.url(),
 			notificarResponsavel: true,
-			rotuloContato: 'Mande-nos um e-mail',
-			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: novasCategorias,
-			permiteAnexo: 'Habilitado',
-			statusIframeAnexo: true,
-			mensagemAnexo: `Insira o anexo do Curso: ${novoNome}`,
-			visualizacao: 'Colaborador',
-			situacao: 'Em desenvolvimento',
-			notificarConcluirPrimeiraAula: 'Não',
-			diasTeste: fakerPT_BR.number.int({ min: 1, max: 9 }),
-			habilitarDiasTeste: false,
-			exigeConfirmacao: 'Desabilitado',
-			valorInscricao: fakerPT_BR.commerce.price({ min: 5, max: 9 }),
-			habilitarPagamento: false,
-			habilitarChat: false
+			situacao: 'Em desenvolvimento'
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
@@ -389,7 +299,7 @@ describe('curso', () => {
 		cy.editarConteudo(conteudoEdit.nome, tipoConteudo)
 
 		const todasCategorias = [...categorias, ...novasCategorias]
-		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
+		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE
@@ -399,8 +309,8 @@ describe('curso', () => {
 		cy.excluirConteudo(conteudoEdit.nome, tipoConteudo)
 	})
 
-	it('4. CRUD curso suspenso, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
-		// Massa de dados para criação do curso
+	it('4. CRUD trilha suspensa, com confirmação, com visualização para inscritos', () => {
+		// Massa de dados para criação da trilha
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
@@ -412,25 +322,14 @@ describe('curso', () => {
 			tipo: 'Outros',
 			modalidade: 'Online',
 			sincronismo: 'Gravado',
-			canal: 'Aberto',
 			cargaHoraria: fakerPT_BR.number.int({ min: 100, max: 999 }),
 			vigencia: fakerPT_BR.number.int({ min: 100, max: 999 }),
 			local: 'Youtube',
 			emailResponsavel: fakerPT_BR.internet.email(),
-			site: fakerPT_BR.internet.url(),
 			notificarResponsavel: false,
-			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
-			permiteAnexo: 'Desabilitado',
-			statusIframeAnexo: false,
-			visualizacao: 'Colaborador',
 			situacao: 'Suspenso',
-			notificarConcluirPrimeiraAula: 'Não',
-			diasTeste: fakerPT_BR.number.int({ min: 100, max: 999 }),
-			habilitarDiasTeste: false,
-			exigeConfirmacao: 'Habilitado',
-			habilitarPagamento: false,
-			habilitarChat: true
+			exigeConfirmacao: 'Habilitado'
 		}
 
 		// CREATE
@@ -456,9 +355,7 @@ describe('curso', () => {
 			dataInicio: '01/01/2000',
 			dataFim: '28/02/2030',
 			tipo: 'Treinamento',
-			canal: 'Em companhia',
 			addCategoria: novasCategorias,
-			visualizacao: 'Usuários',
 			situacao: 'Em desenvolvimento',
 			exigeConfirmacao: 'Desabilitado'
 		}
@@ -472,7 +369,7 @@ describe('curso', () => {
 		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
 		const todasCategorias = [...categorias, ...novasCategorias]
-		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
+		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE
@@ -482,8 +379,8 @@ describe('curso', () => {
 		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
-	it('5. CRUD curso em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para colaboradores', () => {
-		// Massa de dados para criação do curso
+	it('5. CRUD trilha suspensa, sem confirmação, com visualização para inscritos', () => {
+		// Massa de dados para criação da trilha
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
@@ -491,21 +388,12 @@ describe('curso', () => {
 			tipo: 'Palestra',
 			modalidade: 'Online',
 			sincronismo: 'Gravado',
-			canal: 'Aberto',
 			cargaHoraria: fakerPT_BR.number.int({ min: 1000, max: 9999 }),
 			vigencia: fakerPT_BR.number.int({ min: 1000, max: 9999 }),
 			local: 'Twygo',
 			emailResponsavel: fakerPT_BR.internet.email(),
-			site: fakerPT_BR.internet.url(),
-			hashtag: fakerPT_BR.hacker.adjective(),
 			addCategoria: categorias,
-			statusIframeAnexo: false,
-			visualizacao: 'Usuários',
-			situacao: 'Suspenso',
-			notificarConcluirPrimeiraAula: 'Não',
-			diasTeste: fakerPT_BR.number.int({ min: 1000, max: 9999 }),
-			exigeConfirmacao: 'Habilitado',
-			habilitarChat: true
+			situacao: 'Suspenso'
 		}
 
 		// CREATE
@@ -527,9 +415,7 @@ describe('curso', () => {
 		cy.log('## UPDATE ##')
 
 		const conteudoEdit = {
-			tipo: 'Outros',
-			visualizacao: 'Inscritos',
-			statusIframeAnexo: false
+			tipo: 'Outros'
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
@@ -540,7 +426,7 @@ describe('curso', () => {
 
 		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
-		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
+		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
@@ -550,8 +436,8 @@ describe('curso', () => {
 		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
-	it('6. CRUD curso liberado, sem anexo, sem pagamento, sem confirmação, com visualização para público', () => {
-		// Massa de dados para criação do curso
+	it('6. CRUD trilha em desenvolvimento, sem confirmação, com visualização para inscritos', () => {
+		// Massa de dados para criação da trilha
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
@@ -559,22 +445,13 @@ describe('curso', () => {
 			tipo: 'Webinar',
 			modalidade: 'Online',
 			sincronismo: 'Gravado',
-			canal: 'Aberto',
 			cargaHoraria: fakerPT_BR.number.int({ min: 1, max: 99 }),
 			vigencia: fakerPT_BR.number.int({ min: 1, max: 99 }),
 			local: 'Zoom',
 			emailResponsavel: fakerPT_BR.internet.email(),
-			site: fakerPT_BR.internet.url(),
 			notificarResponsavel: false,
 			addCategoria: categorias,
-			statusIframeAnexo: false,
-			visualizacao: 'Público',
-			situacao: 'Liberado',
-			notificarConcluirPrimeiraAula: 'Sim',
-			habilitarDiasTeste: false,
-			notificarUsuarios: 'Sim',
-			habilitarPagamento: false,
-			habilitarChat: true
+			situacao: 'Em desenvolvimento'
 		}
 
 		// CREATE
@@ -596,7 +473,14 @@ describe('curso', () => {
 		cy.log('## UPDATE ##')
 
 		const conteudoEdit = {
-			tipo: 'Palestra'
+			tipo: 'Palestra',
+			modalidade: 'Presencial',
+			cep: '85803-760',
+			endereco: 'Av. das Torres',
+			complemento: 'Apto 202',
+			cidade: 'Cascavel',
+			estado: 'PR',
+			pais: 'Brasil'
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
@@ -607,7 +491,7 @@ describe('curso', () => {
 
 		cy.editarConteudo(conteudo.nome, tipoConteudo)
 
-		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
+		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, categorias)
 
 		// DELETE
@@ -617,21 +501,16 @@ describe('curso', () => {
 		cy.excluirConteudo(conteudo.nome, tipoConteudo)
 	})
 
-	it('7. CRUD curso em desenvolvimento, sem anexo, sem pagamento, com confirmação, com visualização para usuários', () => {
-		// Massa de dados para criação do curso
+	it('7. CRUD trilha em desenvolvimento, com confirmação, com visualização para inscritos', () => {
+		// Massa de dados para criação da trilha
 		categorias = [`Cat1-${fakerPT_BR.hacker.noun()}`, `Cat2-${fakerPT_BR.hacker.noun()}`]
 		const conteudo = {
 			nome: nome,
 			descricao: `${fakerPT_BR.commerce.productDescription()} do evento ${nome}`,
 			sincronismo: 'Ao vivo',
-			canal: 'Aberto',
 			vigencia: '10000',
 			local: 'Twitch',
-			site: fakerPT_BR.internet.url(),
-			hashtag: `#${fakerPT_BR.hacker.abbreviation()}`,
-			addCategoria: categorias,
-			visualizacao: 'Usuários',
-			habilitarChat: true
+			addCategoria: categorias
 		}
 
 		// CREATE
@@ -656,8 +535,7 @@ describe('curso', () => {
 		const conteudoEdit = {
 			vigencia: '0',
 			atualizarInscritos: true,
-			removerCategoria: delCategorias,
-			habilitarChat: false
+			removerCategoria: delCategorias
 		}
 
 		cy.preencherDadosConteudo(conteudoEdit, { limpar: true })
@@ -672,7 +550,7 @@ describe('curso', () => {
 			!delCategorias.includes(categoria)
 		)
 		
-		dadosParaValidar = { ...dadosParaValidar, ...conteudoEdit }
+		dadosParaValidar = { ...formularioConteudo, ...conteudo, ...conteudoEdit }
 		cy.validarDadosConteudo(dadosParaValidar, todasCategorias)
 
 		// DELETE

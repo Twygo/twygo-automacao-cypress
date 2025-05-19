@@ -1,12 +1,13 @@
 /// reference types="cypress" />
 import { fakerPT_BR } from '@faker-js/faker'
-import estruturaAtividades from '../support/pageObjects/estruturaAtividades'
-import formAtividades from '../support/pageObjects/formAtividades'
+import { getAuthToken } from '../../support/authHelper' 
+import estruturaAtividades from '../../support/pageObjects/estruturaAtividades'
+import formAtividades from '../../support/pageObjects/formAtividades'
 
 describe('Criar atividade', () => {
     const esperaExplicita = 5000
 
-    let nomeConteudo, tipoConteudo, nomeAtividade, listaConteudos
+    let nomeConteudo, tipoConteudo, nomeAtividade
 
     let atividadeDefault = 'Novo 1'
 
@@ -41,8 +42,8 @@ describe('Criar atividade', () => {
         peso: 1,
         liberado: false,
         tipoAtividade: 'Vídeo',
-        enviarArquivo: '',
-        descricaoArquivo: {
+        enviarVideo: '',
+        descricaoArquivoVideo: {
             nome: '',
             tamanho: ''
         },
@@ -108,8 +109,8 @@ describe('Criar atividade', () => {
         peso: 1,
         liberado: false,
         tipoAtividade: 'Scorm',
-        enviarArquivo: '',
-        descricaoArquivo: {
+        enviarScorm: '',
+        descricaoArquivoScorm: {
             nome: '',
             tamanho: ''
         },
@@ -129,27 +130,31 @@ describe('Criar atividade', () => {
 
     beforeEach(() => {
         // Define o tipo de conteúdo
-        tipoConteudo = 'biblioteca'
+        tipoConteudo = 'catalogo'
 
         // Gera um nome aleatório para o conteúdo e para a atividade
         nomeConteudo = fakerPT_BR.commerce.productName()
         nomeAtividade = fakerPT_BR.commerce.productName()
 
-        // Acessa página de biblioteca e gera uma lista com os conteúdos para serem excluídos
-        cy.acessarPgBiblioteca()
-        
-        listaConteudos = []
-        cy.listaConteudo(tipoConteudo, listaConteudos)
-        cy.excluirConteudo(null, tipoConteudo, listaConteudos)
-        
-        // Cria uma biblioteca
-        cy.criarBibliotecaDefault(nomeConteudo)    
+        // Obtém o token de autenticação 
+        getAuthToken()
+
+        // Exclui todos os catálogos antes de iniciar o teste
+        cy.excluirCatalogoViaApi()
+
+        // Cria um catálogo default
+        const body = {
+            name: nomeConteudo,
+            description: fakerPT_BR.lorem.sentence(5)
+        }
+        cy.criarCatalogoViaApi(body)
     })
 
     it('1. Criar uma atividade default', () => {
         // CREATE
 		cy.log('## CREATE ##')
 
+		cy.acessarPgCatalogo()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
@@ -167,6 +172,7 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
+        cy.acessarPgCatalogo()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
@@ -189,8 +195,12 @@ describe('Criar atividade', () => {
 
         const dadosUpdate = {
             titulo: nomeAtividade,
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
+            liberado: true,
             descricaoTexto: fakerPT_BR.lorem.sentence(10),
-            resumoAtividade: fakerPT_BR.lorem.sentence(5)
+            resumoAtividade: fakerPT_BR.lorem.sentence(5),
+            tempoMinPermanencia: true,
+            tempoMinPermanenciaValor: '00:08'
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
@@ -222,6 +232,7 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
+        cy.acessarPgCatalogo()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
@@ -246,12 +257,17 @@ describe('Criar atividade', () => {
 
         const dadosUpdate = {
             titulo: nomeAtividade,
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
+            liberado: true,
             enviarPdf: 'teste_pdf.pdf',
             descricaoArquivoPdf: {
                 nome: 'teste_pdf.pdf',
                 tamanho: '28102'
             },
-            resumoAtividade: fakerPT_BR.lorem.sentence(15)
+            seguranca: 'Somente Baixar',
+            resumoAtividade: fakerPT_BR.lorem.sentence(15),
+            tempoMinPermanencia: true,
+            tempoMinPermanenciaValor: '00:12'
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
@@ -283,6 +299,7 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
+        cy.acessarPgCatalogo()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
@@ -307,12 +324,19 @@ describe('Criar atividade', () => {
 
         const dadosUpdate = {
             titulo: nomeAtividade,
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
+            liberado: true,
             enviarVideo: 'teste_video.mp4',
             descricaoArquivoVideo: {
                 nome: 'teste_video.mp4',
                 tamanho: '50809927'
             },
-            resumoAtividade: fakerPT_BR.lorem.sentence(50)
+            marcarConcluidoVideo: true,
+            naoMostrarProgresso: true,
+            seguranca: 'Somente Baixar',
+            resumoAtividade: fakerPT_BR.lorem.sentence(50),
+            tempoMinPermanencia: true,
+            tempoMinPermanenciaValor: '00:25'
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
@@ -344,6 +368,7 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
+        cy.acessarPgCatalogo()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
@@ -368,13 +393,19 @@ describe('Criar atividade', () => {
 
         const dadosUpdate = {
             titulo: nomeAtividade,
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
+            liberado: true,
             youtube: true,
             vimeo: false,
             eventials: false,
             videoUrl: 'https://www.youtube.com/watch?v=OyTN-MF-OEg',
             marcarConcluidoVideoExterno: true,
             naoMostrarProgressoVideoExterno: true,
-            resumoAtividade: fakerPT_BR.lorem.sentence(8)
+            chatTwygo: true,
+            desabilitarChatFimTransmissao: true,
+            resumoAtividade: fakerPT_BR.lorem.sentence(8),
+            tempoMinPermanencia: true,
+            tempoMinPermanenciaValor: '00:02'
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
@@ -406,6 +437,7 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
+        cy.acessarPgCatalogo()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
@@ -430,12 +462,17 @@ describe('Criar atividade', () => {
 
         const dadosUpdate = {
             titulo: nomeAtividade,
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
+            liberado: true,
             enviarArquivo: 'Sophia_estudiosa.png',
             descricaoArquivo: {
                 nome: 'Sophia_estudiosa.png',
                 tamanho: '34264'
             },
-            resumoAtividade: fakerPT_BR.lorem.sentence(22)
+            seguranca: 'Somente Baixar',
+            resumoAtividade: fakerPT_BR.lorem.sentence(22),
+            tempoMinPermanencia: true,
+            tempoMinPermanenciaValor: '00:01'
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
@@ -464,13 +501,14 @@ describe('Criar atividade', () => {
             selecionarQuestionario: fakerPT_BR.lorem.sentence(3)
         }
 
-        // Criar questionário
-        cy.criarQuestionarioDefault(dados.selecionarQuestionario)
-
         // CREATE
         cy.log('## CREATE ##')
 
-        cy.acessarPgBiblioteca()
+        // Criar questionário
+        cy.criarQuestionarioDefault(dados.selecionarQuestionario)
+
+        // Acessar catálogo
+        cy.acessarPgCatalogo()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
@@ -497,7 +535,19 @@ describe('Criar atividade', () => {
 
         const dadosUpdate = {
             titulo: nomeAtividade,
-            resumoAtividade: fakerPT_BR.lorem.sentence(6)
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
+            liberado: true,
+            exibicaoPerguntas: 'Exibir perguntas diferentes a cada tentativa',
+            visualizacaoRespostas: 'Exibir Respondidas',
+            pontuacaoMinima: '50',
+            tentativas: '2',
+            percPontuacaoFinal: '70',
+            perguntasCat1: 'Todas',
+            perguntasCat2: 'Todas',
+            quantidadePerguntas: '',
+            resumoAtividade: fakerPT_BR.lorem.sentence(6),
+            tempoMinPermanencia: true,
+            tempoMinPermanenciaValor: '01:00'
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
@@ -534,6 +584,7 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
+        cy.acessarPgCatalogo()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
@@ -561,11 +612,14 @@ describe('Criar atividade', () => {
 
         const dadosUpdate = {
             titulo: nomeAtividade,
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
+            liberado: true,
             enviarScorm: 'teste_scorm2.zip',
             descricaoArquivoScorm: {
                 nome: 'teste_scorm2.zip',
                 tamanho: '8,3 MB'
             },    
+            marcarConcluidoScorm: true,
             resumoAtividade: fakerPT_BR.lorem.sentence(19)
         }
 
@@ -599,6 +653,7 @@ describe('Criar atividade', () => {
         // CREATE
         cy.log('## CREATE ##')
 
+        cy.acessarPgCatalogo()
         cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
         estruturaAtividades.adicionarAtividade()
         cy.salvarAtividades()
@@ -623,8 +678,12 @@ describe('Criar atividade', () => {
 
         const dadosUpdate = {
             titulo: nomeAtividade,
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
+            liberado: true,
             codigoCompartilhamento: '<iframe src= "https://kahoot.it/challenge/0857294?challenge-id=502fec44-a2dc-4312-807a-65e1d9bc4a4d_1695673333050" width=620 height=280></iframe>',
-            resumoAtividade: fakerPT_BR.lorem.sentence(2)
+            resumoAtividade: fakerPT_BR.lorem.sentence(2),
+            tempoMinPermanencia: true,
+            tempoMinPermanenciaValor: '00:03'
         }
 
         cy.preencherDadosAtividade(dadosUpdate, {limpar: true})

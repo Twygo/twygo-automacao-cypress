@@ -1,5 +1,5 @@
 ///reference types="cypress" />
-import comunicacao from '../support/pageObjects/comunicacao'
+import comunicacao from '../../../support/pageObjects/comunicacao'
 
 describe('Configuração de Comunicação', () => {
     before(() => {

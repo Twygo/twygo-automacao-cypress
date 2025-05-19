@@ -1,9 +1,9 @@
 /// reference types="cypress" />
 import 'cypress-real-events/support'
 import { fakerPT_BR } from '@faker-js/faker'
-import { getAuthToken } from '../support/authHelper'
-import { converterDataEHoraParaISO } from '../support/utilsHelper'
-import formConteudos from "../support/pageObjects/formConteudos"
+import { getAuthToken } from '../../support/authHelper'
+import { converterDataEHoraParaISO } from '../../support/utilsHelper'
+import formConteudos from "../../support/pageObjects/formConteudos"
 
 describe('criar curso via catálogo', () => {	
 	let nome, tipoConteudo, categorias, novasCategorias, delCategorias

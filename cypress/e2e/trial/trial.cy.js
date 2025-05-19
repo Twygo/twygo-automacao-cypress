@@ -1,6 +1,6 @@
 /// reference types="cypress" />
 import { faker, fakerPT_BR } from '@faker-js/faker'
-import formTrial from '../support/pageObjects/formTrial'
+import formTrial from '../../support/pageObjects/formTrial'
 
 describe('Criar organização "Trial"', () => {
     let senha
