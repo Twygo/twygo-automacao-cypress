@@ -26,7 +26,8 @@ beforeEach(() => {
         "Cannot read properties of null (reading 'addEventListener')",
         "Cannot read properties of undefined (reading 'test')",
         "Unexpected token 'else'",
-        "Cannot read properties of null (reading 'style')"
+        "Cannot read properties of null (reading 'style')",
+        "This CKEditor 4.17.1 version is not secure. Consider upgrading to the latest one"
     ], { ignoreScriptErrors: true, ignoreNetworkErrors: true })
 
     // Validar se o login deve ser ignorado

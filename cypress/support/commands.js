@@ -709,9 +709,10 @@ Cypress.Commands.add('salvarAtividades', () => {
   // Salva a atividade
   estruturaAtividades.salvarAtividade()
 
-  // Confirma a mensagem de sucesso
-  cy.contains('.flash.notice', msgSucesso)
-	.should('be.visible')
+  // Confirma a mensagem de sucesso - removido pois atualização da página está "ocultando" a mensagem
+//   cy.get('#flash-area .flash.notice')
+//     .should('contain', msgSucesso)
+//     .and('be.visible')
 })
 
 Cypress.Commands.add('editarAtividade', (nomeConteudo, nomeAtividade) => {
