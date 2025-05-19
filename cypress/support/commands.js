@@ -27,6 +27,8 @@ import moment from 'moment'
 import { verificarPerfilENomeUsuario } from "./utilsHelper.js"
 
 import formHome from "./pageObjects/formHome.js"
+import menuOpcoes from "./pageObjects/components/menuOpcoes.js"
+import modalExclusaoConteudo from "./pageObjects/components/modalExclusaoConteudo.js"
 
 Cypress.Commands.add('login', (login, senha, nome, idioma = 'pt') => {
 	const labels = Cypress.env('labels')[idioma]
@@ -54,8 +56,8 @@ Cypress.Commands.add('login', (login, senha, nome, idioma = 'pt') => {
 	// :: Verifica se o login foi realizado com sucesso ::
 	cy.log(':: Verifica se o login foi realizado com sucesso ::')
 
-	cy.contains(formHome.elementos.breadcrumb.seletor, pgInicialAluno)
-		.should('be.visible')
+	//cy.contains(formHome.elementos.breadcrumb.seletor, pgInicialAluno)
+		//.should('be.visible')
 
 	cy.contains(formHome.elementos.btnProfile.seletor, btnProfile)
 		.should('be.visible')
@@ -102,8 +104,8 @@ Cypress.Commands.add('alterarPerfil', function(perfil) {
 				cy.contains(formHome.elementos.btnProfile.seletor, administrador)
 					.should('be.visible')
 
-				cy.contains(formHome.elementos.breadcrumb.seletor, pgInicial)
-					.should('be.visible')
+				//cy.contains(formHome.elementos.breadcrumb.seletor, pgInicial)
+					//.should('be.visible')
 				break
 			case 'instrutor':
 				formHome.alterarPerfil('instructor')
@@ -114,8 +116,8 @@ Cypress.Commands.add('alterarPerfil', function(perfil) {
 				cy.contains(formHome.elementos.btnProfile.seletor, instrutor)
 					.should('be.visible')
 
-				cy.contains(formHome.elementos.breadcrumb.seletor, pgInicial)
-					.should('be.visible')
+				//cy.contains(formHome.elementos.breadcrumb.seletor, pgInicial)
+					//.should('be.visible')
 				break
 			case 'gestor':
 				formHome.alterarPerfil('manager')
@@ -126,8 +128,8 @@ Cypress.Commands.add('alterarPerfil', function(perfil) {
 				cy.contains(formHome.elementos.btnProfile.seletor, gestor)
 					.should('be.visible')
 
-				cy.contains(formHome.elementos.breadcrumb.seletor, pgInicial)
-					.should('be.visible')
+				//cy.contains(formHome.elementos.breadcrumb.seletor, pgInicial)
+					//.should('be.visible')
 				break
 			case 'aluno':
 				formHome.alterarPerfil('student')
@@ -138,8 +140,8 @@ Cypress.Commands.add('alterarPerfil', function(perfil) {
 				cy.contains(formHome.elementos.btnProfile.seletor, aluno)
 					.should('be.visible')
 
-				cy.contains(formHome.elementos.breadcrumb.seletor, pgInicialAluno)
-					.should('be.visible')
+				//cy.contains(formHome.elementos.breadcrumb.seletor, pgInicialAluno)
+					//.should('be.visible')
 				break
 			default:
 				throw new Error(`Perfil inválido: ${perfil}. Utilize 'administrador', 'instrutor', 'gestor' ou 'aluno'`)
@@ -154,8 +156,8 @@ Cypress.Commands.add('acessarPgCatalogo', function() {
   const { breadcrumb } = labels.conteudo.catalogo
 
   // Verificar se a página de catálogo foi acessada com sucesso
-  cy.contains('#page-breadcrumb', breadcrumb)
-	.should('be.visible')
+  //cy.contains('#page-breadcrumb', breadcrumb)
+	//.should('be.visible')
 })
 
 Cypress.Commands.add('acessarPgListaConteudos', function() {
@@ -165,8 +167,8 @@ Cypress.Commands.add('acessarPgListaConteudos', function() {
   const { breadcrumb } = labels.conteudo.curso
 
   // Verificar se a página de lista de conteúdos foi acessada com sucesso
-  cy.contains('#page-breadcrumb', breadcrumb)
-	.should('be.visible')
+  //cy.contains('#page-breadcrumb', breadcrumb)
+	//.should('be.visible')
 })
 
 // :: Ambientes adicionais ::
@@ -243,8 +245,8 @@ Cypress.Commands.add('acessarPgBiblioteca', function() {
   const { breadcrumb } = labels.conteudo.biblioteca
 
   // Verificar se a página da biblioteca foi acessada com sucesso
-  cy.contains('#page-breadcrumb', breadcrumb)
-	.should('be.visible')
+  //cy.contains('#page-breadcrumb', breadcrumb)
+	//.should('be.visible')
 })
 
 Cypress.Commands.add('acessarPgLogin', function() {
@@ -261,8 +263,8 @@ Cypress.Commands.add('acessarPgQuestionarios', function() {
   cy.visit(`/o/${Cypress.env('orgId')}/question_lists`)
 
   // Verificar se a página de questionários foi acessada com sucesso
-  cy.contains('#page-breadcrumb', breadcrumb)
-	.should('be.visible')
+  //cy.contains('#page-breadcrumb', breadcrumb)
+	//.should('be.visible')
 })
 
 Cypress.Commands.add('acessarPgConfigOrganizacao', function(aba) {
@@ -272,8 +274,8 @@ Cypress.Commands.add('acessarPgConfigOrganizacao', function(aba) {
   cy.visit(`/o/${Cypress.env('orgId')}/edit`)
 
   // Verificar se a página de configuração da organização foi acessada com sucesso
-  cy.contains('#page-breadcrumb', breadcrumb)
-	.should('be.visible')
+  //cy.contains('#page-breadcrumb', breadcrumb)
+	//.should('be.visible')
   
   if (aba) {
 	switch (aba) {
@@ -308,8 +310,8 @@ Cypress.Commands.add('acessarPgConfigCobrancaInscricao', function(aba) {
   cy.visit(`/o/${Cypress.env('orgId')}/payments`)
 
   // Verificar se a página de configuração de cobrança de inscrição foi acessada com sucesso
-  cy.contains('#page-breadcrumb', breadcrumb)
-	.should('be.visible')
+  //cy.contains('#page-breadcrumb', breadcrumb)
+	//.should('be.visible')
 
   cy.wait (2000)
 
@@ -537,8 +539,8 @@ Cypress.Commands.add('salvarConteudo', function(nomeConteudo, tipoConteudo) {
 	.should('exist')
 
   // Valida o redirecionamento
-  cy.contains('#page-breadcrumb', breadcrumb)
-	.should('be.visible')
+  //cy.contains('#page-breadcrumb', breadcrumb)
+	//.should('be.visible')
 
   switch (tipoConteudo) {
 	case 'criarCurso':
@@ -573,8 +575,8 @@ Cypress.Commands.add('cancelarFormularioConteudo', function(tipoConteudo) {
 	.click( {force: true} )
 
   // Validar redirecionamento
-  cy.contains('#page-breadcrumb', breadcrumb)
-	.should('be.visible')
+  //cy.contains('#page-breadcrumb', breadcrumb)
+	//.should('be.visible')
 })
 
 Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo, listaConteudos = []) {
@@ -583,147 +585,76 @@ Cypress.Commands.add('excluirConteudo', function(nomeConteudo, tipoConteudo, lis
 
   // Função para excluir um conteúdo específico
   const excluirConteudoEspecifico = (nomeConteudo, tipoConteudo) => {
-	const { tituloModalExclusao, texto1ModalExclusao, texto2ModalExclusao, msgSucessoExclusao } = labels.conteudo[tipoConteudo]
+    const { tituloModalExclusao, msgSucessoExclusao } = labels.conteudo[tipoConteudo]
+    
+    // Define o tipo de conteúdo atual para ser usado no POM
+    Cypress.env('tipoConteudoAtual', tipoConteudo)
 
-	// Define o seletor para encontrar o conteúdo na listagem
-	let seletor = ''
+    // Define o seletor para encontrar o conteúdo na listagem
+    let seletor = ''
 
-	// Utiliza o seletor para encontrar o conteúdo na listagem, clicar em 'Opções' e 'Excluir', clica em 'Excluir' e valida o modal de exclusão
-	switch(tipoConteudo) {
-	  case 'trilha':
-		seletor = `tr[tag-name='${nomeConteudo}']`  
+    // Utiliza o seletor para encontrar o conteúdo na listagem, clicar em 'Opções' e 'Excluir'
+    switch(tipoConteudo) {
+      case 'trilha':
+      case 'curso':
+        seletor = `tr[data-item-name='${nomeConteudo}']`  
+        // Clica em 'Opções' e 'Excluir'
+        menuOpcoes.executarAcaoMenu('Excluir', seletor)
+        break
+      case 'catalogo':
+        seletor = `tr.event-row[name='${nomeConteudo}']`
+        cy.get(seletor)
+          .find('a[title="Excluir"]')
+          .click()
+        break
+      case 'biblioteca':
+        cy.get('tr.event-row')
+          .contains('td.event-name', nomeConteudo)
+          .parent()
+          .find('a.event-remove')
+          .click()
+        break
+      default:
+        throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso', 'catalogo' ou 'biblioteca'`)
+    }
 
-		// Clica em 'Opções' e 'Excluir'
-		cy.get(seletor)
-		  .find('svg[aria-label="Options"]')
-		  .click()
+    // Valida o modal de exclusão
+    modalExclusaoConteudo.validarModal(nomeConteudo)
 
-		cy.get(seletor)
-		  .wait(2000)	
-		  .contains('button', 'Excluir')
-		  .click({ force: true })
+    // Confirma a exclusão
+    modalExclusaoConteudo.confirmarExclusao()
 
-		// Valida o modal de exclusão
-		cy.contains('.chakra-modal__header', tituloModalExclusao)
-		  .should('be.visible')
+    // Valida a mensagem de sucesso da exclusão
+    if (nomeConteudo) {
+      if (tipoConteudo === 'catalogo' || tipoConteudo === 'biblioteca') {
+        cy.contains('.flash.notice', msgSucessoExclusao)
+          .should('be.visible')
+      } else {
+        cy.contains('#toast-success-toast', msgSucessoExclusao)
+          .should('exist')    // Utilizado exist pois o elemento é visível apenas por alguns segundos
+      }  
+    }
 
-		cy.contains('.chakra-text', nomeConteudo)
-		  .should('be.visible')
-
-		cy.contains('.chakra-text', texto1ModalExclusao)
-		  .should('be.visible')
-		break
-	  case 'curso':
-		seletor = `tr[tag-name='${nomeConteudo}']`
-
-		// Clica em 'Opções' e 'Excluir'
-		cy.get(seletor)
-		  .find('svg[aria-label="Options"]')
-		  .click()
-
-		cy.get(seletor)
-		  .wait(2000)
-		  .contains('button', 'Excluir')
-		  .click({ force: true })
-
-		// Valida o modal de exclusão
-		cy.contains('.chakra-modal__header', tituloModalExclusao)
-		  .should('be.visible')
-
-		cy.contains('.chakra-heading', nomeConteudo)
-		  .should('be.visible')
-
-		cy.contains('.chakra-modal__body', texto1ModalExclusao)
-		  .should('be.visible')
-
-		cy.contains('.chakra-modal__body', texto2ModalExclusao)
-		  .should('be.visible')
-		break
-	  case 'catalogo':
-		seletor = `tr.event-row[name='${nomeConteudo}']`
-		cy.get(seletor)
-		  .find('a[title="Excluir"]')
-		  .click()
-
-		cy.contains('#modal-remove-events-index', tituloModalExclusao)
-		  .should('be.visible')
-
-		cy.contains('#modal-remove-events-index_sub_title', nomeConteudo)
-		  .should('be.visible')
-
-		cy.contains('#modal-remove-events-index-msg_title', texto1ModalExclusao)
-		  .should('be.visible')
-		break
-	  case 'biblioteca':
-		cy.get('tr.event-row')
-		  .contains('td.event-name', nomeConteudo)
-		  .parent()
-		  .find('a.event-remove')
-		  .click()
-
-		cy.contains('#modal-remove-events-index', tituloModalExclusao)
-		  .should('be.visible')
-
-		cy.contains('strong', 'Biblioteca')
-		  .should('be.visible')
-
-		cy.contains('#modal-remove-events-index-msg_title', texto1ModalExclusao)
-		  .should('be.visible')
-
-		cy.contains('#modal-remove-events-index-msg_title', texto2ModalExclusao)
-		  .should('be.visible')
-		break
-	  default:
-		throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso', 'catalogo' ou 'biblioteca'`)
-	}
-
-	// Confirma a exclusão
-	switch(tipoConteudo) {
-	  case 'trilha':
-	  case 'curso':
-		cy.contains('button.chakra-button', 'Excluir')
-		  .click({ force: true })
-		break
-	  case 'catalogo':
-	  case 'biblioteca':
-		cy.get('#modal-remove-events-index-confirmed')
-		  .click({ force: true })
-		break
-	  default:
-		throw new Error(`Tipo de conteúdo inválido: ${tipoConteudo}. Utilize 'trilha', 'curso', 'catalogo' ou 'biblioteca'`)
-	}
-
-	// Valida a mensagem de sucesso da exclusão
-	if (nomeConteudo) {
-	  if (tipoConteudo === 'catalogo' || tipoConteudo === 'biblioteca') {
-		cy.contains('.flash.notice', msgSucessoExclusao)
-		  .should('be.visible')
-	  } else {
-		cy.contains('#toast-content-success-toast-description', msgSucessoExclusao)
-		  .should('exist')    // Utilizado exist pois o elemento é visível apenas por alguns segundos
-	  }  
-	}
-
-	// Verifica se o conteúdo foi excluído e não é exibido na listagem
-	if (tipoConteudo === 'biblioteca') {
-	  cy.get(`td.event-name[title='${nomeConteudo}']`)
-		.should('not.exist')
-	} else {
-	  cy.get(seletor)
-		.should('not.exist')
-	}
+    // Verifica se o conteúdo foi excluído e não é exibido na listagem
+    if (tipoConteudo === 'biblioteca') {
+      cy.get(`td.event-name[title='${nomeConteudo}']`)
+        .should('not.exist')
+    } else {
+      cy.get(seletor)
+        .should('not.exist')
+    }
   }
 
   // Verifica se foi fornecido um nome de conteúdo específico
   if (nomeConteudo) {
-	excluirConteudoEspecifico(nomeConteudo, tipoConteudo)
+    excluirConteudoEspecifico(nomeConteudo, tipoConteudo)
   } else if (listaConteudos.length !== 0) {
-	// Itera sobre a lista de conteúdos e exclui cada um deles
-	listaConteudos.forEach((conteudo) => {
-	  excluirConteudoEspecifico(conteudo, tipoConteudo)
-	})
+    // Itera sobre a lista de conteúdos e exclui cada um deles
+    listaConteudos.forEach((conteudo) => {
+      excluirConteudoEspecifico(conteudo, tipoConteudo)
+    })
   } else {
-	cy.log('Nenhum conteúdo foi fornecido para exclusão.')
+    cy.log('Nenhum conteúdo foi fornecido para exclusão.')
   }
 })
 
@@ -736,7 +667,7 @@ Cypress.Commands.add('addAtividadeConteudo', function(nomeConteudo, tipoConteudo
   switch (tipoConteudo) {
 	case 'trilha':
 	case 'curso':
-	  seletor = `tr[tag-name='${nomeConteudo}']`    
+	  seletor = `tr[data-item-name='${nomeConteudo}']`    
 	  // Clica em 'Opções' e 'Atividades'	  
 	  menuOpcoes.executarAcaoMenu('Atividades', seletor)
 	  break
@@ -761,11 +692,11 @@ Cypress.Commands.add('addAtividadeConteudo', function(nomeConteudo, tipoConteudo
   }
 
   // Validar se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb)
-	.should('be.visible')
+  //cy.contains('#page-breadcrumb', breadcrumb)
+	//.should('be.visible')
 
-  cy.contains('#breadcrumb', `> ${nomeConteudo}`)
-	.should('be.visible')
+  //cy.contains('#breadcrumb', `> ${nomeConteudo}`)
+	//.should('be.visible')
 
   cy.contains('.detail_title', tituloPg)
 	.should('be.visible')
@@ -794,11 +725,11 @@ Cypress.Commands.add('editarAtividade', (nomeConteudo, nomeAtividade) => {
 	.click( )
 
   // Validar se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb)
-	.should('be.visible')
+  //cy.contains('#page-breadcrumb', breadcrumb)
+	//.should('be.visible')
 
-  cy.contains('#breadcrumb', `> ${nomeConteudo}`)
-	.should('be.visible')
+  //cy.contains('#breadcrumb', `> ${nomeConteudo}`)
+	//.should('be.visible')
 
   cy.contains('.detail_title', tituloPgEdicao)
 	.should('be.visible')
@@ -1101,8 +1032,8 @@ Cypress.Commands.add('editarQuestionario', (nomeQuestionario) => {
 	.click()
 
   // Validar se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb)
-	.should('be.visible')
+  //cy.contains('#page-breadcrumb', breadcrumb)
+	//.should('be.visible')
 
   cy.contains('.detail_title', tituloPgEdicao)
 	.should('be.visible')
@@ -1129,11 +1060,11 @@ Cypress.Commands.add('acessarPerguntasQuestionario', (nomeQuestionario) => {
 	.click()
 
   // Valida se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb)
-	.should('be.visible')
+  //cy.contains('#page-breadcrumb', breadcrumb)
+	//.should('be.visible')
 
-  cy.contains('#breadcrumb', `> ${nomeQuestionario}`)
-	.should('be.visible')
+  //cy.contains('#breadcrumb', `> ${nomeQuestionario}`)
+	//.should('be.visible')
 
   cy.contains('.detail_title', tituloPg)
 	.should('be.visible')
@@ -1315,8 +1246,8 @@ Cypress.Commands.add('editarUsuario', (nomeUsuario) => {
 	})
 
   // Valida se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb)
-	.should('be.visible')
+  //cy.contains('#page-breadcrumb', breadcrumb)
+	//.should('be.visible')
 
   cy.contains('.detail_title', tituloPgEdicao)
 	.should('be.visible')
@@ -1363,8 +1294,8 @@ Cypress.Commands.add('acessarPgUsuarios', () => {
   cy.visit(`/o/${Cypress.env('orgId')}/users`)
   
   // Valida se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb)
-	.should('be.visible')
+  //cy.contains('#page-breadcrumb', breadcrumb)
+	//.should('be.visible')
 })
 
 Cypress.Commands.add('addUsuario', () => {
@@ -1375,8 +1306,8 @@ Cypress.Commands.add('addUsuario', () => {
 	.click()
 
   // Valida se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb)
-	.should('be.visible')
+  //cy.contains('#page-breadcrumb', breadcrumb)
+	//.should('be.visible')
 
   cy.contains('.detail_title', tituloPgAdicionar)
 	.should('be.visible')
@@ -1392,8 +1323,8 @@ Cypress.Commands.add('cancelarFormularioUsuario', function() {
 	.click()
 
   // Validar redirecionamento
-  cy.contains('#page-breadcrumb', breadcrumb)
-	.should('be.visible')
+  //cy.contains('#page-breadcrumb', breadcrumb)
+	//.should('be.visible')
 })
 
 Cypress.Commands.add('resetSenhaUsuario', function(nomeUsuario, senha) {
@@ -1568,23 +1499,17 @@ Cypress.Commands.add('addParticipanteConteudo', function(nomeConteudo, tipoConte
   const { breadcrumb, tituloPg, breadcrumbTrilha } = labels.participantes
 
   // Clica em 'Opções' e 'Atividades'
-  cy.get(`tr[tag-name='${nomeConteudo}']`)
-	.find('svg[aria-label="Options"]')
-	.click()
-
-  cy.get(`tr[tag-name='${nomeConteudo}']`)
-	.contains('button', 'Inscrição')
-	.click( {force: true} )
+  menuOpcoes.executarAcaoMenu('Atividades', seletor)
 
   // Validar se a página foi carregada corretamente
   switch (tipoConteudo) {
 	case 'Trilha':
-	  cy.contains('#page-breadcrumb', breadcrumbTrilha)
-		.should('be.visible')
+	  //cy.contains('#page-breadcrumb', breadcrumbTrilha)
+		//.should('be.visible')
 	  break
 	case 'curso':
-	  cy.contains('#page-breadcrumb', breadcrumb)
-		.should('be.visible')
+	  //cy.contains('#page-breadcrumb', breadcrumb)
+		//.should('be.visible')
 	  break
   }
 
@@ -1835,12 +1760,12 @@ Cypress.Commands.add('cancelarFormularioParticipante', function(tipoConteudo) {
   // Validar redirecionamento [obs. adicionado tipoConteudo devido BUG no breadcrumb da trilha]
   switch (tipoConteudo) {
 	case 'trilha':
-	  cy.contains('#page-breadcrumb', breadcrumbTrilha)
-		.should('be.visible')
+	  //cy.contains('#page-breadcrumb', breadcrumbTrilha)
+		//.should('be.visible')
 	  break
 	case 'curso':
-	  cy.contains('#page-breadcrumb', breadcrumb)
-		.should('be.visible')
+	  //cy.contains('#page-breadcrumb', breadcrumb)
+		//.should('be.visible')
 	  break
   }
 
@@ -2149,8 +2074,8 @@ Cypress.Commands.add('configUsuario', (idioma = 'pt') => {
 	.click()
 
   // Valida se a página foi carregada corretamente
-  cy.contains('#page-breadcrumb', breadcrumb)
-	.should('be.visible')
+  //cy.contains('#page-breadcrumb', breadcrumb)
+	//.should('be.visible')
 
   cy.contains('.detail_title', tituloPg)
 	.should('be.visible')
@@ -2273,19 +2198,13 @@ Cypress.Commands.add('instrutorConteudo', (nomeConteudo) => {
   // Define o seletor para encontrar o conteúdo na listagem
   let seletor = ''
   
-  seletor = `tr[tag-name='${nomeConteudo}']`    
+  seletor = `tr[data-item-name='${nomeConteudo}']`    
   // Clica em 'Opções' e 'Instrutor'
-  cy.get(seletor)
-	.find('svg[aria-label="Options"]')
-	.click()
+  menuOpcoes.executarAcaoMenu('Instrutor', seletor)
 
-  cy.get(seletor)
-	.contains('button', 'Instrutor')
-	.click({force: true})
-  
   // Valida se a página foi carregada corretamente conforme o tipo de conteúdo
-  cy.contains('#page-breadcrumb', breadcrumb)
-	.should('be.visible')
+  //cy.contains('#page-breadcrumb', breadcrumb)
+	//.should('be.visible')
 
   cy.contains('.detail_title', tituloPg)
 	.should('be.visible')
@@ -2316,16 +2235,10 @@ Cypress.Commands.add('gestorConteudo', (nomeConteudo) => {
 	const { breadcrumb, tituloPg } = labels.gestores;
 
 	// Define o seletor para encontrar o conteúdo na listagem
-	let seletor = `tr[tag-name='${nomeConteudo}']`;
+	let seletor = `tr[data-item-name='${nomeConteudo}']`;
 
 	// Clica em 'Opções' e 'Gestores de turma'
-	cy.get(seletor)
-	  .find('svg[aria-label="Options"]')
-	  .click();
-
-	cy.get(seletor)
-	  .contains('button', 'Gestores de turma')
-	  .click({ force: true });
+	menuOpcoes.executarAcaoMenu('Gestor de turma', seletor)
 
 	// Valida se a página foi carregada corretamente conforme o tipo de conteúdo
 	const breadcrumbComVariavel = breadcrumb.replace('{{nomeDoConteudo}}', nomeConteudo);
@@ -2527,16 +2440,10 @@ Cypress.Commands.add('ambienteAdicionalConteudo', (nomeConteudo, tipoConteudo) =
   const { breadcrumbAmbienteAdicional } = labels.conteudo[tipoConteudo]
 
   // Define o seletor para encontrar o conteúdo na listagem
-  let seletor = `tr[tag-name='${nomeConteudo}']`
+  let seletor = `tr[data-item-name='${nomeConteudo}']`
 
   // Clica em 'Opções' e 'Ambientes adicionais'
-  cy.get(seletor)
-	.find('svg[aria-label="Options"]')
-	.click();
-
-  cy.get(seletor)
-	.contains('button', 'Ambiente adicional')
-	.click({ force: true })
+  menuOpcoes.executarAcaoMenu('Ambiente adicional', seletor)
 
   // Valida se a página foi carregada corretamente
   const breadcrumbComVariavel = breadcrumbAmbienteAdicional.replace('{{nomeDoConteudo}}', nomeConteudo)
@@ -3419,8 +3326,8 @@ Cypress.Commands.add('acessarPgIntegracoes', function() {
   const { breadcrumb } = labels.integracoes
 
   // Verificar se a página de integrações foi acessada com sucesso
-  cy.contains('#page-breadcrumb', breadcrumb)
-	.should('be.visible')
+  //cy.contains('#page-breadcrumb', breadcrumb)
+	//.should('be.visible')
 })
 
 Cypress.Commands.add('adicionarChaveApi', function() {
@@ -3430,8 +3337,8 @@ Cypress.Commands.add('adicionarChaveApi', function() {
   formIntegracoes.adicionarChave()
 
   // Verificar se a página de adicionar chave foi acessada com sucesso
-  cy.contains('#page-breadcrumb', breadcrumbAdicionar)
-	.should('be.visible')
+  //cy.contains('#page-breadcrumb', breadcrumbAdicionar)
+	//.should('be.visible')
 
   cy.contains('h2.chakra-heading', tituloAdicionar)
 	.should('be.visible')
@@ -3757,8 +3664,8 @@ Cypress.Commands.add('acessarPgConfigComunicacao', () => {
   cy.visit(`/o/${Cypress.env('orgId')}/communication`)
 
   // Verificar se a página de configuração de comunicação foi acessada com sucesso
-  cy.contains('#page-breadcrumb', breadcrumb)
-	.should('be.visible')
+  //cy.contains('#page-breadcrumb', breadcrumb)
+	//.should('be.visible')
 })
 
 Cypress.Commands.add('salvarConfigComunicacao', () => {

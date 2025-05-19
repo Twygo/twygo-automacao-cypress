@@ -114,11 +114,11 @@ class formConteudos {
 			tipo: 'input' 
 		},
 		categoria: {
-			seletor: "input.form-control.as-input[name='event[category]']",
+			seletor: "input.border.as-input[name='event[category]']",
 			tipo: 'tag'
 		},
 		addCategoria: {
-			seletor: "input.form-control.as-input[name='event[category_extra]']",
+			seletor: "input.border.as-input[name='event[category_extra]']",
 			tipo: 'addTag'
 		},
 		removerCategoria: {
