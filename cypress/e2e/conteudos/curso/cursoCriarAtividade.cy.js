@@ -1,8 +1,8 @@
 /// reference types="cypress" />
 import { fakerPT_BR } from '@faker-js/faker'
-import { getAuthToken } from '../support/authHelper' 
-import estruturaAtividades from '../support/pageObjects/estruturaAtividades'
-import formAtividades from '../support/pageObjects/formAtividades'
+import { getAuthToken } from '../../../support/authHelper' 
+import estruturaAtividades from '../../../support/pageObjects/estruturaAtividades'
+import formAtividades from '../../../support/pageObjects/formAtividades'
 
 describe('Criar atividade', () => {
     const esperaExplicita = 5000

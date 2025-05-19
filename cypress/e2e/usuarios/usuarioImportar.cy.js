@@ -1,5 +1,5 @@
 /// reference types='cypress' />
-import { getAuthToken } from '../support/authHelper'
+import { getAuthToken } from '../../support/authHelper'
 
 describe('Importar Usuários', () => {
     // Massa de dados dos usuários que deve ser validada no sistema com base no arquivo CSV

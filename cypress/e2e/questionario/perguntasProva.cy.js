@@ -1,7 +1,7 @@
 /// reference types="cypress" />
 import { fakerPT_BR } from '@faker-js/faker'
-import formQuestionarios from '../support/pageObjects/formQuestionarios'
-import formPerguntas from '../support/pageObjects/formPerguntas'
+import formQuestionarios from '../../support/pageObjects/formQuestionarios'
+import formPerguntas from '../../support/pageObjects/formPerguntas'
 
 describe('Perguntas', () => {
     let titulo, novoTitulo, tipoPergunta, nomeQuestionario, listaQuestionarios, categorias1, categorias2

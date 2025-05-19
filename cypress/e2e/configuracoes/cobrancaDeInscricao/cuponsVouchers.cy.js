@@ -1,8 +1,8 @@
 ///reference types="cypress" />
 import { faker, fakerPT_BR } from '@faker-js/faker'
-import { getAuthToken } from '../support/authHelper'
-import { gerarData } from '../support/utilsHelper'
-import formCuponsVouchers from '../support/pageObjects/formCuponsVouchers'
+import { getAuthToken } from '../../../support/authHelper'
+import { gerarData } from '../../../support/utilsHelper'
+import formCuponsVouchers from '../../../support/pageObjects/formCuponsVouchers'
 
 describe('Criar e vincular cupom à curso', () => {
     let nomeConteudo1, nomeConteudo2, situacaoCurso, nomeTesteAtual, listaConteudos, tipoDesconto, nomeDesconto, codigoDesconto

@@ -1,7 +1,7 @@
 /// reference types="cypress" />
 import { faker } from '@faker-js/faker'
-import { gerarDados } from '../support/helpers/geradorDados'
-import formAmbientesAdicionais from '../support/pageObjects/formAmbientesAdicionais'
+import { gerarDados } from '../../../support/helpers/geradorDados'
+import formAmbientesAdicionais from '../../../support/pageObjects/formAmbientesAdicionais'
 
 describe('ambientesAdicionais', () => {
 

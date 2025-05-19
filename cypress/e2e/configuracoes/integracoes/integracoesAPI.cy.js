@@ -1,6 +1,6 @@
 /// reference types="cypress" />
 import { faker, fakerPT_BR } from '@faker-js/faker'
-import { getAuthToken } from '../support/authHelper'
+import { getAuthToken } from '../../../support/authHelper'
 
 
 describe('Integrações com API', () => {
