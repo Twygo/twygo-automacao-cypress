@@ -1,0 +1,50 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Evite duplicação de código (Don't Repeat Yourself). Sempre que possível, extraia lógicas repetidas para funções reutilizáveis, comandos customizados ou Page Objects.
+
+Técnicas para evitar duplicação:
+
+- Crie métodos compostos em Page Objects
+- Utilize comandos customizados para ações comuns
+- Use beforeEach() para configurações repetidas
+- Crie funções utilitárias para lógicas reutilizáveis
+
+
+Exemplo de código duplicado:
+
+```javascript
+// ❌ Duplicação
+it('teste 1', () => {
+  cy.get('[data-cy=username]').type('user1');
+  cy.get('[data-cy=password]').type('pass1');
+  cy.get('[data-cy=login-button]').click();
+});
+
+it('teste 2', () => {
+  cy.get('[data-cy=username]').type('user2');
+  cy.get('[data-cy=password]').type('pass2');
+  cy.get('[data-cy=login-button]').click();
+});
+```
+
+Refatoração aplicando DRY:
+
+```javascript
+// ✅ Sem duplicação
+beforeEach(() => {
+  cy.visit('/login');
+});
+
+it('teste 1', () => {
+  loginPage.login('user1', 'pass1');
+});
+
+it('teste 2', () => {
+  loginPage.login('user2', 'pass2');
+});
+
+
+```

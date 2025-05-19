@@ -1,0 +1,36 @@
+---
+description: Diretrizes para uso eficiente de comentários em código de testes Cypress, priorizando clareza e evitando redundância.
+globs: 
+alwaysApply: false
+---
+Adicione comentários apenas quando o código for complexo ou não for autoexplicativo. Evite comentários redundantes.
+
+Princípios:
+
+- Bom código deve ser autoexplicativo
+- Comentários devem explicar "por quê", não "o quê"
+- Use comentários para explicar decisões não óbvias
+- Documente workarounds ou soluções temporárias
+
+Exemplos: 
+
+✅ Comentários úteis:
+
+```javascript
+// Intercepta API de autenticação para teste de falha
+cy.intercept('POST', '/api/auth', { statusCode: 401 }).as('authFailure');
+
+// Aguarda animação completar antes de verificar visibilidade
+cy.wait(300); // TODO: substituir por espera condicional quando possível
+```
+
+❌ Comentários desnecessários:
+
+```javascript
+// Obtém o botão de login
+cy.get('[data-cy=login-button]');
+
+// Clica no botão
+cy.get('[data-cy=login-button]').click();
+```
+

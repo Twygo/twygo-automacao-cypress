@@ -1,0 +1,42 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Siga estas boas práticas do Cypress em todos os testes:
+- Nunca use comandos do Cypress fora da cadeia de promessas (cy.then).
+- Não misture cy.get() com await.
+- Use cy.intercept() ao invés de cy.route() para interceptar requisições.
+- Evite uso excessivo de cy.wait() com tempo fixo.
+- Prefira esperar por elementos ou eventos específicos.
+- Use aliases para elementos e requisições frequentemente acessados.
+
+Exemplo correto:
+```javascript
+// Interceptando API e esperando pela resposta
+cy.intercept('POST', '/api/login').as('loginRequest');
+loginPage.login('user', 'pass');
+cy.wait('@loginRequest');
+
+// Encadeamento correto
+cy.get('[data-cy=element]').then(($el) => {
+  const text = $el.text();
+  cy.log(text);
+});
+```
+
+Exemplo incorreto:
+```javascript
+// ❌ NUNCA FAÇA ISSO
+const element = cy.get('[data-cy=element]'); // Não funciona como esperado
+const text = await element.text(); // Erro: não pode usar await com comandos Cypress
+
+// ❌ Espera fixa é ruim
+cy.wait(5000); // Evite esperas arbitrárias
+```
+
+
+
+
+
+

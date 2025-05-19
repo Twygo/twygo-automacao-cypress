@@ -1,0 +1,48 @@
+---
+description: Técnicas para otimizar a performance dos testes Cypress, reduzindo tempo de execução e aumentando confiabilidade.
+globs: 
+alwaysApply: false
+---
+Analise o impacto de cada trecho de código na performance geral. Evite esperas desnecessárias e comandos redundantes que possam desacelerar os testes.
+
+Práticas para melhorar performance:
+
+- Evite esperas fixas 
+
+❌ Ruim: 
+```javascript
+cy.wait(5000) 
+```
+
+✅ Bom: 
+```javascript
+cy.wait('@apiRequest') ou cy.get(selector, { timeout: 10000 })
+```
+
+- Reduza número de interações com a UI 
+❌ Ruim: 
+Verificar cada etapa de um fluxo em testes separados 
+
+✅ Bom: 
+Usar comandos customizados para etapas comuns
+
+- Use intercept para APIs
+```javascript
+cy.intercept('GET', '/api/users').as('getUsers');
+// ação que dispara a requisição
+cy.wait('@getUsers');
+```
+
+- Otimize seletores 
+
+❌ Ruim: 
+Seletores complexos ou aninhados 
+
+✅ Bom: 
+Seletores diretos com data-attributes
+
+
+- Minimize uso de .each() e loops Prefira operações em lote quando possível
+- Use beforeEach() sabiamente Coloque apenas o necessário para cada teste
+- Identifique gargalos e otimize seletores e comandos repetitivos
+- Priorize códigos testáveis e performáticos

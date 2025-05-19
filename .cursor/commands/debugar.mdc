@@ -1,0 +1,17 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+Analise o erro de teste Cypress informado e sugira soluções considerando:
+- Uso de seletores resilientes (data-cy/data-testid, id, atributos específicos)
+- Centralização de lógica em comandos customizados ou POM
+- Evite duplicação de código (DRY)
+- Separe responsabilidades (SRP)
+- Não misture comandos Cypress com await ou promessas externas
+- Sugira refatorações e exemplos claros quando necessário
+
+Exemplo de resposta:
+- Identifique o motivo do erro (ex: seletor frágil, dependência entre testes, uso incorreto de cy.wait)
+- Sugira a correção alinhada às boas práticas do projeto
+

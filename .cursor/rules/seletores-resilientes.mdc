@@ -1,0 +1,56 @@
+---
+description: 
+globs: *.js,*.cy.js
+alwaysApply: false
+---
+Utilize seletores com o atributo id, data-testid ou data-cy sempre que possível, evitando seletores frágeis como .class, :nth-child, etc.
+
+Prioridade de seletores (do melhor para o pior):
+
+data-cy ou data-testid (ideal para testes)
+id (quando disponível)
+Atributos específicos (como name, type)
+Classes CSS específicas para o elemento (não para estilo)
+Seletores de tag com texto específico (button:contains('Submit'))
+Evite completamente:
+
+Seletores baseados em índice (:nth-child)
+Seletores baseados em posição relativa
+Classes CSS genéricas ou de estilo
+Seletores XPath complexos
+
+Exemplos: 
+
+✅ Bons seletores:
+
+```javascript
+cy.get('[data-cy=submit-button]');
+cy.get('#login-form');
+cy.get('[name=username]');
+```
+
+❌ Seletores frágeis:
+```javascript
+cy.get('.btn').first();
+cy.get('div > p > span').eq(2);
+cy.get('.container .row .col:nth-child(3)');
+```
+
+Centralize seletores no topo da classe POM:
+
+```javascript
+class LoginPage {
+  elements = {
+    usernameInput: () => cy.get('[data-cy=username]'),
+    passwordInput: () => cy.get('[data-cy=password]'),
+    loginButton: () => cy.get('[data-cy=login-button]'),
+    errorMessage: () => cy.get('[data-cy=error-message]')
+  }
+  
+  // métodos que usam os seletores...
+
+}
+
+
+
+```

@@ -1,0 +1,45 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+Sugira um nome de branch apropriado para as alterações, analisando os arquivos modificados/preparados (staged) e, se informado, o número do ticket/issue. Siga as convenções abaixo:
+
+**Padrão GitFlow adaptado para automação de testes:**
+- test/nome-do-teste: Para novos testes
+- page/nome-da-pagina: Para novos Page Objects
+- refactor/descricao: Para refatorações de testes existentes
+- fixture/nome-do-dado: Para novos dados de teste
+- command/nome-do-comando: Para novos comandos customizados
+- config/descricao: Para alterações de configuração do Cypress
+- bugfix/descricao-do-bug: Para correções de bugs
+- hotfix/descricao-do-hotfix: Para correções urgentes em produção
+- release/versao: Para preparação de releases
+
+**Regras Gerais:**
+- Use apenas letras minúsculas
+- Separe palavras com hífens (-)
+- Seja breve mas descritivo
+- Inclua número do ticket/issue se fornecido (ex: test/login-page-cyp-123)
+- Evite caracteres especiais, espaços ou acentos
+
+**Parâmetros:**
+- arquivos: Lista de arquivos modificados (opcional, se não fornecido, peça para o usuário listar)
+- ticket: Número do ticket/issue (opcional)
+
+**Exemplo de uso:**
+/sugerir_branch [arquivos, ticket]
+
+**Exemplo de resposta:**
+Se criou um novo teste de login:
+```
+git checkout -b test/login-page-cyp-123
+```
+Se criou um novo Page Object para dashboard:
+```
+git checkout -b page/dashboard
+```
+Se refatorou comandos customizados:
+```
+git checkout -b refactor/commands-otimizacao
+```

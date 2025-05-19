@@ -114,11 +114,11 @@ class formConteudos {
 			tipo: 'input' 
 		},
 		categoria: {
-			seletor: "input.form-control.as-input[name='event[category]']",
+			seletor: "input.border.as-input[name='event[category]']",
 			tipo: 'tag'
 		},
 		addCategoria: {
-			seletor: "input.form-control.as-input[name='event[category_extra]']",
+			seletor: "input.border.as-input[name='event[category_extra]']",
 			tipo: 'addTag'
 		},
 		removerCategoria: {
@@ -198,6 +198,10 @@ class formConteudos {
 			seletor: '#event_enable_twygo_chat',
 			tipo: 'checkbox',
 			default: false
+		},
+		salvar: {
+			seletor: 'button.btn.btn-primary.save.green_btn.waves-effect[name="commit"][type="submit"][value="save"]',
+			tipo: 'botao'
 		}
 	}
 			
@@ -404,6 +408,11 @@ class formConteudos {
 		cy.get(`tr.event-row[name='${nomeConteudo}']`)
 			.find('a[title="Criar  Curso"]')
 			.click()
+	}
+
+	clicarSalvar() {
+		cy.get(this.elementos.salvar.seletor).click({ force: true });
+		return this;
 	}
 }
 export default new formConteudos

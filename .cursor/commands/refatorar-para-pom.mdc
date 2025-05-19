@@ -1,0 +1,12 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+name: Refatorar para POM
+description: Refatora um teste Cypress para usar Page Object Model.
+agent: Cypress QA Agent
+---
+
+Refatore o seguinte código de teste para utilizar Page Object Model. Crie a classe de Page Object correspondente se necessário.

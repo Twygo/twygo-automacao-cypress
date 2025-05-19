@@ -1,0 +1,46 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Cada teste deve ser independente dos outros. Evite dependência entre it() blocks ou entre arquivos de teste.
+
+Princípios:
+
+- Cada teste deve configurar seu próprio estado inicial
+- Não dependa de resultados de testes anteriores
+- Use beforeEach() para configuração comum
+- Use afterEach() para limpeza quando necessário
+
+Exemplo correto:
+
+```javascript
+describe('Funcionalidade de login', () => {
+  beforeEach(() => {
+    cy.visit('/login');
+    cy.intercept('POST', '/api/login').as('loginRequest');
+  });
+
+  it('deve fazer login com credenciais válidas', () => {
+    loginPage.login('user', 'pass');
+    cy.wait('@loginRequest');
+    cy.url().should('include', '/dashboard');
+  });
+
+  it('deve mostrar erro com credenciais inválidas', () => {
+    loginPage.login('wrong', 'wrong');
+    cy.wait('@loginRequest');
+    cy.get('[data-cy=error-message]').should('be.visible');
+  });
+});
+
+
+
+
+
+
+
+```
+
+
+

@@ -1,6 +1,6 @@
 class listaConteudos {
     elementos = {
-        pesquisar: () => cy.get('#eventsTitle.chakra-input')
+        pesquisar: () => cy.get('#eventsTitle')
     }
 
     pesquisarConteudo(titulo) {
@@ -9,4 +9,4 @@ class listaConteudos {
             .type('{enter}')
     }
 }
-export default new listaConteudos
+export default new listaConteudos();

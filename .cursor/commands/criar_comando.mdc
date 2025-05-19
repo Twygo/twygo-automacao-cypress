@@ -1,0 +1,17 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+/**
+ * Realiza login na aplicação
+ * @param {string} username - Nome de usuário
+ * @param {string} password - Senha do usuário
+ * @example cy.login('usuario', 'senha123')
+ */
+Cypress.Commands.add('login', (username, password) => {
+  cy.get('[data-cy=username], #username').type(username);
+  cy.get('[data-cy=password], #password').type(password);
+  cy.get('[data-cy=login-button], #login-button').click();
+});
+
