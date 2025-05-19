@@ -202,6 +202,10 @@ class formConteudos {
 			seletor: '#event_enable_twygo_chat',
 			tipo: 'checkbox',
 			default: false
+		},
+		salvar: {
+			seletor: 'button.btn.btn-primary.save.green_btn.waves-effect[name="commit"][type="submit"][value="save"]',
+			tipo: 'botao'
 		}
 	}
 			
@@ -408,6 +412,11 @@ class formConteudos {
 		cy.get(`tr.event-row[name='${nomeConteudo}']`)
 			.find('a[title="Criar  Curso"]')
 			.click()
+	}
+
+	clicarSalvar() {
+		cy.get(this.elementos.salvar.seletor).click({ force: true });
+		return this;
 	}
 }
 export default new formConteudos

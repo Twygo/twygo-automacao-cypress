@@ -493,15 +493,9 @@ Cypress.Commands.add('editarConteudo', function(nomeConteudo, tipoConteudo) {
   switch (tipoConteudo) {
     case 'trilha':
     case 'curso':        
-      seletor = `tr[data-item-name='${nomeConteudo}']`    
-      // Clica em 'Opções' e 'Editar'
-      cy.get(seletor)
-        .find('svg[aria-label="Options"]')
-        .click()
-
-      cy.get(seletor)
-        .contains('button', 'Editar')
-        .click()
+	  seletor = `tr[data-item-name='${nomeConteudo}']`
+	  // Clica em 'Opções' e 'Editar'
+	  menuOpcoes.executarAcaoMenu('Editar', seletor)
       break
     case 'catalogo':
       seletor = `tr[data-item-name='${nomeConteudo}']`
@@ -536,9 +530,7 @@ Cypress.Commands.add('salvarConteudo', function(nomeConteudo, tipoConteudo) {
   let seletor = ''
   
   // Salva o conteúdo
-  cy.contains('button', 'Salvar')
-	.should('be.visible')
-	.click()  
+  formConteudos.clicarSalvar()  
   
   // Valida a mensagem
   cy.contains('.flash.notice', msgSucesso)
@@ -552,7 +544,7 @@ Cypress.Commands.add('salvarConteudo', function(nomeConteudo, tipoConteudo) {
 	case 'criarCurso':
 	case 'trilha':
 	case 'curso':
-	  seletor = `tr[tag-name='${nomeConteudo}']`
+	  seletor = `tr[data-item-name='${nomeConteudo}']`
 	  break
 	case 'catalogo':
 	  seletor = `tr.event-row[name='${nomeConteudo}']`
@@ -578,8 +570,7 @@ Cypress.Commands.add('cancelarFormularioConteudo', function(tipoConteudo) {
 
   // Cancelar
   cy.contains('#event-cancel', 'Cancelar')
-	.should('be.visible')
-	.click()
+	.click( {force: true} )
 
   // Validar redirecionamento
   cy.contains('#page-breadcrumb', breadcrumb)
@@ -746,14 +737,8 @@ Cypress.Commands.add('addAtividadeConteudo', function(nomeConteudo, tipoConteudo
 	case 'trilha':
 	case 'curso':
 	  seletor = `tr[tag-name='${nomeConteudo}']`    
-	  // Clica em 'Opções' e 'Atividades'
-	  cy.get(seletor)
-		.find('svg[aria-label="Options"]')
-		.click()
-
-	  cy.get(seletor)
-		.contains('button', 'Atividades')
-		.click( {force: true} )
+	  // Clica em 'Opções' e 'Atividades'	  
+	  menuOpcoes.executarAcaoMenu('Atividades', seletor)
 	  break
 	case 'catalogo':
 	  seletor = `tr.event-row[name='${nomeConteudo}']`
