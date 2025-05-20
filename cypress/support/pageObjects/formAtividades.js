@@ -212,6 +212,24 @@ class formAtividades {
 		codigoCompartilhamento: {
 			seletor: '#game-key',
 			tipo: 'input'
+		},
+		// Página
+		editarPagina: {
+			seletor: '#content-page .chakra-button',
+			tipo: 'button'
+		},
+		fecharEditarPagina: {
+			seletor: '.chakra-modal__close-btn',
+			tipo: 'button'
+		},
+		// Aula
+		editarAula: {
+			seletor: '#content-lesson .chakra-button',
+			tipo: 'button'
+		},
+		fecharEditarAula: {
+			seletor: '#close-layout-aba-certificate',
+			tipo: 'button'
 		}
 	}
 
@@ -223,6 +241,12 @@ class formAtividades {
 		}
 
 		const { seletor, tipo, default: valorDefault } = campo
+
+		// Se for um botão, apenas clique nele sem necessidade de valor
+		if (tipo === 'button') {
+			cy.get(seletor).click()
+			return
+		}
 
 		let valorFinal = valor !== undefined ? valor : valorDefault
 
@@ -276,10 +300,6 @@ class formAtividades {
 						.contains(valorFinal)
 						.click()
 					break
-				case 'button':
-					cy.get(seletor)
-						.click()
-					break
 				case 'uploadButton':
 					if (valorFinal) {
 						cy.get(seletor)
@@ -318,6 +338,8 @@ class formAtividades {
 
 		const mapeamentoTipoAtividade = {
 			'Texto': 'text',
+			'Página': 'page',
+			'Aula': 'lesson',
 			'PDF Estampado': 'pdf',
 			'Vídeo': 'video',
 			'Vídeo Externo': 'external',
