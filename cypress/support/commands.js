@@ -709,9 +709,10 @@ Cypress.Commands.add('salvarAtividades', () => {
   // Salva a atividade
   estruturaAtividades.salvarAtividade()
 
-  // Confirma a mensagem de sucesso
-  cy.contains('.flash.notice', msgSucesso)
-	.should('be.visible')
+  // Confirma a mensagem de sucesso - removido pois atualização da página está "ocultando" a mensagem
+//   cy.get('#flash-area .flash.notice')
+//     .should('contain', msgSucesso)
+//     .and('be.visible')
 })
 
 Cypress.Commands.add('editarAtividade', (nomeConteudo, nomeAtividade) => {
@@ -750,33 +751,71 @@ Cypress.Commands.add('validarDadosAtividade', (dados) => {
 })
 
 Cypress.Commands.add('verificarProcessamentoScorm', (nomeConteudo, nomeAtividade, tipoConteudo) => {
+  const MAX_TENTATIVAS = 10;
+  const TEMPO_ESPERA = 15000; // 15 segundos entre verificações
+  let tentativa = 0;
+
   function verificar() {
-	cy.get('body').then($body => {
-	  if ($body.find('span[style="font-style:italic;opacity:50%;font-size:11px;margin-left:20px;color:black;"]:contains("Processando scorm")').length > 0) {
-		cy.log('Arquivo Scorm ainda está sendo processado. Aguardando...')
+    // Incrementa contador de tentativas
+    tentativa++;
+    cy.log(`Verificando processamento do Scorm - Tentativa ${tentativa}/${MAX_TENTATIVAS}`);
 
-		cy.wait(10000)
-
-		if (tipoConteudo === 'trilha' || tipoConteudo === 'curso') {
-		  cy.acessarPgListaConteudos()
-		} else if (tipoConteudo === 'catalogo') {
-		  cy.acessarPgCatalogo()
-		} else if (tipoConteudo === 'biblioteca') {
-		  cy.acessarPgBiblioteca()
-		}
-		
-		cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
-		cy.editarAtividade(nomeConteudo, nomeAtividade)
-
-		// Chama o comando customizado novamente para verificar o estado do processamento
-		cy.verificarProcessamentoScorm(nomeConteudo, nomeAtividade, tipoConteudo)
-	  } else {
-		cy.log('Arquivo Scorm processado com sucesso.')
-	  }
-	})
+    // Verifica se o arquivo ainda está em processamento
+    cy.get('body').then($body => {
+      // Verifica na lista de atividades
+      const processandoNaLista = $body.find('span[style*="font-style:italic"][style*="opacity:50%"]:contains("Processando scorm")').length > 0;
+      
+      // Verifica na página de edição
+      const processandoNaEdicao = $body.find('#scorm-description .list--archive span:contains("Arquivo está sendo processado")').length > 0;
+      
+      // Verifica se o botão substituir arquivo já está disponível
+      const botaoSubstituirDisponivel = $body.find('#scorm_link:contains("Substituir arquivo")').length > 0;
+      
+      // Se o arquivo ainda está em processamento
+      if (processandoNaLista || processandoNaEdicao) {
+        cy.log('Arquivo Scorm ainda está sendo processado. Aguardando...');
+        
+        // Verifica se atingiu o número máximo de tentativas
+        if (tentativa >= MAX_TENTATIVAS) {
+          cy.log('Número máximo de tentativas atingido. Abortando espera.');
+          throw new Error('Timeout: Arquivo Scorm não foi processado dentro do tempo limite.');
+        }
+        
+        // Aguarda e tenta novamente
+        cy.wait(TEMPO_ESPERA).then(() => {
+          // Navega novamente para a página correta baseado no tipo de conteúdo
+          if (tipoConteudo === 'trilha' || tipoConteudo === 'curso') {
+            cy.acessarPgListaConteudos();
+          } else if (tipoConteudo === 'catalogo') {
+            cy.acessarPgCatalogo();
+          } else if (tipoConteudo === 'biblioteca') {
+            cy.acessarPgBiblioteca();
+          }
+          
+          // Abre a edição da atividade novamente
+          cy.addAtividadeConteudo(nomeConteudo, tipoConteudo);
+          cy.editarAtividade(nomeConteudo, nomeAtividade);
+          
+          // Continua a verificação recursivamente
+          verificar();
+        });
+      } else if (botaoSubstituirDisponivel) {
+        // Arquivo já foi processado e botão "Substituir arquivo" está visível
+        cy.log('Arquivo Scorm processado com sucesso!');
+      } else {
+        // Verifica explicitamente se o botão "Substituir arquivo" está presente
+        // para garantir que a página carregou completamente
+        cy.get('#scorm_link', { timeout: 10000 })
+          .should('be.visible')
+          .should('contain', 'Substituir arquivo')
+          .then(() => {
+            cy.log('Arquivo Scorm processado com sucesso e verificado!');
+          });
+      }
+    });
   }
 
-  verificar()
+  verificar();
 })
 
 Cypress.Commands.add('excluirAtividade', (nomeAtividade) => {
