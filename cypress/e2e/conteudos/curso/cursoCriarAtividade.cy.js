@@ -3,6 +3,7 @@ import { fakerPT_BR } from '@faker-js/faker'
 import { getAuthToken } from '../../../support/authHelper' 
 import estruturaAtividades from '../../../support/pageObjects/estruturaAtividades'
 import formAtividades from '../../../support/pageObjects/formAtividades'
+import atividadeFactory from '../../../support/pageObjects/atividadeFactory'
 
 describe('Criar atividade', () => {
     const esperaExplicita = 5000
@@ -126,6 +127,22 @@ describe('Criar atividade', () => {
         codigoCompartilhamento: '',
         resumoAtividade: '',
         tempoMinPermanencia: false
+    }
+
+    let formAtividadePagina = {
+        titulo: 'Novo 1',
+        peso: 1,
+        liberado: false,
+        tipoAtividade: 'Página',
+        resumoAtividade: ''
+    }
+
+    let formAtividadeAula = {
+        titulo: 'Novo 1',
+        peso: 1,
+        liberado: false,
+        tipoAtividade: 'Aula',
+        resumoAtividade: ''
     }
 
     beforeEach(() => {
@@ -973,5 +990,158 @@ describe('Criar atividade', () => {
 
         formAtividades.cancelar()
         cy.excluirAtividade(dados.titulo)
+    })
+
+    it.skip('12. CRUD atividade do tipo "Página"', () => {
+        // Massa de dados para criação de atividade
+        const dados = {
+            titulo: nomeAtividade,
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
+            liberado: true,
+            tipoAtividade: 'Página',
+            resumoAtividade: fakerPT_BR.lorem.sentence(10),
+            editarPagina: true
+        }
+
+        // Obtendo a POM específica para atividade do tipo Página
+        const atividadePagina = atividadeFactory.getAtividade('Página')
+
+        // CREATE
+        cy.log('## CREATE ##')
+
+        cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
+        estruturaAtividades.adicionarAtividade()
+        cy.salvarAtividades()
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(esperaExplicita)
+        cy.editarAtividade(nomeConteudo, atividadeDefault)
+        
+        // Usando o novo POM para preencher o formulário completo
+        atividadePagina.preencherFormularioCompleto(dados)
+        atividadePagina.salvar()
+
+        //READ
+        cy.log('## READ ##')
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(esperaExplicita)
+        cy.editarAtividade(nomeConteudo, dados.titulo)
+
+        // Validando os dados usando o novo POM
+        atividadePagina.validarFormularioCompleto(dados)
+        
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        const dadosUpdate = {
+            titulo: `Edição de ${fakerPT_BR.commerce.productName()}`,
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
+            liberado: false,
+            tipoAtividade: 'Texto',
+            descricaoTexto: fakerPT_BR.lorem.paragraph(2),
+            resumoAtividade: fakerPT_BR.lorem.sentence(5)
+        }
+
+        // Usando o formAtividades padrão para o update (mudando para tipo Texto)
+        cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
+        formAtividades.salvar()
+
+        // READ - UPDATE
+        cy.log('## READ - UPDATE ##')
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(esperaExplicita)
+        cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
+
+        // Usando o método padrão para validar a atividade após atualização
+        let dadosAtualizados = { ...formAtividadeDefault, ...dadosUpdate }
+        cy.validarDadosAtividade(dadosAtualizados)        
+        
+        // DELETE
+        cy.log('## DELETE ##')
+
+        formAtividades.cancelar()
+        cy.excluirAtividade(dadosUpdate.titulo)
+    })
+
+    it.skip('13. CRUD atividade do tipo "Aula"', () => {
+        // Massa de dados para criação de atividade
+        const dados = {
+            titulo: nomeAtividade,
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
+            liberado: true,
+            tipoAtividade: 'Aula',
+            resumoAtividade: fakerPT_BR.lorem.sentence(7),
+            editarAula: true
+        }
+
+        // Obtendo a POM específica para atividade do tipo Aula
+        const atividadeAula = atividadeFactory.getAtividade('Aula')
+
+        // CREATE
+        cy.log('## CREATE ##')
+
+        cy.addAtividadeConteudo(nomeConteudo, tipoConteudo)
+        estruturaAtividades.adicionarAtividade()
+        cy.salvarAtividades()
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(esperaExplicita)
+        cy.editarAtividade(nomeConteudo, atividadeDefault)
+        
+        // Usando o novo POM para preencher o formulário completo
+        atividadeAula.preencherFormularioCompleto(dados)
+        atividadeAula.salvar()
+
+        //READ
+        cy.log('## READ ##')
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(esperaExplicita)
+        cy.editarAtividade(nomeConteudo, dados.titulo)
+
+        // Validando os dados usando o novo POM
+        atividadeAula.validarFormularioCompleto(dados)
+        
+        // UPDATE
+        cy.log('## UPDATE ##')
+
+        const dadosUpdate = {
+            titulo: `Aula editada: ${fakerPT_BR.commerce.productName()}`,
+            peso: fakerPT_BR.number.int({min: 1, max: 9}),
+            liberado: false,
+            tipoAtividade: 'Arquivos',
+            enviarArquivo: 'teste_pdf.pdf',
+            descricaoArquivo: {
+                nome: 'teste_pdf.pdf',
+                tamanho: '28102'
+            },
+            seguranca: 'Visualizar e Baixar',
+            resumoAtividade: fakerPT_BR.lorem.sentence(5),
+            tempoMinPermanencia: true,
+            tempoMinPermanenciaValor: '01:30'
+        }
+
+        // Usando o formAtividades padrão para o update (mudando para tipo Arquivos)
+        cy.preencherDadosAtividade(dadosUpdate, {limpar: true})
+        formAtividades.salvar()
+
+        // READ - UPDATE
+        cy.log('## READ - UPDATE ##')
+
+        // Espera explícita devido ao tempo de atualização da página após salvar
+        cy.wait(esperaExplicita)
+        cy.editarAtividade(nomeConteudo, dadosUpdate.titulo)
+
+        // Usando o método padrão para validar a atividade após atualização
+        let dadosAtualizados = { ...formAtividadeArquivos, ...dadosUpdate }
+        cy.validarDadosAtividade(dadosAtualizados)        
+        
+        // DELETE
+        cy.log('## DELETE ##')
+
+        formAtividades.cancelar()
+        cy.excluirAtividade(dadosUpdate.titulo)
     })
 })
