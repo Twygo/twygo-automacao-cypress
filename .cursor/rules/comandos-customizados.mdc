@@ -17,13 +17,16 @@ Exemplo:
 ```javascript
 // Em cypress/support/commands.js
 Cypress.Commands.add('login', (username, password) => {
-  cy.get('[data-cy=username]').type(username);
-  cy.get('[data-cy=password]').type(password);
-  cy.get('[data-cy=login-button]').click();
+  cy.get('[data-cy=username]')
+    .type(username)
+  cy.get('[data-cy=password]')
+    .type(password)
+  cy.get('[data-cy=login-button]')
+    .click()
 });
 
 // No teste
-cy.login('user', 'pass');
+cy.login('user', 'pass')
 
 ```
 Documente comandos customizados com JSDoc:
@@ -38,7 +41,7 @@ Documente comandos customizados com JSDoc:
  */
 Cypress.Commands.add('login', (username, password) => {
   // implementação
-});
+})
 
 
 ```

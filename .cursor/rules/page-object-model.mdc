@@ -10,6 +10,7 @@ Cada Page Object deve:
 2. Fornecer métodos para interações com a página
 3. Ter responsabilidade única (uma página ou componente)
 4. Retornar this para permitir encadeamento de métodos
+5. Aplicar as ações do cy. em quebras de linhas
 
 Exemplo:
 ```javascript
@@ -23,29 +24,34 @@ class LoginPage {
 
   // Ações
   typeUsername(username) {
-    this.elements.usernameInput().type(username);
-    return this;
+    this.elements.usernameInput()
+        .type(username)
+    return this
   }
 
   typePassword(password) {
-    this.elements.passwordInput().type(password);
-    return this;
+    this.elements.passwordInput()
+        .type(password)
+
+    return this
   }
 
   clickLogin() {
-    this.elements.loginButton().click();
-    return this;
+    this.elements.loginButton()
+        .click()
+
+    return this
   }
 
   // Métodos compostos
   login(username, password) {
-    this.typeUsername(username);
-    this.typePassword(password);
-    this.clickLogin();
-    return this;
+    this.typeUsername(username)
+    this.typePassword(password)
+    this.clickLogin()
+    return this
   }
 }
 
 
 
-export default new LoginPage();
+export default new LoginPage()

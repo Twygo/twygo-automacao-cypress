@@ -4,7 +4,7 @@ globs:
 alwaysApply: false
 ---
 Priorize legibilidade em vez de concisão. Prefira testes com estrutura clara: Arrange > Act > Assert. 
-Evite misturar etapas dentro de uma única linha.
+Evite misturar etapas dentro de uma única linha. Aplique as ações do cy. em quebras de linhas.
 
 Estrutura recomendada:
 
@@ -19,20 +19,23 @@ Exemplo:
 it('deve fazer login com credenciais válidas', () => {
   // Arrange
   cy.fixture('users').then((users) => {
-    const { username, password } = users.validUser;
-    cy.visit('/login');
+    const { username, password } = users.validUser
+    cy.visit('/login')
     
     // Act
     loginPage
       .typeUsername(username)
       .typePassword(password)
-      .clickLoginButton();
+      .clickLoginButton()
     
     // Assert
-    cy.url().should('include', '/dashboard');
-    cy.get('[data-cy=welcome-message]').should('be.visible');
-  });
-});
+    cy.url()
+        .should('include', '/dashboard')
+
+    cy.get('[data-cy=welcome-message]')
+        .should('be.visible')
+  })
+})
 ``` 
 
 Benefícios:
