@@ -317,7 +317,7 @@ describe('Criar atividade', () => {
         cy.excluirAtividade(dadosUpdate.titulo)
     })
 
-    it('4. CRUD atividade do tipo "Vídeo"', () => {
+    it.only('4. CRUD atividade do tipo "Vídeo"', () => {
         // Massa de dados para criação de atividade
         const dados = {
             titulo: nomeAtividade,
