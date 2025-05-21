@@ -1,0 +1,190 @@
+---
+description: Comando para refatorar testes para o padrão Page Object Model
+globs: 
+alwaysApply: false
+---
+---
+name: Refatorar para POM
+description: Refatora testes Cypress existentes para utilizar o padrão Page Object Model, seguindo rigorosamente os princípios DRY e SRP.
+agent: Cypress QA Agent
+---
+
+Refatore o código de teste Cypress para utilizar o padrão Page Object Model (POM), seguindo estas diretrizes obrigatórias:
+
+**Formato de uso:**
+```
+/refatorar_para_pom [codigo]
+```
+
+**Processo de refatoração:**
+
+1. **Análise do código original:**
+   - Identifique todas as páginas/componentes envolvidos
+   - Mapeie todos os seletores utilizados
+   - Identifique padrões de interação repetidos
+
+2. **Criação de Page Objects:**
+   - Crie uma classe POM para cada página/componente
+   - Centralize todos os seletores na propriedade `elements`
+   - Implemente métodos com responsabilidade única para cada ação
+   - Garanta que todos os métodos retornem `this` para encadeamento
+   - Aplique as ações do cy. em quebras de linhas
+   - Adicione JSDoc em todos os métodos
+
+3. **Refatoração do teste:**
+   - Importe os Page Objects criados
+   - Substitua todos os seletores diretos por métodos dos Page Objects
+   - Estruture o teste seguindo o padrão AAA (Arrange-Act-Assert)
+   - Extraia dados para fixtures quando apropriado
+
+**Exemplo de refatoração:**
+
+**Antes:**
+```javascript
+// Teste sem POM
+describe('Login', () => {
+  it('deve fazer login com sucesso', () => {
+    cy.visit('/login')
+    cy.get('#email').type('usuario@exemplo.com')
+    cy.get('#senha').type('senha123')
+    cy.get('.btn-login').click()
+    cy.url().should('include', '/dashboard')
+    cy.get('.welcome-message').should('contain', 'Bem-vindo')
+  })
+})
+```
+
+**Depois:**
+
+```javascript
+// loginPage.js
+class LoginPage {
+  elements = {
+    emailInput: () => cy.get('#email'),
+    senhaInput: () => cy.get('#senha'),
+    loginButton: () => cy.get('.btn-login')
+  }
+
+  /**
+   * Visita a página de login
+   * @returns {LoginPage} - Instância para encadeamento
+   */
+  visitar() {
+    cy.visit('/login')
+    return this
+  }
+
+  /**
+   * Preenche o campo de email
+   * @param {string} email - Email do usuário
+   * @returns {LoginPage} - Instância para encadeamento
+   */
+  preencherEmail(email) {
+    this.elements.emailInput()
+      .clear()
+      .type(email)
+    return this
+  }
+
+  /**
+   * Preenche o campo de senha
+   * @param {string} senha - Senha do usuário
+   * @returns {LoginPage} - Instância para encadeamento
+   */
+  preencherSenha(senha) {
+    this.elements.senhaInput()
+      .clear()
+      .type(senha)
+    return this
+  }
+
+  /**
+   * Clica no botão de login
+   * @returns {LoginPage} - Instância para encadeamento
+   */
+  clicarLogin() {
+    this.elements.loginButton()
+      .click()
+    return this
+  }
+
+  /**
+   * Realiza o processo completo de login
+   * @param {string} email - Email do usuário
+   * @param {string} senha - Senha do usuário
+   * @returns {LoginPage} - Instância para encadeamento
+   */
+  fazerLogin(email, senha) {
+    this.preencherEmail(email)
+    this.preencherSenha(senha)
+    this.clicarLogin()
+    return this
+  }
+}
+
+export default new LoginPage()
+
+// dashboardPage.js
+class DashboardPage {
+  elements = {
+    welcomeMessage: () => cy.get('.welcome-message')
+  }
+
+  /**
+   * Verifica se a mensagem de boas-vindas está visível
+   * @returns {DashboardPage} - Instância para encadeamento
+   */
+  verificarMensagemBoasVindas() {
+    this.elements.welcomeMessage()
+      .should('be.visible')
+      .and('contain', 'Bem-vindo')
+    return this
+  }
+}
+
+export default new DashboardPage()
+
+// login.cy.js
+import loginPage from '../support/pages/loginPage'
+import dashboardPage from '../support/pages/dashboardPage'
+
+describe('Funcionalidade de Login', () => {
+  beforeEach(() => {
+    cy.fixture('usuarios').as('userData')
+  })
+
+  it('deve fazer login com sucesso', function() {
+    // Arrange
+    const { email, senha } = this.userData.usuarioValido
+    
+    // Act
+    loginPage
+      .visitar()
+      .fazerLogin(email, senha)
+    
+    // Assert
+    cy.url()
+      .should('include', '/dashboard')
+    dashboardPage
+      .verificarMensagemBoasVindas()
+  })
+})
+```
+
+**Fixture de exemplo:**
+```json
+// cypress/fixtures/usuarios.json
+{
+  "usuarioValido": {
+    "email": "usuario@exemplo.com",
+    "senha": "senha123"
+  }
+}
+```
+
+**Benefícios da refatoração:**
+- Código mais organizado e manutenível
+- Reutilização de lógica entre testes
+- Maior legibilidade e clareza de propósito
+- Facilidade para adaptar testes quando a UI muda
+- Melhor aderência aos princípios DRY e SRP

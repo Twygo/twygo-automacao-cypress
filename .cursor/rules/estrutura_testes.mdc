@@ -1,19 +1,23 @@
 ---
 description: Orientações para estruturar testes Cypress de forma clara e legível, seguindo o padrão Arrange-Act-Assert.
-globs: 
-alwaysApply: false
+globs: *.cy.js
+alwaysApply: true
 ---
-Priorize legibilidade em vez de concisão. Prefira testes com estrutura clara: Arrange > Act > Assert. 
-Evite misturar etapas dentro de uma única linha. Aplique as ações do cy. em quebras de linhas.
+Priorize legibilidade em vez de concisão. Todos os testes DEVEM seguir a estrutura clara: Arrange > Act > Assert.
 
-Estrutura recomendada:
+**Regras Obrigatórias:**
+1. Separe visualmente as seções com comentários ou espaços
+2. Aplique as ações do cy. em quebras de linhas
+3. Mantenha cada seção focada em sua responsabilidade única
+4. Não misture etapas de diferentes seções
 
-- Arrange: Configure o ambiente e os dados de teste
-- Act: Execute a ação sob teste
-- Assert: Valide os resultados esperados
+**Estrutura obrigatória:**
 
+- **Arrange**: Configure o ambiente e os dados de teste
+- **Act**: Execute a ação sob teste
+- **Assert**: Valide os resultados esperados
 
-Exemplo:
+**Exemplo Obrigatório:**
 
 ```javascript
 it('deve fazer login com credenciais válidas', () => {
@@ -30,20 +34,16 @@ it('deve fazer login com credenciais válidas', () => {
     
     // Assert
     cy.url()
-        .should('include', '/dashboard')
+      .should('include', '/dashboard')
     cy.get('[data-cy=welcome-message]')
-        .should('be.visible')
+      .should('be.visible')
   })
 })
 ``` 
 
-Benefícios:
+**Benefícios:**
 
 - Facilita entendimento do propósito do teste
 - Torna óbvio o que está sendo testado
 - Separa claramente configuração, ação e verificação
 - Melhora manutenibilidade do código
-
-
-
-

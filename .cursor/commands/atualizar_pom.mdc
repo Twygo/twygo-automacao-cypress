@@ -1,0 +1,61 @@
+---
+description: Regra para atualização de Page Objects
+globs: 
+alwaysApply: true
+---
+---
+name: Atualizar Page Object
+description: Atualiza APENAS os seletores dos elementos já existentes em uma ou mais Page Objects, com base no novo HTML informado. Não adiciona novos elementos sob nenhuma circunstância.
+agent: Cypress QA Agent
+---
+
+Atualize APENAS os seletores dos elementos já existentes na(s) Page Object(s) informada(s), utilizando o HTML fornecido.
+
+**Regras Estritas:**
+1. **NÃO adicione novos elementos ou métodos sob nenhuma circunstância**
+2. **NÃO altere nomes de métodos ou elementos existentes**
+3. **NÃO modifique a estrutura ou lógica dos métodos existentes**
+4. **APENAS atualize os seletores para refletir o novo HTML**
+
+**Processo de Atualização:**
+1. Identifique cada elemento existente na POM original
+2. Localize o elemento correspondente no novo HTML
+3. Atualize APENAS o seletor, mantendo o nome e a estrutura
+4. Se um elemento não existir mais no novo HTML, mantenha o seletor original e adicione um comentário
+
+**Exemplo de uso:**
+```
+/atualizar_pom [<html_novo>, <pom_existente>, <elementos_para_atualizar>]
+```
+
+Onde:
+- `<html_novo>`: Novo HTML da página
+- `<pom_existente>`: Código atual da Page Object
+- `<elementos_para_atualizar>`: (Opcional) Lista específica de elementos a serem atualizados. Se não fornecido, atualiza apenas os elementos existentes.
+
+**Exemplo:**
+```
+/atualizar_pom [<html_da_pagina>, loginPage, ["usernameInput", "passwordInput"]]
+```
+
+**Regras para seletores:**
+- Priorize seletores na ordem: data-testid/data-cy, ID, nome, classes específicas
+- Mantenha o padrão de centralização dos seletores na propriedade `elements`
+
+**Exemplo Antes:**
+```javascript
+elements = {
+  usernameInput: () => cy.get('#username'),
+  passwordInput: () => cy.get('#password'),
+  loginButton: () => cy.get('.login-btn')
+}
+```
+
+**Exemplo Depois (HTML mudou):**
+```javascript
+elements = {
+  usernameInput: () => cy.get('[data-cy=username-field]'), // Seletor atualizado
+  passwordInput: () => cy.get('[data-cy=password-field]'), // Seletor atualizado
+  loginButton: () => cy.get('[data-cy=submit-login]') // Seletor atualizado
+}
+```
