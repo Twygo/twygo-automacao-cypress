@@ -1,0 +1,50 @@
+{
+    "Cypress AAA Test Pattern": {
+      "prefix": "cy-aaa",
+      "body": [
+        "it('deve $1', () => {",
+        "  // Arrange",
+        "  $2",
+        "  ",
+        "  // Act",
+        "  $3",
+        "  ",
+        "  // Assert",
+        "  $4",
+        "});"
+      ],
+      "description": "Cria um teste Cypress com estrutura AAA"
+    },
+    "Cypress Page Object": {
+      "prefix": "cy-pom",
+      "body": [
+        "class ${1:Nome}Page {",
+        "  elements = {",
+        "    $2: () => cy.get('$3'),",
+        "  }",
+        "",
+        "  /**",
+        "   * $4",
+        "   * @returns {${1:Nome}Page} - Instância para encadeamento",
+        "   */",
+        "  $5() {",
+        "    this.elements.$2()",
+        "      .$6",
+        "    return this",
+        "  }",
+        "}",
+        "",
+        "export default new ${1:Nome}Page()"
+      ],
+      "description": "Cria uma classe Page Object para Cypress"
+    },
+    "Cypress Intercept": {
+      "prefix": "cy-intercept",
+      "body": [
+        "cy.intercept('${1:GET}', '${2:/api/endpoint}').as('${3:aliasName}')",
+        "$4",
+        "cy.wait('@${3:aliasName}')"
+      ],
+      "description": "Configura interceptação de API com Cypress"
+    }
+  }

@@ -7,13 +7,22 @@
   "author": "Karla Daiany G C de Oliveira",
   "license": "MIT",
   "devDependencies": {
+    "@cypress/code-coverage": "^3.14.3",
     "@cypress/xvfb": "^1.2.4",
     "@faker-js/faker": "^8.4.1",
     "@types/cypress": "^1.1.3",
     "cypress": "^13.13.0",
+    "cypress-mochawesome-reporter": "^3.8.2",
     "cypress-terminal-report": "^6.1.0",
+    "eslint": "^9.27.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-cypress": "^4.3.0",
+    "eslint-plugin-prettier": "^5.4.0",
     "faker-br": "^0.4.1",
-    "http-server": "^14.1.1"
+    "http-server": "^14.1.1",
+    "istanbul-lib-coverage": "^3.2.2",
+    "nyc": "^17.1.0",
+    "prettier": "^3.5.3"
   },
   "dependencies": {
     "archiver": "^7.0.1",
@@ -28,6 +37,11 @@
     "allure:generate": "yarn allure generate allure-results --clean",
     "allure:serve": "yarn allure serve allure-results",
     "allure:open": "yarn allure:generate && yarn allure:serve",
-    "allure:zip": "yarn allure:open && zip -r reports/allure-report-$(date +%Y%m%d%H%M%S).zip allure-report"
+    "allure:zip": "yarn allure:open && zip -r reports/allure-report-$(date +%Y%m%d%H%M%S).zip allure-report",
+    "lint": "eslint cypress/**/*.js",
+    "lint:fix": "eslint cypress/**/*.js --fix",
+    "generate:pom": "node cypress/scripts/generate-pom.js",
+    "validate": "node cypress/scripts/validate-code.js",
+    "feedback": "node cypress/scripts/agent-feedback.js"
   }
 }

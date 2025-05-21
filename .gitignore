@@ -5,3 +5,6 @@ cypress.config.js
 allure-results
 allure-report
 reports/
+package-lock.json
+yarn.lock
+cypress/logs/
