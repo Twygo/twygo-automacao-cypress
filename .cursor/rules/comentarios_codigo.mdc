@@ -18,19 +18,21 @@ Exemplos:
 
 ```javascript
 // Intercepta API de autenticação para teste de falha
-cy.intercept('POST', '/api/auth', { statusCode: 401 }).as('authFailure');
+cy.intercept('POST', '/api/auth', { statusCode: 401 })
+    .as('authFailure')
 
 // Aguarda animação completar antes de verificar visibilidade
-cy.wait(300); // TODO: substituir por espera condicional quando possível
+cy.wait(300) // TODO: substituir por espera condicional quando possível
 ```
 
 ❌ Comentários desnecessários:
 
 ```javascript
 // Obtém o botão de login
-cy.get('[data-cy=login-button]');
+cy.get('[data-cy=login-button]')
 
 // Clica no botão
-cy.get('[data-cy=login-button]').click();
+cy.get('[data-cy=login-button]')
+    .click()
 ```
 

@@ -17,29 +17,25 @@ Exemplo correto:
 ```javascript
 describe('Funcionalidade de login', () => {
   beforeEach(() => {
-    cy.visit('/login');
-    cy.intercept('POST', '/api/login').as('loginRequest');
-  });
+    cy.visit('/login')
+    cy.intercept('POST', '/api/login')
+        .as('loginRequest')
+  })
 
   it('deve fazer login com credenciais válidas', () => {
-    loginPage.login('user', 'pass');
-    cy.wait('@loginRequest');
-    cy.url().should('include', '/dashboard');
-  });
+    loginPage.login('user', 'pass')
+    cy.wait('@loginRequest')
+    cy.url()
+        .should('include', '/dashboard')
+  })
 
   it('deve mostrar erro com credenciais inválidas', () => {
-    loginPage.login('wrong', 'wrong');
-    cy.wait('@loginRequest');
-    cy.get('[data-cy=error-message]').should('be.visible');
-  });
-});
-
-
-
-
-
-
-
+    loginPage.login('wrong', 'wrong')
+    cy.wait('@loginRequest')
+    cy.get('[data-cy=error-message]')
+        .should('be.visible')
+  })
+})
 ```
 
 

@@ -1,0 +1,116 @@
+---
+description: Comando para criar Page Objects seguindo as melhores práticas
+globs: 
+alwaysApply: false
+---
+---
+name: Criar Page Object
+description: Gera uma classe POM completa com seletores, ações e verificações seguindo rigorosamente os princípios DRY e SRP
+agent: Cypress QA Agent
+command: /criar_pom
+params: nome_da_pagina, elementos_principais
+---
+
+Crie um Page Object seguindo estas diretrizes obrigatórias:
+
+**Formato de uso:**
+```
+/criar_pom [nome_da_pagina, elementos_principais]
+```
+
+**Regras estruturais:**
+- Classe em PascalCase, arquivo em camelCase (ex: `LoginPage` em `loginPage.js`)
+- Centralize TODOS os seletores em uma propriedade `elements` no topo da classe
+- Cada método deve ter responsabilidade única (SRP)
+- Todos os métodos devem retornar `this` para permitir encadeamento
+- Aplique as ações do cy. em quebras de linhas
+- Adicione JSDoc em todos os métodos
+- Exporte a classe como default
+- Não adicione lógica de navegação ou validação de outros componentes
+
+**Prioridade de seletores:**
+1. data-cy/data-testid (preferencial)
+2. id
+3. Atributos específicos (name, type, etc.)
+4. Classes CSS específicas (não genéricas)
+5. Texto (apenas quando necessário)
+
+**Estrutura de métodos:**
+- Métodos simples para cada ação individual
+- Métodos compostos para fluxos comuns
+- Métodos de verificação quando necessário
+
+**Exemplo completo:**
+```javascript
+/**
+ * Page Object para a página de login
+ */
+class LoginPage {
+  // Centralização de todos os seletores
+  elements = {
+    emailInput: () => cy.get('[data-cy=email], #email'),
+    senhaInput: () => cy.get('[data-cy=senha], #senha'),
+    entrarButton: () => cy.get('[data-cy=login-button], #login-button'),
+    mensagemErro: () => cy.get('[data-cy=error-message], .error-message')
+  }
+
+  /**
+   * Preenche o campo de e-mail
+   * @param {string} email - Email do usuário
+   * @returns {LoginPage} - Instância para encadeamento
+   */
+  preencherEmail(email) {
+    this.elements.emailInput()
+      .clear()
+      .type(email)
+    return this
+  }
+
+  /**
+   * Preenche o campo de senha
+   * @param {string} senha - Senha do usuário
+   * @returns {LoginPage} - Instância para encadeamento
+   */
+  preencherSenha(senha) {
+    this.elements.senhaInput()
+      .clear()
+      .type(senha)
+    return this
+  }
+
+  /**
+   * Clica no botão de entrar
+   * @returns {LoginPage} - Instância para encadeamento
+   */
+  clicarEmEntrar() {
+    this.elements.entrarButton()
+      .click()
+    return this
+  }
+
+  /**
+   * Método composto para realizar login completo
+   * @param {string} email - Email do usuário
+   * @param {string} senha - Senha do usuário
+   * @returns {LoginPage} - Instância para encadeamento
+   */
+  realizarLogin(email, senha) {
+    this.preencherEmail(email)
+    this.preencherSenha(senha)
+    this.clicarEmEntrar()
+    return this
+  }
+
+  /**
+   * Verifica se mensagem de erro está visível
+   * @returns {LoginPage} - Instância para encadeamento
+   */
+  verificarMensagemErro() {
+    this.elements.mensagemErro()
+      .should('be.visible')
+    return this
+  }
+}
+
+export default new LoginPage()
+```

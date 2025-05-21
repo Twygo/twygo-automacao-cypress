@@ -18,12 +18,17 @@ Exemplo de violação do SRP:
 ```javascript
 // ❌ Método com múltiplas responsabilidades
 login() {
-  cy.visit('/login');
-  cy.get('[data-cy=username]').type('user');
-  cy.get('[data-cy=password]').type('pass');
-  cy.get('[data-cy=login-button]').click();
-  cy.url().should('include', '/dashboard');
-  cy.get('[data-cy=welcome-message]').should('be.visible');
+  cy.visit('/login')
+  cy.get('[data-cy=username]')
+    .type('user')
+  cy.get('[data-cy=password]')
+    .type('pass')
+  cy.get('[data-cy=login-button]')
+    .click()
+  cy.url()
+    .should('include', '/dashboard')
+  cy.get('[data-cy=welcome-message]')
+    .should('be.visible')
 }
 ```
 
@@ -31,34 +36,33 @@ Refatoração aplicando SRP:
 ```javascript
 // ✅ Métodos com responsabilidades únicas
 visit() {
-  cy.visit('/login');
-  return this;
+  cy.visit('/login')
+  return this
 }
 
 typeUsername(username) {
-  cy.get('[data-cy=username]').type(username);
-  return this;
+  cy.get('[data-cy=username]')
+    .type(username)
+  return this
 }
 
 typePassword(password) {
-  cy.get('[data-cy=password]').type(password);
-  return this;
+  cy.get('[data-cy=password]')
+    .type(password)
+  return this
 }
 
 clickLoginButton() {
-  cy.get('[data-cy=login-button]').click();
-  return this;
+  cy.get('[data-cy=login-button]')
+    .click()
+  return this
 }
 
 // Método composto que utiliza os métodos de responsabilidade única
 login(username, password) {
-  this.typeUsername(username);
-  this.typePassword(password);
-  this.clickLoginButton();
-  return this;
+  this.typeUsername(username)
+  this.typePassword(password)
+  this.clickLoginButton()
+  return this
 }
-
-
-
-
 ```

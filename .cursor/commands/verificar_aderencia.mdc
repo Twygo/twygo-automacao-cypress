@@ -1,0 +1,12 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+/verificar_aderencia [codigo]
+
+Analisa o código fornecido e verifica se está aderente a todas as regras definidas, destacando pontos de melhoria.
+
+Exemplo:
+
+/verificar_aderencia [class LoginPage { ... }]

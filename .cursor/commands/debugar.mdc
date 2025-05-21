@@ -1,17 +1,91 @@
 ---
-description: 
+description: Comando para analisar e resolver erros em testes Cypress
 globs: 
 alwaysApply: false
 ---
-Analise o erro de teste Cypress informado e sugira soluções considerando:
+---
+name: Debugar Testes Cypress
+description: Analisa erros de teste Cypress e sugere soluções específicas baseadas no contexto e nas melhores práticas.
+agent: Cypress QA Agent
+---
+
+Analise o erro de teste Cypress informado e sugira soluções detalhadas considerando:
+
+**Formato de uso:**
+```
+/debugar [erro, contexto]
+```
+
+Onde:
+- `<erro>`: Mensagem de erro ou comportamento inesperado
+- `<contexto>`: (Opcional) Código relacionado ou informações adicionais sobre o ambiente
+
+**Exemplo:**
+```
+/debugar ["Element not found", "cy.get('[data-cy=login]').click()"]
+```
+
+**Processo de análise:**
+1. Identifique a causa raiz do problema
+2. Classifique o tipo de erro (seletor, assíncrono, lógica, etc.)
+3. Sugira soluções específicas para o contexto
+4. Forneça exemplos de código corrigido
+
+**Áreas de verificação:**
 - Uso de seletores resilientes (data-cy/data-testid, id, atributos específicos)
 - Centralização de lógica em comandos customizados ou POM
-- Evite duplicação de código (DRY)
-- Separe responsabilidades (SRP)
-- Não misture comandos Cypress com await ou promessas externas
-- Sugira refatorações e exemplos claros quando necessário
+- Aplicação dos princípios DRY e SRP
+- Uso correto de comandos assíncronos do Cypress
+- Estrutura adequada de testes (AAA)
+- Isolamento e independência dos testes
 
-Exemplo de resposta:
-- Identifique o motivo do erro (ex: seletor frágil, dependência entre testes, uso incorreto de cy.wait)
-- Sugira a correção alinhada às boas práticas do projeto
+**Exemplo de resposta:**
+```
+## Análise do Erro
 
+O erro "Element not found" ao executar `cy.get('[data-cy=login]').click()` pode ter várias causas:
+
+1. **Problema de timing**: O elemento ainda não está disponível no DOM
+2. **Seletor incorreto**: O atributo data-cy pode ter mudado ou estar incorreto
+3. **Visibilidade**: O elemento existe mas não está visível
+
+## Soluções Recomendadas
+
+### 1. Verificar o seletor correto
+```javascript
+// Antes de executar o teste, inspecione os seletores disponíveis
+cy.visit('/login')
+cy.log('Elementos disponíveis:')
+cy.document().then((doc) => {
+  console.log(doc.querySelectorAll('[data-cy]'))
+})
+```
+
+### 2. Adicionar retry e timeout adequados
+```javascript
+// Aumentar timeout e usar should para retry automático
+cy.get('[data-cy=login]', { timeout: 10000 })
+  .should('be.visible')
+  .click()
+```
+
+### 3. Refatorar para Page Object Model
+```javascript
+// loginPage.js
+class LoginPage {
+  elements = {
+    loginButton: () => cy.get('[data-cy=login]')
+  }
+  
+  clickLogin() {
+    this.elements.loginButton()
+      .should('be.visible')
+      .click()
+    return this
+  }
+}
+
+// No teste
+loginPage.clickLogin()
+```
+```

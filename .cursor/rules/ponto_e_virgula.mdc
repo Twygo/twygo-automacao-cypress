@@ -1,0 +1,29 @@
+---
+description: Regra para uso de ponto e vírgula em código JavaScript
+globs: *.js,*.cy.js
+alwaysApply: true
+---
+Nunca use ponto e vírgula (;) no final das instruções JavaScript. As únicas exceções são:
+1. Arquivos de configuração que exigem ponto e vírgula (como cypress.config.js)
+2. Situações onde o ASI (Automatic Semicolon Insertion) do JavaScript pode causar problemas
+
+Exemplos de quando NÃO usar:
+```javascript
+cy.get('[data-cy=button]').click()
+const user = 'testuser'
+function login() { ... }
+```
+
+Exemplos de exceções (quando usar):
+```javascript
+// Em arquivos de configuração
+module.exports = {
+  e2e: {
+    baseUrl: 'https://example.com';
+  }
+};
+
+// Para evitar problemas com ASI
+const fn = function() {}
+(function() {})() // Sem ponto e vírgula, isso seria interpretado como fn(function() {})()
+```

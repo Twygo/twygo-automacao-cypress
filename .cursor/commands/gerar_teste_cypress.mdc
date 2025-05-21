@@ -1,0 +1,116 @@
+---
+description: Comando para gerar testes Cypress seguindo as melhores práticas
+globs: 
+alwaysApply: false
+---
+---
+name: Gerar Teste Cypress
+description: Cria testes Cypress estruturados com base em uma descrição, seguindo rigorosamente o padrão AAA e utilizando Page Objects.
+agent: Cypress QA Agent
+---
+
+Crie testes Cypress automatizados seguindo estas diretrizes obrigatórias:
+
+**Formato de uso:**
+```
+/gerar_teste [descricao, paginas, cenarios]
+```
+
+**Regras estruturais:**
+- Estruture os testes em `cypress/e2e/` com nome descritivo
+- Utilize describe/it com nomes no formato BDD ("deve fazer algo")
+- Use OBRIGATORIAMENTE o padrão AAA (Arrange-Act-Assert) em cada teste
+- Separe visualmente as seções com comentários (// Arrange, // Act, // Assert)
+- Aplique as ações do cy. em quebras de linhas
+- Utilize APENAS métodos do Page Object, NUNCA seletores diretos
+- Carregue dados dinâmicos via fixtures
+- Cada teste DEVE ser independente dos demais
+
+**Estrutura obrigatória:**
+- beforeEach para setup comum e carregamento de fixtures
+- Testes organizados por funcionalidade
+- Assertions explícitas com should()
+- Comentários claros separando as seções AAA
+
+**Exemplo completo:**
+```javascript
+// cypress/e2e/login.cy.js
+import loginPage from '../support/pages/loginPage';
+import dashboardPage from '../support/pages/dashboardPage';
+
+describe('Funcionalidade de Login', () => {
+  beforeEach(() => {
+    // Setup comum para todos os testes
+    cy.fixture('users').as('userData');
+    cy.visit('/login');
+  });
+
+  it('deve fazer login com credenciais válidas', function() {
+    // Arrange
+    const { username, password } = this.userData.validUser;
+    
+    // Act
+    loginPage
+      .preencherEmail(username)
+      .preencherSenha(password)
+      .clicarEmEntrar();
+    
+    // Assert
+    cy.url()
+      .should('include', '/dashboard');
+    dashboardPage.elements.welcomeMessage()
+      .should('be.visible')
+      .and('contain', username);
+  });
+
+  it('deve mostrar mensagem de erro com credenciais inválidas', function() {
+    // Arrange
+    const { username, password } = this.userData.invalidUser;
+    
+    // Act
+    loginPage
+      .preencherEmail(username)
+      .preencherSenha(password)
+      .clicarEmEntrar();
+    
+    // Assert
+    loginPage.verificarMensagemErro();
+    cy.url()
+      .should('include', '/login');
+  });
+
+  it('deve validar campo de email obrigatório', function() {
+    // Arrange
+    const { password } = this.userData.validUser;
+    
+    // Act
+    loginPage
+      .preencherSenha(password)
+      .clicarEmEntrar();
+    
+    // Assert
+    loginPage.elements.emailInput()
+      .should('have.attr', 'aria-invalid', 'true');
+    loginPage.elements.mensagemErro()
+      .should('be.visible')
+      .and('contain', 'Email é obrigatório');
+  });
+});
+```
+
+**Fixture de exemplo:**
+```json
+// cypress/fixtures/users.json
+{
+  "validUser": {
+    "username": "usuario.teste@exemplo.com",
+    "password": "senha123",
+    "name": "Usuário Teste"
+  },
+  "invalidUser": {
+    "username": "invalido@exemplo.com",
+    "password": "senhaerrada",
+    "name": "Usuário Inválido"
+  }
+}
+```

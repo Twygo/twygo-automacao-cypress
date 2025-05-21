@@ -12,22 +12,27 @@ Técnicas para evitar duplicação:
 - Use beforeEach() para configurações repetidas
 - Crie funções utilitárias para lógicas reutilizáveis
 
-
 Exemplo de código duplicado:
 
 ```javascript
 // ❌ Duplicação
 it('teste 1', () => {
-  cy.get('[data-cy=username]').type('user1');
-  cy.get('[data-cy=password]').type('pass1');
-  cy.get('[data-cy=login-button]').click();
-});
+  cy.get('[data-cy=username]')
+    .type('user1')
+  cy.get('[data-cy=password]')
+    .type('pass1')
+  cy.get('[data-cy=login-button]')
+    .click()
+})
 
 it('teste 2', () => {
-  cy.get('[data-cy=username]').type('user2');
-  cy.get('[data-cy=password]').type('pass2');
-  cy.get('[data-cy=login-button]').click();
-});
+  cy.get('[data-cy=username]')
+    .type('user2')
+  cy.get('[data-cy=password]')
+    .type('pass2')
+  cy.get('[data-cy=login-button]')
+    .click()
+})
 ```
 
 Refatoração aplicando DRY:
@@ -35,16 +40,14 @@ Refatoração aplicando DRY:
 ```javascript
 // ✅ Sem duplicação
 beforeEach(() => {
-  cy.visit('/login');
-});
+  cy.visit('/login')
+})
 
 it('teste 1', () => {
-  loginPage.login('user1', 'pass1');
-});
+  loginPage.login('user1', 'pass1')
+})
 
 it('teste 2', () => {
-  loginPage.login('user2', 'pass2');
-});
-
-
+  loginPage.login('user2', 'pass2')
+})
 ```

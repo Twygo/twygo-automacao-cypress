@@ -1,25 +1,65 @@
 ---
-description: 
+description: Comando para analisar HTML e sugerir seletores otimizados para Cypress
 globs: 
 alwaysApply: false
 ---
-Analise o HTML fornecido e sugira os melhores seletores para automação de testes Cypress, seguindo esta ordem de prioridade:
-1. data-cy ou data-testid
+---
+name: Analisar HTML
+description: Analisa o HTML fornecido e sugere os melhores seletores para automação de testes Cypress, seguindo rigorosamente a ordem de prioridade recomendada.
+agent: Cypress QA Agent
+---
+
+Analise o HTML fornecido e sugira os melhores seletores para automação de testes Cypress, seguindo estritamente esta ordem de prioridade:
+
+**Formato de uso:**
+```
+/analisar_html [html]
+```
+
+**Ordem de prioridade para seletores:**
+1. data-cy ou data-testid (SEMPRE preferencial)
 2. id
-3. atributos específicos (name, type, etc)
-4. classes CSS específicas (não genéricas)
-5. texto apenas se não houver alternativa
+3. atributos específicos (name, type, etc.)
+4. classes CSS específicas (nunca classes genéricas)
+5. texto (apenas quando não houver alternativa melhor)
 
-Centralize os seletores sugeridos no topo da classe Page Object. Não sugira seletores frágeis (como :nth-child, classes genéricas ou baseadas em posição).
+**Regras obrigatórias:**
+- NUNCA sugira seletores frágeis como:
+  - Seletores baseados em índice (:nth-child, :eq)
+  - Seletores baseados em posição relativa
+  - Classes CSS genéricas ou de estilo (como .btn, .container, .row)
+  - Seletores XPath complexos
+- Sempre forneça alternativas para cada seletor (fallbacks)
+- Centralize todos os seletores na propriedade `elements`
+- Adicione comentários explicativos para seletores complexos
 
-Exemplo de resposta:
+**Exemplo de resposta:**
 ```javascript
-class MinhaPagina {
+/**
+ * Page Object para a página analisada
+ */
+class NomeDaPagina {
+  // Centralização de todos os seletores
   elements = {
-    botaoSalvar: () => cy.get('[data-cy=salvar], #btn-salvar'),
-    campoEmail: () => cy.get('[data-testid=email], #email'),
-    // ... outros seletores
+    // Formulário de login
+    emailInput: () => cy.get('[data-cy=email-input], [data-testid=email], #email, [name=email]'),
+    senhaInput: () => cy.get('[data-cy=senha-input], [data-testid=password], #senha, [name=password]'),
+    loginButton: () => cy.get('[data-cy=login-button], #btn-login, [type=submit]'),
+    
+    // Mensagens de feedback
+    mensagemErro: () => cy.get('[data-cy=error-message], .error-message'), // Classe específica para mensagens de erro
+    
+    // Menu de navegação
+    menuUsuario: () => cy.get('[data-cy=user-menu], #user-dropdown'),
+    
+    // Tabela de dados
+    tabelaResultados: () => cy.get('[data-cy=results-table], #tabela-resultados, table.results-table'),
+    linhasTabela: () => cy.get('[data-cy=results-table], #tabela-resultados, table.results-table').find('tbody > tr')
   }
 }
 ```
 
+**Análise adicional:**
+- Sugira melhorias para o HTML quando faltar atributos adequados para testes
+- Recomende a adição de atributos data-cy ou data-testid em elementos importantes
+- Identifique padrões que podem ser utilizados para seletores mais resilientes

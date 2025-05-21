@@ -24,16 +24,18 @@ Exemplos:
 ✅ Bons seletores:
 
 ```javascript
-cy.get('[data-cy=submit-button]');
-cy.get('#login-form');
-cy.get('[name=username]');
+cy.get('[data-cy=submit-button]')
+cy.get('#login-form')
+cy.get('[name=username]')
 ```
 
 ❌ Seletores frágeis:
 ```javascript
-cy.get('.btn').first();
-cy.get('div > p > span').eq(2);
-cy.get('.container .row .col:nth-child(3)');
+cy.get('.btn')
+    .first()
+cy.get('div > p > span')
+    .eq(2)
+cy.get('.container .row .col:nth-child(3)')
 ```
 
 Centralize seletores no topo da classe POM:
@@ -50,7 +52,4 @@ class LoginPage {
   // métodos que usam os seletores...
 
 }
-
-
-
 ```

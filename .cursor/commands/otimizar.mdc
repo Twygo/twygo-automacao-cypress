@@ -1,14 +1,123 @@
 ---
-description: 
+description: Comando para otimizar testes Cypress existentes
 globs: 
 alwaysApply: false
 ---
-Otimize o código de teste Cypress fornecido, sugerindo melhorias como:
-- Redução de tempo de execução (evite cy.wait fixo, use intercepts e waits inteligentes)
-- Uso de seletores resilientes (data-cy/data-testid, id, atributos específicos)
-- Centralização de lógica em comandos customizados ou POM
-- Eliminação de duplicação de código (DRY)
-- Separação de responsabilidades (SRP)
-- Estrutura clara e fácil de manter
-- Sugira exemplos de refatoração quando necessário
+---
+name: Otimizar Testes Cypress
+description: Analisa e otimiza testes Cypress existentes para melhor performance, manutenibilidade e aderência às melhores práticas.
+agent: Cypress QA Agent
+---
 
+Otimize o código de teste Cypress fornecido, aplicando as seguintes melhorias:
+
+**Formato de uso:**
+```
+/otimizar [codigo]
+```
+
+**Áreas de otimização:**
+
+1. **Performance**
+   - Substitua `cy.wait()` com tempo fixo por esperas inteligentes
+   - Use `cy.intercept()` para aguardar requisições específicas
+   - Aplique `cy.route()` apenas quando necessário para versões antigas do Cypress
+   - Configure timeouts adequados para operações específicas
+
+2. **Resiliência**
+   - Substitua seletores frágeis por seletores resilientes
+   - Priorize: data-cy/data-testid > id > atributos específicos > classes específicas
+   - Adicione verificações de visibilidade antes de interações
+   - Implemente retry-ability para operações propensas a falhas
+
+3. **Estrutura e Organização**
+   - Refatore para seguir o padrão AAA (Arrange-Act-Assert)
+   - Centralize lógica repetitiva em Page Objects ou comandos customizados
+   - Aplique os princípios DRY e SRP rigorosamente
+   - Separe visualmente as seções com comentários claros
+
+4. **Manutenibilidade**
+   - Adicione comentários explicativos para lógicas complexas
+   - Extraia dados de teste para fixtures
+   - Padronize a estrutura de todos os testes
+   - Garanta independência entre testes
+
+**Exemplo de otimização:**
+
+**Antes:**
+```javascript
+// Código não otimizado
+describe('Login', () => {
+  it('deve fazer login', () => {
+    cy.visit('/login')
+    cy.get('.username').type('user@example.com')
+    cy.get('.password').type('password123')
+    cy.get('.login-button').click()
+    cy.wait(5000)
+    cy.get('.dashboard-title').should('be.visible')
+  })
+  
+  it('deve mostrar erro', () => {
+    cy.visit('/login')
+    cy.get('.username').type('wrong@example.com')
+    cy.get('.password').type('wrongpass')
+    cy.get('.login-button').click()
+    cy.wait(2000)
+    cy.get('.error-message').should('be.visible')
+  })
+})
+```
+
+**Depois:**
+```javascript
+// Código otimizado
+import loginPage from '../support/pages/loginPage'
+import dashboardPage from '../support/pages/dashboardPage'
+
+describe('Funcionalidade de Login', () => {
+  beforeEach(() => {
+    // Arrange - Setup comum
+    cy.fixture('users').as('userData')
+    cy.visit('/login')
+    cy.intercept('POST', '/api/auth/login').as('loginRequest')
+  })
+
+  it('deve fazer login com credenciais válidas', function() {
+    // Arrange
+    const { username, password } = this.userData.validUser
+    
+    // Act
+    loginPage
+      .preencherEmail(username)
+      .preencherSenha(password)
+      .clicarEmEntrar()
+    
+    // Assert
+    cy.wait('@loginRequest')
+    dashboardPage.elements.dashboardTitle()
+      .should('be.visible')
+  })
+  
+  it('deve mostrar erro com credenciais inválidas', function() {
+    // Arrange
+    const { username, password } = this.userData.invalidUser
+    
+    // Act
+    loginPage
+      .preencherEmail(username)
+      .preencherSenha(password)
+      .clicarEmEntrar()
+    
+    // Assert
+    cy.wait('@loginRequest')
+    loginPage.verificarMensagemErro()
+  })
+})
+```
+
+**Benefícios da otimização:**
+- Testes mais rápidos e confiáveis
+- Melhor organização e legibilidade
+- Maior facilidade de manutenção
+- Redução de duplicação de código
+- Melhor isolamento e independência entre testes
