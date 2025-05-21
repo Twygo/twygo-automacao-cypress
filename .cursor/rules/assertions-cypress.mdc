@@ -16,34 +16,43 @@ Exemplos:
 ✅ Assertions recomendadas:
 ```javascript
 // Verificação de visibilidade
-cy.get('[data-cy=error-message]').should('be.visible');
+cy.get('[data-cy=error-message]')
+    .should('be.visible')
 
 // Verificação de conteúdo
-cy.get('[data-cy=user-name]').should('contain', 'John Doe');
+cy.get('[data-cy=user-name]')
+    .should('contain', 'John Doe')
 
 // Verificação de estado
-cy.get('[data-cy=submit-button]').should('be.disabled');
+cy.get('[data-cy=submit-button]')
+    .should('be.disabled')
 
 // Verificação de URL
-cy.url().should('include', '/dashboard');
+cy.url()
+    .should('include', '/dashboard')
 
 // Verificação de múltiplas propriedades
-cy.get('[data-cy=status]').should('have.class', 'success').and('contain', 'Completed');
+cy.get('[data-cy=status]')
+    .should('have.class', 'success')
+    .and('contain', 'Completed')
 
 // Com mensagem personalizada
-cy.get('[data-cy=results]', { timeout: 10000 }).should('have.length.at.least', 1, 'Resultados da busca devem ser exibidos');
+cy.get('[data-cy=results]', { timeout: 10000 })
+    .should('have.length.at.least', 1, 'Resultados da busca devem ser exibidos')
 ```
 
 ❌ Assertions a evitar:
 
-
 ```javascript
 // Muito genérico
-cy.get('button').click().get('div').should('be.visible');
+cy.get('button')
+    .click()
+    .get('div')
+    .should('be.visible')
 
 // Sem encadeamento adequado
-cy.get('[data-cy=element]');
-expect(element).to.exist; // Não funciona como esperado
+cy.get('[data-cy=element]')
+expect(element).to.exist // Não funciona como esperado
 ```
 
 

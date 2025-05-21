@@ -29,16 +29,18 @@ Exemplo:
 // No teste
 describe('Login', () => {
   beforeEach(() => {
-    cy.fixture('users').as('userData');
-    cy.visit('/login');
-  });
+    cy.fixture('users')
+        .as('userData')
+    cy.visit('/login')
+  })
 
   it('deve fazer login com usuário válido', function() {
-    const { username, password } = this.userData.validUser;
-    loginPage.login(username, password);
-    cy.url().should('include', '/dashboard');
-  });
-});
+    const { username, password } = this.userData.validUser
+    loginPage.login(username, password)
+    cy.url()
+        .should('include', '/dashboard')
+  })
+})
 
 
 

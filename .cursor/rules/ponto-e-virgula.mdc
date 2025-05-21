@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Nunca use ponto e vírgula (;) no final das instruções JavaScript, exceto quando houver necessidade do uso de ponto e vírgula.

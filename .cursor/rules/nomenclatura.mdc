@@ -10,5 +10,4 @@ Use nomes descritivos com camelCase para arquivos e métodos:
 Para classes POM, use PascalCase:
 - Classes: `LoginPage`, `HomePage`
 
-
-Os nomes devem ser autoexplicativos e indicar claramente a função do arquivo ou método.
+Os nomes devem ser autoexplicativos, em português e indicar claramente a função do arquivo ou método.

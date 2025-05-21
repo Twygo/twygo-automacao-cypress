@@ -28,9 +28,10 @@ Usar comandos customizados para etapas comuns
 
 - Use intercept para APIs
 ```javascript
-cy.intercept('GET', '/api/users').as('getUsers');
+cy.intercept('GET', '/api/users')
+    .as('getUsers')
 // ação que dispara a requisição
-cy.wait('@getUsers');
+cy.wait('@getUsers')
 ```
 
 - Otimize seletores 

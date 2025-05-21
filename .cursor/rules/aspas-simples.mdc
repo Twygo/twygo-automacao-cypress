@@ -10,23 +10,22 @@ Exemplos:
 ✅ Correto:
 
 ```javascript
-cy.get('[data-cy=button]');
-cy.contains('Texto do botão');
-const message = 'Esta é uma mensagem';
+cy.get('[data-cy=button]')
+cy.contains('Texto do botão')
+const message = 'Esta é uma mensagem'
 ```
 
 ❌ Incorreto:
 
 ```javascript
-cy.get("[data-cy=button]");
-cy.contains("Texto do botão");
-const message = "Esta é uma mensagem";
+cy.get("[data-cy=button]")
+cy.contains("Texto do botão")
+const message = "Esta é uma mensagem"
 ```
 
 Exceção: Use aspas duplas apenas quando a string contiver aspas simples:
 
 ```javascript
-cy.contains("It's working"); // Correto para strings com apóstrofo
-
+cy.contains("It's working") // Correto para strings com apóstrofo
 
 ```

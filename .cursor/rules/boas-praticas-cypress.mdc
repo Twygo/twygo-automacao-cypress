@@ -14,25 +14,26 @@ Siga estas boas práticas do Cypress em todos os testes:
 Exemplo correto:
 ```javascript
 // Interceptando API e esperando pela resposta
-cy.intercept('POST', '/api/login').as('loginRequest');
-loginPage.login('user', 'pass');
-cy.wait('@loginRequest');
+cy.intercept('POST', '/api/login')
+    .as('loginRequest')
+loginPage.login('user', 'pass')
+cy.wait('@loginRequest')
 
 // Encadeamento correto
 cy.get('[data-cy=element]').then(($el) => {
-  const text = $el.text();
-  cy.log(text);
-});
+  const text = $el.text()
+  cy.log(text)
+})
 ```
 
 Exemplo incorreto:
 ```javascript
 // ❌ NUNCA FAÇA ISSO
-const element = cy.get('[data-cy=element]'); // Não funciona como esperado
-const text = await element.text(); // Erro: não pode usar await com comandos Cypress
+const element = cy.get('[data-cy=element]') // Não funciona como esperado
+const text = await element.text() // Erro: não pode usar await com comandos Cypress
 
 // ❌ Espera fixa é ruim
-cy.wait(5000); // Evite esperas arbitrárias
+cy.wait(5000) // Evite esperas arbitrárias
 ```
 
 
