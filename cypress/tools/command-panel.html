@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cypress QA Commands</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .command-group {
+        margin-bottom: 20px;
+      }
+      .command {
+        background: #f5f5f5;
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 5px;
+      }
+      .command h3 {
+        margin-top: 0;
+      }
+      .params {
+        margin-left: 20px;
+      }
+      .execute {
+        background: #4caf50;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Cypress QA Commands</h1>
+
+    <div class="command-group">
+      <h2>Criação</h2>
+
+      <div class="command">
+        <h3>/criar_pom</h3>
+        <p>Gera uma classe Page Object Model completa</p>
+        <div class="params">
+          <label>Nome da página: <input type="text" id="pom-name" /></label><br />
+          <label>Elementos: <input type="text" id="pom-elements" /></label>
+        </div>
+        <button class="execute" onclick="copyCommand('criar_pom', ['pom-name', 'pom-elements'])">
+          Copiar Comando
+        </button>
+      </div>
+
+      <!-- Adicione mais comandos aqui -->
+    </div>
+
+    <script>
+      function copyCommand(command, paramIds) {
+        const params = paramIds.map(id => document.getElementById(id).value)
+        const fullCommand = `/${command} [${params.join(', ')}]`
+        navigator.clipboard.writeText(fullCommand)
+        alert(`Comando copiado: ${fullCommand}`)
+      }
+    </script>
+  </body>
+</html>
